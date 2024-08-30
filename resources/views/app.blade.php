@@ -6,13 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Moderustic:wght@300..800&display=swap');
+
+        :root {
+            --main-color: #00a54f,
+            --secondary-color: #b0e5cc;
+            --third-color: #eef8f5;
+            --fourth-color: #dbd22d;
+        }
+
+        ::-webkit-scrollbar {
+            width: 7px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            background-color: grey;
+        }
 
         body {
             font-family: 'Moderustic', cursive;
         }
+
     </style>
 
     @vite('resources/js/app.js')

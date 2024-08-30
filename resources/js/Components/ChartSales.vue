@@ -10,13 +10,10 @@ import ApexCharts from 'vue3-apexcharts';
 
 // Data series and chart options
 const series = ref([{
-    name: 'Net Profit',
-    data: [44, 55, 57, 56, 61, 58, 63, 60, 66]
-}, {
-    name: 'Revenue',
+    name: 'Total penjualan',
     data: [76, 85, 101, 98, 87, 105, 91, 114, 94]
 }, {
-    name: 'Free Cash Flow',
+    name: 'Target penjualan',
     data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
 }]);
 
@@ -57,7 +54,8 @@ const chartOptions = ref({
                 return "$ " + val + " thousands"
             }
         }
-    }
+    },
+    colors: ['#00a54f', '#FFFF00']
 });
 
 </script>
