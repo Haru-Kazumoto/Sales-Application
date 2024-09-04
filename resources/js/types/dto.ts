@@ -10,7 +10,7 @@ export interface POCOList {
     customer: string;
 }
 
-export interface ProductList {
+export interface ProductCustomerList {
     product_name: string;
     amount: number;
     unit: string;
@@ -18,4 +18,23 @@ export interface ProductList {
     discount: number;
     net:number;
     total: number;
+}
+
+export interface CustomerList {
+    client_code: string;
+    customer_name: string;
+    segmen: string;
+    address: string;
+    phone_number: string;
+    pic: string;
+}
+
+export interface ProductList {
+    sku: string;
+    product_name: string;
+    package: string;
+    user_price: string;
+    retail_price: string;
+    restaurant_price: string;
+    stock: number;
 }

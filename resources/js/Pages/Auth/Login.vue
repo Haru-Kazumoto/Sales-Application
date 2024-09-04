@@ -46,9 +46,8 @@
             <div class="d-flex flex-row align-items-center justify-content-center">
                 <n-image-group>
                     <n-space>
-                        <n-image width="150" src="/images/Frame 57.png" preview-disabled/>
-                        <n-image width="150" src="/images/Frame 58.png" preview-disabled/>
-                        <n-image width="150" src="/images/Frame 59.png" preview-disabled/>
+                        <n-image width="150" src="/images/Frame 57.png" preview-disabled />
+                        <n-image width="150" src="/images/Frame 58.png" preview-disabled />
                     </n-space>
                 </n-image-group>
             </div>

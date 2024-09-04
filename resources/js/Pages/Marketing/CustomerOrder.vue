@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex flex-column gap-3">
-        <span class="fs-3 fw-medium">Customer Order</span>
+        <TitlePage title="Customer Order" />
         <div class="d-flex flex-column gap-2">
             <span class="fs-5">PO/CO List</span>
             <div class="card shadow" style="border: none; ">
@@ -18,6 +18,7 @@
 import { defineComponent } from 'vue'
 import type { DataTableColumns } from 'naive-ui'
 import { POCOList } from '../../types/dto'
+import TitlePage from '../../Components/TitlePage.vue';
 
 function createColumns(): DataTableColumns<POCOList> {
     return [
@@ -93,6 +94,9 @@ export default defineComponent({
             columns: createColumns(),
             pagination: { pageSize: 10 }
         }
+    },
+    components: {
+        TitlePage
     }
 })
 </script>

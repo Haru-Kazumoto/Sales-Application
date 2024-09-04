@@ -2,7 +2,7 @@
     <div class="d-flex flex-column">
         <div class="d-flex flex-column gap-4">
             <div class="d-flex flex-row align-items-center">
-                <span class="fs-3 fw-medium">Sales Dashboard</span>
+                <TitlePage title="Dashboard" />
                 <n-date-picker v-model:value="timestamp" type="date" class="ms-auto" />
             </div>
             <div class="d-flex flex-row align-items-center justify-content-between">
@@ -37,6 +37,7 @@ import { defineComponent, ref } from 'vue';
 import SalesCountCard from '../../Components/SalesCountCard.vue';
 import ChartSales from '../../Components/ChartSales.vue';
 import ChartSalesTarget from '../../Components/ChartSalesTarget.vue';
+import TitlePage from '../../Components/TitlePage.vue';
 
 export default defineComponent({
     setup() {
@@ -48,6 +49,7 @@ export default defineComponent({
         SalesCountCard,
         ChartSales,
         ChartSalesTarget,
+        TitlePage
     }
 });
 </script>
