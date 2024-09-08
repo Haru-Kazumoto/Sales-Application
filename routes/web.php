@@ -27,3 +27,24 @@ Route::get('/products', function() {
 Route::get('/customers', function(): Response {
     return Inertia::render('Marketing/Customer');
 });
+
+
+// FINANCE ROUTES
+Route::prefix('finance')->group(function () {
+    Route::get('/create-po', function() {
+        return Inertia::render('Finance/Purchase/CreatePurchaseOrder');
+    });
+
+    Route::get('/create-so', function() {
+        return Inertia::render('Finance/ItemsReceipt/CreateSalesOrder');
+    });
+
+    Route::get('/aging', function() {
+        return Inertia::render('Finance/Bill/Aging');
+    });
+
+    Route::get('/invoices', function() {
+        return Inertia::render('Finance/Bill/Sales');
+    });
+
+});

@@ -7,6 +7,12 @@ use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
+
+    public function assignRole()
+    {
+
+    }
+
     /**
      * Display a listing of the resource.
      */

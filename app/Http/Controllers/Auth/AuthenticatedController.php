@@ -29,7 +29,7 @@ class AuthenticatedController extends Controller
 
         $roleRedirects = [
             'ADMIN' => 'dashboard.admin',
-            'SUPERADMIN' => 'dashbaord.superadmin'
+            'SUPERADMIN' => 'dashboard.superadmin'
         ];
 
         if(isset($roleRedirects[$user->role])) {
