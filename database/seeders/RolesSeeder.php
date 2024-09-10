@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Role;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class RolesSeeder extends Seeder
@@ -13,18 +12,13 @@ class RolesSeeder extends Seeder
      */
     public function run(): void
     {
-        // /**
-        //  * Create role first
-        //  */
-        // $roleAdmin = Role::create(['role_name' => 'ADMIN']);
-        // $roleSuperadmin = Role::create(['role_name' => 'SUPERADMIN']);
+        $roles = [
+            ['role_name' => 'SUPERADMIN'],
+            ['role_name' => 'ADMIN'],
+            ['role_name' => 'FINANCE'],
+            ['role_name' => 'WAREHOUSE'],
+        ];
 
-        // /**
-        //  * Create menus for assign to each role
-        //  */
-        // $menus = [
-        //     'menu_name' => 'Dashboard',
-        //     'icon_name' => '',
-        // ]
+        Role::create($roles);
     }
 }

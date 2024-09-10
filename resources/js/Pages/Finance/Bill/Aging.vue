@@ -26,11 +26,18 @@ import type { DataTableColumns, DataTableRowKey } from 'naive-ui'
 import Swal from 'sweetalert2';
 
 interface RowData {
-    key: number
-    name: string
-    age: string
-    address: string
+    key: number;
+    invoice_date: string;
+    invoice: string;
+    invoice_no: string;
+    salesman: string;
+    customer: string;
+    payment_status: string;
+    term_of_payment: string;
+    due_date: string;
+    transaction_age: string;
 }
+
 
 function createColumns(): DataTableColumns<RowData> {
     return [
@@ -41,28 +48,87 @@ function createColumns(): DataTableColumns<RowData> {
             title: '#',
             key: 'index',
             render(rowData, rowIndex) {
-                return rowIndex + 1;
+                return rowIndex + 1;  // Menghitung nomor urut
             },
         },
         {
-            title: 'Name',
-            key: 'name'
+            title: 'Tanggal Faktur',
+            key: 'invoice_date',
+            render(rowData) {
+                return rowData.invoice_date;  // Menampilkan tanggal faktur
+            },
         },
         {
-            title: 'Age',
-            key: 'age'
+            title: 'Faktur',
+            key: 'invoice',
+            render(rowData) {
+                return rowData.invoice;  // Menampilkan faktur
+            },
         },
         {
-            title: 'Address',
-            key: 'address'
+            title: 'No Faktur',
+            key: 'invoice_no',
+            render(rowData) {
+                return rowData.invoice_no;  // Menampilkan No faktur
+            },
+        },
+        {
+            title: 'Salesman',
+            key: 'salesman',
+            render(rowData) {
+                return rowData.salesman;  // Menampilkan nama salesman
+            },
+        },
+        {
+            title: 'Customer',
+            key: 'customer',
+            render(rowData) {
+                return rowData.customer;  // Menampilkan nama customer
+            },
+        },
+        {
+            title: 'Payment Status',
+            key: 'payment_status',
+            render(rowData) {
+                return rowData.payment_status;  // Menampilkan status pembayaran
+            },
+        },
+        {
+            title: 'Term of Payment',
+            key: 'term_of_payment',
+            render(rowData) {
+                return rowData.term_of_payment;  // Menampilkan term of payment
+            },
+        },
+        {
+            title: 'Due Date',
+            key: 'due_date',
+            render(rowData) {
+                return rowData.due_date;  // Menampilkan due date
+            },
+        },
+        {
+            title: 'Umur Transaksi',
+            key: 'transaction_age',
+            render(rowData) {
+                return rowData.transaction_age;  // Menampilkan umur transaksi
+            },
         }
-    ]
+    ];
 }
 
-const data = Array.from({ length: 46 }).map((_, index) => ({
-    name: `Edward King ${index}`,
-    age: 32,
-    address: `London, Park Lane no. ${index}`
+
+const data: RowData[] = Array.from({ length: 10 }).map((_, index) => ({
+    key: index + 1,
+    invoice_date: `2024-09-${String(index + 1).padStart(2, '0')}`,
+    invoice: `Faktur-${index + 1}`,
+    invoice_no: `INV-2024-${index + 1}`,
+    salesman: `Salesman ${index + 1}`,
+    customer: `Customer ${index + 1}`,
+    payment_status: index % 2 === 0 ? 'Paid' : 'Pending',
+    term_of_payment: index % 2 === 0 ? '30 Days' : '60 Days',
+    due_date: `2024-10-${String(index + 1).padStart(2, '0')}`,
+    transaction_age: `${index + 1} Days`,
 }));
 
 export default defineComponent({
@@ -105,7 +171,7 @@ export default defineComponent({
             pagination: {
                 pageSize: 10
             },
-            rowKey: (row: RowData) => row.address,
+            rowKey: (row: RowData) => row.key,
             handleCheck(rowKeys: DataTableRowKey[]) {
                 checkedRowKeysRef.value = rowKeys
             }

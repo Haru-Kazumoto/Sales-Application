@@ -25,18 +25,18 @@ class AuthenticatedController extends Controller
 
         $loginRequest->session()->regenerate();
 
-        $user = Auth::user();
-
-        $roleRedirects = [
-            'ADMIN' => 'dashboard.admin',
-            'SUPERADMIN' => 'dashboard.superadmin'
-        ];
-
-        if(isset($roleRedirects[$user->role])) {
-            return redirect()->route($roleRedirects[$user->role]);
+        if (Auth::check()) {
+            $roleName = Auth::user()->role->role_name;
+    
+            return match ($roleName) {
+                'FINANCE' => redirect()->intended(route('dashboard.finance')),
+                'WAREHOUSE' => redirect()->intended(route('dashboard.warehouse')),
+                'ADMIN' => redirect()->intended(route('dashboard.admin')),
+                'SUPERADMIN' => redirect()->intended(route('dashboard.superadmin')),
+                'PROCUREMENT' => redirect()->intended(route('dashboard.procurement')),
+                default => back()->with('failed', 'Unknown Dashboard'), // Halaman default jika role tidak dikenali
+            };
         }
-
-        return back()->with('failed', 'Unknown role, or role is not assigned yet.');
     }
 
     public function logout(Request $request): RedirectResponse

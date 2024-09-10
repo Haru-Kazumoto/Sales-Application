@@ -6,7 +6,6 @@
             <n-date-picker size="large" type="date" style="width: 10rem;" />
             <n-select size="large" style="width: 10rem;" placeholder="Customer" />
             <n-select size="large" style="width: 10rem;" placeholder="Salesman" />
-            <n-select size="large" style="width: 10rem;" placeholder="Jatuh tempo" />
         </div>
         <div class="d-flex flex-column">
             <span v-if="checkedRowKeys.length > 0" role="alert" class="alert alert-success">
@@ -14,7 +13,6 @@
             </span>
             <n-data-table :columns="columns" :data="data" :pagination="pagination" :row-key="rowKey"
                         @update:checked-row-keys="handleCheck" />
-            <n-button type="primary" class="ms-auto my-3" style="width: 15rem;" @click="handleSendReminder">Send Reminder</n-button>
         </div>
     </div>
 </template>
@@ -26,11 +24,16 @@ import type { DataTableColumns, DataTableRowKey } from 'naive-ui'
 import Swal from 'sweetalert2';
 
 interface RowData {
-    key: number
-    name: string
-    age: string
-    address: string
+    key: number;
+    poco_number_and_date: string;
+    salesman: string;
+    customer: string;
+    payment_status: string;
+    term_of_payment: string;
+    due_date: string;
+    over_due_day: number;
 }
+
 
 function createColumns(): DataTableColumns<RowData> {
     return [
@@ -41,29 +44,72 @@ function createColumns(): DataTableColumns<RowData> {
             title: '#',
             key: 'index',
             render(rowData, rowIndex) {
-                return rowIndex + 1;
+                return rowIndex + 1;  // Menghitung nomor urut
             },
         },
         {
-            title: 'Name',
-            key: 'name'
+            title: 'POCO Number & Date',
+            key: 'poco_number_and_date',
+            render(rowData) {
+                return rowData.poco_number_and_date;  // Menampilkan POCO number dan tanggal
+            },
         },
         {
-            title: 'Age',
-            key: 'age'
+            title: 'Salesman',
+            key: 'salesman',
+            render(rowData) {
+                return rowData.salesman;  // Menampilkan nama salesman
+            },
         },
         {
-            title: 'Address',
-            key: 'address'
+            title: 'Customer',
+            key: 'customer',
+            render(rowData) {
+                return rowData.customer;  // Menampilkan nama customer
+            },
+        },
+        {
+            title: 'Payment Status',
+            key: 'payment_status',
+            render(rowData) {
+                return rowData.payment_status;  // Menampilkan status pembayaran
+            },
+        },
+        {
+            title: 'Term of Payment',
+            key: 'term_of_payment',
+            render(rowData) {
+                return rowData.term_of_payment;  // Menampilkan term of payment
+            },
+        },
+        {
+            title: 'Due Date',
+            key: 'due_date',
+            render(rowData) {
+                return rowData.due_date;  // Menampilkan due date
+            },
+        },
+        {
+            title: 'Over Due Day',
+            key: 'over_due_day',
+            render(rowData) {
+                return rowData.over_due_day;  // Menampilkan jumlah hari keterlambatan
+            },
         }
-    ]
+    ];
 }
 
-const data = Array.from({ length: 46 }).map((_, index) => ({
-    name: `Edward King ${index}`,
-    age: 32,
-    address: `London, Park Lane no. ${index}`
+const data: RowData[] = Array.from({ length: 10 }).map((_, index) => ({
+    key: index + 1,
+    poco_number_and_date: `POCO-2024-${index + 1} | 2024-09-${String(index + 1).padStart(2, '0')}`,
+    salesman: `Salesman ${index + 1}`,
+    customer: `Customer ${index + 1}`,
+    payment_status: index % 2 === 0 ? 'Paid' : 'Pending',
+    term_of_payment: index % 2 === 0 ? '30 Days' : '60 Days',
+    due_date: `2024-10-${String(index + 1).padStart(2, '0')}`,
+    over_due_day: index % 2 === 0 ? 0 : index + 2, // Over due days hanya ada untuk yang pending
 }));
+
 
 export default defineComponent({
     setup() {
@@ -105,7 +151,7 @@ export default defineComponent({
             pagination: {
                 pageSize: 10
             },
-            rowKey: (row: RowData) => row.address,
+            rowKey: (row: RowData) => row.key,
             handleCheck(rowKeys: DataTableRowKey[]) {
                 checkedRowKeysRef.value = rowKeys
             }

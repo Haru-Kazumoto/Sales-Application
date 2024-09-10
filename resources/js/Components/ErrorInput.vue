@@ -1,7 +1,5 @@
 <template>
-    <div class="text-red fw-medium">
-        <span>{{ error }}</span>
-    </div>
+    <span style="color: red;">{{ error }}</span>
 </template>
 
 <script lang="ts">

@@ -7,7 +7,7 @@
                 <div class="d-flex flex-row ms-auto align-items-center border rounded p-2 text-white gap-2"
                     style="cursor: pointer;">
                     <n-icon :component="Person" />
-                    <span>Haru Kazumoto</span>
+                    <span>{{ $page.props.auth.user.fullname }}</span>
                 </div>
             </n-dropdown>
         </div>
@@ -24,6 +24,7 @@ import {
 } from "@vicons/ionicons5";
 import { NIcon } from 'naive-ui';
 import Swal from 'sweetalert2';
+import { useForm } from '@inertiajs/vue3';
 
 function renderIcon(icon: Component) {
     return () => {
@@ -36,6 +37,7 @@ function renderIcon(icon: Component) {
 export default defineComponent({
     name: "Header",
     setup() {
+        const form = useForm({});
 
         function handleSelectKey(key: string): void {
             if (key === 'logout') {
@@ -46,13 +48,27 @@ export default defineComponent({
                     confirmButtonText: 'Logout',
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'You have been logged out.',
-                        })
+                        handleLogout();
                     }
                 })
             }
+        }
+
+        function handleLogout() {
+            form.post(route('logout'), {
+                onSuccess: () => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'You have been logged out.',
+                    });
+                }, 
+                onError: (err) => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: err.message
+                    });
+                }
+            })
         }
 
         return {

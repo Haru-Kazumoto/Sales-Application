@@ -3,6 +3,14 @@ export interface RequestLoginDto {
     password: string;
 }
 
+export interface RequestRegisterDto {
+    fullname: string;
+    username: string;
+    email: string;
+    password: string;
+    role_id: number | null;
+}
+
 export interface POCOList {
     poco_number: string;
     pt: string;

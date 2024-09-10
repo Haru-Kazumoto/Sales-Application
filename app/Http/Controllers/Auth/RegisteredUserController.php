@@ -3,12 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Role;
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -16,7 +15,10 @@ class RegisteredUserController extends Controller
 {
     public function showRegisterView(): Response
     {
-        return Inertia::render('Auth/Register');
+        $roles = Role::all();
+        return Inertia::render('Auth/Register', [
+            'roles' => $roles
+        ]);
     }
 
     /**
@@ -35,22 +37,30 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'fullname' => 'required|string',
-            'username' => 'required|string|max:255|unique'.User::class,
-            'email' => 'required|string|email|unique',
-            'password' => ['required', 'confirmed'],
+            'username' => 'required|string|max:255|unique:users,username',
+            'email' => 'required|string|email|unique:users,email',
+            'password' => 'required|string',
+            'role_id' => 'required|exists:roles,id'
         ]);
 
-        DB::transaction(function () use ($request) {
-            $user = User::create([
-                'fullname' => $request->fullname,
-                'username' => $request->username,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
+        DB::beginTransaction();
+
+        try {
+
+            User::create([
+                'fullname' => $request->input('fullname'),
+                'username' => $request->input('username'),
+                'email' => $request->input('email'),
+                'password' => $request->input('password'),
+                'role_id' => $request->input('role_id')
             ]);
+            DB::commit();
 
-            event(new Registered($user));
-        });
+            return redirect(route('login', absolute: false))->with('success', 'New user has registered');
+        } catch(\Exception $e) {
+            DB::rollback();
 
-        return redirect(route('login', absolute: false))->with('success', 'New user has registered');
+            return back()->with('failed', $e->getMessage());
+        }
     }
 }

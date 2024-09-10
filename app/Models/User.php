@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,7 +13,7 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $fillable = ['fullname', 'username', 'email', 'password'];
+    protected $fillable = ['fullname', 'username', 'email', 'password', 'role_id'];
 
     protected $hidden = [
         'password',

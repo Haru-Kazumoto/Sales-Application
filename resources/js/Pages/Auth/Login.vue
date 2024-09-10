@@ -1,5 +1,4 @@
 <template>
-
     <Head title="Signup" />
     <div class="card h-100 rounded-end" style="border: none">
         <div class="card-body px-5 d-flex flex-column gap-5"
@@ -21,7 +20,7 @@
                                 <n-icon :component="PersonOutline" />
                             </template>
                         </n-input>
-                        <!-- <ErrorInput :error="$page.props.errors" /> -->
+                        <ErrorInput :error="$page.props.errors['username']" />
                     </div>
 
                     <!-- PASSWORD INPUT -->
@@ -33,7 +32,7 @@
                                 <n-icon :component="LockClosedOutline" />
                             </template>
                         </n-input>
-                        <!-- <ErrorInput :error="$page.props.errors" /> -->
+                        <ErrorInput :error="$page.props.errors['password']" />
                     </div>
 
                     <n-checkbox size="large" label="Remember me" />
@@ -74,13 +73,24 @@ export default defineComponent({
 
         function handleSubmit() {
             //create post login logic here...
-            // form.post(route('/login'));
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Success login',
-                confirmButtonColor: '#00a54f',
-            })
+            form.post(route('login'), {
+                preserveScroll: true,
+                onSuccess: () => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Login Success',
+                    });
+                },
+                onError: (err) => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: err.message
+                    });
+                },
+                onFinish: () => {
+                    form.reset();
+                }
+            });
         }
 
         return {

@@ -10,53 +10,53 @@
                     <form @submit.prevent="" class="d-flex flex-wrap gap-3">
                         <!-- Baris Pertama -->
                         <div class="flex-grow-1" style="flex-basis: 23%;">
-                            <label for="field1">Nama pelanggan</label>
+                            <label for="field1">No PO</label>
                             <n-input id="field1" />
                         </div>
                         <div class="flex-grow-1" style="flex-basis: 23%;">
-                            <label for="field2">Alamat</label>
+                            <label for="field2">Pemasok</label>
                             <n-input id="field2" />
                         </div>
                         <div class="flex-grow-1" style="flex-basis: 23%;">
-                            <label for="field3">Nomor telepon</label>
+                            <label for="field3">Gudang</label>
                             <n-input id="field3" />
                         </div>
                         <div class="flex-grow-1" style="flex-basis: 23%;">
-                            <label for="field4">Segmen</label>
+                            <label for="field4">Alokasi</label>
                             <n-input id="field4" />
                         </div>
                         <!-- Baris Kedua -->
                         <div class="flex-grow-1" style="flex-basis: 23%;">
-                            <label for="field5">PIC</label>
+                            <label for="field5">Tanggal PO</label>
                             <n-input id="field5" />
                         </div>
                         <div class="flex-grow-1" style="flex-basis: 23%;">
-                            <label for="field6">Email</label>
+                            <label for="field6">Tanggal Kirim</label>
                             <n-input id="field6" />
                         </div>
                         <div class="flex-grow-1" style="flex-basis: 23%;">
-                            <label for="field7">Maksimum Order</label>
+                            <label for="field7">Term Pembayaran</label>
                             <n-input id="field7" />
                         </div>
                         <div class="flex-grow-1" style="flex-basis: 23%;">
-                            <label for="field8">Term of payment</label>
+                            <label for="field8">Tanggal Jatuh Tempo</label>
                             <n-input id="field8" />
                         </div>
                         <!-- Baris Ketiga -->
                         <div class="flex-grow-1" style="flex-basis: 23%;">
-                            <label for="field5">PIC</label>
+                            <label for="field5">Transportasi</label>
                             <n-input id="field5" />
                         </div>
                         <div class="flex-grow-1" style="flex-basis: 23%;">
-                            <label for="field6">Email</label>
+                            <label for="field6">Pengirim</label>
                             <n-input id="field6" />
                         </div>
                         <div class="flex-grow-1" style="flex-basis: 23%;">
-                            <label for="field7">Maksimum Order</label>
+                            <label for="field7">Jenis Pengiriman</label>
                             <n-input id="field7" />
                         </div>
                         <div class="flex-grow-1" style="flex-basis: 23%;">
-                            <label for="field8">Term of payment</label>
+                            <label for="field8">Karyawan</label>
                             <n-input id="field8" />
                         </div>
                     </form>
@@ -66,57 +66,32 @@
                 <div class="card-body d-flex flex-column">
                     <form @submit.prevent="" class="d-flex flex-wrap gap-3">
                         <!-- Baris Pertama -->
-                        <div class="flex-grow-1" style="flex-basis: 23%;">
-                            <label for="field1">Nama pelanggan</label>
+                        <div class="flex-grow-1" style="flex-basis: 30%;">
+                            <label for="field1">Kode Barang</label>
                             <n-input id="field1" />
                         </div>
-                        <div class="flex-grow-1" style="flex-basis: 23%;">
-                            <label for="field2">Alamat</label>
+                        <div class="flex-grow-1" style="flex-basis: 30%;">
+                            <label for="field2">Nama Barang</label>
                             <n-input id="field2" />
                         </div>
-                        <div class="flex-grow-1" style="flex-basis: 23%;">
-                            <label for="field3">Nomor telepon</label>
+                        <div class="flex-grow-1" style="flex-basis: 30%;">
+                            <label for="field3">Jumlah</label>
                             <n-input id="field3" />
                         </div>
-                        <div class="flex-grow-1" style="flex-basis: 23%;">
-                            <label for="field4">Segmen</label>
-                            <n-input id="field4" />
-                        </div>
                         <!-- Baris Kedua -->
-                        <div class="flex-grow-1" style="flex-basis: 23%;">
-                            <label for="field5">PIC</label>
+                        <div class="flex-grow-1" style="flex-basis: 30%;">
+                            <label for="field5">Kemasan</label>
                             <n-input id="field5" />
                         </div>
-                        <div class="flex-grow-1" style="flex-basis: 23%;">
-                            <label for="field6">Email</label>
+                        <div class="flex-grow-1" style="flex-basis: 30%;">
+                            <label for="field6">Harga Barang</label>
                             <n-input id="field6" />
                         </div>
-                        <div class="flex-grow-1" style="flex-basis: 23%;">
-                            <label for="field7">Maksimum Order</label>
+                        <div class="flex-grow-1" style="flex-basis: 30%;">
+                            <label for="field7">PPN</label>
                             <n-input id="field7" />
                         </div>
-                        <div class="flex-grow-1" style="flex-basis: 23%;">
-                            <label for="field8">Term of payment</label>
-                            <n-input id="field8" />
-                        </div>
-                        <!-- Baris Ketiga -->
-                        <div class="flex-grow-1" style="flex-basis: 23%;">
-                            <label for="field5">PIC</label>
-                            <n-input id="field5" />
-                        </div>
-                        <div class="flex-grow-1" style="flex-basis: 23%;">
-                            <label for="field6">Email</label>
-                            <n-input id="field6" />
-                        </div>
-                        <div class="flex-grow-1" style="flex-basis: 23%;">
-                            <label for="field7">Maksimum Order</label>
-                            <n-input id="field7" />
-                        </div>
-                        <div class="flex-grow-1" style="flex-basis: 23%;">
-                            <label for="field8">Term of payment</label>
-                            <n-input id="field8" />
-                        </div>
-                        <n-button class="d-flex flex-row ms-auto" color="green" ghost>Tambah product</n-button>
+                        <n-button class="d-flex flex-row ms-auto" color="green" ghost>Tambah Produk</n-button>
                     </form>
                 </div>
             </div>
@@ -256,7 +231,7 @@ export default defineComponent({
                                         });
                                     }
                                 },
-                                { default: () => 'Delete' }
+                                { default: () => 'Hapus' }
                             )
                         ]);
                     }
