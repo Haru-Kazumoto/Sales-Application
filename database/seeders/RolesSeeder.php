@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Role;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class RolesSeeder extends Seeder
 {
@@ -19,6 +19,6 @@ class RolesSeeder extends Seeder
             ['role_name' => 'WAREHOUSE'],
         ];
 
-        Role::create($roles);
+        DB::table('roles')->insert($roles);
     }
 }
