@@ -14,9 +14,7 @@ class AuthenticatedController extends Controller
 {
     public function showLoginView(): Response
     {
-        return Inertia::render('Auth/Login', [
-            'status' => session('status'),
-        ]);
+        return Inertia::render('Auth/Login');
     }
 
     public function login(LoginRequest $loginRequest): RedirectResponse
