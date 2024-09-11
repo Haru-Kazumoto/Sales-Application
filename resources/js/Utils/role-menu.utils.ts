@@ -89,7 +89,7 @@ export const roleMenus = {
                     label: 'Buat PO',
                     key: 'create-po',
                     icon: renderIcon(DocumentTextOutline),
-                    href: '/procurement/create-po',
+                    href: '/procurement/purchase-order',
                 },
                 {
                     label: 'List PO',
@@ -108,7 +108,7 @@ export const roleMenus = {
                     label: 'Buat SO',
                     key: 'create-so',
                     icon: renderIcon(DocumentTextOutline),
-                    href: '/procurement/create-so',
+                    href: '/procurement/sales-order',
                 },
                 {
                     label: 'List SO',
@@ -130,10 +130,10 @@ export const roleMenus = {
                     href: '/procurement/aging',
                 },
                 {
-                    label: 'Tagihan',
-                    key: 'invoice',
+                    label: 'Transaksi',
+                    key: 'transaction',
                     icon: renderIcon(WalletOutline),
-                    href: '/procurement/invoices'
+                    href: '/procurement/transaction-list'
                 }
             ]
         },
