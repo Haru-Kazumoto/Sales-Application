@@ -1,4 +1,4 @@
-import { AppsOutline, CartOutline,PersonOutline,GiftOutline, WalletOutline,NotificationsOutline, PeopleOutline, ReceiptOutline,SettingsOutline, BarChartOutline, BagCheckOutline, DocumentsOutline, DocumentTextOutline, CaretDownOutline } from '@vicons/ionicons5';
+import { SkullOutline, CartOutline,FileTrayFullOutline,FileTrayStackedOutline,CubeOutline, WalletOutline,NotificationsOutline, PeopleOutline, ReceiptOutline,SettingsOutline, BarChartOutline, BagCheckOutline, DocumentsOutline, DocumentTextOutline, ShieldCheckmarkOutline, RepeatSharp  , WarningOutline, Cart } from '@vicons/ionicons5';
 import { NIcon } from 'naive-ui';
 import {h} from 'vue';
 
@@ -82,7 +82,6 @@ export const roleMenus = {
     PROCUREMENT: [
         {
             label: 'Pembelian',
-            key: 'profile',
             icon: BagCheckOutline,
             children: [
                 {
@@ -101,7 +100,6 @@ export const roleMenus = {
         },
         {
             label: 'Penerimaan Barang',
-            key: 'item-receives',
             icon: SettingsOutline,
             children: [
                 {
@@ -120,7 +118,6 @@ export const roleMenus = {
         },
         {
             label: 'Transaksi',
-            key: 'transaction',
             icon: ReceiptOutline,
             children: [
                 {
@@ -137,5 +134,53 @@ export const roleMenus = {
                 }
             ]
         },
+    ],
+    WAREHOUSE: [
+        {
+            label: "Barang Masuk",
+            icon: CubeOutline,
+            key: 'barang-masuk',
+            href: '/warehouse/incoming-item'
+        },
+        {
+            label: "Gudang DNP",
+            icon: FileTrayStackedOutline,
+            children: [
+                {
+                    label: 'Stok',
+                    key: 'stock',
+                    icon: renderIcon(FileTrayFullOutline),
+                    href: '/warehouse/stocks'
+                },
+                {
+                    label: "List barang expired",
+                    key: 'items-expired',
+                    icon: renderIcon(ShieldCheckmarkOutline),
+                    href: '/warehouse/expired-items-list'
+                },
+                {
+                    label: "Pemusnahan",
+                    key: 'items-destroyed',
+                    icon: renderIcon(SkullOutline),
+                    href: '/warehouse/items-destroyed'
+                },
+                {
+                    label: "Retur Barang",
+                    key: 'return-items',
+                    icon: renderIcon(RepeatSharp),
+                    href: '/warehouse/return-items',
+                }
+            ]
+        },
+        {
+            label: "Gudang DKU",
+            icon: CartOutline,
+            children: [],
+        },
+        {
+            label: "Surat Jalan",
+            key: 'travel-document',
+            icon: CartOutline,
+        }
     ]
 };

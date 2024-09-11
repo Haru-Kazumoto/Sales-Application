@@ -19,7 +19,7 @@
     <div class="d-flex flex-column justify-content-center align-items-center vh-100">
         <img src="/images/404-NOTFOUND.png" alt="404" class="img-fluid w-25">
         <span class="fs-1">404 | NOT FOUND</span>
-        <span class="fs-4">Guess your page is missing here...</span>
+        <span class="fs-4">TAR DULU PAK LAGI DI BUAT, COMING SOON....</span>
     </div>
 
     {{-- Bootstrap --}}

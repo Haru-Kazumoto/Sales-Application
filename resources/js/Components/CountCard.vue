@@ -1,19 +1,40 @@
 <template>
     <div class="d-flex flex-column">
+        <!-- Kartu dengan Bootstrap -->
         <div :class="['card', cardBorderClass, 'shadow']" style="width: 16rem;">
-            <div class="card-body d-flex flex-column gap-4">
+            <div class="card-body d-flex flex-column gap-2">
+                <!-- Title -->
                 <h5 class="card-title">{{ title }}</h5>
-                <span :class="['fs-1', cardTextClass, 'fw-bold']">{{ count }}</span>
+
+                <!-- Bagian dinamis untuk menampilkan count dan sub_title -->
+                <div class="d-flex flex-column">
+                    <span :class="['fs-1', cardTextClass, 'fw-bold']">{{ count }}</span>
+
+                    <!-- Jika sub_title ada dan show_detail bernilai true, tampilkan di atas -->
+                    <span v-if="sub_title && show_detail">{{ sub_title }}</span>
+                </div>
             </div>
-            <!-- Menggunakan Inertia Link -->
-            <Link
+
+            <!-- Link ke halaman detail -->
+            <Link v-if="show_detail"
                 :href="route(link_page_name)"
                 :class="['card-footer', cardBgClass, 'd-flex', 'flex-row', 'justify-content-center', 'align-items-center', 'gap-2']"
-                style="border: none; cursor: pointer; text-decoration: none;"
-            >
+                style="border: none; cursor: pointer; text-decoration: none;">
                 <span class="text-white fw-semibold">Lihat detail</span>
                 <n-icon :component="ArrowForwardCircleOutline" class="fs-5 text-white" />
             </Link>
+
+            <!-- Placeholder ketika show_detail bernilai false -->
+            <div v-else
+                :class="['card-footer', 'd-flex', 'flex-row', 'my-1']"
+                style="visibility: hidden; ">
+                <!-- Placeholder untuk menjaga tinggi kartu tetap konsisten -->
+            </div>
+
+            <!-- Jika tidak ada detail, pindahkan sub_title ke bagian bawah -->
+            <div v-if="!show_detail && sub_title" class="d-flex py-2 px-3">
+                <span>{{ sub_title }}</span>
+            </div>
         </div>
     </div>
 </template>
@@ -32,6 +53,8 @@ export default defineComponent({
             validator: (value: string) => ['primary', 'reguler', 'warning', 'danger'].includes(value),
         },
         title: { type: String, required: true },
+        sub_title: { type: String, required: false },
+        show_detail: { type: Boolean, required: false, default: true },
         link_page_name: { type: String, required: true },
         count: { type: String, required: true }
     },

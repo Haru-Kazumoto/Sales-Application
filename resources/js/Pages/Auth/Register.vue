@@ -37,6 +37,7 @@
                         <label for="password">Role</label>
                         <n-select v-model:value="model.role_id" @keydown.enter.prevent :options="roleOptions"
                             label="Select Role" placeholder="Choose a role" />
+                        <span>Saat ini role yang tersedia hanya WAREHOUSE dan PROCUREMENT saja.</span>
                         <ErrorInput :error="$page.props.errors['password']" />
                     </div>
                 </div>

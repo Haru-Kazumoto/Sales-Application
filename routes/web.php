@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -33,22 +34,33 @@ Route::middleware(['auth', 'verified', 'secure.path'])->group(function() {
     Route::get('/procurement/dashboard', fn() => Inertia::render('Procurement/Dashboard'))->name('dashboard.procurement');
 });
 
-// Procurement Routes
-Route::prefix('procurement')->middleware(['auth', 'secure.path'])->name('procurement.')->group(function() {
-    Route::get('/purchase-order', fn() => Inertia::render('Procurement/Purchase/CreatePurchaseOrder'))->name('purchase-order');
-    Route::get('/sales-order', fn() => Inertia::render('Procurement/ItemsReceipt/CreateSalesOrder'))->name('sales-order');
-    Route::get('/aging', fn() => Inertia::render('Procurement/Transaction/Aging'))->name('aging');
-    Route::get('/transaction-list', fn() => Inertia::render('Procurement/Transaction/TransactionList'))->name('transaction-list');
+//Warehouse Routes
+Route::middleware(['auth', 'secure.path'])->group(function() {
+
+    // Procurement Routes
+    Route::prefix('procurement')->name('procurement.')->group(function() {
+        Route::get('/purchase-order', fn() => Inertia::render('Procurement/Purchase/CreatePurchaseOrder'))->name('purchase-order');
+        Route::get('/sales-order', fn() => Inertia::render('Procurement/ItemsReceipt/CreateSalesOrder'))->name('sales-order');
+        Route::get('/aging', fn() => Inertia::render('Procurement/Transaction/Aging'))->name('aging');
+        Route::get('/transaction-list', fn() => Inertia::render('Procurement/Transaction/TransactionList'))->name('transaction-list');
+    });
+
+    // Finance Routes
+    Route::prefix('finance')->name('finance.')->group(function () {
+        Route::get('/create-po', fn() => Inertia::render('Finance/Purchase/CreatePurchaseOrder'))->name('create-po');
+        Route::get('/create-so', fn() => Inertia::render('Finance/ItemsReceipt/CreateSalesOrder'))->name('create-so'); 
+        Route::get('/aging', fn() => Inertia::render('Finance/Bill/Aging'))->name('aging');
+        Route::get('/invoices', fn() => Inertia::render('Finance/Bill/Sales'))->name('invoices');
+        Route::get('/claim-promo', fn() => Inertia::render('Finance/ClaimPromo'))->name('claim-promo');
+    });
+
+    Route::prefix('warehouse')->name('warehouse.')->group(function() {
+        Route::get('/stocks', fn() => Inertia::render('Warehouse/DnpWarehouse/Stocks'))->name('stocks');
+        Route::get('/incoming-item', fn() => Inertia::render('Warehouse/IncomingItem'))->name('incoming-item');
+    });
 });
 
-// Finance Routes
-Route::prefix('finance')->middleware(['auth', 'secure.path'])->name('finance.')->group(function () {
-    Route::get('/create-po', fn() => Inertia::render('Finance/Purchase/CreatePurchaseOrder'))->name('create-po');
-    Route::get('/create-so', fn() => Inertia::render('Finance/ItemsReceipt/CreateSalesOrder'))->name('create-so'); 
-    Route::get('/aging', fn() => Inertia::render('Finance/Bill/Aging'))->name('aging');
-    Route::get('/invoices', fn() => Inertia::render('Finance/Bill/Sales'))->name('invoices');
-    Route::get('/claim-promo', fn() => Inertia::render('Finance/ClaimPromo'))->name('claim-promo');
-});
+
 
 
 require __DIR__.'/auth.php';
