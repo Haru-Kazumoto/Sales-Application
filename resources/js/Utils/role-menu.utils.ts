@@ -82,6 +82,7 @@ export const roleMenus = {
     PROCUREMENT: [
         {
             label: 'Pembelian',
+            key: 'purchasing',
             icon: BagCheckOutline,
             children: [
                 {
@@ -100,6 +101,7 @@ export const roleMenus = {
         },
         {
             label: 'Penerimaan Barang',
+            key: 'receiving-item',
             icon: SettingsOutline,
             children: [
                 {
@@ -118,6 +120,7 @@ export const roleMenus = {
         },
         {
             label: 'Transaksi',
+            key: 'transaction',
             icon: ReceiptOutline,
             children: [
                 {
