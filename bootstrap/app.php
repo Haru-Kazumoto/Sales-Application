@@ -15,7 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
             App\Http\Middleware\HandleInertiaRequests::class,
         ]);
         $middleware->alias([
-            'redirect.by.role' => App\Http\Middleware\RedirectIfAuthenticatedByRole::class
+            'secure.path' => App\Http\Middleware\SecurePathByRole::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
