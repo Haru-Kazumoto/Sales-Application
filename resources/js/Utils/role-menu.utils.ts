@@ -171,7 +171,7 @@ export const roleMenus = {
                     label: "Retur Barang",
                     key: 'return-items',
                     icon: renderIcon(RepeatSharp),
-                    href: '/warehouse/return-items',
+                    href: '/warehouse/return-item',
                 }
             ]
         },
