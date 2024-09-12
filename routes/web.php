@@ -57,6 +57,7 @@ Route::middleware(['auth', 'secure.path'])->group(function() {
     Route::prefix('warehouse')->name('warehouse.')->group(function() {
         Route::get('/stocks', fn() => Inertia::render('Warehouse/DnpWarehouse/Stocks'))->name('stocks');
         Route::get('/incoming-item', fn() => Inertia::render('Warehouse/IncomingItem'))->name('incoming-item');
+        Route::get('/return-item', fn() => Inertia::render('Warehouse/DnpWarehouse/ReturnItem'))->name('return-item');
     });
 });
 
