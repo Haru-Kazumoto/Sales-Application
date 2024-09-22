@@ -1,4 +1,4 @@
-import { SkullOutline, CartOutline,FileTrayFullOutline,FileTrayStackedOutline,CubeOutline, WalletOutline,NotificationsOutline, PeopleOutline, ReceiptOutline,SettingsOutline, BarChartOutline, BagCheckOutline, DocumentsOutline, DocumentTextOutline, ShieldCheckmarkOutline, RepeatSharp  , WarningOutline, Cart } from '@vicons/ionicons5';
+import { SkullOutline, CartOutline,FileTrayFullOutline,FileTrayStackedOutline,CubeOutline, WalletOutline,NotificationsOutline, PeopleOutline, ReceiptOutline,SettingsOutline, BarChartOutline, BagCheckOutline, DocumentsOutline, DocumentTextOutline, ShieldCheckmarkOutline, RepeatSharp  , WarningOutline, Cart, People, PersonAddOutline, Contract, Analytics, CogOutline, DocumentOutline, PushOutline, ShieldHalf, PieChartOutline, ReorderFourSharp, CartSharp, KeyOutline } from '@vicons/ionicons5';
 import { NIcon } from 'naive-ui';
 import {h} from 'vue';
 
@@ -11,73 +11,104 @@ export function renderIcon(icon) {
 export const roleMenus = {
     ADMIN: [
         { label: 'Sales Reports', key: 'sales-reports', icon: BarChartOutline, href: '/admin/sales-reports' },
-        { label: 'Customers', key: 'customers', icon: PeopleOutline, href: '/admin/customers' },
-        { label: 'Products', key: 'products', icon: CartOutline, href: '/admin/products' }
+        { 
+            label: 'User Management', 
+            key: 'user-management', 
+            icon: PeopleOutline, 
+            children: [
+                {
+                    label: "User",
+                    key: 'user',
+                    icon: renderIcon(PersonAddOutline),
+                    href: '/admin/user-management',
+                },
+                {
+                    label: "Role",
+                    key: 'role',
+                    icon: renderIcon(Contract),
+                    href: '/admin/role-management',
+                },
+                {
+                    label: 'Divisi',
+                    key: 'division',
+                    icon: renderIcon(Analytics),
+                    href: '/admin/division-management'
+                },
+                {
+                    label: 'Akses Menu',
+                    key: 'menu-access',
+                    icon: renderIcon(CogOutline),
+                    href: '/admin/menu-access-management'
+                }
+            ]
+        },
     ],
     FINANCE: [
         {
-            label: 'Pembelian',
-            key: 'profile',
-            icon: BagCheckOutline,
+            label: 'Klaim',
+            key: 'claim',
+            icon: DocumentOutline,
             children: [
                 {
-                    label: 'Buat PO',
-                    key: 'create-po',
+                    label: 'Klaim Promo',
+                    key: 'claim-promo',
                     icon: renderIcon(DocumentTextOutline),
-                    href: '/finance/create-po',
+                    href: '/finance/claim-promo',
                 },
                 {
-                    label: 'List PO',
-                    key: 'list-po',
+                    label: 'List Klaim Promo',
+                    key: 'claim-promo-list',
                     icon: renderIcon(DocumentsOutline),
-                    href: '/finance/list-po',
+                    href: '/finance/claim-promo-list',
                 }
             ]
         },
+    ],
+    AGING_FINANCE: [
         {
-            label: 'Penerimaan Barang',
-            key: 'item-receives',
-            icon: SettingsOutline,
+            label: "Penjualan",
+            key: "sales",
+            icon: renderIcon(PieChartOutline),
             children: [
                 {
-                    label: 'Buat SO',
-                    key: 'create-so',
-                    icon: renderIcon(DocumentTextOutline),
-                    href: '/finance/create-so',
+                    label: "Invoice DNP",
+                    key: "invoice-dnp",
+                    href: '/aging-finance/invoice-dnp',
+                    icon: renderIcon(ReceiptOutline),
                 },
                 {
-                    label: 'List SO',
-                    key: 'list-so',
-                    icon: renderIcon(DocumentsOutline),
-                    href: '/finance/list-so',
-                }
-            ]
+                    label: "Invoice DKU",
+                    key: "invoice-dku",
+                    href: '/aging-finance/invoice-dku',
+                    icon: renderIcon(ReceiptOutline),
+                },
+                {
+                    label: "List Invoice",
+                    key: "list-invoice",
+                    href: '/aging-finance/list-invoices',
+                    icon: renderIcon(ReorderFourSharp),
+                },
+            ],
         },
         {
-            label: 'Tagihan',
-            key: 'invoices',
-            icon: ReceiptOutline,
+            label: 'Transaksi',
+            key: 'transaction',
+            icon: renderIcon(ReceiptOutline),
             children: [
                 {
                     label: 'Aging',
                     key: 'aging',
-                    icon: renderIcon(NotificationsOutline),
-                    href: '/finance/aging',
+                    href: '/aging-finance/aging',
+                    icon: renderIcon(BarChartOutline),
                 },
                 {
-                    label: 'Tagihan',
-                    key: 'invoice',
-                    icon: renderIcon(WalletOutline),
-                    href: '/finance/invoices'
+                    label: "List transaksi",
+                    key: "list-transaction",
+                    href: '/aging-finance/list-transactions',
+                    icon: renderIcon(ReorderFourSharp),
                 }
             ]
-        },
-        // {
-        //     label: 'Klaim Promo',
-        //     key: 'claim-promo',
-        //     icon: GiftOutline,
-        //     href: '/finance/claim-promo'
-        // }
+        }
     ],
     PROCUREMENT: [
         {
@@ -95,7 +126,7 @@ export const roleMenus = {
                     label: 'List PO',
                     key: 'list-po',
                     icon: renderIcon(DocumentsOutline),
-                    href: '/procurement/list-po',
+                    href: '/procurement/purchase-orders',
                 }
             ]
         },
@@ -146,14 +177,21 @@ export const roleMenus = {
             href: '/warehouse/incoming-item'
         },
         {
+            label: "Stok Gudang",
+            icon: FileTrayFullOutline,
+            key: 'stock-goods',
+            href: '/warehouse/stock-goods'
+        },
+        {
             label: "Gudang DNP",
             icon: FileTrayStackedOutline,
+            key: 'dnp-storehouse',
             children: [
                 {
                     label: 'Stok',
                     key: 'stock',
                     icon: renderIcon(FileTrayFullOutline),
-                    href: '/warehouse/stocks'
+                    href: '/warehouse/dnp-stock-goods'
                 },
                 {
                     label: "List barang expired",
@@ -178,12 +216,65 @@ export const roleMenus = {
         {
             label: "Gudang DKU",
             icon: CartOutline,
+            key: 'dku-storehouse',
             children: [],
+        },
+        {
+            label: 'Booking Barang',
+            icon: CartOutline,
+            key: 'booking-items',
+            children: [
+                {
+                    label: "Booking Request",
+                    icon: renderIcon(CartOutline),
+                    key: 'booking-request',
+                    href: '/warehouse/booking-requests',
+                },
+                {
+                    label: "List Booking",
+                    icon: renderIcon(CartOutline),
+                    key: 'booking-list',
+                    href: '/warehouse/list-booking',
+                }
+            ]
+        },
+        {
+            label: "Barang Rusak",
+            icon: PushOutline,
+            children: [
+                {
+                    label: "Retur Barang",
+                    icon: renderIcon(ShieldHalf),
+                    key: 'retur-barang',
+                    href: '/warehouse/return-goods',
+                }
+            ],
         },
         {
             label: "Surat Jalan",
             key: 'travel-document',
             icon: CartOutline,
+        }
+    ],
+    SALES: [
+        {
+            label: "Penjualan",
+            key: 'sales',
+            icon: CartSharp,
+            children : [
+                {
+                    label: 'Buat CO',
+                    icon: renderIcon(DocumentOutline),
+                    key: 'create-co',
+                    href: '/sales/create-co',
+                },
+                {
+                    label: 'List CO',
+                    icon: renderIcon(DocumentsOutline),
+                    key: 'list-co',
+                    href: '/sales/list-co',
+                }
+            ]
         }
     ]
 };

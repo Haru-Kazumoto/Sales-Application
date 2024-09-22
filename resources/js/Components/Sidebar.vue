@@ -18,7 +18,7 @@ export default defineComponent({
     setup() {
         const page = usePage();
         const collapsed = ref(false);
-        const role = (page.props.auth as any).user.role.role_name;
+        const role = (page.props.auth as any).user.division.division_name;
 
         const staticMenuOptions: MenuOption[] = [
             {

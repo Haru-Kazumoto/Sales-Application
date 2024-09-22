@@ -17,21 +17,23 @@ class AuthenticatedController extends Controller
         return Inertia::render('Auth/Login');
     }
 
-    public function login(LoginRequest $loginRequest): RedirectResponse
+    public function login(LoginRequest $loginRequest)
     {
         $loginRequest->authenticate();
 
         $loginRequest->session()->regenerate();
 
         if (Auth::check()) {
-            $roleName = Auth::user()->role->role_name;
+            $divisionName = Auth::user()->division->division_name;
     
-            return match ($roleName) {
+            return match ($divisionName) {
                 'FINANCE' => redirect()->intended(route('dashboard.finance')),
                 'WAREHOUSE' => redirect()->intended(route('dashboard.warehouse')),
                 'ADMIN' => redirect()->intended(route('dashboard.admin')),
                 'SUPERADMIN' => redirect()->intended(route('dashboard.superadmin')),
                 'PROCUREMENT' => redirect()->intended(route('dashboard.procurement')),
+                'AGING_FINANCE' => redirect()->intended(route('dashboard.aging-finance')),
+                'SALES' => redirect()->intended(route('dashboard.sales')),
                 default => back()->with('failed', 'Unknown Dashboard'), // Halaman default jika role tidak dikenali
             };
         }

@@ -22,12 +22,6 @@ class RegisteredUserController extends Controller
     }
 
     /**
-     * BUATKAN 1 PAGE ATAU ROLE UNTUK MEMBUAT USER USER LAYAKNYA SUPERADMIN MEMBUAT SEBUAH ADMIN ADMIN NYA.
-     * BUATKAN 1 MODULE DAN IMPLEMENTASIKAN LOGIC REGISTERING NYA DISANA JANGAN DISINI
-     * ALSO, EVERY EACH FUNCTION GIVE THE DOCUMENTATION ABOVE IT
-     */
-
-    /**
      * Creating a new user from superadmin
      * 
      * @param \Illuminate\Http\Request $request

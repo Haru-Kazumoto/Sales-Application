@@ -8,11 +8,11 @@
                 </div>
 
                 <!-- Kolom kanan untuk gambar (disembunyikan di mobile) -->
-                <div class="d-none d-md-flex flex-column w-75">
+                <div class="d-none d-xl-flex flex-column w-75">
                     <div class="h-100 d-flex flex-row justify-content-end align-items-center"
                         style="background-color: #EEF8F5;">
                         <n-image width="900" src="/images/finance_dashboard.png"
-                            preview-disabled class="img-fluid " style="padding-left: 50px;" />
+                            preview-disabled class="img-fluid" style="padding-left: 50px;" />
                     </div>
                 </div>
             </div>

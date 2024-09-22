@@ -11,7 +11,7 @@
                         <Sidebar />
 
                         <n-layout-content class="d-flex flex-column">
-                            <div class="px-4 py-2 flex-grow-1 min-vh-100" style="background-color: #EEF8F5;">
+                            <div class="container-fluid flex-grow-1 min-vh-100" style="background-color: #EEF8F5;">
                                 <slot />
                             </div>
                         </n-layout-content>

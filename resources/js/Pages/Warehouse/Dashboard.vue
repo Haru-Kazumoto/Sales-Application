@@ -1,28 +1,107 @@
 <template>
     <div class="d-flex flex-column gap-4">
-        <TitlePage :title="$page.props.auth.user.role.role_name" />
+        <TitlePage title="Dashboard Warehouse" />
         <div class="d-flex flex-column gap-5">
-            <div class="d-flex flex-row justify-content-between">
-                <CountCard type="primary" title="Stok Tersedia" link_page_name="dashboard.warehouse" count="100" sub_title="PRODUK"/>
-                <CountCard type="warning" title="Stok Butuh Ditambah" link_page_name="dashboard.warehouse" count="100" sub_title="PRODUK" />
-                <CountCard type="danger" title="Stok Habis" link_page_name="dashboard.warehouse" count="100" sub_title="PRODUK" />
-                <CountCard type="reguler" title="Total Produk Gudang" link_page_name="dashboard.warehouse" count="100" sub_title="PRODUK" :show_detail="false"/>
-            </div>
-            <div class="d-flex flex-column gap-2">
-                <div class="d-flex flex-row">
-                    <span class="fs-4">Daftar Produk</span>
-                    <div class="d-flex flex-row ms-auto w-50 gap-2">
-                        <n-select class="w-50" size="large" placeholder="Status"/>
-                        <n-input placeholder="Cari Produk"/>
+            <div class="row g-3">
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="card" style="border-color: green;">
+                        <div class="card-body">
+                            <div class="card-title">STOK TERSEDIA</div>
+                            <div class="card-content d-flex flex-column gap-2">
+                                <span class="fs-3 fw-bold">200</span>
+                                <span>PRODUK</span>
+                                <n-button type="primary">LIHAT DETAIL</n-button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="card shadow" style="border: none;">
-                    <div class="card-body">
-                        <n-data-table :columns="columns" :data="data" :pagination="pagination" :bordered="false" size="small"
-                            pagination-behavior-on-filter="first"  />
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="card" style="border-color: orange;">
+                        <div class="card-body">
+                            <div class="card-title">STOK HARUS DITAMBAH</div>
+                            <div class="card-content d-flex flex-column gap-2">
+                                <span class="fs-3 fw-bold">10</span>
+                                <span>PRODUK</span>
+                                <n-button type="warning">LIHAT DETAIL</n-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="card" style="border-color: red;">
+                        <div class="card-body">
+                            <div class="card-title">STOK HABIS</div>
+                            <div class="card-content d-flex flex-column gap-2">
+                                <span class="fs-3 fw-bold">200</span>
+                                <span>PRODUK</span>
+                                <n-button type="error">LIHAT DETAIL</n-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="card" style="border-color: red;">
+                        <div class="card-body">
+                            <div class="card-title">BARANG EXPIRED</div>
+                            <div class="card-content d-flex flex-column gap-2">
+                                <span class="fs-3 fw-bold">200</span>
+                                <span>PRODUK</span>
+                                <n-button type="error">LIHAT DETAIL</n-button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+            <n-tabs type="line" animated>
+                <n-tab-pane name="Daftar Produk" tab="Produk">
+                    <div class="d-flex flex-column gap-2">
+                        <div class="row g-3 ">
+                            <div class="col-12 col-lg-6 ">
+                                <span class="fs-4">Daftar Produk</span>
+                            </div>
+                            <div class="col-12 col-lg-2 d-flex gap-3 ">
+                                <n-select size="large" placeholder="Status" />
+                            </div>
+                            <div class="col-12 col-lg-2 d-flex gap-3 ">
+                                <n-input placeholder="Cari Produk" />
+                            </div>
+                            <div class="col-12 col-lg-2 d-flex gap-3 ">
+                                <n-input placeholder="Cari Produk" />
+                            </div>
+                        </div>
+                        <div class="card shadow" style="border: none;">
+                            <div class="card-body">
+                                <n-data-table :columns="columns" :data="data" :pagination="pagination" :bordered="false"
+                                    size="small" pagination-behavior-on-filter="first" />
+                            </div>
+                        </div>
+                    </div>
+                </n-tab-pane>
+                <n-tab-pane name="Daftar Produk Expired" tab="Produk Expired">
+                    <div class="d-flex flex-column gap-2">
+                        <div class="row g-3 ">
+                            <div class="col-12 col-lg-6 ">
+                                <span class="fs-4">Daftar Produk Expired</span>
+                            </div>
+                            <div class="col-12 col-lg-2 d-flex gap-3 ">
+                                <n-select size="large" placeholder="Status" />
+                            </div>
+                            <div class="col-12 col-lg-2 d-flex gap-3 ">
+                                <n-input placeholder="Cari Produk" />
+                            </div>
+                            <div class="col-12 col-lg-2 d-flex gap-3 ">
+                                <n-input placeholder="Cari Produk" />
+                            </div>
+                        </div>
+                        <div class="card shadow" style="border: none;">
+                            <div class="card-body">
+                                <n-data-table :columns="columns" :data="data" :pagination="pagination" :bordered="false"
+                                    size="small" pagination-behavior-on-filter="first" />
+                            </div>
+                        </div>
+                    </div>
+                </n-tab-pane>
+            </n-tabs>
         </div>
     </div>
 </template>
@@ -34,12 +113,11 @@ import CountCard from '../../Components/CountCard.vue';
 import { DataTableColumns, NButton, NTag } from 'naive-ui';
 
 interface RowData {
-    sku: string;
     item_name: string;
-    supplier: string;
     package: string;
     stock: number;
-    status: string;
+    item_status: string;
+    located: string;
 }
 
 function createColumns(): DataTableColumns<RowData> {
@@ -47,53 +125,52 @@ function createColumns(): DataTableColumns<RowData> {
         {
             title: '#',
             key: 'index',
+            width: 50,
             render(rowData, rowIndex) {
                 return rowIndex + 1;  // Menghitung nomor urut
             },
         },
         {
-            title: 'SKU',
-            key: 'sku',
-            render(rowData) {
-                return rowData.sku;  // Menampilkan SKU
-            },
-        },
-        {
-            title: 'Nama Barang',
+            title: 'NAMA BARANG',
             key: 'item_name',
+            width: 300,
             render(rowData) {
-                return rowData.item_name;  // Menampilkan nama item
+                return rowData.item_name;  // Menampilkan SKU
             },
         },
         {
-            title: 'Supplier',
-            key: 'supplier',
-            render(rowData) {
-                return rowData.supplier;  // Menampilkan nama supplier
-            },
-        },
-        {
-            title: 'Package',
+            title: 'KEMASAN',
             key: 'package',
+            width: 100,
             render(rowData) {
-                return rowData.package;  // Menampilkan jenis paket
+                return rowData.package;  // Menampilkan nama item
             },
         },
         {
-            title: 'Stock',
+            title: 'STOK',
             key: 'stock',
+            width: 100,
             render(rowData) {
-                return rowData.stock;  // Menampilkan jumlah stok
+                return rowData.stock;  // Menampilkan nama supplier
             },
+        },
+        {
+            title: 'ALOKASI',
+            key: 'located',
+            width: 100,
+            render(rowData) {
+                return rowData.located;
+            }
         },
         {
             title: 'Status',
-            key: 'status',
+            key: 'item_status',
+            width: 100,
             render(rowData) {
-                // Tentukan warna dan tipe tag berdasarkan status pembayaran
+                // Tentukan warna dan tipe tag berdasarkan item_status pembayaran
                 let type: any;
 
-                switch (rowData.status) {
+                switch (rowData.item_status) {
                     case 'STOK HABIS':
                         type = 'error';
                         break;
@@ -116,29 +193,11 @@ function createColumns(): DataTableColumns<RowData> {
                         type,
                         bordered: false
                     },
-                    { default: () => rowData.status }
+                    { default: () => rowData.item_status }
                 );
             },
         },
-        {
-            title: 'Action',
-            key: 'actions',
-            render(row) {
-                return h('div', { class: 'd-flex gap-2' }, [
-                    h(
-                        NButton,
-                        {
-                            type: 'primary',
-                            size: 'small',
-                            onClick: () => {
-                                alert(`${row.item_name} is selected!`);
-                            }
-                        },
-                        { default: () => 'Detail' }
-                    )
-                ]);
-            }
-        }
+
     ];
 }
 
@@ -146,23 +205,15 @@ export default defineComponent({
     setup() {
         // Data dummy untuk tabel
         const data: RowData[] = [
-            {sku: "123456789", item_name: "MONTANA", supplier: "PT. SRIBOGA RATUBAYA", package: "25 KG", stock: 24, status: "PERLU TAMBAH"},
-            {sku: "123456789", item_name: "MONTANA", supplier: "PT. SRIBOGA RATUBAYA", package: "25 KG", stock: 24, status: "PERLU TAMBAH"},
-            {sku: "123456789", item_name: "MONTANA", supplier: "PT. SRIBOGA RATUBAYA", package: "25 KG", stock: 24, status: "PERLU TAMBAH"},
-            {sku: "123456789", item_name: "MONTANA", supplier: "PT. SRIBOGA RATUBAYA", package: "25 KG", stock: 24, status: "PERLU TAMBAH"},
-            {sku: "123456789", item_name: "MONTANA", supplier: "PT. SRIBOGA RATUBAYA", package: "25 KG", stock: 24, status: "PERLU TAMBAH"},
-            {sku: "123456789", item_name: "MONTANA", supplier: "PT. SRIBOGA RATUBAYA", package: "25 KG", stock: 24, status: "PERLU TAMBAH"},
-            {sku: "123456789", item_name: "MONTANA", supplier: "PT. SRIBOGA RATUBAYA", package: "25 KG", stock: 24, status: "PERLU TAMBAH"},
-            {sku: "123456789", item_name: "MONTANA", supplier: "PT. SRIBOGA RATUBAYA", package: "25 KG", stock: 24, status: "PERLU TAMBAH"},
-            {sku: "123456789", item_name: "MONTANA", supplier: "PT. SRIBOGA RATUBAYA", package: "25 KG", stock: 24, status: "PERLU TAMBAH"},
-            {sku: "123456789", item_name: "MONTANA", supplier: "PT. SRIBOGA RATUBAYA", package: "25 KG", stock: 24, status: "PERLU TAMBAH"},
-            {sku: "123456789", item_name: "MONTANA", supplier: "PT. SRIBOGA RATUBAYA", package: "25 KG", stock: 24, status: "PERLU TAMBAH"},
-            {sku: "123456789", item_name: "MONTANA", supplier: "PT. SRIBOGA RATUBAYA", package: "25 KG", stock: 24, status: "PERLU TAMBAH"},
-            {sku: "123456789", item_name: "MONTANA", supplier: "PT. SRIBOGA RATUBAYA", package: "25 KG", stock: 24, status: "PERLU TAMBAH"},
-            {sku: "123456789", item_name: "MONTANA", supplier: "PT. SRIBOGA RATUBAYA", package: "25 KG", stock: 24, status: "PERLU TAMBAH"},
-            {sku: "123456789", item_name: "MONTANA", supplier: "PT. SRIBOGA RATUBAYA", package: "25 KG", stock: 24, status: "PERLU TAMBAH"},
-            {sku: "123456789", item_name: "MONTANA", supplier: "PT. SRIBOGA RATUBAYA", package: "25 KG", stock: 24, status: "PERLU TAMBAH"},
-            {sku: "123456789", item_name: "MONTANA", supplier: "PT. SRIBOGA RATUBAYA", package: "25 KG", stock: 24, status: "PERLU TAMBAH"},
+            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
+            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
+            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
+            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
+            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
+            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
+            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
+            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
+            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
         ];
 
         // Pagination dummy data

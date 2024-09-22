@@ -25,7 +25,7 @@
                     <!-- PASSWORD INPUT -->
                     <div class="d-flex flex-column gap-1">
                         <label for="password">Password</label>
-                        <n-input type="password" show-password-on="mousedown" v-model:value="model.password"
+                        <n-input type="password" show-password-on="click" v-model:value="model.password"
                             placeholder="Input Password" size="large">
                             <template #prefix>
                                 <n-icon :component="LockClosedOutline" />
@@ -59,10 +59,9 @@ import GuestLayout from '../../Layouts/GuestLayout.vue';
 import ErrorInput from '../../Components/ErrorInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { defineComponent, h, ref, onMounted } from 'vue'
-import { NIcon } from 'naive-ui'
+import { NIcon, useNotification } from 'naive-ui'
 import { PersonOutline, LockClosedOutline, LogInOutline } from "@vicons/ionicons5"
 import { RequestLoginDto } from '../../types/dto';
-import Swal from 'sweetalert2';
 
 export default defineComponent({
     setup() {
@@ -80,18 +79,6 @@ export default defineComponent({
             //create post login logic here...
             form.post(route('login'), {
                 preserveScroll: true,
-                onSuccess: () => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Login Success',
-                    });
-                },
-                onError: (err) => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: err.message
-                    });
-                },
                 onFinish: () => {
                     form.reset();
                 }

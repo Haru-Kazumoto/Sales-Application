@@ -11,53 +11,53 @@
                         <!-- Baris Pertama -->
                         <div class="flex-grow-1" style="flex-basis: 23%;">
                             <label for="field1">No PO</label>
-                            <n-input id="field1" />
+                            <n-input id="field1" size="large"/>
                         </div>
                         <div class="flex-grow-1" style="flex-basis: 23%;">
                             <label for="field2">Pemasok</label>
-                            <n-input id="field2" />
+                            <n-input id="field2" size="large"/>
                         </div>
                         <div class="flex-grow-1" style="flex-basis: 23%;">
                             <label for="field3">Gudang</label>
-                            <n-input id="field3" />
+                            <n-input id="field3" size="large"/>
                         </div>
                         <div class="flex-grow-1" style="flex-basis: 23%;">
                             <label for="field4">Alokasi</label>
-                            <n-input id="field4" />
+                            <n-input id="field4" size="large"/>
                         </div>
                         <!-- Baris Kedua -->
                         <div class="flex-grow-1" style="flex-basis: 23%;">
                             <label for="field5">Tanggal PO</label>
-                            <n-input id="field5" />
+                            <n-input id="field5" size="large"/>
                         </div>
                         <div class="flex-grow-1" style="flex-basis: 23%;">
                             <label for="field6">Tanggal Kirim</label>
-                            <n-input id="field6" />
+                            <n-input id="field6" size="large"/>
                         </div>
                         <div class="flex-grow-1" style="flex-basis: 23%;">
                             <label for="field7">Term Pembayaran</label>
-                            <n-input id="field7" />
+                            <n-input id="field7"size="large" />
                         </div>
                         <div class="flex-grow-1" style="flex-basis: 23%;">
                             <label for="field8">Tanggal Jatuh Tempo</label>
-                            <n-input id="field8" />
+                            <n-input id="field8" size="large"/>
                         </div>
                         <!-- Baris Ketiga -->
                         <div class="flex-grow-1" style="flex-basis: 23%;">
                             <label for="field5">Transportasi</label>
-                            <n-input id="field5" />
+                            <n-input id="field5" size="large"/>
                         </div>
                         <div class="flex-grow-1" style="flex-basis: 23%;">
                             <label for="field6">Pengirim</label>
-                            <n-input id="field6" />
+                            <n-input id="field6"size="large" />
                         </div>
                         <div class="flex-grow-1" style="flex-basis: 23%;">
                             <label for="field7">Jenis Pengiriman</label>
-                            <n-input id="field7" />
+                            <n-input id="field7" size="large"/>
                         </div>
                         <div class="flex-grow-1" style="flex-basis: 23%;">
                             <label for="field8">Karyawan</label>
-                            <n-input id="field8" />
+                            <n-input id="field8" size="large"/>
                         </div>
                     </form>
                 </div>

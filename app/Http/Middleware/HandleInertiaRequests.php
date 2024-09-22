@@ -37,11 +37,18 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
-            'auth' => [
-                'user' => fn () => $request->user()
-                ? $request->user()->load('role')
-                : null,
-            ],
+            'auth' => function () use ($request): array {
+                $user = $request->user();
+
+                if ($user) {
+                    $user->load('role', 'division', 'menuAccess'); // Muat semua relasi
+                }
+
+                return [
+                    'user' => $user,
+                    'menu_access' => $user ? $user->menuAccess : [],
+                ];
+            },
             'flash' => [
                 'success' => session('success'),
                 'failed' => session('failed'),

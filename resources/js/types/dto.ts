@@ -46,3 +46,28 @@ export interface ProductList {
     restaurant_price: string;
     stock: number;
 }
+
+export interface UserCreateDTO {
+    fullname: string;
+    username: string;
+    email: string;
+    password: string;
+    role_id: number;
+    division_id: number;
+}
+
+export interface UserUpdateDTO extends UserCreateDTO {
+    password_confirmation: string;
+}
+
+export interface RoleCreateDTO {
+    role_name: string;
+}
+
+export interface RoleUpdateDTO extends RoleCreateDTO {}
+
+export interface DivisionCreateDTO {
+    division_name: string;
+}
+
+export interface DivisionUpdateDTO extends DivisionCreateDTO {}

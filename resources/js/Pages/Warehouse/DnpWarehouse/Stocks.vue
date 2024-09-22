@@ -147,6 +147,7 @@ function createColumns(): DataTableColumns<RowData> {
 export default defineComponent({
     setup() {
         // Data dummy untuk tabel
+        //TODO : PENAMBAHAN KOLOM AGING DI PRODUK ITU SISA HARI SEBELUM EXPIRE
         const data: RowData[] = [
             { sku: "123456789", item_name: "MONTANA", supplier: "PT. SRIBOGA RATUBAYA", package: "25 KG", stock: 24, status: "PERLU TAMBAH" },
             { sku: "123456789", item_name: "MONTANA", supplier: "PT. SRIBOGA RATUBAYA", package: "25 KG", stock: 24, status: "PERLU TAMBAH" },

@@ -18,6 +18,7 @@
         "@inertiajs/vue3": "^1.2.0",
         "@vitejs/plugin-vue": "^5.1.2",
         "apexcharts": "^3.52.0",
+        "dayjs": "^1.11.13",
         "sweetalert2": "^11.12.4",
         "unplugin-auto-import": "^0.18.2",
         "vue3-apexcharts": "^1.5.3"

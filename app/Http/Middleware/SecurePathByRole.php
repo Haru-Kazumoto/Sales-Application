@@ -18,23 +18,26 @@ class SecurePathByRole
     {
         // Get the authenticated user
         $user = Auth::user();
-        $role = $user->role->role_name; // Pastikan 'role_name' sesuai dengan field di DB
+        $division = $user->division->division_name; // Pastikan 'division_name' sesuai dengan field di DB
 
-        // Define the allowed paths for each role
-        $rolePaths = [
+        // Define the allowed paths for each division
+        $divisionPaths = [
             'WAREHOUSE' => '/warehouse',
             'FINANCE' => '/finance',
             'PROCUREMENT' => '/procurement',
+            'SALES' => '/sales',
+            'ADMIN' => '/admin',
+            'AGING_FINANCE' => '/aging-finance',
         ];
 
         // Get the current path being accessed
         $currentPath = $request->path();
 
-        // Check if user is accessing a path outside their allowed role paths
-        foreach ($rolePaths as $roleName => $rolePath) {
-            // Jika role user berbeda dan path yang diakses dimulai dengan prefix role lain, redirect ke dashboard role user
-            if ($role !== $roleName && str_starts_with($currentPath, trim($rolePath, '/'))) {
-                return redirect($rolePaths[$role] . '/dashboard');
+        // Check if user is accessing a path outside their allowed division paths
+        foreach ($divisionPaths as $divisionName => $divisionPath) {
+            // Jika division user berbeda dan path yang diakses dimulai dengan prefix division lain, redirect ke dashboard division user
+            if ($division !== $divisionName && str_starts_with($currentPath, trim($divisionPath, '/'))) {
+                return redirect($divisionPaths[$division] . '/dashboard');
             }
         }
 
