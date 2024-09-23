@@ -1,10 +1,20 @@
 <template>
-    <div class="d-flex" style="background-color: #00a54f;">
-        <div class="mx-4 d-flex flex-row align-items-center w-100">
-            <n-image width="50" src="/images/company_logo.png" preview-disabled class="my-1" />
-            <span class="mx-4 fs-5 text-white">PT DANITAMA NIAGAPRIMA</span>
-            <n-dropdown :options="options" @select="handleSelectKey">
-                <div class="d-flex flex-row ms-auto align-items-center border rounded p-2 text-white gap-2"
+    <div class="d-flex" style="background-color: #00a54f; height: 4rem;">
+        <div class="mx-4 d-flex align-items-center w-100">
+            <!-- Hamburger icon -->
+            <div class="mx-lg-4 fs-3 text-white" style="cursor: pointer;" @click="toggleCollapse">
+                <n-icon :component="Hamburger" />
+            </div>
+
+            <!-- Logo and Company Name, hidden on small screens -->
+            <n-image width="50" src="/images/company_logo.png" preview-disabled class="my-1 d-none d-md-block" />
+            <span class="mx-4 fs-5 text-white d-none d-md-block">
+                PT DANITAMA NIAGAPRIMA
+            </span>
+
+            <!-- User dropdown menu -->
+            <n-dropdown :options="options" @select="handleSelectKey" trigger="click">
+                <div class="d-flex flex-row ms-auto align-items-center  p-2 text-white gap-2"
                     style="cursor: pointer;">
                     <n-icon :component="Person" />
                     <span>{{ $page.props.auth.user.fullname }}</span>
@@ -15,65 +25,59 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, h } from 'vue';
-import type { Component } from 'vue';
-import {
-    Person,
-    LogOutOutline as LogoutIcon,
-    PersonCircleOutline as UserIcon
-} from "@vicons/ionicons5";
-import { NIcon } from 'naive-ui';
+import { defineComponent, inject, h } from 'vue';
+import { Person, ReorderFourSharp as Hamburger, LogOutOutline as LogoutIcon, PersonCircleOutline as UserIcon } from "@vicons/ionicons5";
+import { NIcon, useNotification } from 'naive-ui';
 import Swal from 'sweetalert2';
 import { useForm } from '@inertiajs/vue3';
 
-function renderIcon(icon: Component) {
-    return () => {
-        return h(NIcon, null, {
-            default: () => h(icon)
-        })
-    }
+function renderIcon(icon) {
+    return () => h(NIcon, null, { default: () => h(icon) });
 }
 
 export default defineComponent({
     name: "Header",
     setup() {
         const form = useForm({});
+        const notification = useNotification();
+        const toggleCollapse = inject('toggleCollapse'); // Inject toggle function
 
-        function handleSelectKey(key: string): void {
+        function handleSelectKey(key) {
             if (key === 'logout') {
                 Swal.fire({
                     icon: 'question',
-                    title: 'Are you sure you want to logout?',
+                    title: 'Keluar dari aplikasi?',
                     showCancelButton: true,
                     confirmButtonText: 'Logout',
                 }).then((result) => {
                     if (result.isConfirmed) {
                         handleLogout();
                     }
-                })
+                });
             }
         }
 
         function handleLogout() {
             form.post(route('logout'), {
                 onSuccess: () => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'You have been logged out.',
+                    notification.success({
+                        title: "Sukses logout",
                     });
-                }, 
+                },
                 onError: (err) => {
                     Swal.fire({
                         icon: 'error',
                         title: err.message
                     });
                 }
-            })
+            });
         }
 
         return {
             Person,
+            Hamburger,
             handleSelectKey,
+            toggleCollapse,
             options: [
                 {
                     label: 'Profile',
@@ -86,7 +90,7 @@ export default defineComponent({
                     icon: renderIcon(LogoutIcon)
                 }
             ]
-        }
+        };
     }
 });
 </script>

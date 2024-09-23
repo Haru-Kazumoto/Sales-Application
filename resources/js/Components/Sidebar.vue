@@ -1,23 +1,23 @@
 <template>
-    <n-layout-sider bordered collapse-mode="width" :collapsed-width="64" :width="270" :collapsed="collapsed"
-        @collapse="collapsed = true" @expand="collapsed = false">
-        <n-menu :collapsed="collapsed" :collapsed-width="64" :collapsed-icon-size="22" :options="menuOptions"
+    <n-layout-sider bordered collapse-mode="width" :collapsed-width="0" :width="270" :collapsed="collapsed"
+        @collapse="collapsed = true" @expand="collapsed = false" >
+        <n-menu :collapsed="collapsed" :collapsed-width="0" :collapsed-icon-size="22" :options="menuOptions"
             :render-label="renderMenuLabel" :expand-icon="expandIcon" default-value="dashboard" />
     </n-layout-sider>
 </template>
 
 <script lang="ts">
-import { defineComponent, h, ref, computed } from 'vue';
+import { defineComponent, inject, computed, h, ref } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import { NIcon, MenuOption } from 'naive-ui';
-import { AppsOutline, CartOutline,PersonOutline, CaretDownOutline } from '@vicons/ionicons5'
+import { AppsOutline, CartOutline, PersonOutline, CaretDownOutline } from '@vicons/ionicons5';
 import { renderIcon, roleMenus } from '../Utils/role-menu.utils';
 
 export default defineComponent({
     name: "Sidebar",
     setup() {
+        const collapsed = inject('collapsed'); // Inject state for collapsed
         const page = usePage();
-        const collapsed = ref(false);
         const role = (page.props.auth as any).user.division.division_name;
 
         const staticMenuOptions: MenuOption[] = [
@@ -61,7 +61,7 @@ export default defineComponent({
         const menuOptions = computed(() => {
             const roleMenu = roleMenus[role] || []; // Get role menu
             return [
-                ...staticMenuOptions.slice(0,1), // Add "Dashboard"
+                ...staticMenuOptions.slice(0, 1), // Add "Dashboard"
                 { key: 'role-label', label: role, disabled: true }, // Label showing user role
                 {
                     key: 'divider-1',
