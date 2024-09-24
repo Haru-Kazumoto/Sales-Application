@@ -88,6 +88,11 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         Route::get('/return-item', fn() => Inertia::render('Warehouse/DnpWarehouse/ReturnItem'))->name('return-item');
         Route::get('/booking-requests', fn() => Inertia::render('Warehouse/BookingItem/BookingRequest'))->name('booking-request');
     });
+
+    Route::prefix('aging-finance')->name('aging-finance.')->group(function() {
+        Route::get('/aging', fn() => Inertia::render('AgingFinance/Transaction/Aging'))->name('aging');
+        Route::get('/list-transactions', fn() => Inertia::render('AgingFinance/Transaction/ListTransaction'))->name('list-transaction');
+    });
 });
 
 require __DIR__.'/auth.php';

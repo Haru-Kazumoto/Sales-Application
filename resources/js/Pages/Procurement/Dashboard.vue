@@ -3,7 +3,7 @@
         <TitlePage title="Dashboard Procurement" />
 
         <!-- Row untuk card info -->
-        <div class="row " style="height: 10rem;">
+        <div class="row g-3">
             <!-- Total PO -->
             <div class="col-12 col-sm-6 col-md-4">
                 <div class="card shadow h-100 overflow-hidden gradient-effect">
@@ -37,7 +37,7 @@
                 </div>
             </div>
         </div>
-
+        
         <!-- Tabel Responsif -->
         <div class="card shadow" style="border: none;">
             <div class="card-body" >
@@ -45,6 +45,7 @@
                     pagination-behavior-on-filter="first" />
             </div>
         </div>
+
     </div>
 
 

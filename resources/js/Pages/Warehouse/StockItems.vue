@@ -83,7 +83,7 @@ function createColumns(): DataTableColumns<RowData> {
             }
         },
         {
-            title: 'Status',
+            title: 'STATUS',
             key: 'item_status',
             width: 100,
             render(rowData) {
@@ -118,7 +118,7 @@ function createColumns(): DataTableColumns<RowData> {
             },
         },
         {
-            title: "Action",
+            title: "ACTION",
             key: "action",
             width: 100,
             render(rowData) {

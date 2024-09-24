@@ -1,7 +1,7 @@
 <template>
-    <div class="card shadow custom-gradient overflow-hidden" 
+    <div class="card shadow custom-gradient overflow-hidden h-100" 
          :class="gradientClass" 
-         style="width: 23rem; border: none;">
+         style="border: none;">
         <div class="card-body d-flex flex-column gap-3" style="z-index: 10;">
             <span class="fs-5 fw-medium">{{ title }}</span>
             <span class="fw-semibold fs-3">{{ count }}</span>

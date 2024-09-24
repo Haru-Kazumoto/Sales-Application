@@ -5,8 +5,8 @@
             <span v-if="checkedRowKeys.length > 0" role="alert" class="alert alert-success">
                 Select {{ checkedRowKeys.length }} row{{ checkedRowKeys.length < 2 ? '' : 's' }} </span>
                     <n-data-table :columns="columns" :data="data" :pagination="pagination" :row-key="rowKey"
-                        @update:checked-row-keys="handleCheck" />
-                    <n-button type="primary" class="ms-auto my-3" style="width: 15rem;" @click="handleSendReminder">Create</n-button>
+                        @update:checked-row-keys="handleCheck" size="small" />
+                    <n-button type="primary" class="ms-auto my-3" @click="handleSendReminder">Create</n-button>
         </div>
     </div>
 </template>
@@ -172,7 +172,7 @@ function createColumns(): DataTableColumns<RowData> {
             }
         },
         {
-            title: 'Action',
+            title: 'ACTION`',
             key: 'actions',
             render(row) {
                 return h('div', { class: 'd-flex gap-2' }, [

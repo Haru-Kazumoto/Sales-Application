@@ -63,12 +63,12 @@
         <!-- Tabel Barang -->
         <div class="card shadow" style="border: none;">
             <div class="card-body">
-                <n-data-table :columns="columns" :data="tableData" :pagination="pagination" />
+                <n-data-table :columns="columns" :data="data" :pagination="pagination" size="small"/>
             </div>
         </div>
 
         <!-- Tombol Submit -->
-        <div class="d-flex justify-content-end">
+        <div class="d-flex justify-content-end mb-4">
             <n-button type="primary" size="large" @click="submitForm">
                 Submit Stock Barang
             </n-button>
@@ -77,9 +77,119 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { NButton, NInput, NDatePicker, NSelect, NDataTable } from 'naive-ui';
+import { defineComponent, ref, h } from 'vue';
+import { NButton, NInput, NDatePicker, NSelect, NDataTable, DataTableColumns } from 'naive-ui';
 import TitlePage from '../../Components/TitlePage.vue';
+
+interface RowData {
+    good_codes: string;
+    good_name: string;
+    request_quantity: number;
+    incoming_quantity: number;
+    difference: number;
+    expiry_date: string;
+    information: string;
+}
+
+function createColumns(): DataTableColumns<RowData> {
+    return [
+        {
+            title: "#",
+            key: 'index',
+            width: 50,
+            render(row, index) {
+                return index + 1;
+            }
+        },
+        {
+            title: "KODE BARANG",
+            key: "good_codes",
+            width: 150,
+            render(row) {
+                return row.good_codes;
+            }
+        },
+        {
+            title: "NAMA BARANG",
+            key: "good_name",
+            width: 150,
+            render(row) {
+                return row.good_name;
+            }
+        },
+        {
+            title: "QTY PEMESANAN",
+            key: 'request_quantity',
+            width: 150,
+            render(row) {
+                return row.request_quantity;
+            }
+        },
+        {
+            title: "QTY BARANG DATANG",
+            key: 'incoming_quantity',
+            width: 150,
+            render(row) {
+                return row.incoming_quantity;
+            }
+        },
+        {
+            title: "SELISIH",
+            key: 'difference',
+            width: 100,
+            render(row) {
+                return row.difference;
+            }
+        },
+        {
+            title: "TANGGAL KADALUARSA",
+            key: 'expiry_date',
+            width: 150,
+            render(row) {
+                return row.expiry_date;
+            }
+        },
+        {
+            title: "KETERANGAN",
+            key: 'information',
+            width: 150,
+            render(row) {
+                return row.information;
+            }
+        },
+        {
+            title: "ACTION",
+            key: 'action',
+            width: 150,
+            render(row) {
+                return h(
+                    NButton,
+                    {
+                        type: 'info',
+                        size: 'small',
+                        onClick: () => {
+                            alert(row.good_name);
+                        }
+                    },
+                    {default: () => 'Detail'}
+                );
+            }
+        }
+    ]
+}
+
+const data: RowData[] = [
+    {good_codes: '123456789', good_name: 'SANIA PREMIUM', request_quantity: 10, incoming_quantity: 10, difference: 0, expiry_date: "04/04/06", information: '-'},
+    {good_codes: '123456789', good_name: 'SANIA PREMIUM', request_quantity: 10, incoming_quantity: 10, difference: 0, expiry_date: "04/04/06", information: '-'},
+    {good_codes: '123456789', good_name: 'SANIA PREMIUM', request_quantity: 10, incoming_quantity: 10, difference: 0, expiry_date: "04/04/06", information: '-'},
+    {good_codes: '123456789', good_name: 'SANIA PREMIUM', request_quantity: 10, incoming_quantity: 10, difference: 0, expiry_date: "04/04/06", information: '-'},
+    {good_codes: '123456789', good_name: 'SANIA PREMIUM', request_quantity: 10, incoming_quantity: 10, difference: 0, expiry_date: "04/04/06", information: '-'},
+    {good_codes: '123456789', good_name: 'SANIA PREMIUM', request_quantity: 10, incoming_quantity: 10, difference: 0, expiry_date: "04/04/06", information: '-'},
+    {good_codes: '123456789', good_name: 'SANIA PREMIUM', request_quantity: 10, incoming_quantity: 10, difference: 0, expiry_date: "04/04/06", information: '-'},
+    {good_codes: '123456789', good_name: 'SANIA PREMIUM', request_quantity: 10, incoming_quantity: 10, difference: 0, expiry_date: "04/04/06", information: '-'},
+    {good_codes: '123456789', good_name: 'SANIA PREMIUM', request_quantity: 10, incoming_quantity: 10, difference: 0, expiry_date: "04/04/06", information: '-'},
+    {good_codes: '123456789', good_name: 'SANIA PREMIUM', request_quantity: 10, incoming_quantity: 10, difference: 0, expiry_date: "04/04/06", information: '-'},
+]
 
 export default defineComponent({
     setup() {
@@ -107,54 +217,6 @@ export default defineComponent({
             { label: 'Lainnya', value: 'lainnya' }
         ];
 
-        // Data dan kolom tabel
-        const tableData = ref([
-            {
-                no: 1,
-                kodeBarang: '12345678',
-                namaBarang: 'SANIA PREMIUM MARGARINE',
-                qtyPemesanan: 10,
-                qtyBarangDatang: 10,
-                selisih: 0,
-                expiryDate: '01/01/25',
-                keterangan: '-'
-            },
-            {
-                no: 2,
-                kodeBarang: '12345678',
-                namaBarang: 'SANIA PREMIUM MARGARINE',
-                qtyPemesanan: 10,
-                qtyBarangDatang: 10,
-                selisih: 0,
-                expiryDate: '01/01/25',
-                keterangan: '-'
-            },
-
-
-            {
-                no: 3,
-                kodeBarang: '12345678',
-                namaBarang: 'SANIA PREMIUM MARGARINE',
-                qtyPemesanan: 10,
-                qtyBarangDatang: 10,
-                selisih: 0,
-                expiryDate: '01/01/25',
-                keterangan: '-'
-            },
-            // ...data lainnya
-        ]);
-
-        const columns = [
-            { title: 'No', key: 'no' },
-            { title: 'Kode Barang', key: 'kodeBarang' },
-            { title: 'Nama Barang', key: 'namaBarang' },
-            { title: 'Qty Pemesanan', key: 'qtyPemesanan' },
-            { title: 'Qty Barang Datang', key: 'qtyBarangDatang' },
-            { title: 'Selisih', key: 'selisih' },
-            { title: 'Expiry Date', key: 'expiryDate' },
-            { title: 'Keterangan', key: 'keterangan' }
-        ];
-
         const pagination = {
             page: 1,
             pageSize: 10,
@@ -170,8 +232,8 @@ export default defineComponent({
             formData,
             gudangOptions,
             alokasiOptions,
-            tableData,
-            columns,
+            data,
+            columns: createColumns(),
             pagination,
             submitForm
         };
@@ -181,9 +243,3 @@ export default defineComponent({
     }
 });
 </script>
-
-<style scoped>
-.card {
-    margin-bottom: 1rem;
-}
-</style>

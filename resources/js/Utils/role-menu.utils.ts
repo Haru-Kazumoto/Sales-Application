@@ -149,25 +149,25 @@ export const roleMenus = {
                 }
             ]
         },
-        {
-            label: 'Transaksi',
-            key: 'transaction',
-            icon: ReceiptOutline,
-            children: [
-                {
-                    label: 'Aging',
-                    key: 'aging',
-                    icon: renderIcon(NotificationsOutline),
-                    href: '/procurement/aging',
-                },
-                {
-                    label: 'Transaksi',
-                    key: 'transaction',
-                    icon: renderIcon(WalletOutline),
-                    href: '/procurement/transaction-list'
-                }
-            ]
-        },
+        // {
+        //     label: 'Transaksi',
+        //     key: 'transaction',
+        //     icon: ReceiptOutline,
+        //     children: [
+        //         {
+        //             label: 'Aging',
+        //             key: 'aging',
+        //             icon: renderIcon(NotificationsOutline),
+        //             href: '/procurement/aging',
+        //         },
+        //         {
+        //             label: 'Transaksi',
+        //             key: 'transaction',
+        //             icon: renderIcon(WalletOutline),
+        //             href: '/procurement/transaction-list'
+        //         }
+        //     ]
+        // },
     ],
     WAREHOUSE: [
         {

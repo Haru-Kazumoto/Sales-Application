@@ -14,6 +14,7 @@
                             <div class="container-fluid flex-grow-1 min-vh-100" style="background-color: #EEF8F5;">
                                 <slot />
                             </div>
+                            <Footer />
                         </n-layout-content>
                     </n-layout>
                 </n-layout>
@@ -26,12 +27,14 @@
 import { defineComponent, ref, provide } from 'vue'
 import Sidebar from '../Components/Sidebar.vue';
 import Header from '../Components/Header.vue';
+import Footer from '../Components/Footer.vue';
 
 export default defineComponent({
     name: "AppLayout",
     components: {
         Sidebar,
-        Header
+        Header,
+        Footer
     },
     setup() {
         const collapsed = ref(true);

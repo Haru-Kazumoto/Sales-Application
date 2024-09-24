@@ -1,35 +1,43 @@
 <template>
     <div class="d-flex flex-column gap-4">
-        <TitlePage title="Form Klaim" />
+        <div class="d-flex flex-column gap-1">
+            <TitlePage title="Form Klaim" />
+            <n-button text class="justify-content-start" @click="router.visit(route('finance.claim-promo'))">
+                <template #icon>
+                    <n-icon :component="ArrowBackOutline" />
+                </template>
+                Kembali
+            </n-button>
+        </div>
         <div class="card shadow" style="border: none">
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-12 col-md-6 col-lg-4 d-flex flex-column gap-2">
                         <label for="claim promo number">Nomor Klaim Promo</label>
-                        <n-input size="large" id="claim promo number"/>
+                        <n-input size="large" id="claim promo number" />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4 d-flex flex-column gap-2">
                         <label for="month">Bulan</label>
-                        <n-input size="large" id="month"/>
+                        <n-input size="large" id="month" />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4 d-flex flex-column gap-2">
                         <label for="distributor name">Nama Distributor</label>
-                        <n-input size="large" id="distributor name"/>
+                        <n-input size="large" id="distributor name" />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4 d-flex flex-column gap-2">
                         <label for="distributor name">Nama Distributor</label>
-                        <n-input size="large" id="distributor name"/>
+                        <n-input size="large" id="distributor name" />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4 d-flex flex-column gap-2">
                         <label for="distributor name">Nama Distributor</label>
-                        <n-input size="large" id="distributor name"/>
+                        <n-input size="large" id="distributor name" />
                     </div>
                 </div>
             </div>
         </div>
         <div class="card shadow " style="border: none;">
             <div class="card-body">
-                <n-data-table :bordered="false" :data="data" :columns="columns" size="small"/>
+                <n-data-table :bordered="false" :data="data" :columns="columns" size="small" />
             </div>
         </div>
         <div class="card shadow" style="border: none;">
@@ -50,10 +58,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent,h } from 'vue'
+import { defineComponent, h } from 'vue'
 import TitlePage from '../../../Components/TitlePage.vue';
 import { formatRupiah } from '../../../Utils/options-input.utils';
 import { DataTableColumns, NButton } from 'naive-ui';
+import { ArrowBackOutline } from "@vicons/ionicons5";
+import {router} from '@inertiajs/vue3';
 
 interface RowData {
     key: number;
@@ -323,14 +333,15 @@ const data: RowData[] = [
 export default defineComponent({
     setup() {
 
-
         return {
             data,
             columns: createColumns(),
+            ArrowBackOutline,
+            router          
         }
     },
     components: {
-        TitlePage
+        TitlePage,
     }
 })
 </script>
