@@ -25,11 +25,11 @@
                         <n-input size="large" id="distributor name" />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4 d-flex flex-column gap-2">
-                        <label for="distributor name">Nama Distributor</label>
+                        <label for="distributor name">Area</label>
                         <n-input size="large" id="distributor name" />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4 d-flex flex-column gap-2">
-                        <label for="distributor name">Nama Distributor</label>
+                        <label for="distributor name">Program</label>
                         <n-input size="large" id="distributor name" />
                     </div>
                 </div>
