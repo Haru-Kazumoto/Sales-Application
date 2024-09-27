@@ -92,7 +92,7 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         Route::get('/create-travel-document', fn() => Inertia::render('Warehouse/CreateTravelDocument'))->name('create-travel-document');
         Route::get('/return-item', fn() => Inertia::render('Warehouse/DnpWarehouse/ReturnItem'))->name('return-item');
         Route::get('/booking-requests', fn() => Inertia::render('Warehouse/BookingItem/BookingRequest'))->name('booking-request');
-        Route::get('/list-travel-document', fn() => Inertia::render);
+        // Route::get('/list-travel-document', fn() => Inertia::render);
     });
 
     //Aging Finance Routes
