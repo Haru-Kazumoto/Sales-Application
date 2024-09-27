@@ -1,6 +1,6 @@
-import { SkullOutline, CartOutline,FileTrayFullOutline,FileTrayStackedOutline,CubeOutline, WalletOutline,NotificationsOutline, PeopleOutline, ReceiptOutline,SettingsOutline, BarChartOutline, BagCheckOutline, DocumentsOutline, DocumentTextOutline, ShieldCheckmarkOutline, RepeatSharp  , WarningOutline, Cart, People, PersonAddOutline, Contract, Analytics, CogOutline, DocumentOutline, PushOutline, ShieldHalf, PieChartOutline, ReorderFourSharp, CartSharp, KeyOutline } from '@vicons/ionicons5';
+import { SkullOutline, CartOutline, FileTrayFullOutline, FileTrayStackedOutline, CubeOutline, WalletOutline, NotificationsOutline, PeopleOutline, ReceiptOutline, SettingsOutline, BarChartOutline, BagCheckOutline, DocumentsOutline, DocumentTextOutline, ShieldCheckmarkOutline, RepeatSharp, WarningOutline, Cart, People, PersonAddOutline, Contract, Analytics, CogOutline, DocumentOutline, PushOutline, ShieldHalf, PieChartOutline, ReorderFourSharp, CartSharp, KeyOutline, LogoWhatsapp } from '@vicons/ionicons5';
 import { NIcon } from 'naive-ui';
-import {h} from 'vue';
+import { h } from 'vue';
 
 // Utility function to render icons safely (without wrapping twice)
 export function renderIcon(icon) {
@@ -10,35 +10,35 @@ export function renderIcon(icon) {
 // Example menu based on role
 export const roleMenus = {
     ADMIN: [
-        { label: 'Sales Reports', key: 'sales-reports', icon: BarChartOutline, href: '/admin/sales-reports' },
-        { 
-            label: 'User Management', 
-            key: 'user-management', 
-            icon: PeopleOutline, 
+        { label: 'Sales Reports', key: 'sales-reports', icon: BarChartOutline, href: '/sales-reports' },
+        {
+            label: 'User Management',
+            key: 'user-management',
+            icon: PeopleOutline,
             children: [
                 {
                     label: "User",
                     key: 'user',
                     icon: renderIcon(PersonAddOutline),
-                    href: '/admin/user-management',
+                    href: '/user-management',
                 },
                 {
                     label: "Role",
                     key: 'role',
                     icon: renderIcon(Contract),
-                    href: '/admin/role-management',
+                    href: '/role-management',
                 },
                 {
                     label: 'Divisi',
                     key: 'division',
                     icon: renderIcon(Analytics),
-                    href: '/admin/division-management'
+                    href: '/division-management'
                 },
                 {
                     label: 'Akses Menu',
                     key: 'menu-access',
                     icon: renderIcon(CogOutline),
-                    href: '/admin/menu-access-management'
+                    href: '/menu-access-management'
                 }
             ]
         },
@@ -53,13 +53,13 @@ export const roleMenus = {
                     label: 'Klaim Promo',
                     key: 'claim-promo',
                     icon: renderIcon(DocumentTextOutline),
-                    href: '/finance/claim-promo',
+                    href: '/claim-promo',
                 },
                 {
                     label: 'List Klaim Promo',
                     key: 'claim-promo-list',
                     icon: renderIcon(DocumentsOutline),
-                    href: '/finance/claim-promo-list',
+                    href: '/claim-promo-list',
                 }
             ]
         },
@@ -73,19 +73,19 @@ export const roleMenus = {
                 {
                     label: "Invoice DNP",
                     key: "invoice-dnp",
-                    href: '/aging-finance/invoice-dnp',
+                    href: '/invoice-dnp',
                     icon: renderIcon(ReceiptOutline),
                 },
                 {
                     label: "Invoice DKU",
                     key: "invoice-dku",
-                    href: '/aging-finance/invoice-dku',
+                    href: '/invoice-dku',
                     icon: renderIcon(ReceiptOutline),
                 },
                 {
                     label: "List Invoice",
                     key: "list-invoice",
-                    href: '/aging-finance/list-invoices',
+                    href: '/list-invoices',
                     icon: renderIcon(ReorderFourSharp),
                 },
             ],
@@ -98,16 +98,22 @@ export const roleMenus = {
                 {
                     label: 'Aging',
                     key: 'aging',
-                    href: '/aging-finance/aging',
+                    href: '/aging',
                     icon: renderIcon(BarChartOutline),
                 },
                 {
                     label: "List transaksi",
                     key: "list-transaction",
-                    href: '/aging-finance/list-transactions',
+                    href: '/list-transactions',
                     icon: renderIcon(ReorderFourSharp),
                 }
             ]
+        },
+        {
+            label: "Setting Pesan WA",
+            key: 'whatsapp_reminder',
+            icon: renderIcon(LogoWhatsapp),
+            href: "/whatsapp-message"
         }
     ],
     PROCUREMENT: [
@@ -120,13 +126,13 @@ export const roleMenus = {
                     label: 'Buat PO',
                     key: 'create-po',
                     icon: renderIcon(DocumentTextOutline),
-                    href: '/procurement/purchase-order',
+                    href: '/purchase-order',
                 },
                 {
                     label: 'List PO',
                     key: 'list-po',
                     icon: renderIcon(DocumentsOutline),
-                    href: '/procurement/purchase-orders',
+                    href: '/purchase-orders',
                 }
             ]
         },
@@ -136,51 +142,57 @@ export const roleMenus = {
             icon: SettingsOutline,
             children: [
                 {
-                    label: 'Buat SO',
-                    key: 'create-so',
+                    label: 'Buat SSO',
+                    key: 'create-sso',
                     icon: renderIcon(DocumentTextOutline),
-                    href: '/procurement/sales-order',
+                    href: '/sub-sales-order',
                 },
                 {
-                    label: 'List SO',
-                    key: 'list-so',
+                    label: 'List SSO',
+                    key: 'list-sso',
                     icon: renderIcon(DocumentsOutline),
-                    href: '/procurement/list-so',
+                    href: '/list-sso',
                 }
             ]
         },
-        // {
-        //     label: 'Transaksi',
-        //     key: 'transaction',
-        //     icon: ReceiptOutline,
-        //     children: [
-        //         {
-        //             label: 'Aging',
-        //             key: 'aging',
-        //             icon: renderIcon(NotificationsOutline),
-        //             href: '/procurement/aging',
-        //         },
-        //         {
-        //             label: 'Transaksi',
-        //             key: 'transaction',
-        //             icon: renderIcon(WalletOutline),
-        //             href: '/procurement/transaction-list'
-        //         }
-        //     ]
-        // },
     ],
     WAREHOUSE: [
         {
             label: "Barang Masuk",
             icon: CubeOutline,
             key: 'barang-masuk',
-            href: '/warehouse/incoming-item'
+            href: '/incoming-item'
         },
         {
-            label: "Stok Gudang",
+            label: "Stok Gudang Bekasi",
             icon: FileTrayFullOutline,
             key: 'stock-goods',
-            href: '/warehouse/stock-goods'
+            href: '/stock-goods'
+        },
+        {
+            label: 'Booking Barang',
+            icon: CartOutline,
+            key: 'booking-items',
+            href: '/booking-requests',
+        },
+        {
+            label: "Surat Jalan",
+            key: 'travel-document',
+            icon: DocumentTextOutline,
+            children: [
+                {
+                    label: "Buat Surat Jalan",
+                    key: 'travel-document',
+                    icon: renderIcon(DocumentOutline),
+                    href: '/travel-document',
+                },
+                {
+                    label: "List Surat Jalan",
+                    key: 'list-travel-document',
+                    icon: renderIcon(DocumentsOutline),
+                    href: '/list-travel-document',
+                },
+            ]
         },
         {
             label: "Gudang DNP",
@@ -191,50 +203,32 @@ export const roleMenus = {
                     label: 'Stok',
                     key: 'stock',
                     icon: renderIcon(FileTrayFullOutline),
-                    href: '/warehouse/dnp-stock-goods'
-                },
-                {
-                    label: "List barang expired",
-                    key: 'items-expired',
-                    icon: renderIcon(ShieldCheckmarkOutline),
-                    href: '/warehouse/expired-items-list'
-                },
-                {
-                    label: "Pemusnahan",
-                    key: 'items-destroyed',
-                    icon: renderIcon(SkullOutline),
-                    href: '/warehouse/items-destroyed'
+                    href: '/dnp-stock-goods'
                 },
                 {
                     label: "Retur Barang",
                     key: 'return-items',
                     icon: renderIcon(RepeatSharp),
-                    href: '/warehouse/return-item',
+                    href: '/return-item',
                 }
             ]
         },
         {
             label: "Gudang DKU",
-            icon: CartOutline,
+            icon: FileTrayStackedOutline,
             key: 'dku-storehouse',
-            children: [],
-        },
-        {
-            label: 'Booking Barang',
-            icon: CartOutline,
-            key: 'booking-items',
             children: [
                 {
-                    label: "Booking Request",
-                    icon: renderIcon(CartOutline),
-                    key: 'booking-request',
-                    href: '/warehouse/booking-requests',
+                    label: 'Stok',
+                    key: 'stock',
+                    icon: renderIcon(FileTrayFullOutline),
+                    href: '/dnp-stock-goods'
                 },
                 {
-                    label: "List Booking",
-                    icon: renderIcon(CartOutline),
-                    key: 'booking-list',
-                    href: '/warehouse/list-booking',
+                    label: "Retur Barang",
+                    key: 'return-items',
+                    icon: renderIcon(RepeatSharp),
+                    href: '/return-item',
                 }
             ]
         },
@@ -246,35 +240,30 @@ export const roleMenus = {
                     label: "Retur Barang",
                     icon: renderIcon(ShieldHalf),
                     key: 'retur-barang',
-                    href: '/warehouse/return-goods',
+                    href: '/return-goods',
                 }
             ],
         },
-        {
-            label: "Surat Jalan",
-            key: 'travel-document',
-            icon: CartOutline,
-        }
     ],
     SALES: [
         {
             label: "Penjualan",
             key: 'sales',
             icon: CartSharp,
-            children : [
+            children: [
                 {
                     label: 'Buat CO',
                     icon: renderIcon(DocumentOutline),
                     key: 'create-co',
-                    href: '/sales/create-co',
+                    href: '/create-co',
                 },
                 {
                     label: 'List CO',
                     icon: renderIcon(DocumentsOutline),
                     key: 'list-co',
-                    href: '/sales/list-co',
+                    href: '/list-co',
                 }
             ]
         }
-    ]
+    ],
 };

@@ -8,9 +8,9 @@
                     </n-layout-header>
 
                     <n-layout has-sider class="flex-grow-1">
-                        <Sidebar />
+                        <Sidebar style="z-index: 10" />
 
-                        <n-layout-content class="d-flex flex-column" style="z-index: 10;">
+                        <n-layout-content class="d-flex flex-column" style="z-index: 1;">
                             <div class="container-fluid flex-grow-1 min-vh-100" style="background-color: #EEF8F5;">
                                 <slot />
                             </div>
@@ -37,7 +37,7 @@ export default defineComponent({
         Footer
     },
     setup() {
-        const collapsed = ref(true);
+        const collapsed = ref(false);
 
         // Function to toggle the sidebar collapse state
         function toggleCollapse() {

@@ -14,7 +14,7 @@ class MenuAccess extends Model
 
     protected $table = 'menu_access';
 
-    protected $fillable = ['menu_name', 'menu_icon', 'menu_key', 'menu_url', 'base_menu_access_for'];
+    protected $fillable = ['menu_name', 'menu_icon', 'menu_key', 'menu_url', 'base_menu_access_for', 'parent_id'];
 
     public function users(): BelongsToMany
     {

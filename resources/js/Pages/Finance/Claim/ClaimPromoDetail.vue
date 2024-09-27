@@ -1,12 +1,71 @@
 <template>
     <div class="d-flex flex-column gap-4">
-        <TitlePage title="Klaim Promo" />
-        <div class="d-flex flex-column">
-            <span v-if="checkedRowKeys.length > 0" role="alert" class="alert alert-success">
-                Select {{ checkedRowKeys.length }} row{{ checkedRowKeys.length < 2 ? '' : 's' }} </span>
-                    <n-data-table :columns="columns" :data="data" :pagination="pagination" :row-key="rowKey"
-                        @update:checked-row-keys="handleCheck" size="small" />
-                    <n-button type="primary" class="ms-auto my-3" @click="handleSendReminder">Create</n-button>
+        <div class="d-flex flex-column gap-3">
+            <TitlePage title="Detail Klaim Promo" />
+            <n-button text class="justify-content-start w-25 " size="large"
+                @click="router.visit(route('finance.list-claim-promo'), { method: 'get' })">
+                <n-icon :component="ArrowBack" style="margin-right: 5px;" />
+                Kembali
+            </n-button>
+        </div>
+        <div class="card shadow" style="border: none;">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-6 col-lg-3 d-flex flex-column gap-1">
+                        <label for="">Input label</label>
+                        <n-input size="large" />
+                    </div>
+                    <div class="col-6 col-lg-3 d-flex flex-column gap-1">
+                        <label for="">Input label</label>
+                        <n-input size="large" />
+                    </div>
+                    <div class="col-6 col-lg-3 d-flex flex-column gap-1">
+                        <label for="">Input label</label>
+                        <n-select size="large" />
+                    </div>
+                    <div class="col-6 col-lg-3 d-flex flex-column gap-1">
+                        <label for="">Input label</label>
+                        <n-select size="large" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card shadow border-0 ">
+            <div class="card-body d-flex flex-column">
+                <div class="d-flex justify-content-between py-2">
+                    <span>Sub Total</span>
+                    <span>Rp 200.000</span>
+                </div>
+                <div class="d-flex justify-content-between py-2 fw-bold border-top border-bottom">
+                    <span>Grand Total</span>
+                    <span>Rp 200.000</span>
+                </div>
+            </div>
+        </div>
+        <div class="card shadow border-0">
+            <div class="card-body">
+                <n-data-table :bordered="false" :columns="columns" :data="data" :pagination="pagination"
+                    :row-key="rowKey" size="small" />
+            </div>
+        </div>
+        <div class="card shadow border-0">
+            <div class="card-body d-flex flex-column gap-3">
+                <div class="row g-3">
+                    <div class="col-12 col-lg-4 d-flex flex-column gap-1">
+                        <label for="">Status Pembayaran</label>
+                        <n-select size="large" />
+                    </div>
+                    <div class="col-12 col-lg-4 d-flex flex-column gap-1">
+                        <label for="">Tanggal Pembayaran</label>
+                        <n-date-picker size="large" />
+                    </div>
+                    <div class="col-12 col-lg-4 d-flex flex-column gap-1">
+                        <label for="">Nominal Pembayaran</label>
+                        <n-input size="large" />
+                    </div>
+                </div>
+                <n-button class="ms-auto" type="primary">Submit</n-button>
+            </div>
         </div>
     </div>
 </template>
@@ -14,10 +73,10 @@
 <script lang="ts">
 import { defineComponent, ref, h } from 'vue'
 import TitlePage from '../../../Components/TitlePage.vue';
-import { NButton, type DataTableColumns, type DataTableRowKey } from 'naive-ui'
-import Swal from 'sweetalert2';
-import { router } from "@inertiajs/vue3";
+import { NButton, type DataTableColumns } from 'naive-ui'
+import { ArrowBack } from "@vicons/ionicons5";
 import { formatRupiah } from '../../../Utils/options-input.utils';
+import { router } from '@inertiajs/vue3';
 
 interface RowData {
     key: number;
@@ -40,9 +99,6 @@ interface RowData {
 
 function createColumns(): DataTableColumns<RowData> {
     return [
-        {
-            type: 'selection',
-        },
         {
             title: '#',
             key: 'index',
@@ -171,25 +227,6 @@ function createColumns(): DataTableColumns<RowData> {
                 return formatRupiah(row.total_all);
             }
         },
-        {
-            title: 'ACTION',
-            key: 'actions',
-            render(row) {
-                return h('div', { class: 'd-flex gap-2' }, [
-                    h(
-                        NButton,
-                        {
-                            type: 'info',
-                            size: 'small',
-                            onClick: () => {
-                                router.visit(route('finance.claim-promo.detail'), {method: 'get'});
-                            }
-                        },
-                        { default: () => 'Detail' }
-                    )
-                ]);
-            }
-        }
     ];
 }
 
@@ -232,36 +269,19 @@ const data: RowData[] = [
     },
 ];
 
-
-
 export default defineComponent({
     setup() {
-        const checkedRowKeysRef = ref<DataTableRowKey[]>([]);
 
-        function handleSendReminder() {
-            if (checkedRowKeysRef.value.length < 1) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Pilih minimal 1 data!',
-                });
-            } else {
-                router.visit(route('finance.form-claim-promo'), { method: 'get' });
-            }
-
-        }
 
         return {
             data,
             columns: createColumns(),
-            handleSendReminder,
-            checkedRowKeys: checkedRowKeysRef,
             pagination: {
                 pageSize: 10
             },
             rowKey: (row: RowData) => row.key,
-            handleCheck(rowKeys: DataTableRowKey[]) {
-                checkedRowKeysRef.value = rowKeys
-            }
+            ArrowBack,
+            router
         }
     },
     components: {

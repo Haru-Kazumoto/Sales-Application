@@ -14,12 +14,12 @@ class DivisionSeeder extends Seeder
     public function run(): void
     {
         $dataToInsert = [
-            ['division_name' => 'SALES', 'division_uid' => '001'],
-            ['division_name' => 'PROCUREMENT', 'division_uid' => '002'],
-            ['division_name' => 'WAREHOUSE', 'division_uid' => '003'],
-            ['division_name' => 'FINANCE', 'division_uid' => '004'],
-            ['division_name' => 'ADMIN', 'division_uid' => '005'],
-            ['division_name' => 'AGING_FINANCE', 'division_uid' => '006'],
+            ['division_name' => 'SALES', 'division_uid' => strval(rand(10000,66666))],
+            ['division_name' => 'PROCUREMENT', 'division_uid' => strval(rand(10000,66666))],
+            ['division_name' => 'WAREHOUSE', 'division_uid' => strval(rand(10000,66666))],
+            ['division_name' => 'FINANCE', 'division_uid' => strval(rand(10000,66666))],
+            ['division_name' => 'ADMIN', 'division_uid' => strval(rand(10000,66666))],
+            ['division_name' => 'AGING_FINANCE', 'division_uid' => strval(rand(10000,66666))],
         ];
 
         foreach($dataToInsert as $data) {

@@ -27,6 +27,7 @@ import { defineComponent, h } from 'vue'
 import TitlePage from '../../../Components/TitlePage.vue';
 import { formatRupiah } from '../../../Utils/options-input.utils';
 import { DataTableColumns, NButton, NTag } from 'naive-ui';
+import { router } from '@inertiajs/vue3';
 
 interface RowData {
     key: number;
@@ -109,7 +110,7 @@ function createColumns(): DataTableColumns<RowData> {
             }
         },
         {
-            title: 'Action',
+            title: 'ACTION',
             key: 'actions',
             render(row) {
                 return h('div', { class: 'd-flex gap-2' }, [
@@ -119,7 +120,7 @@ function createColumns(): DataTableColumns<RowData> {
                             type: 'info',
                             size: 'small',
                             onClick: () => {
-                                alert(`${row.key} is selected!`);
+                                router.visit(route('finance.claim-promo.detail'), { method: 'get' });
                             }
                         },
                         { default: () => 'Detail' }

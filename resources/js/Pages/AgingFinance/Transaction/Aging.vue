@@ -2,16 +2,16 @@
     <div class="d-flex flex-column gap-4">
         <TitlePage title="Aging Dashboard" />
         <div class="row g-2">
-            <div class="col-6 col-lg-3">
+            <div class="col-6 col-lg-2">
                 <n-date-picker size="large" type="date" style="width: 10rem;" />
             </div>
-            <div class="col-6 col-lg-3">
+            <div class="col-6 col-lg-2">
                 <n-date-picker size="large" type="date" style="width: 10rem;" />
             </div>
-            <div class="col-6 col-lg-3">
+            <div class="col-6 col-lg-2">
                 <n-select size="large" style="width: 10rem;" placeholder="Customer" />
             </div>
-            <div class="col-6 col-lg-3">
+            <div class="col-6 col-lg-2">
                 <n-select size="large" style="width: 10rem;" placeholder="Salesman" />
             </div>
         </div>

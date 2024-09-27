@@ -11,12 +11,12 @@ Route::get('/', function() {
 
         return match ($division) {
             'FINANCE' => redirect()->intended(route('dashboard.finance')),
-                'WAREHOUSE' => redirect()->intended(route('dashboard.warehouse')),
-                'ADMIN' => redirect()->intended(route('dashboard.admin')),
-                'SUPERADMIN' => redirect()->intended(route('dashboard.superadmin')),
-                'PROCUREMENT' => redirect()->intended(route('dashboard.procurement')),
-                'AGING_FINANCE' => redirect()->intended(route('dashboard.aging-finance')),
-                'SALES' => redirect()->intended(route('dashboard.sales')),
+            'WAREHOUSE' => redirect()->intended(route('dashboard.warehouse')),
+            'ADMIN' => redirect()->intended(route('dashboard.admin')),
+            'SUPERADMIN' => redirect()->intended(route('dashboard.superadmin')),
+            'PROCUREMENT' => redirect()->intended(route('dashboard.procurement')),
+            'AGING_FINANCE' => redirect()->intended(route('dashboard.aging-finance')),
+            'SALES' => redirect()->intended(route('dashboard.sales')),
             default => back()->with('failed', 'Unknown Dashboard'), // Halaman default jika role tidak dikenali
         };
     }
@@ -27,9 +27,6 @@ Route::get('/', function() {
 Route::middleware(['guest'])->group(function() {
     Route::get('login', [AuthenticatedController::class, 'showLoginView'])->name('login');
     Route::post('login', [AuthenticatedController::class, 'login']);
-
-    // Route::get('register', [RegisteredUserController::class, 'showRegisterView'])->name('register');
-    // Route::post('register', [RegisteredUserController::class, 'register'])->name('register.post');
 });
 
 Route::post('logout', [AuthenticatedController::class, 'logout'])->name('logout')->middleware('auth');

@@ -68,19 +68,19 @@ import {router} from '@inertiajs/vue3';
 interface RowData {
     key: number;
     faktur_date: number;
-    faktur_number: number;
+    faktur_number: string;
     customer_name: string;
     item_name: string;
     package: string;
     quantity: number;
     price: number; // exc ppn
     total: number;
-    discount_local: number;
-    total_discount_local: number;
-    discount_ws: number;
-    total_discount_ws: number;
-    discount_ed: number;
-    total_discout_ed: number;
+    discount_1: number;
+    total_discount_1: number;
+    discount_2: number;
+    total_discount_2: number;
+    discount_3: number;
+    total_discout_3: number;
     total_all: number;
 }
 
@@ -160,50 +160,50 @@ function createColumns(): DataTableColumns<RowData> {
         },
         {
             title: "DISKON LOKAL",
-            key: 'discount_local',
+            key: 'discount_1',
             width: 150,
             render(row) {
-                return `${row.discount_local}%`;
+                return `${row.discount_1}%`;
             }
         },
         {
             title: "TOTAL DISKON LOKAL",
-            key: 'total_discount_local',
+            key: 'total_discount_1',
             width: 200,
             render(row) {
-                return formatRupiah(row.total_discount_local);
+                return formatRupiah(row.total_discount_1);
             }
         },
         {
             title: "DISKON WS",
-            key: 'discount_ws',
+            key: 'discount_2',
             width: 150,
             render(row) {
-                return `${row.discount_ws}%`;
+                return `${row.discount_2}%`;
             }
         },
         {
-            title: "TOTAL DISKON WS",
-            key: 'total_discount_ws',
+            title: "TOTAL DISKON 2",
+            key: 'total_discount_2',
             width: 200,
             render(row) {
-                return formatRupiah(row.total_discount_ws);
+                return formatRupiah(row.total_discount_2);
             }
         },
         {
             title: "DISKON ED",
-            key: 'discount_ed',
+            key: 'discount_3',
             width: 150,
             render(row) {
-                return `${row.discount_ed}%`;
+                return `${row.discount_3}%`;
             }
         },
         {
-            title: "TOTAL DISKON ED",
-            key: 'total_discout_ed',
+            title: "TOTAL DISKON 3",
+            key: 'total_discout_3',
             width: 200,
             render(row) {
-                return formatRupiah(row.total_discout_ed);
+                return formatRupiah(row.total_discout_3);
             }
         },
         {
@@ -215,20 +215,20 @@ function createColumns(): DataTableColumns<RowData> {
             }
         },
         {
-            title: 'Action',
+            title: 'ACTION',
             key: 'actions',
             render(row) {
                 return h('div', { class: 'd-flex gap-2' }, [
                     h(
                         NButton,
                         {
-                            type: 'info',
+                            type: 'error',
                             size: 'small',
                             onClick: () => {
                                 alert(`${row.key} is selected!`);
                             }
                         },
-                        { default: () => 'Detail' }
+                        { default: () => 'Delete' }
                     )
                 ]);
             }
@@ -240,95 +240,40 @@ const data: RowData[] = [
     {
         key: 1,
         faktur_date: 1,
-        faktur_number: 1001,
-        customer_name: "PT. Elektronik",
-        item_name: "Laptop",
-        package: "Box",
+        faktur_number: "INV-2408-0001",
+        customer_name: "PUTERA GRAHA S,PT",
+        item_name: "SANIA PREMIUM MARGARINE",
+        package: "KARTON",
         quantity: 2,
         price: 10000000,
         total: 20000000,
-        discount_local: 100000,
-        total_discount_local: 200000,
-        discount_ws: 50000,
-        total_discount_ws: 100000,
-        discount_ed: 30000,
-        total_discout_ed: 60000,
+        discount_1: 11,
+        total_discount_1: 200000,
+        discount_2: 2,
+        total_discount_2: 100000,
+        discount_3: 6,
+        total_discout_3: 60000,
         total_all: 19680000,
     },
     {
         key: 2,
-        faktur_date: 2,
-        faktur_number: 1002,
-        customer_name: "CV. Teknologi",
-        item_name: "Mouse",
-        package: "Plastic",
-        quantity: 10,
-        price: 50000,
-        total: 500000,
-        discount_local: 5000,
-        total_discount_local: 10000,
-        discount_ws: 2000,
-        total_discount_ws: 4000,
-        discount_ed: 1000,
-        total_discout_ed: 2000,
-        total_all: 484000,
+        faktur_date: 1,
+        faktur_number: "INV-2408-0001",
+        customer_name: "PUTERA GRAHA S,PT",
+        item_name: "SANIA PREMIUM MARGARINE",
+        package: "KARTON",
+        quantity: 2,
+        price: 10000000,
+        total: 20000000,
+        discount_1: 11,
+        total_discount_1: 200000,
+        discount_2: 2,
+        total_discount_2: 100000,
+        discount_3: 1,
+        total_discout_3: 60000,
+        total_all: 19680000,
     },
-    {
-        key: 3,
-        faktur_date: 4,
-        faktur_number: 1003,
-        customer_name: "PT. Komputer",
-        item_name: "Keyboard",
-        package: "Box",
-        quantity: 3,
-        price: 300000,
-        total: 900000,
-        discount_local: 5000,
-        total_discount_local: 15000,
-        discount_ws: 3000,
-        total_discount_ws: 9000,
-        discount_ed: 2000,
-        total_discout_ed: 6000,
-        total_all: 870000,
-    },
-    {
-        key: 4,
-        faktur_date: 19,
-        faktur_number: 1004,
-        customer_name: "UD. Perangkat",
-        item_name: "Monitor",
-        package: "Box",
-        quantity: 1,
-        price: 1500000,
-        total: 1500000,
-        discount_local: 10000,
-        total_discount_local: 10000,
-        discount_ws: 5000,
-        total_discount_ws: 5000,
-        discount_ed: 3000,
-        total_discout_ed: 3000,
-        total_all: 1472000,
-    },
-    {
-        key: 5,
-        faktur_date: 20,
-        faktur_number: 1005,
-        customer_name: "CV. Hardware",
-        item_name: "Printer",
-        package: "Box",
-        quantity: 1,
-        price: 2000000,
-        total: 2000000,
-        discount_local: 15000,
-        total_discount_local: 15000,
-        discount_ws: 7000,
-        total_discount_ws: 7000,
-        discount_ed: 5000,
-        total_discout_ed: 5000,
-        total_all: 1963000,
-    }
 ];
-
 
 export default defineComponent({
     setup() {
