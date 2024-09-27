@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex flex-column gap-3">
-        <TitlePage title="RETUR BARANG" />
+        <TitlePage title="PEMUSNAHAN BARANG" />
         <div class="card shadow" style="border: none;">
             <div class="card-body">
                 <div class="row g-3">
@@ -64,7 +64,9 @@
                             <n-input />
                         </div>
                     </div>
-                    <n-button type="primary" class="my-3 ms-auto" attr-type="submit">Tambah Produk Pemusnahan</n-button>
+                    <div class="d-flex justify-content-end">
+                        <n-button color="green" attr-type="submit">Tambah Produk Pemusnahan</n-button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -101,9 +103,18 @@
                     </div>
                 </div>
                 <div style="border: 1px solid grey; margin: 1rem 0" />
-                <div class="d-flex flex-column gap-1 w-25">
-                    <label for="">Catatan</label>
-                    <n-input type="textarea" />
+                <div class="d-flex flex-row gap-1 w-100">
+                    <div>
+                        <label for="">Catatan</label>
+                        <n-input type="textarea" />
+                    </div>
+                    <div class="ms-auto">
+                        <label for="">Lampiran</label>
+                        <n-upload action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
+                            :default-file-list="fileList" list-type="image" :create-thumbnail-url="createThumbnailUrl">
+                            <n-button type="info" size="large">Upload</n-button>
+                        </n-upload>
+                    </div>
                 </div>
             </div>
         </div>
@@ -112,9 +123,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent,h } from 'vue'
-import TitlePage from '../../Components/TitlePage.vue';
-import { DataTableColumns, NButton } from 'naive-ui';
+import { defineComponent, h, ref } from 'vue'
+import TitlePage from '../../../Components/TitlePage.vue';
+import { DataTableColumns, NButton, UploadFileInfo, useMessage } from 'naive-ui';
 
 interface RowData {
     item_code: string;
@@ -131,7 +142,7 @@ function createColumns(): DataTableColumns<RowData> {
             title: '#',
             key: 'index',
             width: 50,
-            render(row,index){
+            render(row, index) {
                 return index + 1;
             }
         },
@@ -196,7 +207,7 @@ function createColumns(): DataTableColumns<RowData> {
                             alert('jir dihapus woilah');
                         }
                     },
-                    {default: () => 'Hapus'}
+                    { default: () => 'Hapus' }
                 )
             }
         }
@@ -205,10 +216,54 @@ function createColumns(): DataTableColumns<RowData> {
 
 export default defineComponent({
     setup() {
-
+        const message = useMessage();
+        const fileListRef = ref<UploadFileInfo[]>([
+            {
+                id: 'a',
+                name: 'My Fault.png',
+                status: 'error'
+            },
+            {
+                id: 'b',
+                name: 'regular text.doc',
+                status: 'finished',
+                type: 'text/plain'
+            },
+            {
+                id: 'c',
+                name: 'image.png',
+                status: 'finished',
+                url: 'https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg'
+            },
+            {
+                id: 'd',
+                name: 'Not Finished Yet.doc',
+                status: 'uploading',
+                percentage: 50
+            }
+        ])
 
         return {
             columns: createColumns(),
+            fileList: fileListRef,
+            createThumbnailUrl(file: File | null): Promise<string> | undefined {
+                if (!file)
+                    return undefined
+                message.info(() => [
+                    '`createThumbnailUrl` changes the thumbnail image of the uploaded file.',
+                    h('br'),
+                    'It will be 07akioni whatever you upload.',
+                    file.name
+                ])
+                message.info(`${file.name}`)
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        resolve(
+                            'https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg'
+                        )
+                    }, 1000)
+                })
+            }
         }
     },
     components: {

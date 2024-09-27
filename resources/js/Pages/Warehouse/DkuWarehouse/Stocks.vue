@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex flex-column gap-4">
-        <TitlePage title="STOK BARANG GUDANG DNP" />
+        <TitlePage title="STOK BARANG GUDANG DKU" />
         <div class="d-flex flex-column gap-2">
             <div class="row g-3 ">
                 <div class="col-12 col-lg-8 ">
@@ -137,15 +137,15 @@ export default defineComponent({
     setup() {
         // Data dummy untuk tabel
         const data: RowData[] = [
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
+            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DKU" },
+            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DKU" },
+            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DKU" },
+            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DKU" },
+            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DKU" },
+            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DKU" },
+            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DKU" },
+            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DKU" },
+            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DKU" },
         ];
 
         // Pagination dummy data

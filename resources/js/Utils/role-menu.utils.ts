@@ -1,4 +1,4 @@
-import { SkullOutline, CartOutline, FileTrayFullOutline, FileTrayStackedOutline, CubeOutline, WalletOutline, NotificationsOutline, PeopleOutline, ReceiptOutline, SettingsOutline, BarChartOutline, BagCheckOutline, DocumentsOutline, DocumentTextOutline, ShieldCheckmarkOutline, RepeatSharp, WarningOutline, Cart, People, PersonAddOutline, Contract, Analytics, CogOutline, DocumentOutline, PushOutline, ShieldHalf, PieChartOutline, ReorderFourSharp, CartSharp, KeyOutline, LogoWhatsapp } from '@vicons/ionicons5';
+import { SkullOutline, CartOutline, FileTrayFullOutline, FileTrayStackedOutline, CubeOutline, WalletOutline, NotificationsOutline, PeopleOutline, ReceiptOutline, SettingsOutline, BarChartOutline, BagCheckOutline, DocumentsOutline, DocumentTextOutline, ShieldCheckmarkOutline, RepeatSharp, WarningOutline, Cart, People, PersonAddOutline, Contract, Analytics, CogOutline, DocumentOutline, PushOutline, ShieldHalf, PieChartOutline, ReorderFourSharp, CartSharp, KeyOutline, LogoWhatsapp, Close, Skull } from '@vicons/ionicons5';
 import { NIcon } from 'naive-ui';
 import { h } from 'vue';
 
@@ -201,15 +201,15 @@ export const roleMenus = {
             children: [
                 {
                     label: 'Stok',
-                    key: 'stock',
+                    key: 'dnp-stock',
                     icon: renderIcon(FileTrayFullOutline),
                     href: '/dnp-stock-goods'
                 },
                 {
-                    label: "Retur Barang",
-                    key: 'return-items',
-                    icon: renderIcon(RepeatSharp),
-                    href: '/return-item',
+                    label: "Barang Expired",
+                    key: 'dnp-expired_goods',
+                    icon: renderIcon(Close),
+                    href: '/dnp-expired-stocks',
                 }
             ]
         },
@@ -220,15 +220,15 @@ export const roleMenus = {
             children: [
                 {
                     label: 'Stok',
-                    key: 'stock',
+                    key: 'dku-stock',
                     icon: renderIcon(FileTrayFullOutline),
-                    href: '/dnp-stock-goods'
+                    href: '/dku-stock-goods'
                 },
                 {
-                    label: "Retur Barang",
-                    key: 'return-items',
-                    icon: renderIcon(RepeatSharp),
-                    href: '/return-item',
+                    label: "Barang Expired",
+                    key: 'dku-expired_goods',
+                    icon: renderIcon(Close),
+                    href: '/dku-expired-stocks',
                 }
             ]
         },
@@ -237,10 +237,16 @@ export const roleMenus = {
             icon: PushOutline,
             children: [
                 {
-                    label: "Retur Barang",
-                    icon: renderIcon(ShieldHalf),
-                    key: 'retur-barang',
-                    href: '/return-goods',
+                    label: "Retur Barang Rusak",
+                    icon: renderIcon(RepeatSharp),
+                    key: 'return-broken-goods',
+                    href: '/return-broken-goods',
+                },
+                {
+                    label: "Pemusnahan Barang",
+                    icon: renderIcon(SkullOutline),
+                    key: 'destruction-goods',
+                    href: '/destruction-broken-goods',
                 }
             ],
         },

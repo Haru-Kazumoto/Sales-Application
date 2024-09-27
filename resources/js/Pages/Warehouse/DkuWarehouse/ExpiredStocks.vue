@@ -1,16 +1,13 @@
 <template>
     <div class="d-flex flex-column gap-4">
-        <TitlePage title="STOK BARANG GUDANG DNP" />
+        <TitlePage title="STOK BARANG GUDANG EXPIRED" />
         <div class="d-flex flex-column gap-2">
             <div class="row g-3 ">
-                <div class="col-12 col-lg-8 ">
-                    <span class="fs-4">Daftar Produk</span>
+                <div class="col-12 col-lg-9 ">
+                    <span class="fs-4">Daftar Produk Expired</span>
                 </div>
-                <div class="col-12 col-lg-2 d-flex gap-3 ">
-                    <n-select size="large" placeholder="Status" />
-                </div>
-                <div class="col-12 col-lg-2 d-flex gap-3 ">
-                    <n-input placeholder="Cari Produk" />
+                <div class="col-12 col-lg-3 d-flex gap-3 ">
+                    <n-input size="large" placeholder="Nama Produk" />
                 </div>
             </div>
             <div class="card shadow" style="border: none;">
@@ -33,8 +30,11 @@ interface RowData {
     item_name: string;
     package: string;
     stock: number;
-    item_status: string;
-    located: string;
+    incoming_date: string;
+    so_number: string;
+    expired_date: string;
+    // item_status: string;
+    // located: string;
 }
 
 function createColumns(): DataTableColumns<RowData> {
@@ -72,45 +72,28 @@ function createColumns(): DataTableColumns<RowData> {
             },
         },
         {
-            title: 'ALOKASI',
-            key: 'located',
+            title: 'NO SO',
+            key: 'so_number',
             width: 100,
             render(rowData) {
-                return rowData.located;
+                return rowData.so_number;
             }
         },
         {
-            title: 'STATUS',
-            key: 'item_status',
+            title: 'EXPIRED DATE',
+            key: 'expired_date',
             width: 100,
             render(rowData) {
-                // Tentukan warna dan tipe tag berdasarkan item_status pembayaran
-                let type: any;
-
-                switch (rowData.item_status) {
-                    case 'STOK HABIS':
-                        type = 'error';
-                        break;
-                    case 'PERLU TAMBAH':
-                        type = 'warning';
-                        break;
-                    case 'TERSEDIA':
-                        type = 'success';
-                        break;
-                    default:
-                        type = '';
-                }
-
                 return h(
                     NTag,
                     {
                         style: {
                             marginRight: '6px',
                         },
-                        type,
+                        type: 'error',
                         bordered: false
                     },
-                    { default: () => rowData.item_status }
+                    { default: () => rowData.expired_date }
                 );
             },
         },
@@ -137,15 +120,10 @@ export default defineComponent({
     setup() {
         // Data dummy untuk tabel
         const data: RowData[] = [
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
+            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, expired_date: "20/12/2024", so_number: "SS-3042-00012", incoming_date: "01/02/2024"},
+            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, expired_date: "20/12/2024", so_number: "SS-3042-00012", incoming_date: "01/02/2024"},
+            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, expired_date: "20/12/2024", so_number: "SS-3042-00012", incoming_date: "01/02/2024"},
+            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, expired_date: "20/12/2024", so_number: "SS-3042-00012", incoming_date: "01/02/2024"},
         ];
 
         // Pagination dummy data

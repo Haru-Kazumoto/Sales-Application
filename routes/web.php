@@ -85,10 +85,15 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
     //warehouse Routes
     Route::name('warehouse.')->group(function() {
         Route::get('/stock-goods', fn() => Inertia::render('Warehouse/StockItems'))->name('stock-goods');
-        Route::get('/stock-dnp-goods', fn() => Inertia::render('Warehouse/DnpWarehouse/Stocks'))->name('dnp-stock-goods');
+        Route::get('/dnp-stock-goods', fn() => Inertia::render('Warehouse/DnpWarehouse/Stocks'))->name('dnp-stock-goods');
+        Route::get('/dnp-expired-stocks', fn() => Inertia::render('Warehouse/DnpWarehouse/ExpiredStocks'))->name('dnp-expired-stocks');
+        Route::get('/dku-stock-goods', fn() => Inertia::render('Warehouse/DkuWarehouse/Stocks'))->name('dku-stock-goods');
+        Route::get('/dku-expired-stocks', fn() => Inertia::render('Warehouse/DkuWarehouse/ExpiredStocks'))->name('dku-expired-stocks');
         Route::get('/incoming-item', fn() => Inertia::render('Warehouse/IncomingItem'))->name('incoming-item');
-        Route::get('/return-goods', fn() => Inertia::render('Warehouse/ReturnGoods'))->name('return-goods');
+        Route::get('/return-broken-goods', fn() => Inertia::render('Warehouse/BrokenGoods/ReturnBrokenGoods'))->name('return-broken-goods');
+        Route::get('/destruction-broken-goods', fn() => Inertia::render('Warehouse/BrokenGoods/DestructionGoods'))->name('destruction-broken-goods');
         Route::get('/travel-document', fn() => Inertia::render('Warehouse/TravelDocument'))->name('travel-document');
+        Route::get('/list-travel-document', fn() => Inertia::render('Warehouse/ListTravelDocument'))->name('list-travel-document');
         Route::get('/create-travel-document', fn() => Inertia::render('Warehouse/CreateTravelDocument'))->name('create-travel-document');
         Route::get('/return-item', fn() => Inertia::render('Warehouse/DnpWarehouse/ReturnItem'))->name('return-item');
         Route::get('/booking-requests', fn() => Inertia::render('Warehouse/BookingItem/BookingRequest'))->name('booking-request');

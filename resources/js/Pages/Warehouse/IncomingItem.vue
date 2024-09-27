@@ -6,7 +6,7 @@
         <!-- Form Barang Masuk -->
         <div class="card shadow" style="border: none;">
             <div class="card-body">
-                <form>
+                <form class="d-flex flex-column">
                     <!-- Grid untuk Input Form -->
                     <div class="row">
                         <!-- Kolom Kiri -->
@@ -56,6 +56,7 @@
                             <n-input v-model="formData.pengirim" label="Pengirim" size="large" placeholder="ABC" />
                         </div>
                     </div>
+                    <n-button class="ms-auto" type="primary">Proses Barang</n-button>
                 </form>
             </div>
         </div>
