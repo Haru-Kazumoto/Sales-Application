@@ -1,4 +1,5 @@
 <template>
+    <Head title="Purchase Order" />
     <div class="d-flex flex-column gap-4">
         <TitlePage title="Purchase Order" />
         <div class="d-flex flex-column gap-3">
@@ -161,14 +162,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, h, ref, computed, watch } from 'vue'
+import { defineComponent, h, ref, computed, } from 'vue'
 import { Lookup, POProduct, PurchaseOrder, Storehouse } from '../../../types/model';
 import { DataTableColumns, NButton, useNotification } from 'naive-ui';
 import Swal from 'sweetalert2';
 import TitlePage from '../../../Components/TitlePage.vue';
-import { useForm, usePage } from '@inertiajs/vue3';
+import { Head, useForm, usePage } from '@inertiajs/vue3';
 import { formatRupiah } from '../../../Utils/options-input.utils';
-import dayjs from 'dayjs';
 
 export default defineComponent({
     setup() {
@@ -461,7 +461,8 @@ export default defineComponent({
         }
     },
     components: {
-        TitlePage
+        TitlePage,
+        Head
     }
 });
 </script>

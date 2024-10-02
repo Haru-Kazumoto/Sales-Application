@@ -1,6 +1,5 @@
 <template>
-
-    <Head title="List Of PO" />
+    <Head title="List PO" />
     <div class="d-flex flex-column gap-4">
         <TitlePage title="List Of PO" />
         <div class="d-flex gap-2 align-items-center">

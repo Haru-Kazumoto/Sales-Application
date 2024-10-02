@@ -1,4 +1,5 @@
 <template>
+    <Head title="Dashboard" />
     <div class="d-flex flex-column gap-4">
         <TitlePage title="Dashboard Procurement" />
 
@@ -56,7 +57,7 @@ import { defineComponent, reactive, h } from 'vue';
 import TitlePage from '../../Components/TitlePage.vue';
 import CountCard from '../../Components/CountCard.vue';
 import { DataTableColumns, NTag, RowProps } from 'naive-ui';
-import {router} from '@inertiajs/vue3';
+import {router, Head} from '@inertiajs/vue3';
 import { formatRupiah } from '../../Utils/options-input.utils';
 
 interface RowData {
@@ -136,11 +137,6 @@ const data: RowData[] = [
 
 export default defineComponent({
     setup() {
-        // const rowProps = (row: RowData) => {
-        //     return {
-        //         class: row.payment_status === 'OVERDUE' ? 'text-red' : '',
-        //     };
-        // };
 
         // Pagination dummy data
         const pagination = reactive({
@@ -159,12 +155,12 @@ export default defineComponent({
             columns: createColumns(),
             handleRedirect,
             data
-            // rowProps
         };
     },
     components: {
         TitlePage,
-        CountCard
+        CountCard,
+        Head
     }
 });
 </script>

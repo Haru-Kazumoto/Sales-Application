@@ -1,4 +1,5 @@
 <template>
+    <Head title="Purchase Order Detail" />
     <div class="d-flex flex-column gap-4">
         <div class="d-flex flex-column gap-3">
             <TitlePage title="Detail PO" />
@@ -128,7 +129,7 @@ import { PurchaseOrder, POProduct } from '../../../types/model';
 import { DataTableColumns, NButton } from 'naive-ui';
 import { ArrowBack } from "@vicons/ionicons5";
 import TitlePage from '../../../Components/TitlePage.vue';
-import { useForm, usePage, router } from '@inertiajs/vue3';
+import { useForm, usePage, router, Head } from '@inertiajs/vue3';
 import { formatRupiah } from '../../../Utils/options-input.utils';
 import Swal from 'sweetalert2';
 import dayjs from "dayjs";
@@ -295,7 +296,8 @@ export default defineComponent({
         }
     },
     components: {
-        TitlePage
+        TitlePage,
+        Head
     }
 });
 </script>

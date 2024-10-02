@@ -1,5 +1,5 @@
 <template>
-    <Head title="List Of PO" />
+    <Head title="List SSO" />
     <div class="d-flex flex-column gap-4">
         <TitlePage title="List SSO" />
         <div class="d-flex gap-2 align-items-center">
