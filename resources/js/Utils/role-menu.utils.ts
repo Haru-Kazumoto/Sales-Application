@@ -151,7 +151,7 @@ export const roleMenus = {
                     label: 'List SSO',
                     key: 'list-sso',
                     icon: renderIcon(DocumentsOutline),
-                    href: '/list-sso',
+                    href: '/sub-sales-orders',
                 }
             ]
         },

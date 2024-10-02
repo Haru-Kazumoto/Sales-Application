@@ -10,8 +10,6 @@ class PurchaseOrder extends Model
 {
     use HasFactory;
 
-    protected $table = "purchase_orders";
-
     protected $fillable = [
         'purchase_order_number',
         'supplier',
@@ -28,6 +26,8 @@ class PurchaseOrder extends Model
         'notes',
         'sub_total',
         'total_price',
+        'total_ppn',
+        'isDocumentHasGenerated',
     ];      
 
     protected function casts(): array
@@ -41,9 +41,9 @@ class PurchaseOrder extends Model
         ];
     }
 
-    public function products(): HasMany
+    public function purchaseOrderProducts(): HasMany
     {
-        return $this->hasMany(RequestProducts::class, 'purchase_order_id');
+        return $this->hasMany(PurchaseOrderProduct::class, 'purchase_order_id');
     }
 
 }

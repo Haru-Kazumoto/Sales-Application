@@ -1,4 +1,5 @@
 export interface PurchaseOrder {
+    id?: number;
     purchase_order_number: string;
     supplier: string;
     storehouse: string;
@@ -14,7 +15,8 @@ export interface PurchaseOrder {
     notes: string;
     sub_total: number;
     total_price: number;
-    products: POProduct[];
+    total_ppn: number;
+    purchase_order_products: POProduct[];
 }
 
 export interface Lookup {
@@ -71,3 +73,27 @@ export interface MenuAccess {
     menu_icon: string;
     menu_url: string;
 }
+
+export interface SubSalesOrder {
+    id?: number;
+    purchase_order_number: string;
+    proof_number: string;
+    sales_order_number: string;
+    order_date: string | null;
+    located: string;
+    supplier: string;
+    storehouse: string;
+    send_date: string | null;
+    transportation: string;
+    sender: string;
+    delivery_type: string;
+    employee_name: string;
+    sub_total: number;
+    total_after_ppn: number;
+    note: string;
+    term_of_payment: string;
+    total_price: number;
+    sub_sales_order_products: SubSalesOrderProducts[];
+}
+
+export interface SubSalesOrderProducts extends POProduct {}

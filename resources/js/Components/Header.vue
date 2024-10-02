@@ -22,7 +22,7 @@
                 <div class="d-flex flex-row ms-auto align-items-center  p-2 text-white gap-2"
                     style="cursor: pointer;">
                     <n-icon :component="Person" />
-                    <span>{{ $page.props.auth.user.fullname }}</span>
+                    <span class="d-none d-md-flex">{{ $page.props.auth.user.fullname }}</span>
                 </div>
             </n-dropdown>
         </div>

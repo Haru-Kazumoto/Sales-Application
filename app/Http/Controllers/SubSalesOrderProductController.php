@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ProductCustomerOrder;
+use App\Models\SubSalesOrderProduct;
 use Illuminate\Http\Request;
 
-class ProductCustomerOrderController extends Controller
+class SubSalesOrderProductController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class ProductCustomerOrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ProductCustomerOrder $productCustomerOrder)
+    public function show(SubSalesOrderProduct $subSalesOrderProduct)
     {
         //
     }
@@ -42,7 +42,7 @@ class ProductCustomerOrderController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ProductCustomerOrder $productCustomerOrder)
+    public function edit(SubSalesOrderProduct $subSalesOrderProduct)
     {
         //
     }
@@ -50,7 +50,7 @@ class ProductCustomerOrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ProductCustomerOrder $productCustomerOrder)
+    public function update(Request $request, SubSalesOrderProduct $subSalesOrderProduct)
     {
         //
     }
@@ -58,7 +58,7 @@ class ProductCustomerOrderController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ProductCustomerOrder $productCustomerOrder)
+    public function destroy(SubSalesOrderProduct $subSalesOrderProduct)
     {
         //
     }

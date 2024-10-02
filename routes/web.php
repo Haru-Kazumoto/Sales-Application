@@ -3,6 +3,14 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+Route::get('/inspect/po-document',function() {
+    return view('documents.purchase-order-document');
+});
+
+Route::get('/inspect/sso-document', function() {
+    return view('documents.sub-sales-order-document');
+});
+
 // Dashboard Routes
 Route::middleware(['auth', 'verified', 'secure.path'])->group(function() {
     Route::get('/dashboard-finance', [App\Http\Controllers\DashboardController::class, 'indexFinanceDashboard'])->name('dashboard.finance');
@@ -61,10 +69,18 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         Route::get('/purchase-order', [App\Http\Controllers\PurchaseOrderController::class, 'create'])->name('purchase-order');
         Route::post('/purchase-order', [App\Http\Controllers\PurchaseOrderController::class, 'store'])->name('create-po');
         Route::get('/purchase-orders', [App\Http\Controllers\PurchaseOrderController::class, 'index'])->name('purchase-order-list');
-        Route::get('/{purchaseOrder}/detail', [App\Http\Controllers\PurchaseOrderController::class, 'show'])->name('purchase-order.detail');
+        Route::get('/purchase-order/detail/{purchaseOrder}', [App\Http\Controllers\PurchaseOrderController::class, 'show'])->name('purchase-order.detail');
+        Route::get('/generate-po-document/{purchaseOrder}', [App\Http\Controllers\PurchaseOrderController::class, 'generatePurchaseOrderDocument'])->name('generate-po-document');
 
         //Sub sales Order
-        Route::get('/sub-sales-order', fn() => Inertia::render('Procurement/ItemsReceipt/CreateSalesOrder'))->name('sales-order');
+        Route::get('/sub-sales-order', [App\Http\Controllers\SubSalesOrderController::class, 'create'])->name('sales-order');
+        Route::get('/sub-sales-orders', [App\Http\Controllers\SubSalesOrderController::class, 'index'])->name('sales-order-list');
+        Route::get('/sub-sales-order/detail/{subSalesOrder}', [App\Http\Controllers\SubSalesOrderController::class, 'show'])->name('sales-order.detail');
+        Route::get('/sub-sales-order/{poNumber}', [App\Http\Controllers\PurchaseOrderController::class, 'getProductsByPoNumber'])->name('get-po-products');
+        Route::post('/sub-sales-order', [App\Http\Controllers\SubSalesOrderController::class, 'store'])->name('sales-order.post');
+        Route::get('/generate-sso-document/{subSalesOrder}', [App\Http\Controllers\SubSalesOrderController::class, 'generateSubSalesOrderDocument'])->name('generate-sso-document');
+
+
         Route::get('/aging', fn() => Inertia::render('Procurement/Transaction/Aging'))->name('aging');
         Route::get('/transaction-list', fn() => Inertia::render('Procurement/Transaction/TransactionList'))->name('transaction-list');
     });
@@ -114,6 +130,7 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
 
     Route::name('sales.')->group(function() {
         Route::get('/create-co', [App\Http\Controllers\CustomerOrdersController::class, 'create'])->name('create-co');
+        Route::post('/post-create-co', [App\Http\Controllers\CustomerOrdersController::class, 'store'])->name('create-co.post');
         Route::get('/list-co', [App\Http\Controllers\CustomerOrdersController::class, 'index'])->name('list-co');
     });
 });

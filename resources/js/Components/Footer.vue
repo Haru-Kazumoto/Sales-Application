@@ -29,9 +29,5 @@ export default defineComponent({
         font-size: 0.5rem;
         /* Ukuran font lebih kecil di layar mobile */
     }
-
-    .footer-container {
-        margin-top: 1rem;
-    }
 }
 </style>

@@ -27,8 +27,8 @@ class CustomerOrders extends Model
         'status_co'
     ];
 
-    public function productCustomerOrders(): HasMany
+    public function customerOrderProducts(): HasMany
     {
-        return $this->hasMany(ProductCustomerOrder::class);
+        return $this->hasMany(CustomerOrderProduct::class);
     }
 }

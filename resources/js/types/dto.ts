@@ -71,3 +71,17 @@ export interface DivisionCreateDTO {
 }
 
 export interface DivisionUpdateDTO extends DivisionCreateDTO {}
+
+export interface ProductCustomerOrder {
+    product_name: string;
+    quantity: number;
+    package: string;
+    price: number;
+    discount_1: number;
+    total_price_discount_1: number;
+    discount_2: number;
+    total_price_discount_2: number;
+    discount_3: number;
+    total_price_discount_3: number;
+}
+

@@ -25,14 +25,14 @@ class PromoClaim extends Model
         return $this->hasMany(PaymentPromo::class);
     }
 
-    public function productCustomerOrders(): HasMany 
+    public function customerOrderProducts(): HasMany 
     {
-        return $this->hasMany(ProductCustomerOrder::class);
+        return $this->hasMany(CustomerOrderProduct::class);
     }
 
     public function getPromoProducts() 
     {
-        return PromoClaim::with('productCustomerOrders')
+        return PromoClaim::with('customerOrderProducts')
             ->whereNotNull('discount_1')
             ->orWhereNotNull('discount_2')
             ->orWhereNotNull('discount_3')

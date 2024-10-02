@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PurchaseOrderProduct;
+use App\Models\CustomerOrderProduct;
+use App\Models\PurchaseOrder;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
-class ProductsController extends Controller
+class CustomerOrderProductController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,6 +16,8 @@ class ProductsController extends Controller
     {
         //
     }
+
+    
 
     /**
      * Show the form for creating a new resource.
@@ -34,7 +38,7 @@ class ProductsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(PurchaseOrderProduct $products)
+    public function show(CustomerOrderProduct $productCustomerOrder)
     {
         //
     }
@@ -42,7 +46,7 @@ class ProductsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(PurchaseOrderProduct $products)
+    public function edit(CustomerOrderProduct $productCustomerOrder)
     {
         //
     }
@@ -50,7 +54,7 @@ class ProductsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, PurchaseOrderProduct $products)
+    public function update(Request $request, CustomerOrderProduct $productCustomerOrder)
     {
         //
     }
@@ -58,7 +62,7 @@ class ProductsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(PurchaseOrderProduct $products)
+    public function destroy(CustomerOrderProduct $productCustomerOrder)
     {
         //
     }

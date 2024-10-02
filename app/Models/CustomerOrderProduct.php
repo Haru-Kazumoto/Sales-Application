@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class ProductCustomerOrder extends Model
+class CustomerOrderProduct extends Model
 {
     use HasFactory;
 
@@ -18,7 +18,7 @@ class ProductCustomerOrder extends Model
         'price',
         'discount_1',
         'total_price_discount_1',
-        'discoutn_2',
+        'discount_2',
         'total_price_discount_2',
         'discount_3',
         'total_price_discount_3',
@@ -26,7 +26,7 @@ class ProductCustomerOrder extends Model
 
     public function customerOrder(): BelongsTo
     {
-        return $this->belongsTo(CustomerOrders::class);
+        return $this->belongsTo(CustomerOrders::class, 'customer_order_id');
     }
 
     public function promoClaim(): BelongsTo

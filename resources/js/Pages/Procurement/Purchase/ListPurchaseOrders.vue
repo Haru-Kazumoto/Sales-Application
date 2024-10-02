@@ -24,7 +24,7 @@ import { defineComponent, h } from 'vue'
 import TitlePage from '../../../Components/TitlePage.vue';
 import { Head, router } from '@inertiajs/vue3';
 import { Refresh } from "@vicons/ionicons5";
-import { DataTableColumns, NButton } from 'naive-ui';
+import { DataTableColumns, NButton, NTag } from 'naive-ui';
 import { formatRupiah } from '../../../Utils/options-input.utils';
 
 interface RowData {
@@ -34,6 +34,7 @@ interface RowData {
     sender: string;
     storehouse: string;
     total_price: number;
+    isDocumentHasGenerated: number;
 }
 
 export default defineComponent({

@@ -21,37 +21,37 @@
                     <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">NAMA CUSTOMER</label>
-                            <n-input size="large" />
+                            <n-input size="large" v-model:value="model.customer_name"/>
                         </div>
                     </div>
                     <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">LEGALITAS</label>
-                            <n-input size="large" />
+                            <n-input size="large" v-model:value="model.legality"/>
                         </div>
                     </div>
                     <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">ALAMAT CUSTOMER</label>
-                            <n-input size="large" />
+                            <n-input size="large" v-model:value="model.customer_address" />
                         </div>
                     </div>
                     <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">TERMIN</label>
-                            <n-input size="large" />
+                            <n-input size="large" v-model:value="model.term" />
                         </div>
                     </div>
                     <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">TANGGAL JATUH TEMPO</label>
-                            <n-input size="large" />
+                            <n-input size="large" v-model:value="model.due_date" />
                         </div>
                     </div>
                     <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">SALESMAN</label>
-                            <n-input size="large" />
+                            <n-input size="large" v-model:value="model.salesman" />
                         </div>
                     </div>
                 </div>
@@ -65,19 +65,19 @@
                     <!-- INPUT PRODUCTS FORM -->
                     <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">NAMA PRODUK</label>
-                        <n-input size="large" />
+                        <n-input size="large" v-model:value="productCustomer.product_name"/>
                     </div>
                     <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">QUANTITY</label>
-                        <n-input size="large" />
+                        <n-input size="large" v-model:value="productCustomer.quantity" />
                     </div>
                     <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">KEMASAN</label>
-                        <n-input size="large" />
+                        <n-input size="large" v-model:value="productCustomer.package" />
                     </div>
                     <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">HARGA PRODUK</label>
-                        <n-input size="large" />
+                        <n-input size="large" v-model:value="productCustomer.price" />
                     </div>
 
                     <!-- INPUT DISCOUNT FORM -->
@@ -154,7 +154,7 @@
                         <span class="fw-bold">ON WORKING...</span>
                     </div>
                 </div>
-                <n-button class="my-3 ms-auto" type="primary">SUBMIT CO</n-button>
+                <n-button class="my-3 ms-auto" type="primary" @click="handleSubmitCo">SUBMIT CO</n-button>
             </div>
         </div>
 
@@ -166,6 +166,8 @@ import { defineComponent, h, ref } from 'vue'
 import TitlePage from '../../../Components/TitlePage.vue';
 import { DataTableColumns, NButton } from 'naive-ui';
 import { useForm, usePage } from '@inertiajs/vue3';
+import { ProductCustomerOrder } from '../../../types/dto';
+import Swal from 'sweetalert2';
 
 interface RowData {
     product_name: string;
@@ -293,7 +295,7 @@ export default defineComponent({
             total_after_ppn: 0,
             total: 0,
             status_co: '',
-            productCustomerOrders: [] as any[],
+            productCustomerOrders: [] as ProductCustomerOrder[],
         });
 
         const productCustomerOrders = ref({
@@ -309,9 +311,53 @@ export default defineComponent({
             total_price_discount_3: 0,
         });
 
+        function addProduct() {
+            formCO.productCustomerOrders.push({
+                product_name: productCustomerOrders.value.product_name,
+                quantity: productCustomerOrders.value.quantity,
+                package: productCustomerOrders.value.package,
+                price: productCustomerOrders.value.price,
+                discount_1: 0,
+                total_price_discount_1: 0,
+                discount_2: 0,
+                total_price_discount_2: 0,
+                discount_3: 0,
+                total_price_discount_3: 0
+            });
+        }
+
+        function removeProduct(index: number) {
+            formCO.productCustomerOrders.splice(index, 1);
+        }
+
+        function handleSubmitCo() {
+            formCO.post(route('sales.create-co.post'), {
+                onError(error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: error.message,
+                    });
+                },
+                onSuccess() {
+                    formCO.reset();
+                    formCO.productCustomerOrders.splice(0, formCO.productCustomerOrders.length);
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'CO berhasil dibuat',
+                    });
+                }
+            })
+        }
+
         return {
             columns: createColumns(),
-            model: formCO
+            model: formCO,
+            productCustomer: productCustomerOrders,
+            addProduct,
+            removeProduct,
+            handleSubmitCo,
         }
     },
     components: {

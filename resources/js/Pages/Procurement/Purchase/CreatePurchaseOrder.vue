@@ -115,8 +115,8 @@
             <!-- Tabel Produk -->
             <div class="card shadow" style="border: none;">
                 <div class="card-body">
-                    <n-data-table :columns="columns" :data="form.products" :pagination="pagination" :bordered="false"
-                        size="small" pagination-behavior-on-filter="first" />
+                    <n-data-table :columns="columns" :data="form.purchase_order_products" :pagination="pagination"
+                        :bordered="false" size="small" pagination-behavior-on-filter="first" />
                 </div>
             </div>
 
@@ -148,7 +148,7 @@
                             </div>
                             <div class="d-flex justify-content-between">
                                 <span>JATUH TEMPO</span>
-                                <span class="fw-bold">ON WORKING...</span>
+                                <span class="fw-bold">{{ form.due_date }}</span>
                             </div>
                         </div>
                     </div>
@@ -191,7 +191,8 @@ export default defineComponent({
             notes: '',
             sub_total: 0,
             total_price: 0,
-            products: [] as POProduct[]
+            total_ppn: 0,
+            purchase_order_products: [] as POProduct[]
         });
 
         const newProduct = ref<POProduct>({
@@ -216,7 +217,7 @@ export default defineComponent({
             const totalPrice = productPrice + ppnAmount;
 
             // Tambahkan produk ke dalam array
-            form.products.push({
+            form.purchase_order_products.push({
                 product_code: newProduct.value.product_code ?? '',
                 product_name: newProduct.value.product_name ?? '',
                 amount: amount,
@@ -227,6 +228,15 @@ export default defineComponent({
             });
 
             // Reset produk baru setelah ditambahkan
+            newProduct.value = {
+                product_code: '',
+                product_name: '',
+                amount: null,
+                package: '',
+                product_price: null,
+                total_price: null,
+                ppn: null,
+            }
 
             notification.success({
                 title: 'Berhasil',
@@ -240,19 +250,21 @@ export default defineComponent({
         // Menghitung subtotal dari semua produk tanpa PPN
         const totalPPN = computed(() => {
             // Menghitung subtotal dari semua produk
-            const data = form.products.reduce((total, product) => {
+            const data = form.purchase_order_products.reduce((total, product) => {
                 // Mengalikan harga produk dengan jumlahnya dan menjumlahkan ke total
-                return form.products.length * (product.product_price ?? 0);
+                return form.purchase_order_products.length * (product.product_price ?? 0);
             }, 0); // Inisialisasi total dengan 0
+
+            form.total_ppn = data * 0.11;
 
             // Menghitung PPN
             return formatRupiah(data * 0.11); // Menggunakan formatRupiah untuk PPN
         });
 
         const subtotal = computed(() => {
-            const data = form.products.reduce((total, product) => {
+            const data = form.purchase_order_products.reduce((total, product) => {
                 // Mengalikan harga produk dengan jumlahnya dan menjumlahkan ke total
-                return form.products.length * (product.product_price ?? 0);
+                return form.purchase_order_products.length * (product.product_price ?? 0);
             }, 0); // Inisialisasi total dengan 0
             form.sub_total = data.valueOf();
 
@@ -260,20 +272,21 @@ export default defineComponent({
         });
 
         const totalPrice = computed(() => {
-            const productPrice = form.products.reduce((total, product) => {
+            const productPrice = form.purchase_order_products.reduce((total, product) => {
                 // Mengalikan harga produk dengan jumlahnya dan menjumlahkan ke total
-                return form.products.length * (product.product_price ?? 0);
+                return form.purchase_order_products.length * (product.product_price ?? 0);
             }, 0); // Inisialisasi total dengan 0
 
             const afterPpnPrice = productPrice * 0.11;
-            form.total_price = afterPpnPrice.valueOf();
+            const total = productPrice + afterPpnPrice;
+            form.total_price = total;
 
             return formatRupiah(productPrice + afterPpnPrice);
         });
 
         // Fungsi untuk menghapus produk dari array
         function removeProduct(index: number) {
-            form.products.splice(index, 1);
+            form.purchase_order_products.splice(index, 1);
         }
 
         function createColumns(): DataTableColumns<POProduct> {
@@ -391,7 +404,7 @@ export default defineComponent({
                 },
                 onSuccess: () => {
                     form.reset();
-                    form.products.splice(0, form.products.length);
+                    form.purchase_order_products.splice(0, form.purchase_order_products.length);
                     Swal.fire({
                         icon: 'success',
                         title: 'Success submit PO!'
@@ -433,6 +446,7 @@ export default defineComponent({
             removeProduct,
             handleSubmit,
             handleCreatePO,
+            formatRupiah,
             columns: createColumns(),
             pagination: { pageSize: 10 },
             newProduct,

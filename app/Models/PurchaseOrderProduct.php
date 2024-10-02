@@ -6,11 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class RequestProducts extends Model
+class PurchaseOrderProduct extends Model
 {
     use HasFactory;
-
-    protected $table = "products";
 
     protected $fillable = [
         'product_code',
@@ -32,7 +30,7 @@ class RequestProducts extends Model
         ];
     }
 
-    public function purcaseOrder(): BelongsTo
+    public function purchaseOrder(): BelongsTo
     {
         return $this->belongsTo(PurchaseOrder::class);
     }
