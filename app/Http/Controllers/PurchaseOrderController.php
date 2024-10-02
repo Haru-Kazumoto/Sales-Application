@@ -114,7 +114,7 @@ class PurchaseOrderController extends Controller
 
             DB::commit();
             
-            return redirect()->back()->with('success', 'Purchase Order Berhasil Tersubmit!');
+            return redirect()->route('procurement.purchase-order')->with('success', 'Purchase Order Berhasil Tersubmit!');
         } catch(\Exception $e) {
             DB::rollBack();
 

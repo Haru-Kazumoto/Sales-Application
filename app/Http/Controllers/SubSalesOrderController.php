@@ -102,7 +102,7 @@ class SubSalesOrderController extends Controller
 
             DB::commit();
 
-            return redirect()->back()->with('success', 'Sales order berhasil dibuat');
+            return redirect()->route('procurement.sales-order')->with('success', 'Sales order berhasil dibuat');
         } catch(\Exception $e) {
             DB::rollback();
 

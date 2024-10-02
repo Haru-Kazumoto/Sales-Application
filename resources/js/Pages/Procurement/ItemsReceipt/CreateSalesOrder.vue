@@ -74,7 +74,7 @@
             <div class="card shadow overflow-hidden" style="border: none;">
                 <div class="card-body">
                     <n-data-table :columns="columns" :pagination="pagination" :bordered="false" size="small"
-                        pagination-behavior-on-filter="first" :data="formSso.subSalesOrderProducts" />
+                        pagination-behavior-on-filter="first" :data="formSso.sub_sales_order_products" />
                 </div>
             </div>
 
@@ -239,8 +239,7 @@ export default defineComponent({
             total_after_ppn: 0,
             total_price: 0,
             note: '',
-            term_of_payment: '',
-            subSalesOrderProducts: [] as SubSalesOrderProducts[]
+            sub_sales_order_products: [] as SubSalesOrderProducts[]
         });
 
         const subSalesOrderProducts = ref<SubSalesOrderProducts>({
@@ -266,7 +265,7 @@ export default defineComponent({
             formSubSalesOrder.post(route('procurement.sales-order.post'), {
                 onSuccess() {
                     formSubSalesOrder.reset();
-                    formSubSalesOrder.subSalesOrderProducts.splice(0, formSubSalesOrder.subSalesOrderProducts.length);
+                    formSubSalesOrder.sub_sales_order_products.splice(0, formSubSalesOrder.sub_sales_order_products.length);
                     Swal.fire({
                         icon: 'success',
                         title: (page.props.flash as Flash).success
@@ -274,7 +273,7 @@ export default defineComponent({
                 },
                 onError() {
                     Swal.fire({
-                        icon: 'success',
+                        icon: 'error',
                         title: (page.props.flash as Flash).failed
                     });
                 },
@@ -313,11 +312,11 @@ export default defineComponent({
                     }));
 
                     // Ensure subSalesOrderProducts array is empty before pushing new products
-                    formSubSalesOrder.subSalesOrderProducts = [];
+                    formSubSalesOrder.sub_sales_order_products = [];
 
                     // Push each product into the subSalesOrderProducts array
                     products.forEach(product => {
-                        formSubSalesOrder.subSalesOrderProducts.push(product);
+                        formSubSalesOrder.sub_sales_order_products.push(product);
                     });
 
                     notification.success({

@@ -91,7 +91,6 @@ export interface SubSalesOrder {
     sub_total: number;
     total_after_ppn: number;
     note: string;
-    term_of_payment: string;
     total_price: number;
     sub_sales_order_products: SubSalesOrderProducts[];
 }

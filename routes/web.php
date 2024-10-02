@@ -74,10 +74,10 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
 
         //Sub sales Order
         Route::get('/sub-sales-order', [App\Http\Controllers\SubSalesOrderController::class, 'create'])->name('sales-order');
+        Route::post('/sub-sales-order', [App\Http\Controllers\SubSalesOrderController::class, 'store'])->name('sales-order.post');
         Route::get('/sub-sales-orders', [App\Http\Controllers\SubSalesOrderController::class, 'index'])->name('sales-order-list');
         Route::get('/sub-sales-order/detail/{subSalesOrder}', [App\Http\Controllers\SubSalesOrderController::class, 'show'])->name('sales-order.detail');
         Route::get('/sub-sales-order/{poNumber}', [App\Http\Controllers\PurchaseOrderController::class, 'getProductsByPoNumber'])->name('get-po-products');
-        Route::post('/sub-sales-order', [App\Http\Controllers\SubSalesOrderController::class, 'store'])->name('sales-order.post');
         Route::get('/generate-sso-document/{subSalesOrder}', [App\Http\Controllers\SubSalesOrderController::class, 'generateSubSalesOrderDocument'])->name('generate-sso-document');
 
 
