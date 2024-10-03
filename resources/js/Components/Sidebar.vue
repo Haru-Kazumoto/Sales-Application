@@ -55,7 +55,7 @@ export default defineComponent({
             const roleMenu = roleMenus[role] || [];
             return [
                 ...staticMenuOptions.slice(0, 1),
-                { key: 'role-label', label: role, disabled: true },
+                { key: 'role-label', label: role, disabled: true, },
                 {
                     key: 'divider-1',
                     type: 'divider',

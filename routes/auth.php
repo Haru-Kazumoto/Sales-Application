@@ -17,6 +17,7 @@ Route::get('/', function() {
             'PROCUREMENT' => redirect()->intended(route('dashboard.procurement')),
             'AGING_FINANCE' => redirect()->intended(route('dashboard.aging-finance')),
             'SALES' => redirect()->intended(route('dashboard.sales')),
+            'MARKETING' => redirect()->intended(route('dashboard.marketing')),
             default => back()->with('failed', 'Unknown Dashboard'), // Halaman default jika role tidak dikenali
         };
     }

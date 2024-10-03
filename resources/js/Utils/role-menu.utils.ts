@@ -1,4 +1,4 @@
-import { SkullOutline, CartOutline, FileTrayFullOutline, FileTrayStackedOutline, CubeOutline, WalletOutline, NotificationsOutline, PeopleOutline, ReceiptOutline, SettingsOutline, BarChartOutline, BagCheckOutline, DocumentsOutline, DocumentTextOutline, ShieldCheckmarkOutline, RepeatSharp, WarningOutline, Cart, People, PersonAddOutline, Contract, Analytics, CogOutline, DocumentOutline, PushOutline, ShieldHalf, PieChartOutline, ReorderFourSharp, CartSharp, KeyOutline, LogoWhatsapp, Close, Skull } from '@vicons/ionicons5';
+import { SkullOutline, CartOutline, FileTrayFullOutline, FileTrayStackedOutline, CubeOutline, WalletOutline, NotificationsOutline, PeopleOutline, ReceiptOutline, SettingsOutline, BarChartOutline, BagCheckOutline, DocumentsOutline, DocumentTextOutline, ShieldCheckmarkOutline, RepeatSharp, WarningOutline, Cart, People, PersonAddOutline, Contract, Analytics, CogOutline, DocumentOutline, PushOutline, ShieldHalf, PieChartOutline, ReorderFourSharp, CartSharp, KeyOutline, LogoWhatsapp, Close, Skull, Bookmarks, BookmarkOutline, AlbumsOutline } from '@vicons/ionicons5';
 import { NIcon } from 'naive-ui';
 import { h } from 'vue';
 
@@ -270,6 +270,269 @@ export const roleMenus = {
                     href: '/list-co',
                 }
             ]
-        }
+        },
     ],
+    MARKETING: [
+        //marketing
+        
+        {
+            label: "Marketing Reports",
+            key: "marketing-reports",
+            icon: BarChartOutline
+        },
+        {
+            label: "Sales Target",
+            key: "sales-target",
+            icon: PieChartOutline,
+        },
+        {
+            label: "Promo Produk",
+            key: "promo-product",
+            icon: AlbumsOutline,
+        },
+        //Aging Sales
+        { key: 'role-label', label: "AGING SALES", disabled: true },
+        {
+            key: 'divider-1',
+            type: 'divider',
+            props: {
+                style: {
+                    paddingTop: '2px',
+                    borderRadius: '10px',
+                    backgroundColor: '#cccccc',
+                }
+            }
+        },
+        {
+            label: "Transaksi",
+            key: "transaction-sales",
+            icon: ReceiptOutline,
+        },
+        //SALES
+        { key: 'role-label', label: "SALES", disabled: true },
+        {
+            key: 'divider-1',
+            type: 'divider',
+            props: {
+                style: {
+                    paddingTop: '2px',
+                    borderRadius: '10px',
+                    backgroundColor: '#cccccc',
+                }
+            }
+        },
+        {
+            label: "Penjualan",
+            key: 'sales',
+            icon: CartSharp,
+            children: [
+                {
+                    label: 'Buat CO',
+                    icon: renderIcon(DocumentOutline),
+                    key: 'create-co',
+                    href: '/create-co',
+                },
+                {
+                    label: 'List CO',
+                    icon: renderIcon(DocumentsOutline),
+                    key: 'list-co',
+                    href: '/list-co',
+                }
+            ]
+        },
+        {
+            label: "Booking Barang",
+            key: 'booking',
+            icon: renderIcon(BookmarkOutline),
+        },
+        //PROCUREMENT
+        { key: 'role-label', label: "PROCUREMENT", disabled: true },
+        {
+            key: 'divider-1',
+            type: 'divider',
+            props: {
+                style: {
+                    paddingTop: '2px',
+                    borderRadius: '10px',
+                    backgroundColor: '#cccccc',
+                }
+            }
+        },
+        {
+            label: 'Pembelian',
+            key: 'purchasing',
+            icon: BagCheckOutline,
+            children: [
+                {
+                    label: 'Buat PO',
+                    key: 'create-po',
+                    icon: renderIcon(DocumentTextOutline),
+                    href: '/purchase-order',
+                },
+                {
+                    label: 'List PO',
+                    key: 'list-po',
+                    icon: renderIcon(DocumentsOutline),
+                    href: '/purchase-orders',
+                }
+            ]
+        },
+        {
+            label: 'Penerimaan Barang',
+            key: 'receiving-item',
+            icon: SettingsOutline,
+            children: [
+                {
+                    label: 'Buat SSO',
+                    key: 'create-sso',
+                    icon: renderIcon(DocumentTextOutline),
+                    href: '/sub-sales-order',
+                },
+                {
+                    label: 'List SSO',
+                    key: 'list-sso',
+                    icon: renderIcon(DocumentsOutline),
+                    href: '/sub-sales-orders',
+                }
+            ]
+        },
+        //FINANCE
+        { key: 'role-label', label: "FINANCE", disabled: true },
+        {
+            key: 'divider-1',
+            type: 'divider',
+            props: {
+                style: {
+                    paddingTop: '2px',
+                    borderRadius: '10px',
+                    backgroundColor: '#cccccc',
+                }
+            }
+        },
+        {
+            label: 'Klaim',
+            key: 'claim',
+            icon: DocumentOutline,
+            children: [
+                {
+                    label: 'Klaim Promo',
+                    key: 'claim-promo',
+                    icon: renderIcon(DocumentTextOutline),
+                    href: '/claim-promo',
+                },
+                {
+                    label: 'List Klaim Promo',
+                    key: 'claim-promo-list',
+                    icon: renderIcon(DocumentsOutline),
+                    href: '/claim-promo-list',
+                }
+            ]
+        },
+        //WAREHOUSE
+        { key: 'role-label', label: "WAREHOUSE", disabled: true },
+        {
+            key: 'divider-1',
+            type: 'divider',
+            props: {
+                style: {
+                    paddingTop: '2px',
+                    borderRadius: '10px',
+                    backgroundColor: '#cccccc',
+                }
+            }
+        },
+        {
+            label: "Barang Masuk",
+            icon: CubeOutline,
+            key: 'barang-masuk',
+            href: '/incoming-item'
+        },
+        {
+            label: "Stok Gudang Bekasi",
+            icon: FileTrayFullOutline,
+            key: 'stock-goods',
+            href: '/stock-goods'
+        },
+        {
+            label: 'Booking Barang',
+            icon: CartOutline,
+            key: 'booking-items',
+            href: '/booking-requests',
+        },
+        {
+            label: "Surat Jalan",
+            key: 'travel-document',
+            icon: DocumentTextOutline,
+            children: [
+                {
+                    label: "Buat Surat Jalan",
+                    key: 'travel-document',
+                    icon: renderIcon(DocumentOutline),
+                    href: '/travel-document',
+                },
+                {
+                    label: "List Surat Jalan",
+                    key: 'list-travel-document',
+                    icon: renderIcon(DocumentsOutline),
+                    href: '/list-travel-document',
+                },
+            ]
+        },
+        {
+            label: "Gudang DNP",
+            icon: FileTrayStackedOutline,
+            key: 'dnp-storehouse',
+            children: [
+                {
+                    label: 'Stok',
+                    key: 'dnp-stock',
+                    icon: renderIcon(FileTrayFullOutline),
+                    href: '/dnp-stock-goods'
+                },
+                {
+                    label: "Barang Expired",
+                    key: 'dnp-expired_goods',
+                    icon: renderIcon(Close),
+                    href: '/dnp-expired-stocks',
+                }
+            ]
+        },
+        {
+            label: "Gudang DKU",
+            icon: FileTrayStackedOutline,
+            key: 'dku-storehouse',
+            children: [
+                {
+                    label: 'Stok',
+                    key: 'dku-stock',
+                    icon: renderIcon(FileTrayFullOutline),
+                    href: '/dku-stock-goods'
+                },
+                {
+                    label: "Barang Expired",
+                    key: 'dku-expired_goods',
+                    icon: renderIcon(Close),
+                    href: '/dku-expired-stocks',
+                }
+            ]
+        },
+        {
+            label: "Barang Rusak",
+            icon: PushOutline,
+            children: [
+                {
+                    label: "Retur Barang Rusak",
+                    icon: renderIcon(RepeatSharp),
+                    key: 'return-broken-goods',
+                    href: '/return-broken-goods',
+                },
+                {
+                    label: "Pemusnahan Barang",
+                    icon: renderIcon(SkullOutline),
+                    key: 'destruction-goods',
+                    href: '/destruction-broken-goods',
+                }
+            ],
+        },
+    ]
 };

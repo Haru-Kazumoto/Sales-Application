@@ -11,6 +11,10 @@ Route::get('/inspect/sso-document', function() {
     return view('documents.sub-sales-order-document');
 });
 
+Route::get('/test-view', function() {
+    return Inertia::render('Test');
+});
+
 // Dashboard Routes
 Route::middleware(['auth', 'verified', 'secure.path'])->group(function() {
     Route::get('/dashboard-finance', [App\Http\Controllers\DashboardController::class, 'indexFinanceDashboard'])->name('dashboard.finance');
@@ -19,6 +23,7 @@ Route::middleware(['auth', 'verified', 'secure.path'])->group(function() {
     Route::get('/dashboard-admin',[App\Http\Controllers\DashboardController::class, 'indexAdminDashboard'])->name('dashboard.admin');
     Route::get('/dashboard-aging-finance',[App\Http\Controllers\DashboardController::class, 'indexAgingFinanceDashboard'])->name('dashboard.aging-finance');
     Route::get('/dashboard-sales', [App\Http\Controllers\DashboardController::class, 'indexSalesDashboard'])->name('dashboard.sales');
+    Route::get('/dashboard-marketing', [App\Http\Controllers\DashboardController::class, 'indexMarketingDashboard'])->name('dashboard.marketing');
 });
 
 Route::middleware(['auth', 'secure.path', 'web'])->group(function() {

@@ -43,4 +43,9 @@ class DashboardController extends Controller
     {
         return Inertia::render('Sales/Dashboard');
     }
+
+    public function indexMarketingDashboard(): Response
+    {
+        return Inertia::render('Marketing/Dashboard');
+    }
 }
