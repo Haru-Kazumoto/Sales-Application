@@ -14,7 +14,7 @@
                 <div class="card shadow-sm border-0 ">
                     <div class="card-body">
                         <div class="card-title">
-                            TARGET Penjualan
+                            TARGET PENJUALAN
                         </div>
                         <div class="card-content mb-3">
                             <span class="fs-3 fw-medium">Rp 1.000.000.000</span>
@@ -27,10 +27,10 @@
                 <div class="card shadow-sm border-0 ">
                     <div class="card-body">
                         <div class="card-title">
-                            TARGET Penjualan
+                            POTENSI PENJUALAN
                         </div>
                         <div class="card-content mb-3">
-                            <span class="fs-3 fw-medium">Rp 1.000.000.000</span>
+                            <span class="fs-3 fw-medium">Rp 80.000.000</span>
                         </div>
                         <span>BULAN SEPTEMBER 2024</span>
                     </div>
@@ -40,10 +40,10 @@
                 <div class="card shadow-sm border-0 ">
                     <div class="card-body">
                         <div class="card-title">
-                            TARGET Penjualan
+                            KONVERSI PEMBAYARAN
                         </div>
                         <div class="card-content mb-3">
-                            <span class="fs-3 fw-medium">Rp 1.000.000.000</span>
+                            <span class="fs-3 fw-medium">Rp 60.000.000</span>
                         </div>
                         <span>BULAN SEPTEMBER 2024</span>
                     </div>
@@ -53,10 +53,10 @@
                 <div class="card shadow-sm border-0 ">
                     <div class="card-body">
                         <div class="card-title">
-                            TARGET Penjualan
+                            KEKURANGAN TARGET
                         </div>
                         <div class="card-content mb-3">
-                            <span class="fs-3 fw-medium">Rp 1.000.000.000</span>
+                            <span class="fs-3 fw-medium">Rp 40.000.000</span>
                         </div>
                         <span>BULAN SEPTEMBER 2024</span>
                     </div>
@@ -119,7 +119,7 @@ import { defineComponent, h } from 'vue';
 import TitlePage from "../../Components/TitlePage.vue";
 import ChartSales from '../../Components/ChartSales.vue';
 import { DataTableColumns, NBadge } from 'naive-ui';
-import {formatRupiah} from "../../Utils/options-input.utils";
+import { formatRupiah } from "../../Utils/options-input.utils";
 
 interface RowDataSalesmanPerform {
     salesman: string;
@@ -144,7 +144,7 @@ function createSalesmanPerformColumn(): DataTableColumns<RowDataSalesmanPerform>
             title: "#",
             key: 'index',
             width: 50,
-            render(row, index){
+            render(row, index) {
                 return index + 1;
             }
         },
@@ -189,7 +189,7 @@ function createRunningBillColumn(): DataTableColumns<RowDataRunningBill> {
             title: "#",
             key: 'index',
             width: 50,
-            render(row, index){
+            render(row, index) {
                 return index + 1;
             }
         },
@@ -224,7 +224,7 @@ function createRunningBillColumn(): DataTableColumns<RowDataRunningBill> {
             render(row) {
                 let type: any;
 
-                switch(row.status) {
+                switch (row.status) {
                     case "PAID":
                         type = 'success';
                     case "UNPAID":
@@ -238,9 +238,9 @@ function createRunningBillColumn(): DataTableColumns<RowDataRunningBill> {
                 return h(
                     NBadge,
                     {
-                        type  
+                        type
                     },
-                    {default: () => row.status}
+                    { default: () => row.status }
                 )
             }
         },
