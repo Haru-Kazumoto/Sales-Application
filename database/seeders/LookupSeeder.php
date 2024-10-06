@@ -14,14 +14,14 @@ class LookupSeeder extends Seeder
     public function run(): void
     {
         $dataToInsert = [
-            ['label' => '10 HARI', 'value' => '10_HARI', 'category' => 'PAYMENT_TERM'],
-            ['label' => '15 HARI', 'value' => '15_HARI', 'category' => 'PAYMENT_TERM'],
-            ['label' => '20 HARI', 'value' => '20_HARI', 'category' => 'PAYMENT_TERM'],
-            ['label' => '25 HARI', 'value' => '25_HARI', 'category' => 'PAYMENT_TERM'],
-            ['label' => '30 HARI', 'value' => '30_HARI', 'category' => 'PAYMENT_TERM'],
-            ['label' => 'DKU', 'value' => 'DKU', 'category' => 'STORE_LOCATION'],
-            ['label' => 'DNP', 'value' => 'DNP', 'category' => 'STORE_LOCATION'],
-            ['label' => 'DD', 'value' => 'DD', 'category' => 'STORE_LOCATION'],
+            // ['label' => '10 HARI', 'value' => '10_HARI', 'category' => 'PAYMENT_TERM'],
+            // ['label' => '15 HARI', 'value' => '15_HARI', 'category' => 'PAYMENT_TERM'],
+            // ['label' => '20 HARI', 'value' => '20_HARI', 'category' => 'PAYMENT_TERM'],
+            // ['label' => '25 HARI', 'value' => '25_HARI', 'category' => 'PAYMENT_TERM'],
+            // ['label' => '30 HARI', 'value' => '30_HARI', 'category' => 'PAYMENT_TERM'],
+            // ['label' => 'DKU', 'value' => 'DKU', 'category' => 'STORE_LOCATION'],
+            // ['label' => 'DNP', 'value' => 'DNP', 'category' => 'STORE_LOCATION'],
+            // ['label' => 'DD', 'value' => 'DD', 'category' => 'STORE_LOCATION'],
             ['label' => 'Customer', 'value' => 'CUSTOMER', 'category' => 'TYPE_PARTIES'],
             ['label' => 'Supplier', 'value' => 'SUPPLIER', 'category' => 'TYPE_PARTIES'],
             ['label' => 'Vendor', 'value' => 'VENDOR', 'category' => 'TYPE_PARTIES'],
