@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Products;
 use App\Models\PurchaseOrderProduct;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -13,7 +14,7 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        //
+        
     }
 
     /**
@@ -21,7 +22,9 @@ class ProductsController extends Controller
      */
     public function createProduct()
     {
-        return Inertia::render('Admin/Products');
+        $products = Products::paginate(10);
+
+        return Inertia::render('Admin/Products', compact('products'));
     }
 
     /**

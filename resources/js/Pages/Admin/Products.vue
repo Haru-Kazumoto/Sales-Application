@@ -77,7 +77,7 @@
         <div class="row g-3">
             <div class="col-12 col-lg-6 d-flex align-items-lg-center gap-3">
                 <label>Total Jumlah Customer</label>
-                <n-input :disabled="true" class="w-25"  />
+                <n-input :disabled="true" class="w-25" />
             </div>
             <div class="col-12 col-lg-6 d-flex">
                 <div class="ms-auto d-flex align-items-lg-center gap-2 justify-content-lg-end w-100">
@@ -89,7 +89,9 @@
 
         <div class="card shadow-sm border-0 mb-5">
             <div class="card-body">
-                <n-data-table :bordered="false" :columns="columns"/>
+                <n-data-table :bordered="false" :columns="columns" :data="$page.props.products.data" />
+                <n-pagination v-model:page="currentPage" :page-count="$page.props.products.to"
+                    :page-size="$page.props.products.per_page" @update:page="handlePageChange" />
             </div>
         </div>
 
@@ -97,16 +99,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, h } from 'vue';
+import { defineComponent, h, ref } from 'vue';
 import TitlePage from '../../Components/TitlePage.vue';
 import { NButton } from 'naive-ui';
+import { router } from '@inertiajs/vue3';
 
 function createColumns() {
     return [
         {
             title: "#",
             key: 'index',
-            render(row,index) {
+            width: 70,
+            render(row, index) {
                 return index + 1;
             }
         },
@@ -195,23 +199,23 @@ function createColumns() {
             key: "action",
             width: 100,
             render(row) {
-                return h('div', {class: "d-flex gap-2"}, [
+                return h('div', { class: "d-flex gap-2" }, [
                     h(
-                        NButton,{
-                            type: 'info',
-                            onClick() {
-                                alert('clicked');
-                            },
+                        NButton, {
+                        type: 'info',
+                        onClick() {
+                            alert('clicked');
                         },
-                        {defaul: () => 'UPDATE'}
+                    },
+                        { defaul: () => 'UPDATE' }
                     ),
                     h(
-                        NButton,{
-                            type: 'error',
-                            onClick() {
-                                alert('clicked');
-                            }
+                        NButton, {
+                        type: 'error',
+                        onClick() {
+                            alert('clicked');
                         }
+                    }
                     )
                 ]);
             }
@@ -221,10 +225,17 @@ function createColumns() {
 
 export default defineComponent({
     setup() {
+        const currentPage = ref(1);
 
+        function handlePageChange(page: number) {
+            currentPage.value = page;
+            router.get(route('admin.products'), { page }, { preserveState: true }); // Request data for the selected page
+        }
 
         return {
             columns: createColumns(),
+            currentPage,
+            handlePageChange,
         }
     },
     components: {

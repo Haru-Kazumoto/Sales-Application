@@ -75,8 +75,8 @@
             <div class="card-body">
                 <n-data-table :columns="columns" :bordered="false" :data="$page.props.parties.data"
                     pagination-behavior-on-filter="first" />
-                <n-pagination v-model:page="currentPage" :page-count="$page.props.last_page"
-                    :page-size="$page.props.per_page" @update:page="handlePageChange" />
+                <n-pagination v-model:page="currentPage" :page-count="$page.props.parties.to"
+                    :page-size="$page.props.parties.per_page" @update:page="handlePageChange" />
             </div>
         </div>
     </div>
