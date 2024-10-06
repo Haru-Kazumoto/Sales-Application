@@ -22,7 +22,7 @@ class PartiesController extends Controller
 
     public function createSupplier()
     {
-        $parties = Parties::where('type_parties', "SUPPLIER")->paginate(10);
+        $parties = Parties::where('type_parties', "VENDOR")->paginate(10);
         $groups = PartiesGroup::all();
         $supplier_type = Lookup::where('category', 'TYPE_PARTIES')->get();
 
