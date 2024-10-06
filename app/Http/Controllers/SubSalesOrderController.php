@@ -3,11 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Http\Services\PurchaseOrderService;
+use App\Models\Products;
 use App\Models\PurchaseOrder;
 use App\Models\SubSalesOrder;
 use App\Models\SubSalesOrderProduct;
+use App\Models\TransactionDetail;
+use App\Models\TransactionItem;
+use App\Models\Transactions;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -18,9 +24,14 @@ class SubSalesOrderController extends Controller
      */
     public function index()
     {
-        $sub_sales_orders = SubSalesOrder::with('subSalesOrderProducts')->get();
+        $transactions = Transactions::with([
+            'transactionDetails', // Memuat relasi transactionDetails
+            'transactionItems.product' // Memuat relasi transactionItems beserta product di dalamnya
+        ])
+            ->where('transaction_type_id', 6)
+            ->get();
 
-        return Inertia::render("Procurement/ItemsReceipt/ListSalesOrders", compact('sub_sales_orders'));
+        return Inertia::render('Procurement/ItemsReceipt/ListSalesOrders', compact('transactions'));
     }
 
    
@@ -35,100 +46,130 @@ class SubSalesOrderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
+
         // dd($request->all());
 
         $request->validate([
-            'purchase_order_number' => 'required|string',
-            'proof_number' => 'required|string',
-            'sales_order_number' => 'required|string',
-            'order_date' => 'required|string',
-            'located' => 'required|string',
-            'supplier' => 'required|string',
-            'storehouse' => 'required|string',
-            'send_date' => 'required|string',
-            'transportation' => 'required|string',
-            'sender' => 'required|string',
-            'delivery_type' => 'required|string',
-            'employee_name' => 'required|string',
-            'sub_total' => 'required|numeric',
-            'total_after_ppn' => 'required|numeric',
-            'total_price' => 'required|numeric',
-            'note' => 'nullable|string',
-            'subSalesOrderProducts' => 'required|array',
-            'subSalesOrderProducts.*.product_code' => 'required|string',
-            'subSalesOrderProducts.*.product_name' => 'required|string',
-            'subSalesOrderProducts.*.amount' => 'required|numeric',
-            'subSalesOrderProducts.*.package' => 'required|string',
-            'subSalesOrderProducts.*.product_price' => 'required|numeric',
-            'subSalesOrderProducts.*.ppn' => 'required|numeric',
+            'document_code' => 'required|string|unique:transactions,document_code',
+            'term_of_payment' => 'required|string',
+            'due_date' => 'required',
+            'description' => 'nullable|string',
+            'sub_total' => 'required|numeric', //required
+            'total' => 'required|numeric', //required
+            'tax_amount' => 'required|numeric', //required
+            'transaction_details' => 'required|array',
+            'transaction_details.*.name' => 'required|string',
+            'transaction_details.*.category' => 'required|string',
+            'transaction_details.*.value' => 'required|string',
+            'transaction_details.*.data_type' => 'required|string',
+            'transaction_items' => 'required|array',
+            'transaction_items.*.unit' => 'required|string',
+            'transaction_items.*.quantity' => 'required|numeric',
+            'transaction_items.*.tax_amount' => 'nullable|numeric',
+            'transaction_items.*.amount' => 'required|numeric',
+            'transaction_items.*.tax_id' => 'required|numeric',
+            'transaction_items.*.product_id' => 'required|numeric',
+            'transaction_items.*.product' => 'required_if:transaction_items.*.product_id,null|array',
+            'transaction_items.*.product.code' => 'required_with:transaction_items.*.product|string',
+            'transaction_items.*.product.unit' => 'required_with:transaction_items.*.product|string',
+            'transaction_items.*.product.name' => 'required_with:transaction_items.*.product|string',
         ]);
 
-        DB::beginTransaction();
-
-        try {
-            $dataSso = SubSalesOrder::create([
-                'purchase_order_number' => $request->input('purchase_order_number'),
-                'proof_number' => $request->input('proof_number'),
-                'sales_order_number' => $request->input('sales_order_number'),
-                'order_date' => $request->input('order_date'),
-                'located' => $request->input('located'),
-                'supplier' => $request->input('supplier'),
-                'storehouse' => $request->input('storehouse'),
-                'send_date' => $request->input('send_date'),
-                'transportation' => $request->input('transportation'),
-                'sender' => $request->input('sender'),
-                'delivery_type' => $request->input('delivery_type'),
-                'employee_name' => $request->input('employee_name'),
-                'sub_total' => $request->input('sub_total'),
-                'total_after_ppn' => $request->input('total_after_ppn'),
-                'note' => $request->input('note'),
-                'total_price' => $request->input('total_price'),
+        // Gunakan transaksi database
+        DB::transaction(function () use ($request) {
+            // Simpan transaksi
+            $transaction = Transactions::create([
+                'document_code' => $request->input('document_code'),
+                'correlation_id' => rand(10000,88888),
+                'created_by' => Auth::user()->id,
+                'term_of_payment' => $request->input('term_of_payment'),
+                'due_date' => $request->input('due_date'),
+                'description' => $request->input('description'),
+                'sub_total' => $request->input('sub_total'), //required
+                'total' => $request->input('total'), //required
+                'tax_amount' => $request->input('tax_amount'), //required
+                'transaction_type_id' => 6,
             ]);
 
-            foreach($request->input('subSalesOrderProducts') as $ssoProduct) {
-                SubSalesOrderProduct::create([
-                    'product_code' => $ssoProduct['product_code'],
-                    'product_name' => $ssoProduct['product_name'],
-                    'amount' => $ssoProduct['amount'],
-                    'package' => $ssoProduct['package'],
-                    'product_price' => $ssoProduct['product_price'],
-                    'total_price' => $ssoProduct['total_price'],
-                    'ppn' => $ssoProduct['ppn'],
-                    'sub_sales_order_id' => $dataSso->id
+            // Simpan transaction details
+            foreach ($request->input('transaction_details') as $detail) {
+                TransactionDetail::create([
+                    'name' => $detail['name'],
+                    'category' => $detail['category'],
+                    'value' => $detail['value'],
+                    'data_type' => $detail['data_type'],
+                    'transactions_id' => $transaction->id,
                 ]);
             }
 
-            DB::commit();
+            // Simpan transaction items
+            foreach ($request->input('transaction_items') as $txItem) {
+                $product = Products::find($txItem['product_id']);
 
-            return redirect()->route('procurement.sales-order')->with('success', 'Sales order berhasil dibuat');
-        } catch(\Exception $e) {
-            DB::rollback();
+                // Jika produk sudah ada (product_id), ambil id-nya. Jika tidak, buat produk baru.
+                // if(isset($txItem['product_id'])) {
+                //     $product = Products::find($txItem['product_id']);
+                // } 
+                // else {
+                //     $product = Products::create([
+                //         'code' => $txItem['product']['code'],
+                //         'unit' => $txItem['product']['unit'],
+                //         'name' => $txItem['product']['name'],
+                //     ]);
+                // }
 
-            return redirect()->back()->with('failed', 'Gagal membuat sub sales order'.$e->getMessage());
-        }
+                // Simpan transaction item
+                TransactionItem::create([
+                    'unit' => $txItem['unit'],
+                    'quantity' => $txItem['quantity'],
+                    'tax_amount' => $txItem['tax_amount'],
+                    'amount' => $txItem['amount'],
+                    'tax_id' => $txItem['tax_id'],
+                    'transactions_id' => $transaction->id,
+                    'product_id' => $product->id, // Menyimpan product_id hasil dari produk yang diambil atau baru
+                ]);
+            }
+        });
 
+        return redirect()->route('procurement.sales-order')->with('success', 'Sub Sales Order Berhasil Tersubmit!');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(SubSalesOrder $subSalesOrder)
+    public function show(Transactions $transaction)
     {
-        $subSalesOrder->load('subSalesOrderProducts');
+        // Memuat relasi yang diperlukan
+        $transaction->load(['transactionDetails', 'transactionItems.product']);
 
-        return Inertia::render('Procurement/ItemsReceipt/SubSalesOrderDetail', compact('subSalesOrder'));
+        // Mengembalikan view dengan data transaksi
+        return Inertia::render('Procurement/ItemsReceipt/SubSalesOrderDetail', compact('transaction'));
     }
 
     /**
      * Generate document SO to PDF
      */
-    public function generateSubSalesOrderDocument(SubSalesOrder $subSalesOrder)
+    public function generateSubSalesOrderDocument(Transactions $transactions)
     {
-        $subSalesOrder->load('subSalesOrderProducts');
+        // Memuat relasi yang diperlukan
+        $transactions->load('transactionDetails', 'transactionItems.product');
 
-        $pdf = Pdf::loadView('documents.sub-sales-order-document', compact('subSalesOrder'));
+        // Mengambil detail berdasarkan kategori
+        $proof_number = $transactions->transactionDetails->firstWhere('category', "Proof Number")->value ?? null;
+        $purchase_order_date = $transactions->transactionDetails->firstWhere('category', 'PO Date')->value ?? null;
+        $supplier = $transactions->transactionDetails->firstWhere('category', 'Supplier')->value ?? '';
+
+        // Data yang akan dikirimkan ke view PDF
+        $data = [
+            'sales_order' => $transactions,
+            'proof_number' => $proof_number,
+            'supplier' => $supplier,
+            'purchase_order_date' => $purchase_order_date,
+        ];
+
+        $pdf = Pdf::loadView('documents.sub-sales-order-document', $data);
 
         return $pdf->stream('sub_sales_order_'.rand(100000,900000).'_.pdf');
     }

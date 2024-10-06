@@ -12,7 +12,7 @@
         </div>
         <div class="card shadow" style="border: none;">
             <div class="card-body">
-                <n-data-table :columns="columns" :bordered="false" :data="$page.props.purchase_orders" />
+                <n-data-table :columns="columns" :bordered="false" :data="$page.props.transactions" />
             </div>
         </div>
     </div>
@@ -25,21 +25,12 @@ import { Head, router } from '@inertiajs/vue3';
 import { Refresh } from "@vicons/ionicons5";
 import { DataTableColumns, NButton, NTag } from 'naive-ui';
 import { formatRupiah } from '../../../Utils/options-input.utils';
-
-interface RowData {
-    id: number;
-    purchase_order_number: number;
-    supplier: string;
-    sender: string;
-    storehouse: string;
-    total_price: number;
-    isDocumentHasGenerated: number;
-}
+import { Transactions } from '../../../types/model';
 
 export default defineComponent({
     setup() {
 
-        function createColumns(): DataTableColumns<RowData> {
+        function createColumns(): DataTableColumns<Transactions> {
             return [
                 {
                     title: '#',
@@ -52,35 +43,47 @@ export default defineComponent({
                     title: 'No PO',
                     key: 'purchase_order_number',
                     render(rowData) {
-                        return rowData.purchase_order_number;  // Menampilkan nomor faktur
+                        return rowData.document_code;  // Menampilkan nomor faktur
                     },
                 },
                 {
                     title: 'Pemasok',
                     key: 'supplier',
                     render(rowData) {
-                        return rowData.supplier;  // Menampilkan nama salesman
+                        const supplierData = rowData.transaction_details.find((data) => {
+                            return data.category === "Supplier"
+                        })
+
+                        return supplierData?.value;  // Menampilkan nama salesman
                     },
                 },
                 {
                     title: 'Pengirim',
                     key: 'sender',
                     render(rowData) {
-                        return rowData.sender;  // Menampilkan nama pelanggan
+                        const senderData = rowData.transaction_details.find((data) => {
+                            return data.category === "Sender";
+                        })
+                        
+                        return senderData?.value;
                     },
                 },
                 {
                     title: 'Gudang',
                     key: 'storehouse',
                     render(rowData) {
-                        return rowData.storehouse;  // Menampilkan jangka waktu pembayaran
+                        const storehouseData = rowData.transaction_details.find((data) => {
+                            return data.category === "Storehouse";
+                        })
+
+                        return storehouseData?.value;
                     },
                 },
                 {
                     title: 'Harga',
                     key: 'total_price',
                     render(rowData) {
-                        return formatRupiah(rowData.total_price);  // Menampilkan tanggal jatuh tempo
+                        return formatRupiah(rowData.total);
                     },
                 },
                 {

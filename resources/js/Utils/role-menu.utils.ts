@@ -42,6 +42,24 @@ export const roleMenus = {
                 }
             ]
         },
+        {
+            label: "Customer",
+            key: 'customer',
+            icon: PeopleOutline,
+            href: '/customer-management',
+        },
+        {
+            label: "Supplier",
+            key: 'supplier',
+            icon: PeopleOutline,
+            href: '/supplier-management',
+        },
+        {
+            label: "Products",
+            key: 'products',
+            icon: CartOutline,
+            href: '/product-management',
+        }
     ],
     FINANCE: [
         {
@@ -284,11 +302,6 @@ export const roleMenus = {
             label: "Sales Target",
             key: "sales-target",
             icon: PieChartOutline,
-        },
-        {
-            label: "Promo Produk",
-            key: "promo-product",
-            icon: AlbumsOutline,
         },
         //Aging Sales
         { key: 'role-label', label: "AGING SALES", disabled: true },

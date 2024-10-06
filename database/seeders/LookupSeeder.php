@@ -22,6 +22,9 @@ class LookupSeeder extends Seeder
             ['label' => 'DKU', 'value' => 'DKU', 'category' => 'STORE_LOCATION'],
             ['label' => 'DNP', 'value' => 'DNP', 'category' => 'STORE_LOCATION'],
             ['label' => 'DD', 'value' => 'DD', 'category' => 'STORE_LOCATION'],
+            ['label' => 'Customer', 'value' => 'CUSTOMER', 'category' => 'TYPE_PARTIES'],
+            ['label' => 'Supplier', 'value' => 'SUPPLIER', 'category' => 'TYPE_PARTIES'],
+            ['label' => 'Vendor', 'value' => 'VENDOR', 'category' => 'TYPE_PARTIES'],
         ];
 
         foreach($dataToInsert as $data) {

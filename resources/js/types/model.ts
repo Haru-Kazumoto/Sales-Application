@@ -19,6 +19,99 @@ export interface PurchaseOrder {
     purchase_order_products: POProduct[];
 }
 
+export interface Transactions {
+    id?: number;
+    document_code: string;
+    correlation_id?: number | null;
+    created_by?: number | null;
+    updated_by?: number | null;
+    term_of_payment: string;
+    due_date: string;
+    description: string;
+    sub_total: number | null;
+    total: number | null;
+    tax_amount: number | null;
+    transaction_type_id?: number;
+    transaction_details: TransactionDetail[];
+    transaction_items?: TransactionItems[];
+}
+
+export interface Parties {
+    id?: number;
+    code: string;
+    name: string;
+    legality: string;
+    type_parties?: string;
+    phone?: string;
+    fax?: string;
+    handphone?: string;
+    email?: string;
+    website?: string;
+    npwp?: string;
+    contact_person?: string;
+    term_payment?: number;
+    address?: string;
+    postal_code?: string;
+    city?: string;
+    province?: string;
+    country?: string;
+    description?: string;
+    parties_group_id?: number;
+}
+
+export interface PartiesGroup {
+    id?: number;
+    name: string;
+    description?: string;
+}
+
+export interface TransactionType {
+    id?: number;
+    name: string;
+}
+
+export interface TransactionDetail {
+    id?: number;
+    name: string;
+    category: string;
+    value: string;
+    data_type: string;
+    transactions_id?: number;
+    transaction?: Transactions;
+}
+
+export interface TransactionItems {
+    id?: number;
+    unit: string;
+    quantity: number | null;
+    tax_amount: number | null;
+    amount: number | null;
+    discount_1?: number | null;
+    discount_2?: number | null;
+    discount_3?: number | null;
+    transactions_id?: number | null;
+    product_id?: number | null;
+    tax_id?: number | null;
+    transaction?: Transactions;
+    product?: Products;
+}
+
+export interface Tax {
+    id?: number;
+    name: string;
+    value: number;
+}
+
+export interface Products {
+    id?: number;
+    unit: string;
+    name: string;
+    code: string;
+    tax_id?: number | null;
+    product_type_id?: number | null;
+    transaction_items?: TransactionItems[];
+}
+
 export interface Lookup {
     label: string;
     value: string;
@@ -95,4 +188,4 @@ export interface SubSalesOrder {
     sub_sales_order_products: SubSalesOrderProducts[];
 }
 
-export interface SubSalesOrderProducts extends POProduct {}
+export interface SubSalesOrderProducts extends POProduct { }

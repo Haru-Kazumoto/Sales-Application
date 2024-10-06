@@ -4,13 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Http\Services\PurchaseOrderService;
 use App\Models\Lookup;
+use App\Models\Products;
 use App\Models\PurchaseOrderProduct;
 use App\Models\PurchaseOrder;
 use App\Models\StoreHouse;
 use App\Models\SubSalesOrder;
+use App\Models\Tax;
+use App\Models\TransactionDetail;
+use App\Models\TransactionItem;
+use App\Models\Transactions;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -23,9 +29,14 @@ class PurchaseOrderController extends Controller
      */
     public function index(): Response
     {
-        $purchase_orders = PurchaseOrder::with('purchaseOrderProducts')->get();
+        $transactions = Transactions::with([
+            'transactionDetails', // Memuat relasi transactionDetails
+            'transactionItems.product' // Memuat relasi transactionItems beserta product di dalamnya
+        ])
+            ->where('transaction_type_id', 4)
+            ->get();
 
-        return Inertia::render('Procurement/Purchase/ListPurchaseOrders', compact('purchase_orders'));
+        return Inertia::render('Procurement/Purchase/ListPurchaseOrders', compact('transactions'));
     }
 
     /**
@@ -35,145 +46,193 @@ class PurchaseOrderController extends Controller
     {
         $payment_terms = Lookup::where('category', 'PAYMENT_TERM')->get();
         $store_locations = Lookup::where('category', 'STORE_LOCATION')->get();
+        $products = Products::all();
+        $units = Lookup::where('category', 'UNIT')->get();
+        $tax = Tax::all();
 
         return Inertia::render('Procurement/Purchase/CreatePurchaseOrder', [
             'po_number' => 'PO-'.rand(100000, 6666666),
             'storehouses' => StoreHouse::all(),
             'payment_terms' => $payment_terms,
-            'store_locations' => $store_locations
+            'store_locations' => $store_locations,
+            'tax' => $tax,
+            'products' => $products,
+            'units' => $units,
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request): RedirectResponse
     {
+
         // dd($request->all());
-        
+
         $request->validate([
-            'purchase_order_number' => 'required|string|unique:purchase_orders,purchase_order_number',
-            'supplier' => 'required|string',
-            'storehouse' => 'required|string',
-            'located' => 'required|string',
-            'purchase_order_date' => 'required|date',
-            'send_date' => 'required|date',
-            'payment_term' => 'required|string',
-            'due_date' => 'required|date',
-            'transportation' => 'required|string',
-            'sender' => 'required|string',
-            'delivery_type' => 'required|string',
-            'employee_name' => 'required|string',
-            'notes' => 'string',
-            'sub_total' => 'required|numeric', // Digunakan untuk angka desimal atau integer
-            'total_price' => 'required|numeric', // Digunakan untuk angka desimal atau integer
-            'total_ppn' => 'required|numeric',
-            'purchase_order_products' => 'required|array',
-            'purchase_order_products.*.product_code' => 'required|string',
-            'purchase_order_products.*.product_name' => 'required|string',
-            'purchase_order_products.*.amount' => 'required|numeric',
-            'purchase_order_products.*.package' => 'required|string',
-            'purchase_order_products.*.product_price' => 'required|numeric',
-            'purchase_order_products.*.ppn' => 'required|numeric',
+            'document_code' => 'required|string|unique:transactions,document_code',
+            'term_of_payment' => 'required|string',
+            'due_date' => 'required',
+            'description' => 'nullable|string',
+            'sub_total' => 'required|numeric', //required
+            'total' => 'required|numeric', //required
+            'tax_amount' => 'required|numeric', //required
+            'transaction_details' => 'required|array',
+            'transaction_details.*.name' => 'required|string',
+            'transaction_details.*.category' => 'required|string',
+            'transaction_details.*.value' => 'required|string',
+            'transaction_details.*.data_type' => 'required|string',
+            'transaction_items' => 'required|array',
+            'transaction_items.*.unit' => 'required|string',
+            'transaction_items.*.quantity' => 'required|numeric',
+            'transaction_items.*.tax_amount' => 'nullable|numeric',
+            'transaction_items.*.amount' => 'required|numeric',
+            'transaction_items.*.tax_id' => 'required|numeric',
+            'transaction_items.*.product_id' => 'required|numeric',
+            'transaction_items.*.product' => 'required_if:transaction_items.*.product_id,null|array',
+            'transaction_items.*.product.code' => 'required_with:transaction_items.*.product|string',
+            'transaction_items.*.product.unit' => 'required_with:transaction_items.*.product|string',
+            'transaction_items.*.product.name' => 'required_with:transaction_items.*.product|string',
         ]);
 
-        DB::beginTransaction();
-
-        try {
-            $dataPO = PurchaseOrder::create([
-                'purchase_order_number' => $request->input('purchase_order_number'),
-                'supplier' => $request->input('supplier'),
-                'storehouse' => $request->input('storehouse'),
-                'located' => $request->input('located'),
-                'purchase_order_date' => $request->input('purchase_order_date'),
-                'send_date' => $request->input('send_date'),
-                'payment_term' => $request->input('payment_term'),
+        // Gunakan transaksi database
+        DB::transaction(function () use ($request) {
+            // Simpan transaksi
+            $transaction = Transactions::create([
+                'document_code' => $request->input('document_code'),
+                'correlation_id' => rand(10000,88888),
+                'created_by' => Auth::user()->id,
+                'term_of_payment' => $request->input('term_of_payment'),
                 'due_date' => $request->input('due_date'),
-                'transportation' => $request->input('transportation'),
-                'sender' => $request->input('sender'),
-                'delivery_type' => $request->input('delivery_type'),
-                'employee_name' => $request->input('employee_name'),
-                'notes' => $request->input('notes'),
-                'sub_total' => $request->input('sub_total'),
-                'total_price' => $request->input('total_price'),
-                'total_ppn' => $request->input('total_ppn')
+                'description' => $request->input('description'),
+                'sub_total' => $request->input('sub_total'), //required
+                'total' => $request->input('total'), //required
+                'tax_amount' => $request->input('tax_amount'), //required
+                'transaction_type_id' => 4,
             ]);
 
-            foreach($request->input('purchase_order_products') as $product) {
-                PurchaseOrderProduct::create([
-                    'product_code' => $product['product_code'],
-                    'product_name' => $product['product_name'],
-                    'amount' => $product['amount'],
-                    'package' => $product['package'],
-                    'product_price' => $product['product_price'],
-                    'total_price' => $product['total_price'],
-                    'ppn' => $product['ppn'],
-                    'purchase_order_id' => $dataPO->id
+            // Simpan transaction details
+            foreach ($request->input('transaction_details') as $detail) {
+                TransactionDetail::create([
+                    'name' => $detail['name'],
+                    'category' => $detail['category'],
+                    'value' => $detail['value'],
+                    'data_type' => $detail['data_type'],
+                    'transactions_id' => $transaction->id,
                 ]);
             }
 
-            DB::commit();
-            
-            return redirect()->route('procurement.purchase-order')->with('success', 'Purchase Order Berhasil Tersubmit!');
-        } catch(\Exception $e) {
-            DB::rollBack();
+             // Simpan transaction items
+            foreach ($request->input('transaction_items') as $txItem) {
+                $product = Products::find($txItem['product_id']);
 
-            return redirect()->back()->withErrors(['error' => 'Error: '.$e->getMessage()]);
-        }
+                // Jika produk sudah ada (product_id), ambil id-nya. Jika tidak, buat produk baru.
+                // if(isset($txItem['product_id'])) 
+                // {
+                //     $product = Products::find($txItem['product_id']);
+                // } 
+                // else 
+                // {
+                //     $product = Products::create([
+                //         'code' => $txItem['product']['code'],
+                //         'unit' => $txItem['product']['unit'],
+                //         'name' => $txItem['product']['name'],
+                //     ]);
+                // }
+
+                // Simpan transaction item
+                TransactionItem::create([
+                    'unit' => $txItem['unit'],
+                    'quantity' => $txItem['quantity'],
+                    'tax_amount' => $txItem['tax_amount'],
+                    'amount' => $txItem['amount'],
+                    'tax_id' => $txItem['tax_id'],
+                    'transactions_id' => $transaction->id,
+                    'product_id' => $product->id, // Menyimpan product_id hasil dari produk yang diambil atau baru
+                ]);
+            }
+        });
+
+        return redirect()->route('procurement.purchase-order')->with('success', 'Purchase Order Berhasil Tersubmit!');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(PurchaseOrder $purchaseOrder)
+    public function show(Transactions $transaction)
     {
-        $purchaseOrder->load('purchaseOrderProducts');
-        
-        return Inertia::render('Procurement/Purchase/PurchaseOrderDetail', compact('purchaseOrder'));
+        // Memuat relasi yang diperlukan
+        $transaction->load(['transactionDetails', 'transactionItems.product']);
+
+        // Mengembalikan view dengan data transaksi
+        return Inertia::render('Procurement/Purchase/PurchaseOrderDetail', compact('transaction'));
     }
 
-     /**
-     * Get all products data from PO number
-     */
-    public function getProductsByPoNumber(string $purchase_order_number)
-    {      
-        $purchaseOrder = PurchaseOrder::with('purchaseOrderProducts')
-            ->where('purchase_order_number', $purchase_order_number)
+    public function getDataByPoNumber(string $po_number)
+    {
+        // Mengambil transaksi berdasarkan transaction_id dari transaction detail yang ditemukan
+        $transaction = Transactions::with(['transactionDetails', 'transactionItems.product'])
+            ->where('document_code', $po_number) // Pastikan menggunakan field yang benar
             ->first();
 
-        if(!$purchaseOrder) 
+        // Memeriksa apakah transaksi ada
+        if (!$transaction) 
         {
-            return redirect()->back()->with('failed', 'Nomor PO salah atau tidak ditemukan');
+            return redirect()->back()->with('failed', 'Nomor transaksi salah atau tidak ditemukan');
         }
 
-        $isPurchaseOrderHasUsed = SubSalesOrder::where('purchase_order_number', $purchaseOrder->purchase_order_number)
-            ->exists();
+        // dd($transaction);
 
-        if($isPurchaseOrderHasUsed) 
-        {
-            return redirect()->back()->with('failed', 'Nomor PO telah digunakan!');
-        }
+        // Memeriksa apakah transaksi telah digunakan
+        // // Cek apakah ada transaksi dengan transaction_type_id 6
+        // $isTransactionHasUsed = Transactions::where('transaction_type_id', 6)
+        //     ->whereHas('transactionDetails', function ($query) use ($poNumber) {
+        //         $query->where('category', 'PO Number') // Pastikan category adalah PO Number
+        //             ->where('value', $poNumber); // Bandingkan dengan nomor PO yang diberikan
+        //     })
+        //     ->exists(); // Menggunakan exists() untuk memeriksa ada tidaknya data
 
-        return Inertia::render('Procurement/ItemsReceipt/CreateSalesOrder', compact('purchaseOrder'));
+        // // Jika transaksi sudah ada
+        // if ($isTransactionHasUsed) 
+        // {
+        //     return redirect()->back()->with('failed', 'Nomor transaksi telah digunakan!');
+        // }
+
+        // Mengembalikan view dengan data transaksi
+        return Inertia::render('Procurement/ItemsReceipt/CreateSalesOrder', compact('transaction'));
     }
 
-    public function generatePurchaseOrderDocument(PurchaseOrder $purchaseOrder) 
+    public function generatePurchaseOrderDocument(Transactions $transactions) 
     {
-        $purchaseOrder->load('purchaseOrderProducts');
+        // Memuat relasi yang diperlukan
+        $transactions->load('transactionDetails', 'transactionItems.product');
 
+        // Mengambil detail berdasarkan kategori
+        $supplier = $transactions->transactionDetails->firstWhere('category', 'Supplier')->value ?? '';
+        $storehouse = $transactions->transactionDetails->firstWhere('category', 'Storehouse')->value ?? '';
+        $located = $transactions->transactionDetails->firstWhere('category', 'Allocation')->value ?? '';
+        $purchase_order_date = $transactions->transactionDetails->firstWhere('category', 'PO Date')->value ?? null;
+        $send_date = $transactions->transactionDetails->firstWhere('category', 'Delivery Date')->value ?? null;
+        $transportation = $transactions->transactionDetails->firstWhere('category', 'Transportation')->value ?? '';
+        $sender = $transactions->transactionDetails->firstWhere('category', 'Sender')->value ?? '';
+        $delivery_type = $transactions->transactionDetails->firstWhere('category', 'Delivery Type')->value ?? '';
+
+        // Data yang akan dikirimkan ke view PDF
         $data = [
-            'purchase_order' => $purchaseOrder,
+            'purchase_order' => $transactions,
+            'supplier' => $supplier,
+            'storehouse' => $storehouse,
+            'located' => $located,
+            'purchase_order_date' => $purchase_order_date,
+            'send_date' => $send_date,
+            'transportation' => $transportation,
+            'sender' => $sender,
+            'delivery_type' => $delivery_type,
         ];
-        
+
+        // Mengenerate PDF
         $pdf = Pdf::loadView('documents.purchase-order-document', $data);
 
-        //set to true after generated
-        $purchaseOrder->update([
-            'isDocumentHasGenerated' => true,
-        ]);
-        
         return $pdf->stream('purchase_order_'.rand(100000,900000).'_.pdf');
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -199,3 +258,4 @@ class PurchaseOrderController extends Controller
         //
     }
 }
+

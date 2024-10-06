@@ -9,57 +9,57 @@
                         <!-- Baris Pertama -->
                         <div class="col-lg-3 col-6">
                             <label for="field3">No SO</label>
-                            <n-input id="field3" size="large" v-model:value="subSalesOrderData.sales_order_number"  disabled/>
+                            <n-input id="field3" size="large" v-model:value="form.document_code"  disabled/>
                         </div>
                         <div class="col-lg-3 col-6">
                             <label for="field2">No Bukti</label>
-                            <n-input id="field2" size="large" v-model:value="subSalesOrderData.proof_number" disabled />
+                            <n-input id="field2" size="large" v-model:value="transaction_details.proof_number" disabled />
                         </div>
                         <div class="col-lg-3 col-6">
                             <label for="field1">No PO</label>
-                            <n-input id="field1" size="large" v-model:value="subSalesOrderData.purchase_order_number" disabled />
+                            <n-input id="field1" size="large" v-model:value="transaction_details.po_number" disabled />
                         </div>
                         <div class="col-lg-3 col-6">
                             <label for="field4">Tanggal PO</label>
                             <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" id="field8" size="large"
-                                v-model:formatted-value="subSalesOrderData.order_date" disabled />
+                                v-model:formatted-value="transaction_details.purchase_order_date" disabled />
                         </div>
 
                         <!-- Baris Kedua -->
                         <div class="col-lg-3 col-6">
                             <label for="field5">Alokasi</label>
-                            <n-input id="field5" size="large" disabled v-model:value="subSalesOrderData.located" />
+                            <n-input id="field5" size="large" disabled v-model:value="transaction_details.located" />
                         </div>
                         <div class="col-lg-3 col-6">
                             <label for="field6">Pemasok</label>
-                            <n-input id="field6" size="large" disabled v-model:value="subSalesOrderData.supplier" />
+                            <n-input id="field6" size="large" disabled v-model:value="transaction_details.supplier" />
                         </div>
                         <div class="col-lg-3 col-6">
                             <label for="field7">Gudang</label>
-                            <n-input id="field7" size="large" disabled v-model:value="subSalesOrderData.storehouse" />
+                            <n-input id="field7" size="large" disabled v-model:value="transaction_details.storehouse" />
                         </div>
                         <div class="col-lg-3 col-6">
                             <label for="field8">Tanggal Kirim</label>
                             <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" id="field8" size="large"
-                                v-model:formatted-value="subSalesOrderData.send_date"  disabled/>
+                                v-model:formatted-value="transaction_details.send_date"  disabled/>
                         </div>
                         <div class="col-lg-3 col-6">
                             <label for="field9">Transportasi</label>
-                            <n-input id="field9" size="large" v-model:value="subSalesOrderData.transportation" disabled />
+                            <n-input id="field9" size="large" v-model:value="transaction_details.transportation" disabled />
                         </div>
 
                         <!-- Baris Ketiga -->
                         <div class="col-lg-3 col-6">
                             <label for="field10">Pengirim</label>
-                            <n-input id="field10" size="large" v-model:value="subSalesOrderData.sender" disabled />
+                            <n-input id="field10" size="large" v-model:value="transaction_details.sender" disabled />
                         </div>
                         <div class="col-lg-3 col-6">
                             <label for="field11">Jenis Pengiriman</label>
-                            <n-input id="field11" size="large" v-model:value="subSalesOrderData.delivery_type" disabled />
+                            <n-input id="field11" size="large" v-model:value="transaction_details.delivery_type" disabled />
                         </div>
                         <div class="col-lg-3 col-6">
                             <label for="field12">Karyawan</label>
-                            <n-input id="field12" size="large" disabled v-model:value="subSalesOrderData.employee_name" />
+                            <n-input id="field12" size="large" disabled v-model:value="transaction_details.employee_name" />
                         </div>
                     </div>
 
@@ -70,7 +70,7 @@
             <div class="card shadow overflow-hidden" style="border: none;">
                 <div class="card-body">
                     <n-data-table :columns="columns" :pagination="pagination" :bordered="false" size="small"
-                        pagination-behavior-on-filter="first" :data="subSalesOrderData.sub_sales_order_products" />
+                        pagination-behavior-on-filter="first" :data="form.transaction_items" />
                 </div>
             </div>
 
@@ -93,26 +93,26 @@
                         <div class="d-flex flex-column pe-3">
                             <label for="catatan">Catatan</label>
                             <n-input id="catatan" type="textarea" placeholder="Basic Textarea" style="width: 30rem;"
-                                v-model:value="subSalesOrderData.note" disabled />
+                                v-model:value="form.description" disabled />
                         </div>
-                        <!-- <div class="d-flex flex-column w-100 justify-content-between">
+                        <div class="d-flex flex-column w-100 justify-content-between">
                             <div class="d-flex justify-content-between">
                                 <span>TERM OF PAYMENT</span>
-                                <span class="fw-bold" v-if="subSalesOrderData !== undefined">{{
-                                    subSalesOrderData.payment_term.replace("_", " ") }}</span>
+                                <span class="fw-bold" v-if="form !== undefined">{{
+                                    form.term_of_payment.replace("_", " ") }}</span>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <span>JATUH TEMPO</span>
-                                <span class="fw-bold" v-if="$page.props.purchaseOrder !== undefined">
-                                    {{ dayjs((page.props.purchaseOrder as PurchaseOrder).due_date).format('dddd, D MMMM YYYY ') }}
+                                <span class="fw-bold" v-if="form !== undefined">
+                                    {{ dayjs(form.due_date).format('dddd, D MMMM YYYY ') }}
                                 </span>
                             </div>
-                        </div> -->
+                        </div>
                     </div>
                 </div>
             </div>
-            <n-button type="primary" class="d-flex flex-column ms-auto w-25 mb-4"
-                @click="handleGenerateDocument">Generate Document</n-button>
+            <n-button type="primary" class="d-flex flex-column ms-auto mb-4"
+                @click="handleGenerateDocument">Preview SSO</n-button>
         </div>
     </div>
 </template>
@@ -125,7 +125,8 @@ import TitlePage from '../../../Components/TitlePage.vue';
 import ErrorInput from '../../../Components/ErrorInput.vue';
 import { Head, router, useForm, usePage } from '@inertiajs/vue3';
 import { formatRupiah } from '../../../Utils/options-input.utils';
-import { Flash, PurchaseOrder, SubSalesOrder, SubSalesOrderProducts, User } from '../../../types/model';
+import { TransactionItems, Transactions, User } from '../../../types/model';
+import { ArrowBack } from '@vicons/ionicons5';
 import dayjs from "dayjs";
 import 'dayjs/locale/id'; // Import locale Indonesia
 
@@ -141,7 +142,7 @@ interface RowData {
     ppn: 0,
 }
 
-function createColumns(): DataTableColumns<RowData> {
+function createColumns(): DataTableColumns<TransactionItems> {
     return [
         {
             title: '#',
@@ -152,146 +153,169 @@ function createColumns(): DataTableColumns<RowData> {
             }
         },
         {
-            title: 'KODE PRODUK',
+            title: 'Kode Barang',
             key: 'product_code',
             width: 200,
             render(row) {
-                return row.product_code;
+                return row.product?.code;
             }
         },
         {
-            title: 'NAMA PRODUK',
+            title: 'Nama Barang',
             key: 'product_name',
-            width: 200,
+            width: 250,
             render(row) {
-                return row.product_name;
+                return row.product?.name;
             }
         },
         {
-            title: 'JUMLAH',
+            title: 'Jumlah',
+            key: 'quantity',
+            width: 100,
+        },
+        {
+            title: 'Kemasan',
+            key: 'unit',
+            width: 100,
+            render(row) {
+                return row.unit.replace("_", ' ');
+            }
+        },
+        {
+            title: 'Harga Barang',
             key: 'amount',
-            width: 200,
+            width: 100,
             render(row) {
-                return row.amount;
-            }
-        },
-        {
-            title: 'SATUAN',
-            key: 'package',
-            width: 200,
-            render(row) {
-                return row.package;
-            }
-        },
-        {
-            title: 'HARGA',
-            key: 'product_price',
-            width: 200,
-            render(row) {
-                // Format product_price as Rupiah for display
-                return formatRupiah((row.product_price ?? 0));
+                return formatRupiah(row.amount ?? 0);
             }
         },
         {
             title: 'PPN',
-            key: 'ppn',
-            width: 200,
-            render(row) {
-                // Format ppn as Rupiah for display
-                return formatRupiah((row.ppn ?? 0));
-            }
+            key: 'tax_amount',
+            width: 100,
         },
-        {
-            title: 'TOTAL HARGA',
-            key: 'total_price',
-            width: 200,
-            render(row) {
-                // Format total_price as Rupiah for display
-                return formatRupiah((row.total_price ?? 0));
-            }
-        },
+        // {
+        //     title: 'Total harga',
+        //     key: 'total_price',
+        //     width: 100,
+        //     render(row) {
+        //         // return formatRupiah((row.total_price ?? 0));
+        //     }
+        // },
+
     ];
 }
 
 export default defineComponent({
     setup() {
         const page = usePage();
-        const subSalesOrderData = page.props.subSalesOrder as SubSalesOrder;
+        const detailTransaction = page.props.transaction as Transactions;
 
-        function handleGenerateDocument() {
-            window.open(route('procurement.generate-sso-document', subSalesOrderData.id), '_blank');
-            // Swal.fire({
-            //     icon: "question",
-            //     title: `Generate dokumen SO dengan nomor ${subSalesOrderData.sales_order_number} ?`,
-            //     confirmButtonText: "Generate",
-            //     showCancelButton: true,
-            //     heightAuto: true,
-            // }).then((result) => {
-            //     if(result.isConfirmed) {
-            //     }
-            // });
-        }
+        const form = useForm({
+            document_code: detailTransaction.document_code || (page.props.po_number as string),
+            term_of_payment: detailTransaction.term_of_payment.replace("_", " ") || '',
+            due_date: detailTransaction.due_date || null,
+            description: detailTransaction.description || '',
+            sub_total: detailTransaction.sub_total || 0,
+            total: detailTransaction.total || 0,
+            tax_amount: detailTransaction.tax_amount || 0,
+            transaction_details: detailTransaction.transaction_details || [],  // Menyalin data transaction_details jika ada
+            transaction_items: detailTransaction.transaction_items || [],      // Menyalin data transaction_items jika ada
+        });
 
+        const po_number = form.transaction_details.find(data => data.category === "PO Number")?.value || '';
+        const proof_number = form.transaction_details.find(data => data.category === "Proof Number")?.value || '';
+        const supplier = form.transaction_details.find(data => data.category === "Supplier")?.value || '';
+        const storehouse = form.transaction_details.find(data => data.category === "Storehouse")?.value || '';
+        const located = form.transaction_details.find(data => data.category === "Allocation")?.value || '';
+        const purchase_order_date = form.transaction_details.find(data => data.category === "PO Date")?.value || null;
+        const send_date = form.transaction_details.find(data => data.category === "Delivery Date")?.value || null;
+        const transportation = form.transaction_details.find(data => data.category === "Transportation")?.value || '';
+        const sender = form.transaction_details.find(data => data.category === "Sender")?.value || '';
+        const delivery_type = form.transaction_details.find(data => data.category === "Delivery Type")?.value || '';
+
+        const transaction_details = ref({
+            supplier,
+            storehouse,
+            po_number,
+            proof_number,
+            located,
+            purchase_order_date,
+            send_date,
+            transportation,
+            sender,
+            delivery_type,
+            employee_name: (page.props.auth.user as User).fullname,
+        });
+
+        const products = ref({
+            code: '',
+            unit: '',
+            name: '',
+            transaction_items: [] as TransactionItems[],
+        });
+
+        const transaction_items = ref({
+            unit: '',
+            quantity: null,
+            tax_amount: null,
+            amount: null,
+        });
+
+        // Menghitung subtotal dari semua produk tanpa PPN
         const totalPPN = computed(() => {
-            // Cek apakah purchaseOrderData dan sub_sales_order_products ada
-            if (subSalesOrderData && subSalesOrderData.sub_sales_order_products && subSalesOrderData.sub_sales_order_products.length > 0) {
-                const data = subSalesOrderData.sub_sales_order_products.reduce((total, product) => {
-                    return total + (product.product_price ?? 0);
-                }, 0);
-
-                subSalesOrderData.total_after_ppn = data;
-
-                // Menghitung PPN
-                return formatRupiah(data * 0.11); // Menggunakan formatRupiah untuk PPN
-            }
-
-            return 0; // Atau return formatRupiah(0) jika Anda ingin menampilkan 0 dalam format rupiah
+            const data = form.transaction_items.reduce((total, item) => {
+                return total + (item.amount ?? 0);
+            }, 0);
+            return formatRupiah(data * 0.11); // Menggunakan formatRupiah untuk PPN
         });
 
         const subtotal = computed(() => {
-            // Cek apakah subSalesOrderData dan sub_sales_order_products ada
-            if (subSalesOrderData && subSalesOrderData.sub_sales_order_products && subSalesOrderData.sub_sales_order_products.length > 0) {
-                const data = subSalesOrderData.sub_sales_order_products.reduce((total, product) => {
-                    return total + (product.product_price ?? 0);
-                }, 0);
-
-                subSalesOrderData.sub_total = data;
-
-                return formatRupiah(data);
-            }
-
-            return formatRupiah(0); // Atau return formatRupiah(0) jika Anda ingin menampilkan 0 dalam format rupiah
+            const data = form.transaction_items.reduce((total, item) => {
+                return total + (item.amount ?? 0);
+            }, 0);
+            return formatRupiah(data);
         });
 
         const totalPrice = computed(() => {
-
-            // Cek apakah subSalesOrderData dan sub_sales_order_products ada
-            if (subSalesOrderData && subSalesOrderData.sub_sales_order_products && subSalesOrderData.sub_sales_order_products.length > 0) {
-                const productPrice = subSalesOrderData.sub_sales_order_products.reduce((total, product) => {
-                    return total + (product.product_price ?? 0);
-                }, 0);
-
-                const afterPpnPrice = productPrice * 0.11;
-
-                subSalesOrderData.total_price = (afterPpnPrice + productPrice);
-
-                return formatRupiah(productPrice + afterPpnPrice);
-            }
-
-            return formatRupiah(0); // Atau return formatRupiah(0) jika Anda ingin menampilkan 0 dalam format rupiah
+            const productPrice = form.transaction_items.reduce((total, item) => {
+                return total + (item.amount ?? 0);
+            }, 0);
+            const afterPpnPrice = productPrice * 0.11;
+            return formatRupiah(productPrice + afterPpnPrice);
         });
 
+        function handleGenerateDocument() {
+            Swal.fire({
+                icon: "question",
+                text: `Preview PO ${detailTransaction.document_code} ?`,
+                confirmButtonText: "Generate",
+                showCancelButton: true,
+                heightAuto: true,
+                toast: true,
+                position: 'top',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.open(route('procurement.generate-sso-document', detailTransaction.id), '_blank');
+                }
+            });
+        }
+
         return {
-            handleGenerateDocument,
-            subSalesOrderData,
-            dayjs,
             columns: createColumns(),
             pagination: { pageSize: 10 },
-            page,
+            form,
+            transaction_details,
+            products,
+            transaction_items,
             subTotal: subtotal,
             resultPpn: totalPPN,
             total: totalPrice,
-        }
+            router,
+            dayjs,
+            handleGenerateDocument,
+            ArrowBack
+        };
     },
     components: {
         TitlePage,

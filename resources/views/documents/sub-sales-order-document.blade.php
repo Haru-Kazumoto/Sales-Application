@@ -256,9 +256,9 @@
                 <span>Tanggal</span><br>
             </td>
             <td style="width: 25%; word-wrap: break-word; word-break: break-all;">
-                <span>: SO24.2934</span><br>
-                <span>: {{ $subSalesOrder->sales_order_number }}</span><br>
-                <span>: {{ $subSalesOrder->order_date }}</span><br>
+                <span>: {{ $proof_number }}</span><br>
+                <span>: {{ $sales_order->document_code }}</span><br>
+                <span>: {{ $purchase_order_date }}</span><br>
             </td>
         </tr>
     </table>
@@ -266,7 +266,7 @@
     <div style="display: flex; flex-direction: column; gap: 5px; font-size: 13px; ">
         <span style="line-height: 1.5;">
             Kepada Yth: <br>
-            <strong>{{ $subSalesOrder->supplier }}</strong><br>
+            <strong>{{ $supplier }}</strong><br>
             Harap diberikan barang yang tercantum dibawah ini kepada : <br>
             <strong>PT / CV : GI. Transport</strong>
         </span>
@@ -285,11 +285,11 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($subSalesOrder->subSalesOrderProducts as $index => $product)
+            @foreach ($sales_order->transactionItems as $index => $txItem)
                 <tr>
                     <td class="text-center">{{ $index + 1 }}</td>
-                    <td>{{ $product->product_code }} - {{ $product->product_name }}</td>
-                    <td>{{ $product->amount }} {{ $product->package }}</td>
+                    <td>{{ $txItem->product->code }} - {{ $txItem->product->name }}</td>
+                    <td>{{ $txItem->quantity }} {{ $txItem->package }}</td>
                 </tr>
             @endforeach
         </tbody>

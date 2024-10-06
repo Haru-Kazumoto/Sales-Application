@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Purchase Order Detail" />
     <div class="d-flex flex-column gap-4">
         <div class="d-flex flex-column gap-3">
@@ -17,57 +18,66 @@
                         <!-- Baris Pertama -->
                         <div class="col-md-3">
                             <label for="field1">No PO</label>
-                            <n-input id="field1" size="large" v-model:value="form.purchase_order_number"
-                                :disabled="true" />
+                            <n-input :disabled="true" id="field1" size="large" v-model:value="form.document_code" />
                         </div>
                         <div class="col-md-3">
                             <label for="field2">Pemasok</label>
-                            <n-input id="field2" size="large" v-model:value="form.supplier" :disabled="true" />
+                            <n-input :disabled="true" id="field2" size="large"
+                                v-model:value="transaction_details.supplier" />
                         </div>
                         <div class="col-md-3">
                             <label for="field3">Gudang</label>
-                            <n-select id="field3" size="large" v-model:value="form.storehouse" :disabled="true" />
+                            <n-select :disabled="true" id="field3" size="large"
+                                v-model:value="transaction_details.storehouse" />
                         </div>
                         <div class="col-md-3">
                             <label for="field4">Alokasi</label>
-                            <n-select id="field4" size="large" v-model:value="form.located" :disabled="true" />
+                            <n-select :disabled="true" id="field4" size="large"
+                                v-model:value="transaction_details.located" />
                         </div>
 
                         <!-- Baris Kedua -->
                         <div class="col-md-3">
                             <label for="field5">Tanggal PO</label>
-                            <n-input id="field5" size="large" v-model:value="form.purchase_order_date"
-                                :disabled="true" />
+                            <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" :disabled="true"
+                                id="field5" size="large"
+                                v-model:formatted-value="transaction_details.purchase_order_date" />
                         </div>
                         <div class="col-md-3">
                             <label for="field6">Tanggal Kirim</label>
-                            <n-input id="field6" size="large" v-model:value="form.send_date" :disabled="true" />
+                            <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" :disabled="true"
+                                id="field6" size="large" v-model:formatted-value="transaction_details.send_date" />
                         </div>
                         <div class="col-md-3">
                             <label for="field7">Term Pembayaran</label>
-                            <n-select id="field7" size="large" v-model:value="form.payment_term" :disabled="true" />
+                            <n-select :disabled="true" id="field7" size="large" v-model:value="form.term_of_payment" />
                         </div>
                         <div class="col-md-3">
                             <label for="field8">Tanggal Jatuh Tempo</label>
-                            <n-input id="field8" size="large" v-model:value="form.due_date" :disabled="true" />
+                            <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" :disabled="true"
+                                id="field8" size="large" v-model:formatted-value="form.due_date" />
                         </div>
 
                         <!-- Baris Ketiga -->
                         <div class="col-md-3">
                             <label for="field5">Transportasi</label>
-                            <n-input id="field5" size="large" v-model:value="form.transportation" :disabled="true" />
+                            <n-input :disabled="true" id="field5" size="large"
+                                v-model:value="transaction_details.transportation" />
                         </div>
                         <div class="col-md-3">
                             <label for="field6">Pengirim</label>
-                            <n-input id="field6" size="large" v-model:value="form.sender" :disabled="true" />
+                            <n-input :disabled="true" id="field6" size="large"
+                                v-model:value="transaction_details.sender" />
                         </div>
                         <div class="col-md-3">
                             <label for="field7">Jenis Pengiriman</label>
-                            <n-select id="field7" size="large" v-model:value="form.delivery_type" :disabled="true" />
+                            <n-select :disabled="true" id="field7" size="large"
+                                v-model:value="transaction_details.delivery_type" />
                         </div>
                         <div class="col-md-3">
                             <label for="field8">Karyawan</label>
-                            <n-input id="field8" size="large" v-model:value="form.employee_name" :disabled="true" />
+                            <n-input :disabled="true" id="field8" size="large"
+                                v-model:value="transaction_details.employee_name" />
                         </div>
                     </form>
                 </div>
@@ -76,7 +86,7 @@
             <!-- Tabel Produk -->
             <div class="card shadow overflow-hidden" style="border: none;">
                 <div class="card-body">
-                    <n-data-table :columns="columns" :data="form.purchase_order_products" :pagination="pagination"
+                    <n-data-table :columns="columns" :data="form.transaction_items" :pagination="pagination"
                         :bordered="false" size="small" pagination-behavior-on-filter="first" />
                 </div>
             </div>
@@ -86,7 +96,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between py-2">
                         <span>Sub Total</span>
-                        <span>{{ subTotal.valueOf() }}</span>
+                        <span>{{ subTotal }}</span>
                     </div>
                     <div class="d-flex justify-content-between py-2">
                         <span>PPN 11%</span>
@@ -100,16 +110,18 @@
                         <div class="col-12 col-lg-7 d-flex flex-column ">
                             <label for="catatan">Catatan</label>
                             <n-input id="catatan" type="textarea" placeholder="Basic Textarea" style="width: 30rem;"
-                                v-model:value="form.notes" :disabled="true" />
+                                v-model:value="form.description" :disabled="true" />
                         </div>
                         <div class="col-12 col-lg-5 ">
                             <div class="d-flex justify-content-between">
                                 <span>TERM OF PAYMENT</span>
-                                <span class="fw-bold">{{ form.payment_term.replace("_", " ") }}</span>
+                                <span class="fw-bold">{{ form.term_of_payment.replace("_", " ") }}</span>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <span>JATUH TEMPO</span>
-                                <span class="fw-bold">{{ form.due_date }}</span>
+                                <span class="fw-bold">
+                                    {{ form.due_date ? dayjs(form.due_date).format('dddd, D MMMM YYYY') : '' }}
+                                </span>
                             </div>
 
                         </div>
@@ -117,7 +129,9 @@
                 </div>
             </div>
             <div class="d-flex">
-                <n-button type="primary" size="large" class="mb-3 ms-auto" @click="handleGenerateDocument">Generate Dokumen</n-button>
+                <n-button type="primary" size="large" class="mb-3 ms-auto" @click="handleGenerateDocument">
+                    Preview PO
+                </n-button>
             </div>
         </div>
     </div>
@@ -125,7 +139,7 @@
 
 <script lang="ts">
 import { defineComponent, h, ref, computed, } from 'vue'
-import { PurchaseOrder, POProduct } from '../../../types/model';
+import { PurchaseOrder, POProduct, TransactionDetail, TransactionItems, User, Transactions } from '../../../types/model';
 import { DataTableColumns, NButton } from 'naive-ui';
 import { ArrowBack } from "@vicons/ionicons5";
 import TitlePage from '../../../Components/TitlePage.vue';
@@ -137,60 +151,66 @@ import 'dayjs/locale/id'; // Import locale Indonesia
 
 dayjs.locale('id'); // Set locale to Indonesian
 
-function createColumns(): DataTableColumns<POProduct> {
+function createColumns(): DataTableColumns<TransactionItems> {
     return [
         {
-            title: 'No',
-            key: 'no',
+            title: '#',
+            key: 'index',
             width: 50,
             render(row, index) {
                 return index + 1;
             }
         },
         {
-            title: 'Kode produk',
+            title: 'Kode Barang',
             key: 'product_code',
             width: 200,
+            render(row) {
+                return row.product?.code;
+            }
         },
         {
-            title: 'Nama produk',
+            title: 'Nama Barang',
             key: 'product_name',
-            width: 200,
+            width: 250,
+            render(row) {
+                return row.product?.name;
+            }
         },
         {
             title: 'Jumlah',
-            key: 'amount',
-            width: 200,
+            key: 'quantity',
+            width: 100,
         },
         {
-            title: 'Satuan',
-            key: 'package',
-            width: 200,
-        },
-        {
-            title: 'Harga',
-            key: 'product_price',
-            width: 200,
+            title: 'Kemasan',
+            key: 'unit',
+            width: 100,
             render(row) {
-                return formatRupiah((row.product_price ?? 0));
+                return row.unit.replace("_", ' ');
+            }
+        },
+        {
+            title: 'Harga Barang',
+            key: 'amount',
+            width: 100,
+            render(row) {
+                return formatRupiah(row.amount ?? 0);
             }
         },
         {
             title: 'PPN',
-            key: 'ppn',
-            width: 200,
-            render(row) {
-                return formatRupiah((row.ppn ?? 0));
-            }
+            key: 'tax_amount',
+            width: 100,
         },
-        {
-            title: 'Total harga',
-            key: 'total_price',
-            width: 200,
-            render(row) {
-                return formatRupiah((row.total_price ?? 0));
-            }
-        },
+        // {
+        //     title: 'Total harga',
+        //     key: 'total_price',
+        //     width: 100,
+        //     render(row) {
+        //         // return formatRupiah((row.total_price ?? 0));
+        //     }
+        // },
 
     ];
 }
@@ -198,94 +218,101 @@ function createColumns(): DataTableColumns<POProduct> {
 export default defineComponent({
     setup() {
         const page = usePage();
-        const detailPurchaseOrder = (page.props.purchaseOrder as PurchaseOrder);
+        const detailTransaction = page.props.transaction as Transactions;
 
-        const form = useForm<PurchaseOrder>({
-            purchase_order_number: detailPurchaseOrder.purchase_order_number,
-            supplier: detailPurchaseOrder.supplier,
-            storehouse: detailPurchaseOrder.storehouse,
-            located: detailPurchaseOrder.located,
-            purchase_order_date: dayjs(detailPurchaseOrder.purchase_order_date).format('dddd, D MMMM YYYY '),
-            send_date: dayjs(detailPurchaseOrder.send_date).format('dddd, D MMMM YYYY '),
-            payment_term: detailPurchaseOrder.payment_term.replace("_", " "),
-            due_date: dayjs(detailPurchaseOrder.due_date).format('dddd, D MMMM YYYY '),
-            transportation: detailPurchaseOrder.transportation,
-            sender: detailPurchaseOrder.sender,
-            delivery_type: detailPurchaseOrder.delivery_type,
-            employee_name: detailPurchaseOrder.employee_name,
-            notes: detailPurchaseOrder.notes,
-            sub_total: 0,
-            total_price: 0,
-            total_ppn: 0,
-            purchase_order_products: detailPurchaseOrder.purchase_order_products
+        const form = useForm({
+            document_code: detailTransaction.document_code || (page.props.po_number as string),
+            term_of_payment: detailTransaction.term_of_payment.replace("_", " ") || '',
+            due_date: detailTransaction.due_date || null,
+            description: detailTransaction.description || '',
+            sub_total: detailTransaction.sub_total || 0,
+            total: detailTransaction.total || 0,
+            tax_amount: detailTransaction.tax_amount || 0,
+            transaction_details: detailTransaction.transaction_details || [],  // Menyalin data transaction_details jika ada
+            transaction_items: detailTransaction.transaction_items || [],      // Menyalin data transaction_items jika ada
         });
 
-        const newProduct = ref<POProduct>({
-            product_code: '',
-            product_name: '',
+        const supplier = form.transaction_details.find(data => data.category === "Supplier")?.value || '';
+        const storehouse = form.transaction_details.find(data => data.category === "Storehouse")?.value || '';
+        const located = form.transaction_details.find(data => data.category === "Allocation")?.value || '';
+        const purchase_order_date = form.transaction_details.find(data => data.category === "PO Date")?.value || null;
+        const send_date = form.transaction_details.find(data => data.category === "Delivery Date")?.value || null;
+        const transportation = form.transaction_details.find(data => data.category === "Transportation")?.value || '';
+        const sender = form.transaction_details.find(data => data.category === "Sender")?.value || '';
+        const delivery_type = form.transaction_details.find(data => data.category === "Delivery Type")?.value || '';
+
+        const transaction_details = ref({
+            supplier,
+            storehouse,
+            located,
+            purchase_order_date,
+            send_date,
+            transportation,
+            sender,
+            delivery_type,
+            employee_name: (page.props.auth.user as User).fullname,
+        });
+
+        const products = ref({
+            code: '',
+            unit: '',
+            name: '',
+            transaction_items: [] as TransactionItems[],
+        });
+
+        const transaction_items = ref({
+            unit: '',
+            quantity: null,
+            tax_amount: null,
             amount: null,
-            package: '',
-            product_price: null,
-            total_price: null,
-            ppn: null,
         });
 
         // Menghitung subtotal dari semua produk tanpa PPN
         const totalPPN = computed(() => {
-            // Menghitung subtotal dari semua produk
-            const data = form.purchase_order_products.reduce((total, product) => {
-                // Mengalikan harga produk dengan jumlahnya dan menjumlahkan ke total
-                return form.purchase_order_products.length * (product.product_price ?? 0);
-            }, 0); // Inisialisasi total dengan 0
-
-            form.total_ppn = data * 0.11;
-
-            // Menghitung PPN
+            const data = form.transaction_items.reduce((total, item) => {
+                return total + (item.amount ?? 0);
+            }, 0);
             return formatRupiah(data * 0.11); // Menggunakan formatRupiah untuk PPN
         });
 
         const subtotal = computed(() => {
-            const data = form.purchase_order_products.reduce((total, product) => {
-                // Mengalikan harga produk dengan jumlahnya dan menjumlahkan ke total
-                return form.purchase_order_products.length * (product.product_price ?? 0);
-            }, 0); // Inisialisasi total dengan 0
-
-            form.sub_total = data.valueOf();
-
+            const data = form.transaction_items.reduce((total, item) => {
+                return total + (item.amount ?? 0);
+            }, 0);
             return formatRupiah(data);
         });
 
         const totalPrice = computed(() => {
-            const productPrice = form.purchase_order_products.reduce((total, product) => {
-                // Mengalikan harga produk dengan jumlahnya dan menjumlahkan ke total
-                return form.purchase_order_products.length * (product.product_price ?? 0);
-            }, 0); // Inisialisasi total dengan 0
-
+            const productPrice = form.transaction_items.reduce((total, item) => {
+                return total + (item.amount ?? 0);
+            }, 0);
             const afterPpnPrice = productPrice * 0.11;
-            form.total_price = afterPpnPrice.valueOf();
-
             return formatRupiah(productPrice + afterPpnPrice);
         });
 
         function handleGenerateDocument() {
             Swal.fire({
                 icon: "question",
-                title: `Generate dokumen PO dengan nomor ${detailPurchaseOrder.purchase_order_number} ?`,
+                text: `Preview PO ${detailTransaction.document_code} ?`,
                 confirmButtonText: "Generate",
                 showCancelButton: true,
                 heightAuto: true,
+                toast: true,
+                position: 'top',
             }).then((result) => {
-                if(result.isConfirmed){
-                    window.open(route('procurement.generate-po-document', detailPurchaseOrder.id), '_blank');
+                if (result.isConfirmed) {
+                    window.open(route('procurement.generate-po-document', detailTransaction.id), '_blank');
                 }
             });
         }
 
         return {
-            form,
             columns: createColumns(),
             pagination: { pageSize: 10 },
-            newProduct,
+            form,
+            transaction_details,
+            products,
+            transaction_items,
             subTotal: subtotal,
             resultPpn: totalPPN,
             total: totalPrice,
@@ -293,7 +320,7 @@ export default defineComponent({
             dayjs,
             handleGenerateDocument,
             ArrowBack
-        }
+        };
     },
     components: {
         TitlePage,

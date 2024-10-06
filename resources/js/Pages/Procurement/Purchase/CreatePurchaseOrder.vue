@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Purchase Order" />
     <div class="d-flex flex-column gap-4">
         <TitlePage title="Purchase Order" />
@@ -10,39 +11,38 @@
                         <!-- Baris Pertama -->
                         <div class="col-md-3">
                             <label for="field1">No PO</label>
-                            <n-input id="field1" size="large" v-model:value="form.purchase_order_number"
-                                :disabled="true" />
+                            <n-input id="field1" size="large" v-model:value="form.document_code" :disabled="true" />
                         </div>
                         <div class="col-md-3">
                             <label for="field2">Pemasok</label>
-                            <n-input id="field2" size="large" v-model:value="form.supplier" />
+                            <n-input id="field2" size="large" v-model:value="transaction_details.supplier" />
                         </div>
                         <div class="col-md-3">
                             <label for="field3">Gudang</label>
                             <n-select id="field3" size="large" :options="storehouseOptions"
-                                v-model:value="form.storehouse" />
+                                v-model:value="transaction_details.storehouse" />
                         </div>
                         <div class="col-md-3">
                             <label for="field4">Alokasi</label>
                             <n-select id="field4" size="large" :options="storeLocationOptions"
-                                v-model:value="form.located" />
+                                v-model:value="transaction_details.located" />
                         </div>
 
                         <!-- Baris Kedua -->
                         <div class="col-md-3">
                             <label for="field5">Tanggal PO</label>
                             <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" id="field5" size="large"
-                                v-model:formatted-value="form.purchase_order_date" />
+                                v-model:formatted-value="transaction_details.purchase_order_date" />
                         </div>
                         <div class="col-md-3">
                             <label for="field6">Tanggal Kirim</label>
                             <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" id="field6" size="large"
-                                v-model:formatted-value="form.send_date" />
+                                v-model:formatted-value="transaction_details.send_date" />
                         </div>
                         <div class="col-md-3">
                             <label for="field7">Term Pembayaran</label>
                             <n-select id="field7" size="large" :options="termPaymentOptions"
-                                v-model:value="form.payment_term" />
+                                v-model:value="form.term_of_payment" />
                         </div>
                         <div class="col-md-3">
                             <label for="field8">Tanggal Jatuh Tempo</label>
@@ -53,19 +53,21 @@
                         <!-- Baris Ketiga -->
                         <div class="col-md-3">
                             <label for="field5">Transportasi</label>
-                            <n-input id="field5" size="large" v-model:value="form.transportation" />
+                            <n-input id="field5" size="large" v-model:value="transaction_details.transportation" />
                         </div>
                         <div class="col-md-3">
                             <label for="field6">Pengirim</label>
-                            <n-input id="field6" size="large" v-model:value="form.sender" />
+                            <n-input id="field6" size="large" v-model:value="transaction_details.sender" />
                         </div>
                         <div class="col-md-3">
                             <label for="field7">Jenis Pengiriman</label>
-                            <n-select id="field7" size="large" :options="sendType" v-model:value="form.delivery_type" />
+                            <n-select id="field7" size="large" :options="sendType"
+                                v-model:value="transaction_details.delivery_type" />
                         </div>
                         <div class="col-md-3">
                             <label for="field8">Karyawan</label>
-                            <n-input id="field8" size="large" v-model:value="form.employee_name" :disabled="true" />
+                            <n-input id="field8" size="large" v-model:value="transaction_details.employee_name"
+                                :disabled="true" />
                         </div>
                     </form>
                 </div>
@@ -76,35 +78,35 @@
                 <div class="card-body">
                     <form @submit.prevent="addProduct" class="row g-3">
                         <!-- Baris Pertama -->
-                        <div class="col-md-4">
+                        <!-- <div class="col-md-4">
                             <label for="product_code">Kode Barang</label>
-                            <n-input id="product_code" v-model:value="newProduct.product_code"
-                                placeholder="Kode Barang" />
-                        </div>
-                        <div class="col-md-4">
+                            <n-input id="product_code" placeholder="Kode Barang" v-model:value="products.code" />
+                        </div> -->
+                        <div class="col-md-6">
                             <label for="product_name">Nama Barang</label>
-                            <n-input id="product_name" v-model:value="newProduct.product_name"
-                                placeholder="Nama Barang" />
+                            <n-select v-model:value="products.name" filterable placeholder="Search Songs"
+                                :options="productOptions" :loading="loading" clearable remote @search="handleSearch" />
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label for="amount">Jumlah</label>
-                            <n-input id="amount" v-model:value="newProduct.amount" placeholder="Jumlah" />
+                            <n-input id="amount" placeholder="Jumlah" v-model:value="transaction_items.quantity" />
                         </div>
 
                         <!-- Baris Kedua -->
                         <div class="col-md-4">
                             <label for="package">Kemasan</label>
-                            <n-input id="package" v-model:value="newProduct.package" placeholder="Kemasan" />
+                            <n-select id="package" placeholder="Kemasan" v-model:value="transaction_items.unit"
+                                :options="units" />
                         </div>
                         <div class="col-md-4">
                             <label for="product_price">Harga Barang</label>
-                            <n-input id="product_price" v-model:value="newProduct.product_price"
-                                placeholder="Harga Barang" />
+                            <n-input id="product_price" placeholder="Harga Barang"
+                                v-model:value="transaction_items.amount" />
                         </div>
                         <div class="col-md-4">
                             <label for="ppn">PPN</label>
-                            <n-select id="ppn" v-model:value="newProduct.ppn" :options="ppnOptions"
-                                placeholder="Pilih PPN" />
+                            <n-select id="ppn" :options="ppnOptions" placeholder="Pilih PPN"
+                                v-model:value="transaction_items.tax_id" />
                         </div>
                         <div class="d-flex justify-content-end">
                             <n-button color="green" attr-type="submit">Tambah Produk</n-button>
@@ -116,7 +118,8 @@
             <!-- Tabel Produk -->
             <div class="card shadow" style="border: none;">
                 <div class="card-body">
-                    <n-data-table :columns="columns" :data="form.purchase_order_products" :pagination="pagination"
+                    <!--  -->
+                    <n-data-table :columns="columns" :data="form.transaction_items" :pagination="pagination"
                         :bordered="false" size="small" pagination-behavior-on-filter="first" />
                 </div>
             </div>
@@ -126,7 +129,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between py-2">
                         <span>Sub Total</span>
-                        <span>{{ subTotal.valueOf() }}</span>
+                        <span>{{ subTotal }}</span>
                     </div>
                     <div class="d-flex justify-content-between py-2">
                         <span>PPN 11%</span>
@@ -140,16 +143,19 @@
                         <div class="flex-column pe-3">
                             <label for="catatan">Catatan</label>
                             <n-input id="catatan" type="textarea" placeholder="Basic Textarea" style="width: 30rem;"
-                                v-model:value="form.notes" />
+                                v-model:value="form.description" />
                         </div>
                         <div class="flex-column w-100 justify-content-between">
                             <div class="d-flex justify-content-between">
                                 <span>TERM OF PAYMENT</span>
-                                <span class="fw-bold">{{ form.payment_term }}</span>
+                                <span class="fw-bold">{{ form.term_of_payment.replace("_", " ") }}</span>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <span>JATUH TEMPO</span>
-                                <span class="fw-bold">{{ form.due_date }}</span>
+                                <span class="fw-bold">
+                                    {{ form.due_date ? dayjs(form.due_date).format('dddd, D MMMM YYYY') : '' }}
+                                </span>
+
                             </div>
                         </div>
                     </div>
@@ -162,81 +168,104 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, h, ref, computed, } from 'vue'
-import { Lookup, POProduct, PurchaseOrder, Storehouse } from '../../../types/model';
-import { DataTableColumns, NButton, useNotification } from 'naive-ui';
+import { defineComponent, h, ref, computed, watch } from 'vue'
+import { Lookup, POProduct, Products, PurchaseOrder, Storehouse, Tax, TransactionDetail, TransactionItems, Transactions, User } from '../../../types/model';
+import { DataTableColumns, NButton, SelectOption, useNotification } from 'naive-ui';
 import Swal from 'sweetalert2';
 import TitlePage from '../../../Components/TitlePage.vue';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
 import { formatRupiah } from '../../../Utils/options-input.utils';
+import dayjs from 'dayjs';
+import 'dayjs/locale/id'; // Import locale Indonesia
+
+dayjs.locale('id'); // Set locale to Indonesian
 
 export default defineComponent({
     setup() {
         const notification = useNotification();
         const page = usePage();
+        const loadingRef = ref(false)
+        const optionsRef = ref<SelectOption[]>([])
 
-        const form = useForm<PurchaseOrder>({
-            purchase_order_number: (page.props.po_number as string),
+        const form = useForm({
+            document_code: (page.props.po_number as string),
+            term_of_payment: '',
+            due_date: null as string | null,
+            description: '',
+            sub_total: null as unknown as number,
+            total: null as unknown as number,
+            tax_amount: null as unknown as number,
+            transaction_details: [] as TransactionDetail[],
+            transaction_items: [] as TransactionItems[],
+        });
+
+        const transaction_details = ref({
             supplier: '',
             storehouse: '',
             located: '',
             purchase_order_date: null as string | null,
             send_date: null as string | null,
-            payment_term: '',
-            due_date: null as string | null,
             transportation: '',
             sender: '',
             delivery_type: '',
-            employee_name: (page.props.auth as any).user.fullname,
-            notes: '',
-            sub_total: 0,
-            total_price: 0,
-            total_ppn: 0,
-            purchase_order_products: [] as POProduct[]
+            employee_name: (page.props.auth.user as User).fullname,
         });
 
-        const newProduct = ref<POProduct>({
-            product_code: '',
-            product_name: '',
-            amount: null,
-            package: '',
-            product_price: null,
-            total_price: null,
-            ppn: null,
+        const products = ref({
+            code: '',
+            unit: '',
+            name: '',
+            transaction_items: [] as TransactionItems[],
+        });
+
+        const transaction_items = ref({
+            unit: '',
+            quantity: null,
+            tax_amount: 0,
+            amount: 0,
+            product_id: null as unknown as number,
+            tax_id: null as unknown as number,
+        });
+
+        // Watcher untuk memantau perubahan pada 'products.name'
+        watch(() => products.value.name, (newName) => {
+            // Cari produk yang cocok berdasarkan nama produk yang dipilih
+            const selectedProduct = productOptions.find(product => product.label === newName)
+
+            // Jika produk ditemukan, isi 'products.code' dan 'transaction_items.product_id' secara otomatis
+            if (selectedProduct) {
+                products.value.code = selectedProduct.code; // Set 'code' produk
+                transaction_items.value.product_id = selectedProduct.id ?? 0; // Set 'product_id' dari produk yang dipilih
+            } else {
+                products.value.code = ''; // Reset 'code' jika produk tidak ditemukan
+                transaction_items.value.product_id = null as unknown as number; // Reset 'product_id' jika produk tidak ditemukan
+            }
         });
 
         function addProduct() {
-            const productPrice = Number(newProduct.value.product_price) || 0;
-            const amount = newProduct.value.amount ?? 0;
-            const selectedPpnValue = newProduct.value.ppn ?? 0; // Nilai PPN dalam format desimal seperti 0.11 (11%)
+            // Ambil persentase PPN dari tax_id yang dipilih
+            const selectedTax = ppnOptions.find(tax => tax.value === transaction_items.value.tax_id);
 
-            // Hitung PPN berdasarkan opsi yang dipilih
-            const ppnAmount = (productPrice * selectedPpnValue);
+            // Kalkulasi nilai PPN
+            const selectedPpnValue = selectedTax ? selectedTax.percentage : 0; // Nilai PPN (0 jika tidak ada PPN)
+            const productPrice = transaction_items.value.amount; // Ambil harga produk (amount)
+            const ppnAmount = productPrice * selectedPpnValue; // Kalkulasi PPN
 
-            // Hitung total harga termasuk PPN
-            const totalPrice = productPrice + ppnAmount;
 
-            // Tambahkan produk ke dalam array
-            form.purchase_order_products.push({
-                product_code: newProduct.value.product_code ?? '',
-                product_name: newProduct.value.product_name ?? '',
-                amount: amount,
-                package: newProduct.value.package ?? '',
-                product_price: productPrice,
-                total_price: totalPrice,
-                ppn: ppnAmount,
+            form.transaction_items.push({
+                unit: transaction_items.value.unit,
+                quantity: transaction_items.value.quantity,
+                product_id: transaction_items.value.product_id,
+                tax_amount: ppnAmount,
+                amount: transaction_items.value.amount,
+                tax_id: transaction_items.value.tax_id,
+                product: {
+                    code: products.value.code,
+                    unit: transaction_items.value.unit,
+                    name: products.value.name,
+                }
             });
 
-            // Reset produk baru setelah ditambahkan
-            newProduct.value = {
-                product_code: '',
-                product_name: '',
-                amount: null,
-                package: '',
-                product_price: null,
-                total_price: null,
-                ppn: null,
-            }
 
             notification.success({
                 title: 'Berhasil',
@@ -247,103 +276,117 @@ export default defineComponent({
             });
         }
 
-        // Menghitung subtotal dari semua produk tanpa PPN
         const totalPPN = computed(() => {
-            // Menghitung subtotal dari semua produk
-            const data = form.purchase_order_products.reduce((total, product) => {
-                // Mengalikan harga produk dengan jumlahnya dan menjumlahkan ke total
-                return form.purchase_order_products.length * (product.product_price ?? 0);
-            }, 0); // Inisialisasi total dengan 0
+            // Menghitung subtotal dari semua produk tanpa mengalikan quantity
+            const subtotal = form.transaction_items.reduce((total, item) => {
+                return total + Number(item.amount ?? 0); // Konversi amount ke number
+            }, 0);
 
-            form.total_ppn = data * 0.11;
+            // Menghitung PPN 11%
+            const ppn = subtotal * 0.11;
 
-            // Menghitung PPN
-            return formatRupiah(data * 0.11); // Menggunakan formatRupiah untuk PPN
+            // Menyimpan PPN ke dalam form
+            form.tax_amount = ppn;
+
+            // Mengembalikan nilai PPN yang diformat
+            return formatRupiah(ppn);
         });
 
         const subtotal = computed(() => {
-            const data = form.purchase_order_products.reduce((total, product) => {
-                // Mengalikan harga produk dengan jumlahnya dan menjumlahkan ke total
-                return form.purchase_order_products.length * (product.product_price ?? 0);
-            }, 0); // Inisialisasi total dengan 0
-            form.sub_total = data.valueOf();
+            // Menghitung subtotal dari semua produk tanpa mengalikan quantity
+            const total = form.transaction_items.reduce((total, item) => {
+                return total + Number(item.amount ?? 0); // Konversi amount ke number
+            }, 0);
 
-            return formatRupiah(data);
+            // Menyimpan subtotal ke dalam form
+            form.sub_total = total;
+
+            // Mengembalikan subtotal yang diformat
+            return formatRupiah(total);
         });
 
         const totalPrice = computed(() => {
-            const productPrice = form.purchase_order_products.reduce((total, product) => {
-                // Mengalikan harga produk dengan jumlahnya dan menjumlahkan ke total
-                return form.purchase_order_products.length * (product.product_price ?? 0);
-            }, 0); // Inisialisasi total dengan 0
+            // Menghitung subtotal dari semua produk tanpa mengalikan quantity
+            const subtotal = form.transaction_items.reduce((total, item) => {
+                return total + Number(item.amount ?? 0); // Konversi amount ke number
+            }, 0);
 
-            const afterPpnPrice = productPrice * 0.11;
-            const total = productPrice + afterPpnPrice;
-            form.total_price = total;
+            // Menghitung total harga termasuk PPN 11%
+            const totalWithPPN = subtotal + (subtotal * 0.11);
 
-            return formatRupiah(productPrice + afterPpnPrice);
+            // Menyimpan total ke dalam form
+            form.total = totalWithPPN;
+
+            // Mengembalikan total harga yang diformat
+            return formatRupiah(totalWithPPN);
         });
 
         // Fungsi untuk menghapus produk dari array
         function removeProduct(index: number) {
-            form.purchase_order_products.splice(index, 1);
+            form.transaction_items.splice(index, 1);
         }
 
-        function createColumns(): DataTableColumns<POProduct> {
+        function createColumns(): DataTableColumns<TransactionItems> {
             return [
                 {
-                    title: 'No',
-                    key: 'no',
+                    title: '#',
+                    key: 'index',
                     width: 50,
                     render(row, index) {
                         return index + 1;
                     }
                 },
                 {
-                    title: 'Kode produk',
+                    title: 'Kode Barang',
                     key: 'product_code',
-                    width: 200,
+                    render(row) {
+                        return row.product?.code;
+                    }
                 },
                 {
-                    title: 'Nama produk',
+                    title: 'Nama Barang',
                     key: 'product_name',
-                    width: 200,
+                    render(row) {
+                        return row.product?.name;
+                    }
                 },
                 {
                     title: 'Jumlah',
+                    key: 'quantity',
+                },
+                {
+                    title: 'Kemasan',
+                    key: 'unit',
+                },
+                {
+                    title: 'Harga Barang',
                     key: 'amount',
-                    width: 200,
-                },
-                {
-                    title: 'Satuan',
-                    key: 'package',
-                    width: 200,
-                },
-                {
-                    title: 'Harga',
-                    key: 'product_price',
-                    width: 200,
                     render(row) {
-                        // Format product_price as Rupiah for display
-                        return formatRupiah((row.product_price ?? 0));
+                        return formatRupiah(row.amount ?? 0);
                     }
                 },
                 {
                     title: 'PPN',
-                    key: 'ppn',
-                    width: 200,
+                    key: 'tax_amount',
                     render(row) {
-                        // Format ppn as Rupiah for display
-                        return formatRupiah((row.ppn ?? 0));
+                        return formatRupiah(row.tax_amount ?? 0);
                     }
                 },
+                // {
+                //     title: 'PPN',
+                //     key: 'tax_ppn',
+                //     width: 200,
+                //     render(row) {
+                //         // Format ppn as Rupiah for display
+                //         return formatRupiah((row.ppn ?? 0));
+                //     }
+                // },
                 {
                     title: 'Total harga',
                     key: 'total_price',
                     width: 200,
                     render(row) {
-                        // Format total_price as Rupiah for display
-                        return formatRupiah((row.total_price ?? 0));
+                        // return formatRupiah((row.total_price ?? 0));
                     }
                 },
                 {
@@ -360,14 +403,14 @@ export default defineComponent({
                                     onClick: () => {
                                         Swal.fire({
                                             icon: 'question',
-                                            text: `Delete ${row.product_name}?`,
+                                            text: `Delete ${row.product?.name}?`,
                                             showCancelButton: true,
                                         }).then((result) => {
                                             if (result.isConfirmed) {
                                                 removeProduct(index);
 
                                                 notification.success({
-                                                    title: `${row.product_name} has been deleted!`,
+                                                    title: `${row.product?.name} has been deleted!`,
                                                     closable: true,
                                                     keepAliveOnHover: false,
                                                     duration: 2000,
@@ -384,16 +427,64 @@ export default defineComponent({
             ];
         }
 
-        function handleCreatePO() {
-            notification.success({
-                title: 'PO created successfully!',
-                closable: true,
-                keepAliveOnHover: false,
-                duration: 2000,
-            })
-        }
-
         function handleSubmit() {
+            form.transaction_details = [
+                {
+                    name: 'Pemasok',
+                    category: 'Supplier',
+                    value: transaction_details.value.supplier,
+                    data_type: 'string',
+                },
+                {
+                    name: 'Gudang',
+                    category: 'Storehouse',
+                    value: transaction_details.value.storehouse,
+                    data_type: 'string',
+                },
+                {
+                    name: 'Alokasi',
+                    category: 'Allocation',
+                    value: transaction_details.value.located,
+                    data_type: 'string',
+                },
+                {
+                    name: 'Tanggal PO',
+                    category: 'PO Date',
+                    value: transaction_details.value.purchase_order_date as any,
+                    data_type: 'datetime',
+                },
+                {
+                    name: 'Tanggal Kirim',
+                    category: 'Delivery Date',
+                    value: transaction_details.value.send_date as any,
+                    data_type: 'datetime',
+                },
+                {
+                    name: 'Transportasi',
+                    category: 'Transportation',
+                    value: transaction_details.value.transportation,
+                    data_type: 'string',
+                },
+                {
+                    name: 'Pengirim',
+                    category: 'Sender',
+                    value: transaction_details.value.sender,
+                    data_type: 'string',
+                },
+                {
+                    name: 'Jenis Pengiriman',
+                    category: 'Delivery Type',
+                    value: transaction_details.value.delivery_type,
+                    data_type: 'string',
+                },
+                {
+                    name: 'Karyawan',
+                    category: 'Employee',
+                    value: transaction_details.value.employee_name,
+                    data_type: 'string',
+                },
+            ];
+
             form.post(route('procurement.create-po'), {
                 onError: (err) => {
                     Swal.fire({
@@ -404,7 +495,7 @@ export default defineComponent({
                 },
                 onSuccess: () => {
                     form.reset();
-                    form.purchase_order_products.splice(0, form.purchase_order_products.length);
+                    // form.purchase_order_products.splice(0, form.purchase_order_products.length);
                     Swal.fire({
                         icon: 'success',
                         title: 'Success submit PO!'
@@ -431,25 +522,41 @@ export default defineComponent({
             value: data.value
         }));
 
+        const productOptions = (page.props.products as Products[]).map((data) => ({
+            id: data.id,
+            label: data.name,
+            value: data.name,
+            code: data.code,
+        }));
+
         const sendType = [
-            { label: "DEPO", value: "DEPO" },
+            { label: "DEPO BEKASI", value: "DEPO BEKASI" },
         ];
 
-        const ppnOptions = [
-            { label: 'PPN', value: 0.11 },
-            { label: 'NON PPN', value: 0.0 },
-        ];
+        const ppnOptions = (page.props.tax as Tax[]).map((data) => ({
+            label: data.name,
+            value: data.id,
+            percentage: data.value / 100 // Tambahkan persentase PPN
+        }));
+
+        const units = (page.props.units as Lookup[]).map((data) => ({
+            label: data.label,
+            value: data.value
+        }));
 
         return {
             form,
             addProduct,
             removeProduct,
             handleSubmit,
-            handleCreatePO,
             formatRupiah,
+            dayjs,
+            products,
+            transaction_items,
+            units,
             columns: createColumns(),
             pagination: { pageSize: 10 },
-            newProduct,
+            transaction_details,
             storeLocationOptions,
             storehouseOptions,
             termPaymentOptions,
@@ -458,6 +565,21 @@ export default defineComponent({
             subTotal: subtotal,
             resultPpn: totalPPN,
             total: totalPrice,
+            loading: loadingRef,
+            productOptions: optionsRef,
+            handleSearch: (query: string) => {
+                if (!query.length) {
+                    optionsRef.value = []
+                    return
+                }
+                loadingRef.value = true
+                window.setTimeout(() => {
+                    optionsRef.value = productOptions.filter(
+                        item => ~item.label.indexOf(query)
+                    )
+                    loadingRef.value = false
+                }, 1000)
+            }
         }
     },
     components: {

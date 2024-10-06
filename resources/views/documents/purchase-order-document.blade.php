@@ -189,7 +189,7 @@
                 <div>
                     <h5>Kepada: </h5>
                     <span>
-                        {{ $purchase_order->supplier }}<br>
+                        {{ $supplier }}<br>
                         Gedung Menara 165 Unit A&B lt8 Jl TB<br>
                         Simatupang Kav.1 Rt 003/ rw 003 Cilandak
                     </span>
@@ -205,8 +205,8 @@
             <td align="left" style="width: 27%; vertical-align: top; line-height: 1.4;">
                 <div>
                     <h5>
-                        No. PO : {{ $purchase_order->purchase_order_number }}<br>
-                        Tanggal : {{ $purchase_order->purchase_order_date }}<br>
+                        No. PO : {{ $purchase_order->document_code }}<br>
+                        Tanggal : {{ $purchase_order_date }}<br>
                         No SO<br>
                         CC<br>
                     </h5>
@@ -230,16 +230,16 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($purchase_order->purchaseOrderProducts as $index => $product)
+            @foreach ($purchase_order->transactionItems as $index => $txItem)
                 <tr>
                     <td class="text-center">{{ $index + 1 }}</td>
-                    <td>{{ $product->product_code }} - {{ $product->product_name }}</td>
-                    <td>{{ $product->amount }} {{ $product->package }}</td>
-                    <td>Rp {{ number_format($product->product_price, 0, ',', '.') }}</td>
+                    <td>{{ $txItem->product->code }} - {{ $txItem->product->name }}</td>
+                    <td>{{ $txItem->quantity }} {{ $txItem->unit }}</td>
+                    <td>Rp {{ number_format($txItem->amount, 0, ',', '.') }}</td>
                     <td class="text-center"></td>
                     <td class="text-right"></td>
-                    <td class="text-center">Rp {{ number_format($product->product_price, 0, ',', '.') }}</td>
-                    <td class="text-center">Rp {{ number_format($product->total_price, 0, ',', '.') }}</td>
+                    <td class="text-center">Rp {{ number_format($txItem->amount, 0, ',', '.') }}</td>
+                    <td class="text-center">Rp {{ number_format($purchase_order->sub_total, 0, ',', '.') }}</td>
                 </tr>
             @endforeach
         </tbody>
@@ -247,8 +247,8 @@
 
     <div style="display: flex; justify-content: end; text-align: right;">
         <h4 style="line-height: 1.5;">
-            PPN 11% : Rp {{ number_format($purchase_order->total_ppn, 0, ',', '.') }}<br>
-            Grand Total : Rp {{ number_format($purchase_order->total_price, 0, ',', '.') }}
+            PPN 11% : Rp {{ number_format($purchase_order->tax_amount, 0, ',', '.') }}<br>
+            Grand Total : Rp {{ number_format($purchase_order->total, 0, ',', '.') }}
         </h4>
     </div>
 

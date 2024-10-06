@@ -66,6 +66,20 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         Route::prefix('menu-access-management')->group(function () {
             Route::get('/', [App\Http\Controllers\MenuAccessController::class,'index'])->name("menu-access-management");
         });
+
+        Route::prefix('customer-management')->group(function() {
+            Route::get('', [App\Http\Controllers\PartiesController::class, 'createCustomer'])->name('parties.customer');
+            Route::post('/create-customer', [App\Http\Controllers\PartiesController::class, 'store'])->name('parties.customer.post');
+        });
+
+        Route::prefix('supplier-management')->group(function() {
+            Route::get('', [App\Http\Controllers\PartiesController::class, 'createSupplier'])->name('parties.supplier');
+            Route::post('/create-supplier', [App\Http\Controllers\PartiesController::class, 'storeSupplier'])->name('parties.supplier.post');
+        });
+
+        Route::prefix('product-management')->group(function () {
+            Route::get('', [App\Http\Controllers\ProductsController::class, 'createProduct'])->name('products');
+        });
     });
 
     // Procurement Routes
@@ -74,16 +88,16 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         Route::get('/purchase-order', [App\Http\Controllers\PurchaseOrderController::class, 'create'])->name('purchase-order');
         Route::post('/purchase-order', [App\Http\Controllers\PurchaseOrderController::class, 'store'])->name('create-po');
         Route::get('/purchase-orders', [App\Http\Controllers\PurchaseOrderController::class, 'index'])->name('purchase-order-list');
-        Route::get('/purchase-order/detail/{purchaseOrder}', [App\Http\Controllers\PurchaseOrderController::class, 'show'])->name('purchase-order.detail');
-        Route::get('/generate-po-document/{purchaseOrder}', [App\Http\Controllers\PurchaseOrderController::class, 'generatePurchaseOrderDocument'])->name('generate-po-document');
+        Route::get('/purchase-order/detail/{transaction}', [App\Http\Controllers\PurchaseOrderController::class, 'show'])->name('purchase-order.detail');
+        Route::get('/generate-po-document/{transactions}', [App\Http\Controllers\PurchaseOrderController::class, 'generatePurchaseOrderDocument'])->name('generate-po-document');
 
         //Sub sales Order
         Route::get('/sub-sales-order', [App\Http\Controllers\SubSalesOrderController::class, 'create'])->name('sales-order');
         Route::post('/sub-sales-order', [App\Http\Controllers\SubSalesOrderController::class, 'store'])->name('sales-order.post');
         Route::get('/sub-sales-orders', [App\Http\Controllers\SubSalesOrderController::class, 'index'])->name('sales-order-list');
-        Route::get('/sub-sales-order/detail/{subSalesOrder}', [App\Http\Controllers\SubSalesOrderController::class, 'show'])->name('sales-order.detail');
-        Route::get('/sub-sales-order/{poNumber}', [App\Http\Controllers\PurchaseOrderController::class, 'getProductsByPoNumber'])->name('get-po-products');
-        Route::get('/generate-sso-document/{subSalesOrder}', [App\Http\Controllers\SubSalesOrderController::class, 'generateSubSalesOrderDocument'])->name('generate-sso-document');
+        Route::get('/sub-sales-order/detail/{transaction}', [App\Http\Controllers\SubSalesOrderController::class, 'show'])->name('sales-order.detail');
+        Route::get('/sub-sales-order/{po_number}', [App\Http\Controllers\PurchaseOrderController::class, 'getDataByPoNumber'])->name('get-data-po');
+        Route::get('/generate-sso-document/{transactions}', [App\Http\Controllers\SubSalesOrderController::class, 'generateSubSalesOrderDocument'])->name('generate-sso-document');
 
 
         Route::get('/aging', fn() => Inertia::render('Procurement/Transaction/Aging'))->name('aging');

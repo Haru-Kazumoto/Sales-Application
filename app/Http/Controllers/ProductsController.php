@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PurchaseOrderProduct;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ProductsController extends Controller
 {
@@ -18,9 +19,9 @@ class ProductsController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function createProduct()
     {
-        //
+        return Inertia::render('Admin/Products');
     }
 
     /**

@@ -54,6 +54,24 @@
                             <n-input size="large" v-model:value="model.salesman" />
                         </div>
                     </div>
+                    <div class="col-6 col-sm-6 col-md-6 col-lg-4">
+                        <div class="d-flex flex-column gap-1">
+                            <label for="">BIAYA ANGKUTAN</label>
+                            <n-input size="large" v-model:value="model.term" />
+                        </div>
+                    </div>
+                    <div class="col-6 col-sm-6 col-md-6 col-lg-4">
+                        <div class="d-flex flex-column gap-1">
+                            <label for="">CASHBACK</label>
+                            <n-input size="large" v-model:value="model.due_date" />
+                        </div>
+                    </div>
+                    <div class="col-6 col-sm-6 col-md-6 col-lg-4">
+                        <div class="d-flex flex-column gap-1">
+                            <label for="">BIAYA BONGKAR</label>
+                            <n-input size="large" v-model:value="model.salesman" />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

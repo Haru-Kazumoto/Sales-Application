@@ -1,7 +1,7 @@
 <template>
     <Head title="List SSO" />
     <div class="d-flex flex-column gap-4">
-        <TitlePage title="List SSO" />
+        <TitlePage title="List Of SSO" />
         <div class="d-flex gap-2 align-items-center">
             <n-button type="primary">
                 <template #icon>
@@ -12,7 +12,7 @@
         </div>
         <div class="card shadow" style="border: none;">
             <div class="card-body">
-                <n-data-table :columns="columns" :bordered="false" :data="$page.props.sub_sales_orders" />
+                <n-data-table :columns="columns" :bordered="false" :data="$page.props.transactions" />
             </div>
         </div>
     </div>
@@ -25,72 +25,65 @@ import { Head, router } from '@inertiajs/vue3';
 import { Refresh } from "@vicons/ionicons5";
 import { DataTableColumns, NButton, NTag } from 'naive-ui';
 import { formatRupiah } from '../../../Utils/options-input.utils';
-import dayjs from "dayjs";
-import 'dayjs/locale/id'; // Import locale Indonesia
-
-dayjs.locale('id'); // Set locale to Indonesian
-
-interface RowData {
-    id: number;
-    sales_order_number: number;
-    order_date: string;
-    proof_number: string;
-    sender: string;
-    storehouse:string;
-    total_price: number;
-}
+import { Transactions } from '../../../types/model';
 
 export default defineComponent({
     setup() {
 
-        function createColumns(): DataTableColumns<RowData> {
+        function createColumns(): DataTableColumns<Transactions> {
             return [
                 {
                     title: '#',
                     key: 'index',
-                    width: 50,
                     render(rowData, rowIndex) {
                         return rowIndex + 1;  // Menghitung nomor urut
                     },
                 },
                 {
-                    title: 'No SO',
-                    key: 'sales_order_number',
-                    width: 200,
+                    title: 'No PO',
+                    key: 'purchase_order_number',
                     render(rowData) {
-                        return rowData.sales_order_number;
+                        return rowData.document_code;  // Menampilkan nomor faktur
                     },
                 },
                 {
-                    title: 'Tanggal PO',
-                    key: 'order_date',
-                    width: 250,
+                    title: 'Pemasok',
+                    key: 'supplier',
                     render(rowData) {
-                        return dayjs(rowData.order_date).format('dddd, D MMMM YYYY ');  // Menampilkan nama salesman
+                        const supplierData = rowData.transaction_details.find((data) => {
+                            return data.category === "Supplier"
+                        })
+
+                        return supplierData?.value;  // Menampilkan nama salesman
                     },
                 },
                 {
                     title: 'Pengirim',
                     key: 'sender',
-                    width: 200,
                     render(rowData) {
-                        return rowData.sender;  // Menampilkan nama pelanggan
+                        const senderData = rowData.transaction_details.find((data) => {
+                            return data.category === "Sender";
+                        })
+                        
+                        return senderData?.value;
                     },
                 },
                 {
                     title: 'Gudang',
                     key: 'storehouse',
-                    width: 200,
                     render(rowData) {
-                        return rowData.storehouse;  // Menampilkan jangka waktu pembayaran
+                        const storehouseData = rowData.transaction_details.find((data) => {
+                            return data.category === "Storehouse";
+                        })
+
+                        return storehouseData?.value;
                     },
                 },
                 {
                     title: 'Harga',
                     key: 'total_price',
-                    width: 200,
                     render(rowData) {
-                        return formatRupiah(rowData.total_price);  // Menampilkan tanggal jatuh tempo
+                        return formatRupiah(rowData.total ?? 0);
                     },
                 },
                 {

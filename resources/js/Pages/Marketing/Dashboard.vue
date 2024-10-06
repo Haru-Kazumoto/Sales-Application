@@ -9,56 +9,50 @@
                 <n-date-picker class="ms-lg-auto w-50" size="medium" />
             </div>
         </div>
-        <div class="row g-3">
-            <div class="col-12 col-md-6 col-lg-3">
-                <div class="card shadow-sm border-0 ">
-                    <div class="card-body">
-                        <div class="card-title">
-                            TARGET PENJUALAN
+        <div class="container-fluid">
+            <div class="row g-3 d-flex flex-nowrap overflow-auto" id="horizontal-scroll">
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <div class="card-title">TARGET PENJUALAN</div>
+                            <div class="card-content mb-3">
+                                <span class="fs-3 fw-medium">Rp 1.000.000.000</span>
+                            </div>
+                            <span>BULAN SEPTEMBER 2024</span>
                         </div>
-                        <div class="card-content mb-3">
-                            <span class="fs-3 fw-medium">Rp 1.000.000.000</span>
-                        </div>
-                        <span>BULAN SEPTEMBER 2024</span>
                     </div>
                 </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3">
-                <div class="card shadow-sm border-0 ">
-                    <div class="card-body">
-                        <div class="card-title">
-                            POTENSI PENJUALAN
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <div class="card-title">POTENSI PENJUALAN</div>
+                            <div class="card-content mb-3">
+                                <span class="fs-3 fw-medium">Rp 80.000.000</span>
+                            </div>
+                            <span>BULAN SEPTEMBER 2024</span>
                         </div>
-                        <div class="card-content mb-3">
-                            <span class="fs-3 fw-medium">Rp 80.000.000</span>
-                        </div>
-                        <span>BULAN SEPTEMBER 2024</span>
                     </div>
                 </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3">
-                <div class="card shadow-sm border-0 ">
-                    <div class="card-body">
-                        <div class="card-title">
-                            KONVERSI PEMBAYARAN
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <div class="card-title">KONVERSI PEMBAYARAN</div>
+                            <div class="card-content mb-3">
+                                <span class="fs-3 fw-medium">Rp 60.000.000</span>
+                            </div>
+                            <span>BULAN SEPTEMBER 2024</span>
                         </div>
-                        <div class="card-content mb-3">
-                            <span class="fs-3 fw-medium">Rp 60.000.000</span>
-                        </div>
-                        <span>BULAN SEPTEMBER 2024</span>
                     </div>
                 </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3">
-                <div class="card shadow-sm border-0 ">
-                    <div class="card-body">
-                        <div class="card-title">
-                            KEKURANGAN TARGET
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <div class="card-title">KEKURANGAN TARGET</div>
+                            <div class="card-content mb-3">
+                                <span class="fs-3 fw-medium">Rp 40.000.000</span>
+                            </div>
+                            <span>BULAN SEPTEMBER 2024</span>
                         </div>
-                        <div class="card-content mb-3">
-                            <span class="fs-3 fw-medium">Rp 40.000.000</span>
-                        </div>
-                        <span>BULAN SEPTEMBER 2024</span>
                     </div>
                 </div>
             </div>
@@ -112,6 +106,51 @@
         </div>
     </div>
 </template>
+
+<style scoped>
+#horizontal-scroll {
+    overflow-x: auto;
+    /* Enable horizontal scrolling */
+    scroll-snap-type: x mandatory;
+    /* Enable scroll snapping */
+    -webkit-overflow-scrolling: touch;
+    /* Smooth scrolling for touch devices */
+}
+
+#horizontal-scroll .col-12 {
+    min-width: 250px;
+    /* Minimum width for each card to allow horizontal scroll */
+    scroll-snap-align: start;
+    /* Ensure card snaps into position when scrolling */
+}
+
+/* Hide scrollbar for Chrome, Safari, and Edge */
+#horizontal-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge, and Firefox */
+#horizontal-scroll {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+@media (max-width: 576px) {
+    #horizontal-scroll {
+        display: flex;
+        /* Make it a flexbox container */
+        flex-wrap: nowrap;
+        /* Prevent wrapping so cards scroll horizontally */
+    }
+
+    .col-12 {
+        flex: 0 0 auto;
+        /* Ensure cards don't shrink or grow */
+    }
+}
+</style>
 
 <script lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
