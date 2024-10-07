@@ -62,7 +62,9 @@ class WhatsappService
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $this->apiKey, // Assuming Bearer token for authorization
             'Content-Type'  => 'application/json',
-        ])->post($this->apiUrl, $payload);
+        ])
+        ->withoutVerifying()
+        ->post($this->apiUrl, $payload);
 
         // Return the API response or handle error
         if ($response->successful()) {

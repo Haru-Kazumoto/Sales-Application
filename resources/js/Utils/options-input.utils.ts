@@ -16,6 +16,6 @@ export const capitalize = (value): string => {
     return value.toUpperCase();
 }
 
-export const onlyNumber = (value): number => {
+export const onlyNumber = (value) => {
     return value.replace(/\D/g, '');
 }

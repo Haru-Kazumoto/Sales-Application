@@ -10,7 +10,7 @@ class TransactionItem extends Model
 {
     use HasFactory;
 
-    protected $table = "transaction_item";
+    protected $table = "transaction_items";
 
     protected $fillable = [
         'unit',

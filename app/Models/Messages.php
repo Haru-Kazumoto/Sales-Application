@@ -13,7 +13,7 @@ class Messages extends Model
         "recipient",
         "content",
         "sent_at",
-        "set_by"
+        "sent_by"
     ];
 
 }

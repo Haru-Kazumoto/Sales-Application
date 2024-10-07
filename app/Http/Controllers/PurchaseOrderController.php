@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Services\PurchaseOrderService;
 use App\Models\Lookup;
+use App\Models\Parties;
 use App\Models\Products;
 use App\Models\PurchaseOrderProduct;
 use App\Models\PurchaseOrder;
@@ -46,6 +47,7 @@ class PurchaseOrderController extends Controller
     {
         $payment_terms = Lookup::where('category', 'PAYMENT_TERM')->get();
         $store_locations = Lookup::where('category', 'STORE_LOCATION')->get();
+        $suppliers = Parties::where('type_parties', 'VENDOR')->get();
         $products = Products::all();
         $units = Lookup::where('category', 'UNIT')->get();
         $tax = Tax::all();
@@ -58,6 +60,7 @@ class PurchaseOrderController extends Controller
             'tax' => $tax,
             'products' => $products,
             'units' => $units,
+            'suppliers' => $suppliers
         ]);
     }
 

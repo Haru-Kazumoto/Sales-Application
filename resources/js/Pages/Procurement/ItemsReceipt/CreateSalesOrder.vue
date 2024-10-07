@@ -120,8 +120,7 @@
                     </div>
                 </div>
             </div>
-            <n-button type="primary" class="d-flex flex-column ms-auto mb-4"
-                @click="handleSubmit">SUBMIT</n-button>
+            <n-button type="primary" class="d-flex flex-column ms-auto mb-4" @click="handleSubmit">SUBMIT</n-button>
         </div>
     </div>
 </template>
@@ -140,57 +139,7 @@ import 'dayjs/locale/id'; // Import locale Indonesia
 
 dayjs.locale('id'); // Set locale to Indonesian
 
-function createColumns(): DataTableColumns<TransactionItems> {
-    return [
-        {
-            title: '#',
-            key: 'index',
-            width: 50,
-            render(row, index) {
-                return index + 1;
-            }
-        },
-        {
-            title: 'Kode Barang',
-            key: 'product_code',
-            render(row) {
-                return row.product?.code;
-            }
-        },
-        {
-            title: 'Nama Barang',
-            key: 'product_name',
-            render(row) {
-                return row.product?.name;
-            }
-        },
-        {
-            title: 'Jumlah',
-            key: 'quantity',
-        },
-        {
-            title: 'Kemasan',
-            key: 'unit',
-            render(row) {
-                return row.unit.replace("_", ' ');
-            }
-        },
-        {
-            title: 'Harga Barang',
-            key: 'amount',
-            render(row) {
-                return formatRupiah(row.amount ?? 0);
-            }
-        },
-        {
-            title: 'PPN',
-            key: 'tax_amount',
-            render(row) {
-                return formatRupiah(row.tax_amount ?? 0);
-            }
-        },
-    ];
-}
+
 
 export default defineComponent({
     setup() {
@@ -238,6 +187,98 @@ export default defineComponent({
             product_id: null as unknown as number,
             tax_id: null as unknown as number,
         });
+
+        function createColumns(): DataTableColumns<TransactionItems> {
+            return [
+                {
+                    title: '#',
+                    key: 'index',
+                    width: 50,
+                    render(row, index) {
+                        return index + 1;
+                    }
+                },
+                {
+                    title: 'Kode Barang',
+                    key: 'product_code',
+                    render(row) {
+                        return row.product?.code;
+                    }
+                },
+                {
+                    title: 'Nama Barang',
+                    key: 'product_name',
+                    render(row) {
+                        return row.product?.name;
+                    }
+                },
+                {
+                    title: 'Jumlah',
+                    key: 'quantity',
+                },
+                {
+                    title: 'Kemasan',
+                    key: 'unit',
+                    render(row) {
+                        return row.unit.replace("_", ' ');
+                    }
+                },
+                {
+                    title: 'Harga Barang',
+                    key: 'amount',
+                    render(row) {
+                        return formatRupiah(row.amount ?? 0);
+                    }
+                },
+                {
+                    title: 'PPN',
+                    key: 'tax_amount',
+                    render(row) {
+                        return formatRupiah(row.tax_amount ?? 0);
+                    }
+                },
+                {
+                    title: 'Action',
+                    key: 'actions',
+                    width: 100,
+                    render(row, index) {
+                        return h('div', { class: 'd-flex gap-2' }, [
+                            h(
+                                NButton,
+                                {
+                                    type: 'error',
+                                    size: 'small',
+                                    onClick: () => {
+                                        Swal.fire({
+                                            icon: 'question',
+                                            text: `Delete ${row.product?.name}?`,
+                                            showCancelButton: true,
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                removeProduct(index);
+
+                                                notification.success({
+                                                    title: `${row.product?.name} has been deleted!`,
+                                                    closable: true,
+                                                    keepAliveOnHover: false,
+                                                    duration: 2000,
+                                                });
+                                            }
+                                        });
+                                    }
+                                },
+                                { default: () => 'Hapus' }
+                            )
+                        ]);
+                    }
+                }
+            ];
+        }
+
+        // Fungsi untuk menghapus produk dari array
+        function removeProduct(index: number) {
+            form.transaction_items.splice(index, 1);
+        }
 
         watch(() => products.value, (product) => {
             product.transaction_items.forEach((data) => {

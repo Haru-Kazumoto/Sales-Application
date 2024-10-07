@@ -11,62 +11,62 @@
                         <!-- Baris Pertama -->
                         <div class="col-md-3">
                             <label for="field1">No PO</label>
-                            <n-input id="field1" size="large" v-model:value="form.document_code" :disabled="true" />
+                            <n-input placeholder="" id="field1" size="large" v-model:value="form.document_code" :disabled="true" />
                         </div>
                         <div class="col-md-3">
                             <label for="field2">Pemasok</label>
-                            <n-input id="field2" size="large" v-model:value="transaction_details.supplier" />
+                            <n-select placeholder="" id="field2" size="large" v-model:value="transaction_details.supplier" :options="suppliers"/>
                         </div>
                         <div class="col-md-3">
                             <label for="field3">Gudang</label>
-                            <n-select id="field3" size="large" :options="storehouseOptions"
+                            <n-select placeholder="" id="field3" size="large" :options="storehouseOptions"
                                 v-model:value="transaction_details.storehouse" />
                         </div>
                         <div class="col-md-3">
                             <label for="field4">Alokasi</label>
-                            <n-select id="field4" size="large" :options="storeLocationOptions"
+                            <n-select placeholder="" id="field4" size="large" :options="storeLocationOptions"
                                 v-model:value="transaction_details.located" />
                         </div>
 
                         <!-- Baris Kedua -->
                         <div class="col-md-3">
                             <label for="field5">Tanggal PO</label>
-                            <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" id="field5" size="large"
+                            <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="" id="field5" size="large"
                                 v-model:formatted-value="transaction_details.purchase_order_date" />
                         </div>
                         <div class="col-md-3">
                             <label for="field6">Tanggal Kirim</label>
-                            <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" id="field6" size="large"
+                            <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="" id="field6" size="large"
                                 v-model:formatted-value="transaction_details.send_date" />
                         </div>
                         <div class="col-md-3">
                             <label for="field7">Term Pembayaran</label>
-                            <n-select id="field7" size="large" :options="termPaymentOptions"
+                            <n-select placeholder="" id="field7" size="large" :options="termPaymentOptions"
                                 v-model:value="form.term_of_payment" />
                         </div>
                         <div class="col-md-3">
                             <label for="field8">Tanggal Jatuh Tempo</label>
-                            <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" id="field8" size="large"
+                            <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="" id="field8" size="large"
                                 v-model:formatted-value="form.due_date" />
                         </div>
 
                         <!-- Baris Ketiga -->
                         <div class="col-md-3">
                             <label for="field5">Transportasi</label>
-                            <n-input id="field5" size="large" v-model:value="transaction_details.transportation" />
+                            <n-input placeholder="" id="field5" size="large" v-model:value="transaction_details.transportation" />
                         </div>
                         <div class="col-md-3">
                             <label for="field6">Pengirim</label>
-                            <n-input id="field6" size="large" v-model:value="transaction_details.sender" />
+                            <n-input placeholder="" id="field6" size="large" v-model:value="transaction_details.sender" />
                         </div>
                         <div class="col-md-3">
                             <label for="field7">Jenis Pengiriman</label>
-                            <n-select id="field7" size="large" :options="sendType"
+                            <n-select placeholder="" id="field7" size="large" :options="sendType"
                                 v-model:value="transaction_details.delivery_type" />
                         </div>
                         <div class="col-md-3">
                             <label for="field8">Karyawan</label>
-                            <n-input id="field8" size="large" v-model:value="transaction_details.employee_name"
+                            <n-input placeholder="" id="field8" size="large" v-model:value="transaction_details.employee_name"
                                 :disabled="true" />
                         </div>
                     </form>
@@ -84,28 +84,28 @@
                         </div> -->
                         <div class="col-md-6">
                             <label for="product_name">Nama Barang</label>
-                            <n-select v-model:value="products.name" filterable placeholder="Search Songs"
+                            <n-select placeholder="" v-model:value="products.name" filterable
                                 :options="productOptions" :loading="loading" clearable remote @search="handleSearch" />
                         </div>
                         <div class="col-md-6">
                             <label for="amount">Jumlah</label>
-                            <n-input id="amount" placeholder="Jumlah" v-model:value="transaction_items.quantity" />
+                            <n-input id="amount" placeholder="" v-model:value="transaction_items.quantity" />
                         </div>
 
                         <!-- Baris Kedua -->
                         <div class="col-md-4">
                             <label for="package">Kemasan</label>
-                            <n-select id="package" placeholder="Kemasan" v-model:value="transaction_items.unit"
+                            <n-select id="package" placeholder="" v-model:value="transaction_items.unit"
                                 :options="units" />
                         </div>
                         <div class="col-md-4">
                             <label for="product_price">Harga Barang</label>
-                            <n-input id="product_price" placeholder="Harga Barang"
+                            <n-input id="product_price" placeholder=""
                                 v-model:value="transaction_items.amount" />
                         </div>
                         <div class="col-md-4">
                             <label for="ppn">PPN</label>
-                            <n-select id="ppn" :options="ppnOptions" placeholder="Pilih PPN"
+                            <n-select id="ppn" :options="ppnOptions" placeholder=""
                                 v-model:value="transaction_items.tax_id" />
                         </div>
                         <div class="d-flex justify-content-end">
@@ -169,7 +169,7 @@
 
 <script lang="ts">
 import { defineComponent, h, ref, computed, watch } from 'vue'
-import { Lookup, POProduct, Products, PurchaseOrder, Storehouse, Tax, TransactionDetail, TransactionItems, Transactions, User } from '../../../types/model';
+import { Lookup, Parties, POProduct, Products, PurchaseOrder, Storehouse, Tax, TransactionDetail, TransactionItems, Transactions, User } from '../../../types/model';
 import { DataTableColumns, NButton, SelectOption, useNotification } from 'naive-ui';
 import Swal from 'sweetalert2';
 import TitlePage from '../../../Components/TitlePage.vue';
@@ -373,22 +373,13 @@ export default defineComponent({
                     }
                 },
                 // {
-                //     title: 'PPN',
-                //     key: 'tax_ppn',
+                //     title: 'Total harga',
+                //     key: 'total_price',
                 //     width: 200,
                 //     render(row) {
-                //         // Format ppn as Rupiah for display
-                //         return formatRupiah((row.ppn ?? 0));
+                //         // return formatRupiah((row.total_price ?? 0));
                 //     }
                 // },
-                {
-                    title: 'Total harga',
-                    key: 'total_price',
-                    width: 200,
-                    render(row) {
-                        // return formatRupiah((row.total_price ?? 0));
-                    }
-                },
                 {
                     title: 'Action',
                     key: 'actions',
@@ -529,6 +520,11 @@ export default defineComponent({
             code: data.code,
         }));
 
+        const suppliers = (page.props.suppliers as Parties[]).map((data) => ({
+            label: data.name,
+            value: data.name,
+        }));
+
         const sendType = [
             { label: "DEPO BEKASI", value: "DEPO BEKASI" },
         ];
@@ -551,6 +547,7 @@ export default defineComponent({
             handleSubmit,
             formatRupiah,
             dayjs,
+            suppliers,
             products,
             transaction_items,
             units,

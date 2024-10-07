@@ -152,6 +152,8 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         Route::get('/create-invoice-dnp', fn() => Inertia::render('AgingFinance/Sales/CreateInvoiceDNP'))->name('create-invoice-dnp');
 
         Route::get('/whatsapp-message', fn() => Inertia::render('AgingFinance/WhatsappMessage'))->name('whatsapp-message');
+        Route::get('/test-send-message', [App\Http\Controllers\MessageTemplateController::class, 'create'])->name('test-whatsapp-message');
+        Route::post('/save-message', [App\Http\Controllers\MessageTemplateController::class, 'saveMessage'])->name('save-message');
     });
 
     Route::name('sales.')->group(function() {

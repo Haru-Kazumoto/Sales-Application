@@ -132,6 +132,12 @@ export const roleMenus = {
             key: 'whatsapp_reminder',
             icon: renderIcon(LogoWhatsapp),
             href: "/whatsapp-message"
+        },
+        {
+            label: "Test Setting Pesan WA",
+            key: 'whatsapp_reminder_test',
+            icon: renderIcon(LogoWhatsapp),
+            href: "/test-send-message",
         }
     ],
     PROCUREMENT: [
