@@ -11,3 +11,11 @@ export const formatRupiah = (amount: number) => {
         maximumFractionDigits: 0
     }).format(amount);
 };
+
+export const capitalize = (value): string => {
+    return value.toUpperCase();
+}
+
+export const onlyNumber = (value): number => {
+    return value.replace(/\D/g, '');
+}

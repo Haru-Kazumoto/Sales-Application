@@ -2,12 +2,12 @@
     <div class="d-flex flex-column gap-4">
         <TitlePage title="Update role" />
         <Link :href="route('admin.division-management')">
-        <n-button text style="width: 20px;">
-            <template #icon>
-                <n-icon :component="ArrowBack" />
-            </template>
-            Kembali
-        </n-button>
+            <n-button text style="width: 20px;">
+                <template #icon>
+                    <n-icon :component="ArrowBack" />
+                </template>
+                Kembali
+            </n-button>
         </Link>
         <div class="d-flex container justify-content-center">
             <div class="card shadow w-50 justify-content-center" style="border: none;">

@@ -70,11 +70,17 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         Route::prefix('customer-management')->group(function() {
             Route::get('', [App\Http\Controllers\PartiesController::class, 'createCustomer'])->name('parties.customer');
             Route::post('/create-customer', [App\Http\Controllers\PartiesController::class, 'store'])->name('parties.customer.post');
+            Route::get('/edit-customer/{parties}', [App\Http\Controllers\PartiesController::class, 'edit'])->name('parties.customer.edit');
+            Route::patch('/update-customer/{parties}', [App\Http\Controllers\PartiesController::class, 'update'])->name('parties.customer.update');
+            Route::delete('/delete-customer/{parties}', [App\Http\Controllers\PartiesController::class, 'destroyCustomer'])->name('parties.customer.delete');
         });
 
         Route::prefix('supplier-management')->group(function() {
             Route::get('', [App\Http\Controllers\PartiesController::class, 'createSupplier'])->name('parties.supplier');
             Route::post('/create-supplier', [App\Http\Controllers\PartiesController::class, 'storeSupplier'])->name('parties.supplier.post');
+            Route::get('/edit-supplier/{parties}', [App\Http\Controllers\PartiesController::class, 'editSupplier'])->name('parties.supplier.edit');
+            Route::patch('/update-supplier/{parties}', [App\Http\Controllers\PartiesController::class, 'updateSupplier'])->name('parties.supplier.update');
+            Route::delete('/delete-supplier/{parties}', [App\Http\Controllers\PartiesController::class, 'destroySupplier'])->name('parties.supplier.delete');
         });
 
         Route::prefix('product-management')->group(function () {

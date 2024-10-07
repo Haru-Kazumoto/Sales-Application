@@ -13,7 +13,7 @@ class PartiesController extends Controller
 {
     public function createCustomer()
     {
-        $parties = Parties::where('type_parties', "CUSTOMER")->paginate(10);
+        $parties = Parties::where('type_parties', "CUSTOMER")->orderBy('created_at', 'desc')->paginate(10);
         $groups = PartiesGroup::all();
         $customer_type = Lookup::where('category', 'TYPE_PARTIES')->get();
 
@@ -22,7 +22,7 @@ class PartiesController extends Controller
 
     public function createSupplier()
     {
-        $parties = Parties::where('type_parties', "VENDOR")->paginate(10);
+        $parties = Parties::where('type_parties', "VENDOR")->orderBy('created_at', 'desc')->paginate(10);
         $groups = PartiesGroup::all();
         $supplier_type = Lookup::where('category', 'TYPE_PARTIES')->get();
 
@@ -32,51 +32,31 @@ class PartiesController extends Controller
     public function storeSupplier(Request $request)
     {
 
-        // dd($request->all());
-
         $request->validate([
-            'name' => 'required|string',
             'code' => 'required|string',
-            'type_parties' => 'required|string',
-            'phone' => 'nullable|string',
-            'fax' => 'nullable|string',
-            'handphone' => 'nullable|string',
-            'email' => 'nullable|string',
-            'website' => 'nullable|string',
-            'npwp' => 'nullable|string',
-            'contact_person' => 'nullable|string',
-            'address' => 'nullable|string',
-            'postal_code' => 'nullable|string',
-            'city' => 'nullable|string',
-            'province' => 'nullable|string',
-            'country' => 'nullable|string',
-            'description' => 'nullable|string',
-            'parties_group_id' => 'numeric|required',
+            'name' => 'required|string',
             'legality' => 'required|string',
+            'type_parties' => 'required|string',
+            'parties_group_id' => 'numeric|required',
+            'npwp' => 'nullable|string',
+            'phone' => 'nullable|string',
+            'city' => 'nullable|string',
+            'address' => 'nullable|string',
         ]);
 
         DB::transaction(function() use ($request) {
             $parties_group = PartiesGroup::where('id', $request->input('parties_group_id'))->first();
 
             Parties::create([
-                'name' => $request->input('name'),
                 'code' => $request->input('code'),
-                'type_parties' => $request->input('type_parties'),
-                'phone' => $request->input('phone'),
-                'fax' => $request->input('fax'),
-                'handphone' => $request->input('handphone'),
-                'email' => $request->input('email'),
-                'website' => $request->input('website'),
-                'npwp' => $request->input('npwp'),
-                'contact_person' => $request->input('contact_person'),
-                'address' => $request->input('address'),
-                'postal_code' => $request->input('postal_code'),
-                'city' => $request->input('city'),
-                'province' => $request->input('province'),
-                'country' => $request->input('country'),
-                'description' => $request->input('description'),
+                'name' => $request->input('name'),
                 'legality' => $request->input('legality'),
+                'type_parties' => $request->input('type_parties'),
                 'parties_group_id' => $parties_group->id,
+                'npwp' => $request->input('npwp'),
+                'phone' => $request->input('phone'),
+                'city' => $request->input('city'),
+                'address' => $request->input('address'),
             ]);
         });
 
@@ -86,56 +66,145 @@ class PartiesController extends Controller
 
     public function store(Request $request)
     {
-
-        // TODO: implement store logic
+        // dd($request->all());
         $request->validate([
-            'name' => 'required|string',
             'code' => 'required|string',
-            'type_parties' => 'required|string',
-            'phone' => 'nullable|string',
-            'fax' => 'nullable|string',
-            'handphone' => 'nullable|string',
-            'email' => 'nullable|string',
-            'website' => 'nullable|string',
-            'npwp' => 'nullable|string',
-            'contact_person' => 'nullable|string',
-            'term_payment' => 'nullable|numeric',
-            'address' => 'nullable|string',
-            'postal_code' => 'nullable|string',
-            'city' => 'nullable|string',
-            'province' => 'nullable|string',
-            'country' => 'nullable|string',
-            'description' => 'nullable|string',
-            'parties_group_id' => 'numeric|required',
+            'name' => 'required|string',
             'legality' => 'required|string',
+            'type_parties' => 'required|string',
+            'parties_group_id' => 'numeric|required',
+            'term_payment' => 'nullable|numeric',
+            'npwp' => 'nullable|string',
+            'phone' => 'nullable|string',
+            'city' => 'nullable|string',
+            'address' => 'nullable|string',
         ]);
 
         DB::transaction(function() use ($request) {
             $parties_group = PartiesGroup::where('id', $request->input('parties_group_id'))->first();
 
             Parties::create([
-                'name' => $request->input('name'),
                 'code' => $request->input('code'),
+                'name' => $request->input('name'),
+                'legality' => $request->input('legality'),
                 'type_parties' => $request->input('type_parties'),
+                'parties_group_id' => $parties_group->id,
+                'term_payment' => $request->input('term_payment'),
+                'npwp' => $request->input('npwp'),
                 'phone' => $request->input('phone'),
                 'fax' => $request->input('fax'),
-                'handphone' => $request->input('handphone'),
-                'email' => $request->input('email'),
-                'website' => $request->input('website'),
-                'npwp' => $request->input('npwp'),
-                'contact_person' => $request->input('contact_person'),
-                'address' => $request->input('address'),
-                'postal_code' => $request->input('postal_code'),
                 'city' => $request->input('city'),
-                'province' => $request->input('province'),
-                'country' => $request->input('country'),
-                'description' => $request->input('description'),
-                'term_payment' => $request->input('term_payment'),
-                'legality' => $request->input('legality'),
-                'parties_group_id' => $parties_group->id,
+            'address' => $request->input('address'),
             ]);
         });
 
-        return redirect()->route('admin.parties')->with('success', 'Customer berhasil dibuat!');
+        return redirect()->route('admin.parties.customer')->with('success', 'Customer berhasil dibuat!');
+    }
+
+    public function edit(Parties $parties) 
+    {
+        $groups = PartiesGroup::all();
+        $customer_type = Lookup::where('category', 'TYPE_PARTIES')->get();
+
+        return Inertia::render('Admin/CustomerEdit', compact('groups', 'customer_type', 'parties'));
+    }
+
+    public function update(Request $request, Parties $parties) // Menggunakan model binding
+    {
+        // dd($request->all());
+
+        // Validasi input
+        $request->validate([
+            'code' => 'required|string',
+            'name' => 'required|string',
+            'legality' => 'required|string',
+            'type_parties' => 'required|string',
+            'parties_group_id' => 'numeric|required',
+            'term_payment' => 'nullable|numeric',
+            'npwp' => 'nullable|string',
+            'phone' => 'nullable|string',
+            'city' => 'nullable|string',
+            'address' => 'nullable|string',
+        ]);
+
+        DB::transaction(function() use ($request, $parties) {
+            // Ambil data parties_group
+            $parties_group = PartiesGroup::where('id', $request->input('parties_group_id'))->first();
+
+            // Perbarui data partai
+            $parties->update([
+                'code' => $request->input('code'),
+                'name' => $request->input('name'),
+                'legality' => $request->input('legality'),
+                'type_parties' => $request->input('type_parties'),
+                'parties_group_id' => $parties_group->id,
+                'term_payment' => $request->input('term_payment'),
+                'npwp' => $request->input('npwp'),
+                'phone' => $request->input('phone'),
+                'city' => $request->input('city'),
+                'address' => $request->input('address'),
+            ]);
+        });
+
+        return redirect()->route('admin.parties.customer')->with('success', 'Customer berhasil diperbarui!');
+    }
+
+    public function destroyCustomer(Parties $parties) 
+    {
+        $parties->delete();
+
+        return redirect()->route('admin.parties.customer')->with('success', 'Customer berhasil dihapus!');
+    }
+
+    public function updateSupplier(Request $request, Parties $parties)
+    {
+        // Validasi input
+        $request->validate([
+            'code' => 'required|string',
+            'name' => 'required|string',
+            'legality' => 'required|string',
+            'type_parties' => 'required|string',
+            'parties_group_id' => 'numeric|required',
+            'npwp' => 'nullable|string',
+            'phone' => 'nullable|string',
+            'city' => 'nullable|string',
+            'address' => 'nullable|string',
+        ]);
+
+
+        DB::transaction(function() use ($request, $parties) {
+            // Ambil data parties_group
+            $parties_group = PartiesGroup::where('id', $request->input('parties_group_id'))->first();
+
+            // Perbarui data partai
+            $parties->update([
+                'code' => $request->input('code'),
+                'name' => $request->input('name'),
+                'legality' => $request->input('legality'),
+                'type_parties' => $request->input('type_parties'),
+                'parties_group_id' => $parties_group->id,
+                'npwp' => $request->input('npwp'),
+                'phone' => $request->input('phone'),
+                'city' => $request->input('city'),
+                'address' => $request->input('address'),
+            ]);
+        });
+
+        return redirect()->route('admin.parties.supplier')->with('success', 'Supplier berhasil diupdate!');
+    }
+
+    public function editSupplier(Parties $parties) 
+    {
+        $groups = PartiesGroup::all();
+        $supplier_type = Lookup::where('category', 'TYPE_PARTIES')->get();
+
+        return Inertia::render('Admin/SupplierEdit', compact('groups', 'supplier_type', 'parties'));
+    }
+
+    public function destroySupplier(Parties $parties)
+    {
+        $parties->delete();
+
+        return redirect()->route('admin.parties.supplier')->with('success', 'Supplier berhasil dihapus!');
     }
 }
