@@ -15,6 +15,7 @@ Route::get('/test-view', function() {
     return Inertia::render('Test');
 });
 
+
 // Dashboard Routes
 Route::middleware(['auth', 'verified', 'secure.path'])->group(function() {
     Route::get('/dashboard-finance', [App\Http\Controllers\DashboardController::class, 'indexFinanceDashboard'])->name('dashboard.finance');
