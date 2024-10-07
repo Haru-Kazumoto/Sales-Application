@@ -1,4 +1,5 @@
 <template>
+    <Head title="Create CO"/>
     <div class="d-flex flex-column gap-4">
         <TitlePage title="CUSTOMER ORDER" />
         <!-- INPUT CO FORM -->
@@ -183,7 +184,7 @@
 import { defineComponent, h, ref } from 'vue'
 import TitlePage from '../../../Components/TitlePage.vue';
 import { DataTableColumns, NButton } from 'naive-ui';
-import { useForm, usePage } from '@inertiajs/vue3';
+import { useForm, usePage,Head } from '@inertiajs/vue3';
 import { ProductCustomerOrder } from '../../../types/dto';
 import Swal from 'sweetalert2';
 
@@ -379,7 +380,8 @@ export default defineComponent({
         }
     },
     components: {
-        TitlePage
+        TitlePage,
+        Head
     }
 })
 </script>
