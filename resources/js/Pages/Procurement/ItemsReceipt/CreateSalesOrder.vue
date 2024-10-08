@@ -9,61 +9,64 @@
                     <div class="row g-2">
                         <!-- Baris Pertama -->
                         <div class="col-lg-2 col-6">
-                            <label for="field1">No PO</label>
+                            <label for="field1">
+                                No PO<span class="text-danger">*</span>
+                            </label>
                             <n-input id="field1" size="large" v-model:value="transaction_details.po_number" />
                         </div>
                         <div class="col-lg-2 col-6 d-flex align-items-end">
                             <n-button class="w-100" size="large" strong secondary type="primary"
-                                @click="handleGetProducts">Proses</n-button>
+                                @click="handleGetProducts">
+                                Proses</n-button>
                         </div>
                         <div class="col-lg-4 col-6">
-                            <label for="field2">No Bukti</label>
+                            <label for="field2">No Bukti<span class="text-danger">*</span></label>
                             <n-input id="field2" size="large" v-model:value="transaction_details.proof_number" />
                         </div>
                         <div class="col-lg-4 col-6">
-                            <label for="field3">No SO</label>
+                            <label for="field3">No SO<span class="text-danger">*</span></label>
                             <n-input id="field3" size="large" v-model:value="form.document_code" />
                         </div>
 
                         <!-- Baris Kedua -->
                         <div class="col-lg-4 col-6">
-                            <label for="field4">Tanggal PO</label>
+                            <label for="field4">Tanggal PO<span class="text-danger">*</span></label>
                             <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" id="field8" size="large"
                                 v-model:formatted-value="transaction_details.purchase_order_date" />
                         </div>
                         <div class="col-lg-4 col-6">
-                            <label for="field5">Alokasi</label>
+                            <label for="field5">Alokasi<span class="text-danger">*</span></label>
                             <n-input id="field5" size="large" disabled v-model:value="transaction_details.located" />
                         </div>
                         <div class="col-lg-4 col-6">
-                            <label for="field6">Pemasok</label>
+                            <label for="field6">Pemasok<span class="text-danger">*</span></label>
                             <n-input id="field6" size="large" disabled v-model:value="transaction_details.supplier" />
                         </div>
                         <div class="col-lg-4 col-6">
-                            <label for="field7">Gudang</label>
+                            <label for="field7">Gudang<span class="text-danger">*</span></label>
                             <n-input id="field7" size="large" disabled v-model:value="transaction_details.storehouse" />
                         </div>
                         <div class="col-lg-4 col-6">
-                            <label for="field8">Tanggal Kirim</label>
+                            <label for="field8">Tanggal Kirim<span class="text-danger">*</span></label>
                             <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" id="field8" size="large"
                                 v-model:formatted-value="transaction_details.send_date" />
                         </div>
                         <div class="col-lg-4 col-6">
-                            <label for="field9">Transportasi</label>
+                            <label for="field9">Transportasi<span class="text-danger">*</span></label>
                             <n-input id="field9" size="large" v-model:value="transaction_details.transportation" />
                         </div>
 
                         <!-- Baris Ketiga -->
                         <div class="col-lg-4 col-6">
-                            <label for="field10">Pengirim</label>
+                            <label for="field10">Pengirim<span class="text-danger">*</span></label>
                             <n-input id="field10" size="large" v-model:value="transaction_details.sender" />
                         </div>
                         <div class="col-lg-4 col-6">
-                            <label for="field11">Jenis Pengiriman</label>
+                            <label for="field11">Jenis Pengiriman<span class="text-danger">*</span></label>
                             <n-input id="field11" size="large" v-model:value="transaction_details.delivery_type" />
                         </div>
                         <div class="col-lg-4 col-6">
-                            <label for="field12">Karyawan</label>
+                            <label for="field12">Karyawan<span class="text-danger">*</span></label>
                             <n-input id="field12" size="large" disabled
                                 v-model:value="transaction_details.employee_name" />
                         </div>
@@ -109,7 +112,7 @@
                             </div>
                             <div class="d-flex justify-content-between">
                                 <span>JATUH TEMPO</span>
-                                <span class="fw-bold" v-if="form.due_date !== undefined">
+                                <span class="fw-bold" v-if="form.due_date !== null">
                                     {{
                                         dayjs(form.due_date)
                                             .format('dddd, D MMMMYYYY ')
@@ -360,16 +363,56 @@ export default defineComponent({
                 onError: (err) => {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Error',
-                        text: err.message,
+                        title: 'Cek kembali form',
+                        text: 'Isi form yang terdapat tanda *',
                     });
                 },
                 onSuccess: () => {
-                    form.reset();
-                    // form.purchase_order_products.splice(0, form.purchase_order_products.length);
+                    // Reset form dengan nilai awal
+                    form.document_code = (page.props.po_number as string),
+                    form.term_of_payment = '',
+                    form.description = '',
+                    form.sub_total = null as unknown as number,
+                    form.total = null as unknown as number,
+                    form.tax_amount = null as unknown as number,
+                    form.transaction_details = [],
+                    form.transaction_items = [],
+
+                    // Kosongkan objek yang menggunakan ref
+                    transaction_details.value = {
+                        po_number: '',
+                        proof_number: '',
+                        supplier: '',
+                        storehouse: '',
+                        located: '',
+                        delivery_type: '',
+                        purchase_order_date: null as string | null,
+                        send_date: null as string | null,
+                        transportation: '',
+                        sender: '',
+                        employee_name: (page.props.auth.user as User).fullname,
+                    };
+
+                    products.value = {
+                        code: '',
+                        unit: '',
+                        name: '',
+                        transaction_items: [],
+                    };
+
+                    transaction_items.value = {
+                        unit: '',
+                        quantity: null,
+                        tax_amount: null as unknown as number,
+                        amount: null as unknown as number,
+                        product_id: null as unknown as number,
+                        tax_id: null as unknown as number,
+                    };
+                    form.transaction_items.splice(0, form.transaction_items.length);
+
                     Swal.fire({
                         icon: 'success',
-                        title: 'Success submit PO!'
+                        title: 'Success submit SSO!'
                     });
 
                 },

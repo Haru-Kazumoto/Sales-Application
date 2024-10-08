@@ -1,5 +1,6 @@
 <template>
-    <Head title="Create CO"/>
+
+    <Head title="Create CO" />
     <div class="d-flex flex-column gap-4">
         <TitlePage title="CUSTOMER ORDER" />
         <!-- INPUT CO FORM -->
@@ -9,68 +10,85 @@
                 <div class="row g-3">
                     <div class="col-12 col-lg-6">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">NOMOR CO</label>
-                            <n-input size="large" disabled v-model:value="model.customer_order_number" />
+                            <label for="">NOMOR CO <span class="text-danger">*</span></label>
+                            <n-input size="large" disabled v-model:value="form.document_code" placeholder="" />
                         </div>
                     </div>
                     <div class="col-12 col-lg-6">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">TANGGAL DIBUAT CO</label>
-                            <n-input size="large" disabled v-model:value="model.order_created"/>
+                            <label for="">TANGGAL DIBUAT CO<span class="text-danger">*</span></label>
+                            <n-input size="large" disabled v-model:value="transaction_details.customer_order_date"
+                                placeholder="" />
                         </div>
                     </div>
                     <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">NAMA CUSTOMER</label>
-                            <n-input size="large" v-model:value="model.customer_name"/>
+                            <label for="">NAMA CUSTOMER<span class="text-danger">*</span></label>
+                            <n-select filterable :loading="loading" :options="customerOptions" clearable
+                                remoteplaceholder="" @search="handleSearchCustomer" size="large"
+                                v-model:value="transaction_details.customer" />
                         </div>
                     </div>
                     <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">LEGALITAS</label>
-                            <n-input size="large" v-model:value="model.legality"/>
+                            <label for="">LEGALITAS<span class="text-danger">*</span></label>
+                            <n-input size="large" v-model:value="transaction_details.legality" placeholder="" />
                         </div>
                     </div>
                     <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">ALAMAT CUSTOMER</label>
-                            <n-input size="large" v-model:value="model.customer_address" />
+                            <label for="">ALAMAT CUSTOMER<span class="text-danger">*</span></label>
+                            <n-input size="large" v-model:value="transaction_details.customer_address" placeholder="" />
                         </div>
                     </div>
                     <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">TERMIN</label>
-                            <n-input size="large" v-model:value="model.term" />
+                            <label for="">TERMIN<span class="text-danger">*</span></label>
+                            <n-select size="large" v-model:value="form.term_of_payment" :options="termPaymentOptions"
+                                placeholder="" />
                         </div>
                     </div>
                     <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">TANGGAL JATUH TEMPO</label>
-                            <n-input size="large" v-model:value="model.due_date" />
+                            <label for="">TANGGAL JATUH TEMPO<span class="text-danger">*</span></label>
+                            <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="" id="field8"
+                                size="large" v-model:formatted-value="form.due_date" />
                         </div>
                     </div>
                     <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">SALESMAN</label>
-                            <n-input size="large" v-model:value="model.salesman" />
+                            <label for="">SALESMAN<span class="text-danger">*</span></label>
+                            <n-input size="large" v-model:value="transaction_details.salesman" disabled
+                                placeholder="" />
                         </div>
                     </div>
                     <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">BIAYA ANGKUTAN</label>
-                            <n-input size="large" v-model:value="model.term" />
+                            <label for="">BIAYA ANGKUTAN<span class="text-danger">*</span></label>
+                            <n-input size="large" placeholder="" v-model:value="transaction_details.transportation_cost"
+                                @input="(value) => transaction_details.transportation_cost = value.replace(/\D/g, '')">
+                                <template #prefix>
+                                    Rp
+                                </template>
+                            </n-input>
                         </div>
                     </div>
                     <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">CASHBACK</label>
-                            <n-input size="large" v-model:value="model.due_date" />
+                            <label for="">CASHBACK<span class="text-danger">*</span></label>
+                            <n-input size="large" v-model:value="transaction_details.cashback" placeholder=""
+                                @input="(value) => transaction_details.cashback = value.replace(/\D/g, '')">
+                                <template #prefix>Rp </template>
+                            </n-input>
                         </div>
                     </div>
                     <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">BIAYA BONGKAR</label>
-                            <n-input size="large" v-model:value="model.salesman" />
+                            <label for="">BIAYA BONGKAR<span class="text-danger">*</span></label>
+                            <n-input size="large" v-model:value="transaction_details.unloading_cost" placeholder=""
+                                @input="(value) => transaction_details.unloading_cost = value.replace(/\D/g, '')">
+                                <template #prefix>Rp </template>
+                            </n-input>
                         </div>
                     </div>
                 </div>
@@ -84,25 +102,27 @@
                     <!-- INPUT PRODUCTS FORM -->
                     <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">NAMA PRODUK</label>
-                        <n-input size="large" v-model:value="productCustomer.product_name"/>
+                        <n-select filterable :loading="loading" :options="productOptions" clearable remote
+                            placeholder="" @search="handleSearchProduct" size="large" v-model:value="products.name" />
                     </div>
                     <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">QUANTITY</label>
-                        <n-input size="large" v-model:value="productCustomer.quantity" />
+                        <n-input size="large" v-model:value="transaction_items.quantity" placeholder="" />
                     </div>
                     <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">KEMASAN</label>
-                        <n-input size="large" v-model:value="productCustomer.package" />
+                        <n-input size="large" v-model:value="transaction_items.unit" disabled placeholder="" />
                     </div>
                     <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">HARGA PRODUK</label>
-                        <n-input size="large" v-model:value="productCustomer.price" />
+                        <n-input size="large" v-model:value="transaction_items.amount" placeholder="" />
                     </div>
 
                     <!-- INPUT DISCOUNT FORM -->
                     <div class="col-6 d-flex flex-column gap-1">
                         <label for="">DISCOUNT 1</label>
-                        <n-input size="large">
+                        <n-input size="large" placeholder="" v-model:value="transaction_items.discount_1"
+                            @input="(value) => transaction_items.discount_1 = value.replace(/\D/g, '')">
                             <template #suffix>
                                 %
                             </template>
@@ -110,11 +130,14 @@
                     </div>
                     <div class="col-6 d-flex flex-column gap-1">
                         <label for="">HARGA</label>
-                        <n-input size="large" disabled/>
+                        <n-input size="large" disabled placeholder="" v-model:value="discounts.total_discount_1">
+                            <template #prefix>Rp</template>
+                        </n-input>
                     </div>
                     <div class="col-6 d-flex flex-column gap-1">
                         <label for="">DISCOUNT 2</label>
-                        <n-input size="large">
+                        <n-input size="large" placeholder="" v-model:value="transaction_items.discount_2"
+                            @input="(value) => transaction_items.discount_2 = value.replace(/\D/g, '')">
                             <template #suffix>
                                 %
                             </template>
@@ -122,11 +145,14 @@
                     </div>
                     <div class="col-6 d-flex flex-column gap-1">
                         <label for="">HARGA</label>
-                        <n-input size="large" disabled/>
+                        <n-input size="large" disabled placeholder="" v-model:value="discounts.total_discount_2">
+                            <template #prefix>Rp</template>
+                        </n-input>
                     </div>
                     <div class="col-6 d-flex flex-column gap-1">
                         <label for="">DISCOUNT 3</label>
-                        <n-input size="large">
+                        <n-input size="large" placeholder="" v-model:value="transaction_items.discount_3"
+                            @input="(value) => transaction_items.discount_3 = value.replace(/\D/g, '')">
                             <template #suffix>
                                 %
                             </template>
@@ -134,17 +160,19 @@
                     </div>
                     <div class="col-6 d-flex flex-column gap-1">
                         <label for="">HARGA</label>
-                        <n-input size="large" disabled/>
+                        <n-input size="large" disabled placeholder="" v-model:value="discounts.total_discount_3">
+                            <template #prefix>Rp</template>
+                        </n-input>
                     </div>
                 </div>
-                <n-button type="primary" class="ms-auto">Tambah Produk</n-button>
+                <n-button type="primary" class="ms-auto" @click="handleAddProduct">Tambah Produk</n-button>
             </div>
         </div>
 
         <!-- PRODUCT CHOOSEN LIST -->
         <div class="card shadow" style="border: none;">
             <div class="card-body">
-                <n-data-table :bordered="false" :columns="columns" />
+                <n-data-table :bordered="false" :columns="columns" :data="form.transaction_items" />
             </div>
         </div>
 
@@ -153,24 +181,25 @@
             <div class="card-body d-flex flex-column">
                 <div class="d-flex justify-content-between py-2">
                     <span>Sub Total</span>
-                    <span>Rp 200.000</span>
+                    <span>{{ subtotal }}</span>
                 </div>
                 <div class="d-flex justify-content-between py-2">
                     <span>PPN 11%</span>
-                    <span>Rp 200.000</span>
+                    <span>{{ totalPPN }}</span>
                 </div>
                 <div class="d-flex justify-content-between py-2 fw-bold border-top border-bottom">
                     <span>Total harga</span>
-                    <span>Rp 200.000</span>
+                    <span>{{ totalPrice }}</span>
                 </div>
                 <div class="d-flex flex-column w-100 justify-content-between mt-2 gap-3">
                     <div class="d-flex justify-content-between">
                         <span>TERM OF PAYMENT</span>
-                        <span class="fw-bold">20 HARI</span>
+                        <span class="fw-bold">{{ form.term_of_payment.replace("_", "") }}</span>
                     </div>
                     <div class="d-flex justify-content-between">
                         <span>JATUH TEMPO</span>
-                        <span class="fw-bold">ON WORKING...</span>
+                        <span class="fw-bold">{{ form.due_date ? dayjs(form.due_date).format('dddd, D MMMM YYYY') : ''
+                            }}</span>
                     </div>
                 </div>
                 <n-button class="my-3 ms-auto" type="primary" @click="handleSubmitCo">SUBMIT CO</n-button>
@@ -181,176 +210,395 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, h, ref } from 'vue'
+import { computed, defineComponent, h, ref, watch } from 'vue'
 import TitlePage from '../../../Components/TitlePage.vue';
-import { DataTableColumns, NButton } from 'naive-ui';
-import { useForm, usePage,Head } from '@inertiajs/vue3';
+import { DataTableColumns, NButton, SelectOption, useNotification } from 'naive-ui';
+import { useForm, usePage, Head } from '@inertiajs/vue3';
 import { ProductCustomerOrder } from '../../../types/dto';
 import Swal from 'sweetalert2';
+import { Lookup, Parties, Products, TransactionDetail, TransactionItems, User } from '../../../types/model';
+import { formatRupiah } from '../../../Utils/options-input.utils';
+import dayjs from 'dayjs';
+import 'dayjs/locale/id'; // Import locale Indonesia
 
-interface RowData {
-    product_name: string;
-    quantity: number;
-    package: string;
-    price: number;
-    discount_1: number;
-    total_price_discount_1: number;
-    discount_2: number;
-    total_price_discount_2: number;
-    discount_3: number;
-    total_price_discount_3: number;
-}
-
-function createColumns(): DataTableColumns<RowData> {
-    return [
-        {
-            title: "#",
-            key: 'index',
-            width: 50,
-            render(row, index) {
-                return index + 1;
-            }
-        },
-        {
-            title: "NAMA PRODUK",
-            key: 'product_name',
-            width: 200,
-            render(row) {
-                return row.product_name;
-            }
-        },
-        {
-            title: "QTY", 
-            key: 'quantity',
-            width: 100,
-            render(row) {
-                return row.quantity;
-            }
-        },
-        {
-            title: "SATUAN",
-            key: 'package',
-            width: 100,
-            render(row) {
-                return row.package;
-            }
-        },
-        {
-            title: "HARGA",
-            key: 'price',
-            width: 150,
-            render(row) {
-                return row.price;
-            }
-        },
-        {
-            title: "TOTAL",
-            key: 'total',
-            width: 150,
-            render(row) {
-                return '-';
-            }
-        },
-        {
-            title: "TOTAL DISCOUNT 1",
-            key: 'total_price_discount_1',
-            width: 200,
-            render(row) {
-                return row.total_price_discount_1;
-            }
-        },
-        {
-            title: "TOTAL DISCOUNT 2",
-            key: 'total_price_discount_2',
-            width: 200,
-            render(row) {
-                return row.total_price_discount_2;
-            }
-        },
-        {
-            title: "TOTAL DISCOUNT 3",
-            key: 'total_price_discount_3',
-            width: 200,
-            render(row) {
-                return row.total_price_discount_3;
-            }
-        },
-        {
-            title: "ACTION",
-            key: 'action',
-            width: 100,
-            render(row) {
-                return h(
-                    NButton,
-                    {
-                        type: 'error',
-                        size: 'small',
-                        onClick: () => {
-                            alert('DELETED???');
-                        }
-                    }
-                )
-            }
-        }
-    ]
-}
+dayjs.locale('id'); // Set locale to Indonesian
 
 export default defineComponent({
     setup() {
         const page = usePage();
+        const notification = useNotification();
+        const customerOptionsRef = ref<SelectOption[]>([]);
+        const productsOptionsRef = ref<SelectOption[]>([]);
+        const loading = ref(false);
+        const loadingProducts = ref(false);
 
-        const formCO = useForm({
-            customer_order_number: page.props.coNumber,
-            order_created: page.props.dateNow,
-            customer_name: '',
+        function createColumns(): DataTableColumns<TransactionItems> {
+            return [
+                {
+                    title: "#",
+                    key: 'index',
+                    width: 50,
+                    render(row, index) {
+                        return index + 1;
+                    }
+                },
+                {
+                    title: "NAMA PRODUK",
+                    key: 'name',
+                    width: 200,
+                    render(row) {
+                        return row.product?.name;
+                    }
+                },
+                {
+                    title: "QTY",
+                    key: 'quantity',
+                    width: 100,
+                },
+                {
+                    title: "SATUAN",
+                    key: 'unit',
+                    width: 150,
+                },
+                {
+                    title: "HARGA",
+                    key: 'amount',
+                    width: 150,
+                    render(row) {
+                        return formatRupiah(row.amount ?? 0);
+                    }
+                },
+                {
+                    title: "TOTAL HARGA",
+                    key: 'total',
+                    width: 200,
+                    render(row) {
+                        return formatRupiah(row.total_price ?? 0);
+                    }
+                },
+                {
+                    title: "TOTAL HARGA (INC PPN)",
+                    key: 'tax_amount',
+                    width: 250,
+                    render(row) {
+                        return formatRupiah(row.tax_amount ?? 0);
+                    }
+                },
+                {
+                    title: "DISCOUNT 1",
+                    key: 'discount_1',
+                    width: 200,
+                },
+                {
+                    title: "TOTAL DISCOUNT 1",
+                    key: 'total_price_discount_1',
+                    width: 250,
+                    render(row) {
+                        return formatRupiah(discounts.value.total_discount_1 ?? 0);
+                    }
+                },
+                {
+                    title: "DISCOUNT 2",
+                    key: 'discount_2',
+                    width: 200,
+                },
+                {
+                    title: "TOTAL DISCOUNT 2",
+                    key: 'total_price_discount_2',
+                    width: 250,
+                    render(row) {
+                        return formatRupiah(discounts.value.total_discount_2 ?? 0);
+                    }
+                },
+                {
+                    title: "DISCOUNT 3",
+                    key: 'discount_3',
+                    width: 200,
+                },
+                {
+                    title: "TOTAL DISCOUNT 3",
+                    key: 'total_price_discount_3',
+                    width: 250,
+                    render(row) {
+                        return formatRupiah(discounts.value.total_discount_3 ?? 0);
+                    }
+                },
+                {
+                    title: "ACTION",
+                    key: 'action',
+                    width: 100,
+                    render(row, index) {
+                        return h(
+                            NButton,
+                            {
+                                type: 'error',
+                                size: 'small',
+                                onClick: () => {
+                                    Swal.fire({
+                                        icon: 'question',
+                                        text: `Delete ${row.product?.name}?`,
+                                        showCancelButton: true,
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            removeProduct(index);
+
+                                            notification.success({
+                                                title: `${row.product?.name} has been deleted!`,
+                                                closable: true,
+                                                keepAliveOnHover: false,
+                                                duration: 2000,
+                                            });
+                                        }
+                                    });
+                                }
+                            },
+                            { default: () => "Hapus" }
+                        )
+                    }
+                }
+            ]
+        }
+
+        const form = useForm({
+            document_code: (page.props.coNumber as string),
+            due_date: null as string | null,
+            description: '',
+            sub_total: null as unknown as number,
+            total: null as unknown as number,
+            term_of_payment: '',
+            tax_amount: null as unknown as number,
+            transaction_details: [] as TransactionDetail[],
+            transaction_items: [] as TransactionItems[],
+        });
+
+        const transaction_details = ref({
+            customer_order_date: (page.props.dateNow),
+            customer: '',
             legality: '',
             customer_address: '',
-            term: '',
-            due_date: 0,
-            salesman: '',
-            amount: 0,
-            discount_total: 0,
-            sub_total: 0,
-            total_after_ppn: 0,
-            total: 0,
-            status_co: '',
-            productCustomerOrders: [] as ProductCustomerOrder[],
+            salesman: (page.props.auth as any).user.fullname,
+            transportation_cost: null as unknown as number,
+            cashback: null as unknown as number,
+            unloading_cost: null as unknown as number,
         });
 
-        const productCustomerOrders = ref({
-            product_name: '',
-            quantity: 0,
-            package: '',
-            price: 0,
-            discount_1: 0,
-            total_price_discount_1: 0,
-            discount_2: 0,
-            total_price_discount_2: 0,
-            discount_3: 0,
-            total_price_discount_3: 0,
+        const products = ref({
+            code: '',
+            unit: '',
+            name: '',
+            transaction_items: [] as TransactionItems[],
         });
 
-        function addProduct() {
-            formCO.productCustomerOrders.push({
-                product_name: productCustomerOrders.value.product_name,
-                quantity: productCustomerOrders.value.quantity,
-                package: productCustomerOrders.value.package,
-                price: productCustomerOrders.value.price,
-                discount_1: 0,
-                total_price_discount_1: 0,
-                discount_2: 0,
-                total_price_discount_2: 0,
-                discount_3: 0,
-                total_price_discount_3: 0
+        const transaction_items = ref({
+            unit: '',
+            quantity: null as unknown as number,
+            tax_amount: 0,
+            amount: null as unknown as number,
+            product_id: null as unknown as number,
+            tax_id: null as unknown as number,
+            discount_1: null as unknown as number,
+            discount_2: null as unknown as number,
+            discount_3: null as unknown as number,
+            total_price: null as unknown as number,
+            total_price_discount: null as unknown as number,
+        });
+
+        const discounts = ref({
+            total_discount_1: 0,
+            total_discount_2: 0,
+            total_discount_3: 0,
+        });
+
+        //TODO : create 3 watch for watch discoutns field and calculate it when filled
+        watch(
+            [
+                () => transaction_items.value.discount_1,
+                () => transaction_items.value.discount_2,
+                () => transaction_items.value.discount_3
+            ],
+            () => {
+                let originalPrice = transaction_items.value.amount || 0;
+
+                // Jika discount_1 diisi, hitung total_discount_1
+                if (transaction_items.value.discount_1 !== null && transaction_items.value.discount_1 !== undefined && transaction_items.value.discount_1 > 0) {
+                    let discount1 = originalPrice * transaction_items.value.discount_1 / 100;
+                    discounts.value.total_discount_1 = originalPrice - discount1;
+                } else {
+                    discounts.value.total_discount_1 = null as unknown as number; // Kosongkan jika tidak ada discount_1
+                }
+
+                // Jika discount_2 diisi, hitung total_discount_2 menggunakan hasil dari total_discount_1
+                if (transaction_items.value.discount_2 !== null && transaction_items.value.discount_2 !== undefined && transaction_items.value.discount_2 > 0 && discounts.value.total_discount_1 !== null) {
+                    let discount2 = discounts.value.total_discount_1 * transaction_items.value.discount_2 / 100;
+                    discounts.value.total_discount_2 = discounts.value.total_discount_1 - discount2;
+                } else {
+                    discounts.value.total_discount_2 = null as unknown as number; // Kosongkan jika tidak ada discount_2
+                }
+
+                // Jika discount_3 diisi, hitung total_discount_3 menggunakan hasil dari total_discount_2
+                if (transaction_items.value.discount_3 !== null && transaction_items.value.discount_3 !== undefined && transaction_items.value.discount_3 > 0 && discounts.value.total_discount_2 !== null) {
+                    let discount3 = discounts.value.total_discount_2 * transaction_items.value.discount_3 / 100;
+                    discounts.value.total_discount_3 = discounts.value.total_discount_2 - discount3;
+                } else {
+                    discounts.value.total_discount_3 = null as unknown as number; // Kosongkan jika tidak ada discount_3
+                }
+
+                // Mengupdate total_price menjadi nilai terakhir yang dihitung dari diskon yang tersedia
+                transaction_items.value.total_price = discounts.value.total_discount_3 || discounts.value.total_discount_2 || discounts.value.total_discount_1 || originalPrice;
+            }
+        );
+
+
+        watch(() => transaction_details.value.customer, (name) => {
+            const selectedCustomer = customerOptions.find(data => data.label === name);
+
+            if (selectedCustomer) {
+                transaction_details.value.customer_address = selectedCustomer.address as any;
+                transaction_details.value.legality = selectedCustomer.legality as any || '';
+            } else {
+                transaction_details.value.customer_address = '';
+                transaction_details.value.legality = '';
+            }
+        });
+
+        watch(() => products.value.name, (name) => {
+            const selectedProduct = productOptions.find(data => data.label === name);
+
+            if (selectedProduct) {
+                products.value.code = selectedProduct.code;
+                transaction_items.value.product_id = selectedProduct.id as number;
+                transaction_items.value.unit = selectedProduct.unit as any;
+            } else {
+                products.value.code = '';
+                transaction_items.value.unit = '';
+            }
+        });
+
+        const totalPPN = computed(() => {
+            // Menghitung subtotal dari semua produk tanpa mengalikan quantity
+            const subtotal = form.transaction_items.reduce((total, item) => {
+                return total + Number(item.amount ?? 0); // Konversi amount ke number
+            }, 0);
+
+            // Menghitung PPN 11%
+            const ppn = subtotal * 0.11;
+
+            // Menyimpan PPN ke dalam form
+            form.tax_amount = ppn;
+
+            // Mengembalikan nilai PPN yang diformat
+            return formatRupiah(ppn);
+        });
+
+        const subtotal = computed(() => {
+            // Menghitung subtotal dari semua produk tanpa mengalikan quantity
+            const total = form.transaction_items.reduce((total, item) => {
+                return total + Number(item.amount ?? 0); // Konversi amount ke number
+            }, 0);
+
+            // Menyimpan subtotal ke dalam form
+            form.sub_total = total;
+
+            // Mengembalikan subtotal yang diformat
+            return formatRupiah(total);
+        });
+        const totalPrice = computed(() => {
+            // Menghitung subtotal dari semua produk tanpa mengalikan quantity
+            const subtotal = form.transaction_items.reduce((total, item) => {
+                return total + Number(item.amount ?? 0); // Konversi amount ke number
+            }, 0);
+
+            // Menghitung total harga termasuk PPN 11%
+            const totalWithPPN = subtotal + (subtotal * 0.11);
+
+            // Menyimpan total ke dalam form
+            form.total = totalWithPPN;
+
+            // Mengembalikan total harga yang diformat
+            return formatRupiah(totalWithPPN);
+        });
+
+
+        function handleAddProduct() {
+            const ppnAmount = transaction_items.value.amount * 0.11;
+            const total = transaction_items.value.amount * transaction_items.value.quantity;
+
+            form.transaction_items.push({
+                unit: transaction_items.value.unit,
+                quantity: transaction_items.value.quantity,
+                product_id: transaction_items.value.product_id,
+                tax_amount: ppnAmount,
+                amount: transaction_items.value.amount,
+                tax_id: transaction_items.value.tax_id,
+                total_price: total,
+                discount_1: transaction_items.value.discount_1,
+                discount_2: transaction_items.value.discount_2,
+                discount_3: transaction_items.value.discount_3,
+                product: {
+                    code: products.value.code,
+                    unit: transaction_items.value.unit,
+                    name: products.value.name,
+                }
+            });
+
+            notification.success({
+                title: "Produk ditambahkan!",
+                duration: 1500,
+                closable: false,
             });
         }
 
         function removeProduct(index: number) {
-            formCO.productCustomerOrders.splice(index, 1);
+            form.transaction_items.splice(index, 1);
         }
 
         function handleSubmitCo() {
-            formCO.post(route('sales.create-co.post'), {
+            form.transaction_details = [
+                {
+                    name: 'Nama Customer',
+                    category: 'Customer',
+                    value: transaction_details.value.customer,
+                    data_type: 'string',
+                },
+                {
+                    name: 'Legalitas',
+                    category: 'Legality',
+                    value: transaction_details.value.legality,
+                    data_type: 'string',
+                },
+                {
+                    name: 'Alamat Customer',
+                    category: 'Customer Address',
+                    value: transaction_details.value.customer_address,
+                    data_type: 'string',
+                },
+                {
+                    name: 'Biaya Angkutan',
+                    category: 'Transportation Cost',
+                    value: transaction_details.value.transportation_cost as any,
+                    data_type: 'float',
+                },
+                {
+                    name: 'Cashback',
+                    category: 'Cashback',
+                    value: transaction_details.value.cashback as any,
+                    data_type: 'float',
+                },
+                {
+                    name: 'Biaya Bongkar',
+                    category: 'Unloading Cost',
+                    value: transaction_details.value.unloading_cost as any,
+                    data_type: 'float',
+                },
+                {
+                    name: "Salesman",
+                    category: "Salesman",
+                    value: transaction_details.value.salesman,
+                    data_type: 'string',
+                }
+            ];
+
+            form.post(route('sales.create-co.post'), {
                 onError(error) {
                     Swal.fire({
                         icon: 'error',
@@ -359,8 +607,48 @@ export default defineComponent({
                     });
                 },
                 onSuccess() {
-                    formCO.reset();
-                    formCO.productCustomerOrders.splice(0, formCO.productCustomerOrders.length);
+                    // Reset form dengan nilai awal
+                    form.document_code = (page.props.coNumber as string),
+                        form.term_of_payment = '',
+                        form.due_date = null,
+                        form.description = '',
+                        form.sub_total = null as unknown as number,
+                        form.total = null as unknown as number,
+                        form.tax_amount = null as unknown as number,
+                        form.transaction_details = [],
+                        form.transaction_items = [],
+                        transaction_details.value = {
+                            cashback: null as unknown as number,
+                            customer: '',
+                            customer_address: '',
+                            customer_order_date: (page.props.dateNow),
+                            legality: '',
+                            salesman: (page.props.auth.user.fullname),
+                            transportation_cost: null as unknown as number,
+                            unloading_cost: null as unknown as number
+                        };
+
+                    products.value = {
+                        code: '',
+                        unit: '',
+                        name: '',
+                        transaction_items: [],
+                    };
+
+                    transaction_items.value = {
+                        unit: '',
+                        discount_1: null as unknown as number,
+                        discount_2: null as unknown as number,
+                        discount_3: null as unknown as number,
+                        total_price: null as unknown as number,
+                        total_price_discount: null as unknown as number,
+                        quantity: null as unknown as number,
+                        tax_amount: null as unknown as number,
+                        amount: null as unknown as number,
+                        product_id: null as unknown as number,
+                        tax_id: null as unknown as number,
+                    };
+                    form.transaction_items.splice(0, form.transaction_items.length);
 
                     Swal.fire({
                         icon: 'success',
@@ -370,13 +658,71 @@ export default defineComponent({
             })
         }
 
+        const termPaymentOptions = (page.props.payment_terms as Lookup[]).map((data) => ({
+            label: data.label,
+            value: data.value
+        }));
+
+        const customerOptions = (page.props.customers as Parties[]).map((data) => ({
+            label: data.name,
+            value: data.name,
+            legality: data.legality,
+            address: data.address,
+        }));
+
+        const productOptions = (page.props.products as Products[]).map((data) => ({
+            label: data.name,
+            value: data.name,
+            unit: data.unit,
+            code: data.code,
+            id: data.id,
+        }));
+
         return {
             columns: createColumns(),
-            model: formCO,
-            productCustomer: productCustomerOrders,
-            addProduct,
+            handleAddProduct,
             removeProduct,
             handleSubmitCo,
+            removeProduct,
+            dayjs,
+            form,
+            termPaymentOptions,
+            transaction_details,
+            products,
+            transaction_items,
+            customerOptions: customerOptionsRef,
+            productOptions: productsOptionsRef,
+            loading,
+            totalPPN,
+            subtotal,
+            totalPrice,
+            discounts,
+            handleSearchCustomer: (query: string) => {
+                if (!query.length) {
+                    customerOptionsRef.value = []
+                    return
+                }
+                loading.value = true
+                window.setTimeout(() => {
+                    customerOptionsRef.value = customerOptions.filter(
+                        item => ~item.label.indexOf(query)
+                    )
+                    loading.value = false
+                }, 1000)
+            },
+            handleSearchProduct: (query: string) => {
+                if (!query.length) {
+                    productsOptionsRef.value = []
+                    return
+                }
+                loadingProducts.value = true
+                window.setTimeout(() => {
+                    productsOptionsRef.value = productOptions.filter(
+                        item => ~item.label.indexOf(query)
+                    )
+                    loadingProducts.value = false
+                }, 1000)
+            },
         }
     },
     components: {

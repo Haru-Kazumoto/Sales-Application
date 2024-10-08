@@ -246,21 +246,22 @@
                 <strong>Nama Perusahaan</strong><br>
                 <strong>Alamat</strong>
             </td>
-            <td style="width: 60%; word-wrap: break-word; word-break: break-all;">
+            <td style="width: 55%; word-wrap: break-word; word-break: break-all; white-space: normal; margin-right: 10px;">
                 <strong>: PT. Danitama Niagaprima</strong><br>
-                <strong>: Jl. Cikunir Raya, Kp. Jaha, Jatimekar Jati Asih, Bekasi </strong>
+                <strong>: Jl. Cikunir Raya, Kp. Jaha, Jatimekar Jati Asih,<br> Bekasi</strong>
             </td>
-            <td style="width: 30%; vertical-align: top;">
+            <td style="width: 30%; vertical-align: top; text-align: end;">
                 <strong>No. SO Induk</strong><br>
                 <span>No. Sub SO</span><br>
                 <span>Tanggal</span><br>
             </td>
-            <td style="width: 25%; word-wrap: break-word; word-break: break-all;">
+            <td style="width: 25%; word-wrap: break-word; word-break: break-all; white-space: normal;">
                 <span>: {{ $proof_number }}</span><br>
                 <span>: {{ $sales_order->document_code }}</span><br>
                 <span>: {{ $purchase_order_date }}</span><br>
             </td>
         </tr>
+
     </table>
 
     <div style="display: flex; flex-direction: column; gap: 5px; font-size: 13px; ">
@@ -273,7 +274,7 @@
     </div>
 
     <div style="justify-content: center; display: flex; font-size: 12px; text-align: center; ">
-        <h2>Untuk : Danitama Niagaprima, PT<br>Jl. Raya Cikunir No 50A Bekasi</h2>
+        <h2>Untuk : {{ $sales_order->description }}</h2>
     </div>
 
     <table class="main-table">
@@ -331,7 +332,7 @@
                     <span>FP5</span>
                 </div>
                 <div style="text-align: center;">
-                    <span >IN</span>
+                    <span>IN</span>
                 </div>
             </td>
             <td class="sub-left" style="border: 1px solid black; padding: 10px; text-align: center; height: 50px;"></td>

@@ -10,7 +10,6 @@ export function renderIcon(icon) {
 // Example menu based on role
 export const roleMenus = {
     ADMIN: [
-        { label: 'Sales Reports', key: 'sales-reports', icon: BarChartOutline, href: '/sales-reports' },
         {
             label: 'User Management',
             key: 'user-management',

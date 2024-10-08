@@ -10,6 +10,8 @@ class ProductType extends Model
 {
     use HasFactory;
 
+    protected $table = "product_types";
+
     protected $fillable = ['name'];
 
     public function products(): HasMany

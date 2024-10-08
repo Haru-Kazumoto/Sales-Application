@@ -11,7 +11,25 @@ class Products extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['code','unit','name','tax_id','product_type_id'];
+    protected $fillable = [
+        'code',
+        'unit',
+        'name',
+        'category',
+        'supplier',
+        'redemp_price',
+        'retail_price',
+        'restaurant_price',
+        'price_3',
+        'dd_price',
+        'normal_margin',
+        'oh_depo',
+        'saving',
+        'bad_debt_dd',
+        'saving_marketing',
+        'tax_id',
+        'product_type_id',
+    ];
 
     public function tax(): BelongsTo
     {

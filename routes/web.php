@@ -86,6 +86,10 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
 
         Route::prefix('product-management')->group(function () {
             Route::get('', [App\Http\Controllers\ProductsController::class, 'createProduct'])->name('products');
+            Route::post('/create-product', [App\Http\Controllers\ProductsController::class, 'store'])->name('products.post');
+            Route::get('/edit-product/{product}', [App\Http\Controllers\ProductsController::class, 'edit'])->name('products.edit');
+            Route::patch('/update-product/{product}', [App\Http\Controllers\ProductsController::class, 'update'])->name('products.update');
+            Route::delete('/delet-product/{product}', [App\Http\Controllers\ProductsController::class, 'destroy'])->name('products.delete');
         });
     });
 

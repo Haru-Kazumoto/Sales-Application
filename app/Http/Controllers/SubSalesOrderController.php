@@ -52,7 +52,7 @@ class SubSalesOrderController extends Controller
         // dd($request->all());
 
         $request->validate([
-            'document_code' => 'required|string|unique:transactions,document_code',
+            'document_code' => 'required|string',
             'term_of_payment' => 'required|string',
             'due_date' => 'required',
             'description' => 'nullable|string',

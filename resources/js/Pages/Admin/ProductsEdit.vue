@@ -124,31 +124,9 @@
                         </n-input>
                     </div>
                     <div class="d-flex">
-                        <n-button type="primary" class="ms-auto" attr-type="submit">Tambah Data</n-button>
+                        <n-button type="primary" class="ms-auto" attr-type="submit">Update Product</n-button>
                     </div>
                 </form>
-            </div>
-        </div>
-        <div class="row g-3">
-            <div class="col-12 col-lg-6 d-flex align-items-lg-center gap-3">
-                <label>Total Jumlah Customer</label>
-                <span class="border px-4 py-1 bg-white" style="border-radius: 3px;">
-                    {{ ($page.props.products as any).total }}
-                </span>
-            </div>
-            <div class="col-12 col-lg-6 d-flex">
-                <div class="ms-auto d-flex align-items-lg-center gap-2 justify-content-lg-end w-100">
-                    <label>Pencarian Data</label>
-                    <n-input class="w-50" />
-                </div>
-            </div>
-        </div>
-
-        <div class="card shadow-sm border-0 mb-5">
-            <div class="card-body">
-                <n-data-table :bordered="false" :columns="columns" :data="$page.props.products.data" />
-                <n-pagination v-model:page="currentPage" :page-count="$page.props.products.to"
-                    :page-size="$page.props.products.per_page" @update:page="handlePageChange" />
             </div>
         </div>
 
@@ -160,11 +138,8 @@ import { defineComponent, h, ref, computed } from 'vue';
 import TitlePage from '../../Components/TitlePage.vue';
 import { NButton, useNotification } from 'naive-ui';
 import { router, useForm, usePage } from '@inertiajs/vue3';
-import { Lookup } from '../../types/model';
-import { formatRupiah } from '../../Utils/options-input.utils';
+import { Lookup, Products } from '../../types/model';
 import Swal from 'sweetalert2';
-
-
 
 export default defineComponent({
     setup() {
@@ -172,165 +147,29 @@ export default defineComponent({
         const page = usePage();
         const notification = useNotification();
 
+        const product = page.props.product as any;
+
         const form = useForm({
-            code: '',
-            unit: '',
-            name: '',
-            category: '',
-            redemp_price: null as unknown as number,
-            retail_price: null as unknown as number,
-            restaurant_price: null as unknown as number,
-            price_3: null as unknown as number,
-            dd_price: null as unknown as number,
-            normal_margin: null as unknown as number,
-            oh_depo: null as unknown as number,
-            saving: null as unknown as number,
-            bad_debt_dd: null as unknown as number,
-            saving_marketing: null as unknown as number,
-            product_type_id: null as unknown as number,
+            id: product.id,
+            code: product.code || '',
+            unit: product.unit || '',
+            name: product.name || '',
+            category: product.category || '',
+            redemp_price: product.redemp_price || null as unknown as number,
+            retail_price: product.retail_price || null as unknown as number,
+            restaurant_price: product.restaurant_price || null as unknown as number,
+            price_3: product.price_3 || null as unknown as number,
+            dd_price: product.dd_price || null as unknown as number,
+            normal_margin: product.normal_margin || null as unknown as number,
+            oh_depo: product.oh_depo || null as unknown as number,
+            saving: product.saving || null as unknown as number,
+            bad_debt_dd: product.bad_debt_dd || null as unknown as number,
+            saving_marketing: product.saving_marketing || null as unknown as number,
+            product_type_id: product.product_type_id || null as unknown as number,
         });
 
-        function createColumns() {
-            return [
-                {
-                    title: "#",
-                    key: 'index',
-                    width: 70,
-                    render(row, index) {
-                        return index + 1;
-                    }
-                },
-                {
-                    title: "KODE BARANG",
-                    key: "code",
-                    width: 150
-                },
-                {
-                    title: "NAMA BARANG",
-                    key: 'name',
-                    width: 200,
-                },
-                {
-                    title: "SEG PRODUK",
-                    key: "segment",
-                    width: 150,
-                    render(row) {
-                        return row.product_type.name
-                    }
-                },
-                {
-                    title: "KATEGORI",
-                    key: "category",
-                    width: 100,
-
-                },
-                {
-                    title: "SATUAN",
-                    key: 'unit',
-                    width: 100,
-                },
-                {
-                    title: "PEMASOK",
-                    key: "supplier",
-                    width: 150,
-                },
-                {
-                    title: "HARGA TEBUS",
-                    key: 'redemption_price',
-                    width: 150,
-                },
-                {
-                    title: "HARGA JUAL RETAIL",
-                    key: "retail_selling_price",
-                    width: 150,
-                },
-                {
-                    title: "HARGA JUAL HOTEL & RESTO",
-                    key: "selling_price",
-                    width: 150,
-                },
-                {
-                    title: "HARGA 3",
-                    key: "price_3",
-                    width: 150,
-                },
-                {
-                    title: "HARGA DD",
-                    key: "price_dd",
-                    width: 150,
-                },
-                {
-                    title: "MARGIN NORMAL",
-                    key: "margin_normal",
-                    width: 100,
-                },
-                {
-                    title: "OH DEPO",
-                    key: "over_head_depo",
-                    width: 100,
-                },
-                {
-                    title: "SAVING",
-                    key: "saving",
-                    width: 100,
-                },
-                {
-                    title: "BAD DEBT DD",
-                    key: "bad_debt_dd",
-                    width: 100,
-                },
-                {
-                    title: "SAVING MARKETING",
-                    key: "sacving_marketing",
-                    width: 100,
-                },
-                {
-                    title: 'ACTION',
-                    key: "action",
-                    width: 100,
-                    render(row) {
-                        return h('div', { class: "d-flex gap-2" }, [
-                            h(
-                                NButton, {
-                                type: 'info',
-                                onClick() {
-                                    router.get(route('admin.products.edit', row.id));
-                                },
-                            },
-                                { default: () => 'UPDATE' }
-                            ),
-                            h(
-                                NButton, {
-                                type: 'error',
-                                onClick() {
-                                    Swal.fire({
-                                        icon: 'question',
-                                        title: `Hapus barang ${row.name} ? `,
-                                        showCancelButton: true,
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            router.delete(route('admin.products.delete', row.id), {
-                                                onSuccess: () => {
-                                                    notification.success({
-                                                        title: "Barang berhasil dihapus",
-                                                        duration: 1500,
-                                                        closable: false,
-                                                    })
-                                                }
-                                            });
-                                        }
-                                    })
-                                }
-                            }, { default: () => "HAPUS" }
-                            )
-                        ]);
-                    }
-                }
-            ]
-        }
-
         function handleSubmitProduct() {
-            form.post(route('admin.products.post'), {
+            form.patch(route('admin.products.update', form.id), {
                 onSuccess() {
                     form.reset();
                     notification.success({
@@ -346,11 +185,6 @@ export default defineComponent({
                     });
                 }
             });
-        }
-
-        function handlePageChange(page: number) {
-            currentPage.value = page;
-            router.get(route('admin.products'), { page }, { preserveState: true }); // Request data for the selected page
         }
 
         const unitOptions = (page.props.units as Lookup[]).map((data) => ({
@@ -369,8 +203,6 @@ export default defineComponent({
         ]
 
         return {
-            columns: createColumns(),
-            handlePageChange,
             handleSubmitProduct,
             currentPage,
             unitOptions,

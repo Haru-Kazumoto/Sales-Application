@@ -10,66 +10,97 @@
                     <form class="row g-3">
                         <!-- Baris Pertama -->
                         <div class="col-md-3">
-                            <label for="field1">No PO</label>
-                            <n-input placeholder="" id="field1" size="large" v-model:value="form.document_code" :disabled="true" />
+                            <label for="field1">
+                                No PO<span class="text-danger">*</span>
+                            </label>
+                            <n-input placeholder="" id="field1" size="large" v-model:value="form.document_code"
+                                :disabled="true" />
                         </div>
                         <div class="col-md-3">
-                            <label for="field2">Pemasok</label>
-                            <n-select placeholder="" id="field2" size="large" v-model:value="transaction_details.supplier" :options="suppliers"/>
+                            <label for="field2">
+                                Pemasok<span class="text-danger">*</span>
+                            </label>
+                            <n-select placeholder="" v-model:value="transaction_details.supplier" filterable
+                                size="large" :options="pemasokOptions" :loading="loading" clearable remote
+                                @search="handleSearchSupplier" />
                         </div>
                         <div class="col-md-3">
-                            <label for="field3">Gudang</label>
+                            <label for="field3">
+                                Gudang<span class="text-danger">*</span>
+                            </label>
                             <n-select placeholder="" id="field3" size="large" :options="storehouseOptions"
                                 v-model:value="transaction_details.storehouse" />
                         </div>
                         <div class="col-md-3">
-                            <label for="field4">Alokasi</label>
+                            <label for="field4">
+                                Alokasi<span class="text-danger">*</span>
+                            </label>
                             <n-select placeholder="" id="field4" size="large" :options="storeLocationOptions"
                                 v-model:value="transaction_details.located" />
                         </div>
 
                         <!-- Baris Kedua -->
                         <div class="col-md-3">
-                            <label for="field5">Tanggal PO</label>
-                            <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="" id="field5" size="large"
-                                v-model:formatted-value="transaction_details.purchase_order_date" />
+                            <label for="field5">
+                                Tanggal PO<span class="text-danger">*</span>
+                            </label>
+                            <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="" id="field5"
+                                size="large" v-model:formatted-value="transaction_details.purchase_order_date" />
                         </div>
                         <div class="col-md-3">
-                            <label for="field6">Tanggal Kirim</label>
-                            <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="" id="field6" size="large"
-                                v-model:formatted-value="transaction_details.send_date" />
+                            <label for="field6">
+                                Tanggal Kirim<span class="text-danger">*</span>
+                            </label>
+                            <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="" id="field6"
+                                size="large" v-model:formatted-value="transaction_details.send_date" />
                         </div>
                         <div class="col-md-3">
-                            <label for="field7">Term Pembayaran</label>
+                            <label for="field7">
+                                Term Pembayaran<span class="text-danger">*</span>
+                            </label>
                             <n-select placeholder="" id="field7" size="large" :options="termPaymentOptions"
                                 v-model:value="form.term_of_payment" />
                         </div>
                         <div class="col-md-3">
-                            <label for="field8">Tanggal Jatuh Tempo</label>
-                            <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="" id="field8" size="large"
-                                v-model:formatted-value="form.due_date" />
+                            <label for="field8">
+                                Tanggal Jatuh Tempo<span class="text-danger">*</span>
+                            </label>
+                            <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="" id="field8"
+                                size="large" v-model:formatted-value="form.due_date" />
                         </div>
 
                         <!-- Baris Ketiga -->
                         <div class="col-md-3">
-                            <label for="field5">Transportasi</label>
-                            <n-input placeholder="" id="field5" size="large" v-model:value="transaction_details.transportation" />
+                            <label for="field5">
+                                Transportasi<span class="text-danger">*</span>
+                            </label>
+                            <n-input placeholder="" id="field5" size="large"
+                                v-model:value="transaction_details.transportation"
+                                @input="(value) => transaction_details.transportation = capitalize(value)" />
                         </div>
                         <div class="col-md-3">
-                            <label for="field6">Pengirim</label>
-                            <n-input placeholder="" id="field6" size="large" v-model:value="transaction_details.sender" />
+                            <label for="field6">
+                                Pengirim<span class="text-danger">*</span>
+                            </label>
+                            <n-input placeholder="" id="field6" size="large" v-model:value="transaction_details.sender"
+                                @input="(value) => transaction_details.sender = capitalize(value)" />
                         </div>
                         <div class="col-md-3">
-                            <label for="field7">Jenis Pengiriman</label>
+                            <label for="field7">
+                                Jenis Pengiriman<span class="text-danger">*</span>
+                            </label>
                             <n-select placeholder="" id="field7" size="large" :options="sendType"
                                 v-model:value="transaction_details.delivery_type" />
                         </div>
                         <div class="col-md-3">
-                            <label for="field8">Karyawan</label>
-                            <n-input placeholder="" id="field8" size="large" v-model:value="transaction_details.employee_name"
-                                :disabled="true" />
+                            <label for="field8">
+                                Karyawan<span class="text-danger">*</span>
+                            </label>
+                            <n-input placeholder="" id="field8" size="large"
+                                v-model:value="transaction_details.employee_name" :disabled="true" />
                         </div>
                     </form>
+
                 </div>
             </div>
 
@@ -78,33 +109,31 @@
                 <div class="card-body">
                     <form @submit.prevent="addProduct" class="row g-3">
                         <!-- Baris Pertama -->
-                        <!-- <div class="col-md-4">
-                            <label for="product_code">Kode Barang</label>
-                            <n-input id="product_code" placeholder="Kode Barang" v-model:value="products.code" />
-                        </div> -->
                         <div class="col-md-6">
-                            <label for="product_name">Nama Barang</label>
-                            <n-select placeholder="" v-model:value="products.name" filterable
-                                :options="productOptions" :loading="loading" clearable remote @search="handleSearch" />
+                            <label for="product_name">
+                                Nama Barang<span class="text-danger">*</span>
+                            </label>
+                            <n-select placeholder="" v-model:value="products.name" filterable :options="productOptions"
+                                :loading="loading" clearable remote @search="handleSearch" />
                         </div>
                         <div class="col-md-6">
-                            <label for="amount">Jumlah</label>
+                            <label for="amount">
+                                Jumlah<span class="text-danger">*</span>
+                            </label>
                             <n-input id="amount" placeholder="" v-model:value="transaction_items.quantity" />
                         </div>
 
                         <!-- Baris Kedua -->
-                        <div class="col-md-4">
-                            <label for="package">Kemasan</label>
-                            <n-select id="package" placeholder="" v-model:value="transaction_items.unit"
-                                :options="units" />
+                        <div class="col-md-6">
+                            <label for="product_price">
+                                Harga Barang<span class="text-danger">*</span>
+                            </label>
+                            <n-input id="product_price" placeholder="" v-model:value="transaction_items.amount" />
                         </div>
-                        <div class="col-md-4">
-                            <label for="product_price">Harga Barang</label>
-                            <n-input id="product_price" placeholder=""
-                                v-model:value="transaction_items.amount" />
-                        </div>
-                        <div class="col-md-4">
-                            <label for="ppn">PPN</label>
+                        <div class="col-md-6">
+                            <label for="ppn">
+                                PPN<span class="text-danger">*</span>
+                            </label>
                             <n-select id="ppn" :options="ppnOptions" placeholder=""
                                 v-model:value="transaction_items.tax_id" />
                         </div>
@@ -142,7 +171,7 @@
                     <div class="d-flex py-2">
                         <div class="flex-column pe-3">
                             <label for="catatan">Catatan</label>
-                            <n-input id="catatan" type="textarea" placeholder="Basic Textarea" style="width: 30rem;"
+                            <n-input id="catatan" type="textarea" placeholder="" style="width: 30rem;"
                                 v-model:value="form.description" />
                         </div>
                         <div class="flex-column w-100 justify-content-between">
@@ -174,7 +203,7 @@ import { DataTableColumns, NButton, SelectOption, useNotification } from 'naive-
 import Swal from 'sweetalert2';
 import TitlePage from '../../../Components/TitlePage.vue';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
-import { formatRupiah } from '../../../Utils/options-input.utils';
+import { formatRupiah, capitalize } from '../../../Utils/options-input.utils';
 import dayjs from 'dayjs';
 import 'dayjs/locale/id'; // Import locale Indonesia
 
@@ -184,8 +213,9 @@ export default defineComponent({
     setup() {
         const notification = useNotification();
         const page = usePage();
-        const loadingRef = ref(false)
-        const optionsRef = ref<SelectOption[]>([])
+        const loadingRef = ref(false);
+        const optionsRef = ref<SelectOption[]>([]);
+        const pemasokOptionsRef = ref<SelectOption[]>([]);
 
         const form = useForm({
             document_code: (page.props.po_number as string),
@@ -220,9 +250,9 @@ export default defineComponent({
 
         const transaction_items = ref({
             unit: '',
-            quantity: null,
+            quantity: null as unknown as number,
             tax_amount: 0,
-            amount: 0,
+            amount: null as unknown as number,
             product_id: null as unknown as number,
             tax_id: null as unknown as number,
         });
@@ -236,9 +266,11 @@ export default defineComponent({
             if (selectedProduct) {
                 products.value.code = selectedProduct.code; // Set 'code' produk
                 transaction_items.value.product_id = selectedProduct.id ?? 0; // Set 'product_id' dari produk yang dipilih
+                transaction_items.value.unit = selectedProduct.unit;
             } else {
                 products.value.code = ''; // Reset 'code' jika produk tidak ditemukan
                 transaction_items.value.product_id = null as unknown as number; // Reset 'product_id' jika produk tidak ditemukan
+                transaction_items.value.unit = "";
             }
         });
 
@@ -480,13 +512,52 @@ export default defineComponent({
                 onError: (err) => {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Error',
-                        text: err.message,
+                        title: 'Cek kembali form',
+                        text: 'Isi form yang terdapat tanda *',
                     });
                 },
                 onSuccess: () => {
-                    form.reset();
-                    // form.purchase_order_products.splice(0, form.purchase_order_products.length);
+                    // Reset form dengan nilai awal
+                    form.document_code = (page.props.po_number as string),
+                    form.term_of_payment = '',
+                    form.due_date = null,
+                    form.description = '',
+                    form.sub_total = null as unknown as number,
+                    form.total = null as unknown as number,
+                    form.tax_amount = null as unknown as number,
+                    form.transaction_details = [],
+                    form.transaction_items = [],
+
+                    // Kosongkan objek yang menggunakan ref
+                    transaction_details.value = {
+                        supplier: '',
+                        storehouse: '',
+                        located: '',
+                        purchase_order_date: null,
+                        send_date: null,
+                        transportation: '',
+                        sender: '',
+                        delivery_type: '',
+                        employee_name: (page.props.auth.user as User).fullname,
+                    };
+
+                    products.value = {
+                        code: '',
+                        unit: '',
+                        name: '',
+                        transaction_items: [],
+                    };
+
+                    transaction_items.value = {
+                        unit: '',
+                        quantity: null,
+                        tax_amount: null as unknown as number,
+                        amount: null as unknown as number,
+                        product_id: null as unknown as number,
+                        tax_id: null as unknown as number,
+                    };
+                    form.transaction_items.splice(0, form.transaction_items.length);
+                    
                     Swal.fire({
                         icon: 'success',
                         title: 'Success submit PO!'
@@ -518,9 +589,10 @@ export default defineComponent({
             label: data.name,
             value: data.name,
             code: data.code,
+            unit: data.unit,
         }));
 
-        const suppliers = (page.props.suppliers as Parties[]).map((data) => ({
+        const pemasokOptions = (page.props.suppliers as Parties[]).map((data) => ({
             label: data.name,
             value: data.name,
         }));
@@ -546,8 +618,8 @@ export default defineComponent({
             removeProduct,
             handleSubmit,
             formatRupiah,
+            capitalize,
             dayjs,
-            suppliers,
             products,
             transaction_items,
             units,
@@ -564,6 +636,7 @@ export default defineComponent({
             total: totalPrice,
             loading: loadingRef,
             productOptions: optionsRef,
+            pemasokOptions: pemasokOptionsRef,
             handleSearch: (query: string) => {
                 if (!query.length) {
                     optionsRef.value = []
@@ -572,6 +645,19 @@ export default defineComponent({
                 loadingRef.value = true
                 window.setTimeout(() => {
                     optionsRef.value = productOptions.filter(
+                        item => ~item.label.indexOf(query)
+                    )
+                    loadingRef.value = false
+                }, 1000)
+            },
+            handleSearchSupplier: (query: string) => {
+                if (!query.length) {
+                    pemasokOptionsRef.value = []
+                    return
+                }
+                loadingRef.value = true
+                window.setTimeout(() => {
+                    pemasokOptionsRef.value = pemasokOptions.filter(
                         item => ~item.label.indexOf(query)
                     )
                     loadingRef.value = false
