@@ -21,7 +21,7 @@
                                 placeholder="" />
                         </div>
                     </div>
-                    <div class="col-6 col-sm-6 col-md-6 col-lg-4">
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">NAMA CUSTOMER<span class="text-danger">*</span></label>
                             <n-select filterable :loading="loading" :options="customerOptions" clearable
@@ -29,33 +29,33 @@
                                 v-model:value="transaction_details.customer" />
                         </div>
                     </div>
-                    <div class="col-6 col-sm-6 col-md-6 col-lg-4">
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">LEGALITAS<span class="text-danger">*</span></label>
                             <n-input size="large" v-model:value="transaction_details.legality" placeholder="" />
                         </div>
                     </div>
-                    <div class="col-6 col-sm-6 col-md-6 col-lg-4">
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">ALAMAT CUSTOMER<span class="text-danger">*</span></label>
                             <n-input size="large" v-model:value="transaction_details.customer_address" placeholder="" />
                         </div>
                     </div>
-                    <div class="col-6 col-sm-6 col-md-6 col-lg-4">
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">TERMIN<span class="text-danger">*</span></label>
                             <n-select size="large" v-model:value="form.term_of_payment" :options="termPaymentOptions"
                                 placeholder="" />
                         </div>
                     </div>
-                    <div class="col-6 col-sm-6 col-md-6 col-lg-4">
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">TANGGAL JATUH TEMPO<span class="text-danger">*</span></label>
                             <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="" id="field8"
                                 size="large" v-model:formatted-value="form.due_date" />
                         </div>
                     </div>
-                    <div class="col-6 col-sm-6 col-md-6 col-lg-4">
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">SALESMAN<span class="text-danger">*</span></label>
                             <n-input size="large" v-model:value="transaction_details.salesman" disabled
