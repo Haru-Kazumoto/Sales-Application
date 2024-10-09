@@ -25,9 +25,14 @@ class CustomerOrdersController extends Controller
      */
     public function index()
     {
-        $customerOrders = CustomerOrders::with('productCustomerOrders')->get();
+        $customer_orders = Transactions::with('transactionType', 'transactionDetails', 'transactionItems')
+            ->whereHas('transactionType', function($query) {
+                $query->where('name', 'Penjualan');
+            })
+            ->orderBy('created_at', 'asc')
+            ->paginate(10);
 
-        return Inertia::render('Sales/Sale/ListCO', compact('customerOrders'));
+        return Inertia::render('Sales/Sale/ListCO', compact('customer_orders'));
     }
 
     /**
@@ -76,7 +81,6 @@ class CustomerOrdersController extends Controller
             'transaction_items.*.tax_amount' => 'nullable|numeric',
             'transaction_items.*.amount' => 'required|numeric',
             'transaction_items.*.product_id' => 'required|numeric',
-            // 'transaction_items.*.total_price_discount' => 'required|numeric',
             'transaction_items.*.total_price' => 'required|numeric',
             'transaction_items.*.discount_1' => 'nullable|numeric',
             'transaction_items.*.discount_2' => 'nullable|numeric',
@@ -118,14 +122,14 @@ class CustomerOrdersController extends Controller
             foreach ($request->input('transaction_items') as $txItem) {
                 $product = Products::find($txItem['product_id']);
 
-                // Jika produk belum ada, buat produk baru
-                if (!isset($txItem['product_id'])) {
-                    $product = Products::create([
-                        'code' => $txItem['product']['code'],
-                        'unit' => $txItem['product']['unit'],
-                        'name' => $txItem['product']['name'],
-                    ]);
-                }
+                // // Jika produk belum ada, buat produk baru
+                // if (!isset($txItem['product_id'])) {
+                //     $product = Products::create([
+                //         'code' => $txItem['product']['code'],
+                //         'unit' => $txItem['product']['unit'],
+                //         'name' => $txItem['product']['name'],
+                //     ]);
+                // }
 
                 // Simpan transaction item
                 TransactionItem::create([
@@ -148,13 +152,14 @@ class CustomerOrdersController extends Controller
         return redirect()->route('sales.create-co')->with('success', 'Customer Order berhasil disimpan!');
     }
 
-
     /**
      * Display the specified resource.
      */
-    public function show(CustomerOrders $customerOrders)
+    public function show(Transactions $transactions)
     {
-        //
+        $transactions->load('transactionType', 'transactionDetails', 'transactionItems.product');
+
+        return Inertia::render('Sales/Sale/DetailCO', ['customer_order' => $transactions]);
     }
 
     /**

@@ -115,7 +115,9 @@
                     </div>
                     <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">HARGA PRODUK</label>
-                        <n-input size="large" v-model:value="transaction_items.amount" placeholder="" />
+                        <n-input size="large" v-model:value="transaction_items.amount" placeholder="">
+                            <template #prefix>Rp</template>
+                        </n-input>
                     </div>
 
                     <!-- INPUT DISCOUNT FORM -->
@@ -130,7 +132,7 @@
                     </div>
                     <div class="col-6 d-flex flex-column gap-1">
                         <label for="">HARGA</label>
-                        <n-input size="large" disabled placeholder="" v-model:value="discounts.total_discount_1">
+                        <n-input size="large" disabled placeholder="" v-model:value="transaction_details.total_discount_1">
                             <template #prefix>Rp</template>
                         </n-input>
                     </div>
@@ -145,7 +147,7 @@
                     </div>
                     <div class="col-6 d-flex flex-column gap-1">
                         <label for="">HARGA</label>
-                        <n-input size="large" disabled placeholder="" v-model:value="discounts.total_discount_2">
+                        <n-input size="large" disabled placeholder="" v-model:value="transaction_details.total_discount_2">
                             <template #prefix>Rp</template>
                         </n-input>
                     </div>
@@ -160,7 +162,7 @@
                     </div>
                     <div class="col-6 d-flex flex-column gap-1">
                         <label for="">HARGA</label>
-                        <n-input size="large" disabled placeholder="" v-model:value="discounts.total_discount_3">
+                        <n-input size="large" disabled placeholder="" v-model:value="transaction_details.total_discount_3">
                             <template #prefix>Rp</template>
                         </n-input>
                     </div>
@@ -288,39 +290,48 @@ export default defineComponent({
                     title: "DISCOUNT 1",
                     key: 'discount_1',
                     width: 200,
+                    render(row) {
+                        return `${row.discount_1} %`
+                    }
                 },
                 {
                     title: "TOTAL DISCOUNT 1",
                     key: 'total_price_discount_1',
                     width: 250,
                     render(row) {
-                        return formatRupiah(discounts.value.total_discount_1 ?? 0);
+                        return formatRupiah(transaction_details.value.total_discount_1 ?? 0);
                     }
                 },
                 {
                     title: "DISCOUNT 2",
                     key: 'discount_2',
                     width: 200,
+                    render(row) {
+                        return `${row.discount_2} %`
+                    }
                 },
                 {
                     title: "TOTAL DISCOUNT 2",
                     key: 'total_price_discount_2',
                     width: 250,
                     render(row) {
-                        return formatRupiah(discounts.value.total_discount_2 ?? 0);
+                        return formatRupiah(transaction_details.value.total_discount_2 ?? 0);
                     }
                 },
                 {
                     title: "DISCOUNT 3",
                     key: 'discount_3',
                     width: 200,
+                    render(row) {
+                        return `${row.discount_3} %`
+                    }
                 },
                 {
                     title: "TOTAL DISCOUNT 3",
                     key: 'total_price_discount_3',
                     width: 250,
                     render(row) {
-                        return formatRupiah(discounts.value.total_discount_3 ?? 0);
+                        return formatRupiah(transaction_details.value.total_discount_3 ?? 0);
                     }
                 },
                 {
@@ -380,6 +391,9 @@ export default defineComponent({
             transportation_cost: null as unknown as number,
             cashback: null as unknown as number,
             unloading_cost: null as unknown as number,
+            total_discount_1: '',
+            total_discount_2: '',
+            total_discount_3: '',
         });
 
         const products = ref({
@@ -403,11 +417,11 @@ export default defineComponent({
             total_price_discount: null as unknown as number,
         });
 
-        const discounts = ref({
-            total_discount_1: 0,
-            total_discount_2: 0,
-            total_discount_3: 0,
-        });
+        // const discounts = ref({
+        //     total_discount_1: 0,
+        //     total_discount_2: 0,
+        //     total_discount_3: 0,
+        // });
 
         //TODO : create 3 watch for watch discoutns field and calculate it when filled
         watch(
@@ -422,29 +436,29 @@ export default defineComponent({
                 // Jika discount_1 diisi, hitung total_discount_1
                 if (transaction_items.value.discount_1 !== null && transaction_items.value.discount_1 !== undefined && transaction_items.value.discount_1 > 0) {
                     let discount1 = originalPrice * transaction_items.value.discount_1 / 100;
-                    discounts.value.total_discount_1 = originalPrice - discount1;
+                    transaction_details.value.total_discount_1 = originalPrice - discount1;
                 } else {
-                    discounts.value.total_discount_1 = null as unknown as number; // Kosongkan jika tidak ada discount_1
+                    transaction_details.value.total_discount_1 = null as unknown as number; // Kosongkan jika tidak ada discount_1
                 }
 
                 // Jika discount_2 diisi, hitung total_discount_2 menggunakan hasil dari total_discount_1
-                if (transaction_items.value.discount_2 !== null && transaction_items.value.discount_2 !== undefined && transaction_items.value.discount_2 > 0 && discounts.value.total_discount_1 !== null) {
-                    let discount2 = discounts.value.total_discount_1 * transaction_items.value.discount_2 / 100;
-                    discounts.value.total_discount_2 = discounts.value.total_discount_1 - discount2;
+                if (transaction_items.value.discount_2 !== null && transaction_items.value.discount_2 !== undefined && transaction_items.value.discount_2 > 0 && transaction_details.value.total_discount_1 !== null) {
+                    let discount2 = transaction_details.value.total_discount_1 * transaction_items.value.discount_2 / 100;
+                    transaction_details.value.total_discount_2 = transaction_details.value.total_discount_1 - discount2;
                 } else {
-                    discounts.value.total_discount_2 = null as unknown as number; // Kosongkan jika tidak ada discount_2
+                    transaction_details.value.total_discount_2 = null as unknown as number; // Kosongkan jika tidak ada discount_2
                 }
 
                 // Jika discount_3 diisi, hitung total_discount_3 menggunakan hasil dari total_discount_2
-                if (transaction_items.value.discount_3 !== null && transaction_items.value.discount_3 !== undefined && transaction_items.value.discount_3 > 0 && discounts.value.total_discount_2 !== null) {
-                    let discount3 = discounts.value.total_discount_2 * transaction_items.value.discount_3 / 100;
-                    discounts.value.total_discount_3 = discounts.value.total_discount_2 - discount3;
+                if (transaction_items.value.discount_3 !== null && transaction_items.value.discount_3 !== undefined && transaction_items.value.discount_3 > 0 && transaction_details.value.total_discount_2 !== null) {
+                    let discount3 = transaction_details.value.total_discount_2 * transaction_items.value.discount_3 / 100;
+                    transaction_details.value.total_discount_3 = transaction_details.value.total_discount_2 - discount3;
                 } else {
-                    discounts.value.total_discount_3 = null as unknown as number; // Kosongkan jika tidak ada discount_3
+                    transaction_details.value.total_discount_3 = null as unknown as number; // Kosongkan jika tidak ada discount_3
                 }
 
                 // Mengupdate total_price menjadi nilai terakhir yang dihitung dari diskon yang tersedia
-                transaction_items.value.total_price = discounts.value.total_discount_3 || discounts.value.total_discount_2 || discounts.value.total_discount_1 || originalPrice;
+                transaction_items.value.total_price = transaction_details.value.total_discount_3 || transaction_details.value.total_discount_2 || transaction_details.value.total_discount_1 || originalPrice;
             }
         );
 
@@ -555,6 +569,30 @@ export default defineComponent({
         function handleSubmitCo() {
             form.transaction_details = [
                 {
+                    name: "Total Harga Diskon 1",
+                    category: "Total Discount 1",
+                    value: transaction_details.value.total_discount_1.toString(),
+                    data_type: 'float',
+                },
+                {
+                    name: "Total Harga Diskon 2",
+                    category: "Total Discount 2",
+                    value: transaction_details.value.total_discount_2.toString(),
+                    data_type: 'float',
+                },
+                {
+                    name: "Total Harga Diskon 3",
+                    category: "Total Discount 3",
+                    value: transaction_details.value.total_discount_3.toString(),
+                    data_type: 'float',
+                },
+                {
+                    name: "Tanggal CO",
+                    category: 'CO Date',
+                    value: transaction_details.value.customer_order_date,
+                    data_type: 'datetime',
+                },
+                {
                     name: 'Nama Customer',
                     category: 'Customer',
                     value: transaction_details.value.customer,
@@ -623,7 +661,10 @@ export default defineComponent({
                             customer_address: '',
                             customer_order_date: (page.props.dateNow),
                             legality: '',
-                            salesman: (page.props.auth.user.fullname),
+                            salesman: ((page.props.auth as any).user.fullname),
+                            total_discount_1: null as unknown as number,
+                            total_discount_2: null as unknown as number,
+                            total_discount_3: null as unknown as number,
                             transportation_cost: null as unknown as number,
                             unloading_cost: null as unknown as number
                         };
@@ -683,7 +724,6 @@ export default defineComponent({
             handleAddProduct,
             removeProduct,
             handleSubmitCo,
-            removeProduct,
             dayjs,
             form,
             termPaymentOptions,
@@ -696,7 +736,6 @@ export default defineComponent({
             totalPPN,
             subtotal,
             totalPrice,
-            discounts,
             handleSearchCustomer: (query: string) => {
                 if (!query.length) {
                     customerOptionsRef.value = []
@@ -731,5 +770,3 @@ export default defineComponent({
     }
 })
 </script>
-
-<style scoped></style>

@@ -10,7 +10,8 @@ export default defineComponent({
     props: {
         error: {
             type: String,
-            required: true
+            required: true,
+            default: '',
         }
     }
 });

@@ -164,6 +164,7 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         Route::get('/create-co', [App\Http\Controllers\CustomerOrdersController::class, 'create'])->name('create-co');
         Route::post('/post-create-co', [App\Http\Controllers\CustomerOrdersController::class, 'store'])->name('create-co.post');
         Route::get('/list-co', [App\Http\Controllers\CustomerOrdersController::class, 'index'])->name('list-co');
+        Route::get('/customer-order/detail/{transactions}', [App\Http\Controllers\CustomerOrdersController::class, 'show'])->name('detail-co');
     });
 });
 

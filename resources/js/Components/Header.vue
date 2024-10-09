@@ -2,14 +2,15 @@
     <div class="d-flex" style="background-color: #00a54f; height: 4rem;">
         <div class="mx-4 d-flex align-items-center w-100">
             <div class="d-flex align-items-center" style="gap: 13rem;">
-                
+
                 <div class="d-lg-none mx-lg-1 fs-3 text-white" style="cursor: pointer;" @click="toggleCollapse">
                     <n-icon :component="Hamburger" />
                 </div>
-    
+
                 <!-- Logo and Company Name, hidden on small screens -->
                 <div class="d-flex align-items-center">
-                    <n-image width="50" src="/images/company_logo.png" preview-disabled class="my-1 d-none d-md-block" />
+                    <n-image width="50" src="/images/company_logo.png" preview-disabled
+                        class="my-1 d-none d-md-block" />
                     <span class="mx-4 fs-5 text-white d-none d-md-block">
                         PT DANITAMA NIAGAPRIMA
                     </span>
@@ -19,8 +20,7 @@
 
             <!-- User dropdown menu -->
             <n-dropdown :options="options" @select="handleSelectKey" trigger="click">
-                <div class="d-flex flex-row ms-auto align-items-center  p-2 text-white gap-2"
-                    style="cursor: pointer;">
+                <div class="d-flex flex-row ms-auto align-items-center  p-2 text-white gap-2" style="cursor: pointer;">
                     <n-icon :component="Person" />
                     <span class="d-none d-md-flex">{{ $page.props.auth.user.fullname }}</span>
                 </div>

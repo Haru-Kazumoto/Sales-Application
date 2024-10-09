@@ -10,6 +10,8 @@ class TransactionType extends Model
 {
     use HasFactory;
 
+    protected $table = "transaction_type";
+
     protected $fillable = ['name'];
 
     public function transactions(): HasMany

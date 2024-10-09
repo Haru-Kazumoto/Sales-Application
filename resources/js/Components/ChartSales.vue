@@ -20,7 +20,13 @@ const series = ref([{
 const chartOptions = ref({
     chart: {
         type: 'bar',
-        height: 350
+        height: 350,
+        toolbar: {
+            show: true, // Untuk menampilkan toolbar
+            tools: {
+                download: false // Menonaktifkan opsi download
+            }
+        }
     },
     plotOptions: {
         bar: {
@@ -42,7 +48,7 @@ const chartOptions = ref({
     },
     yaxis: {
         title: {
-            text: '$ (thousands)'
+            text: 'Rp (RUPIAH)'
         }
     },
     fill: {
@@ -51,7 +57,7 @@ const chartOptions = ref({
     tooltip: {
         y: {
             formatter: function (val) {
-                return "$ " + val + " thousands"
+                return "Rp " + val + " thousands"
             }
         }
     },

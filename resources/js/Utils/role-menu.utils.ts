@@ -1,4 +1,4 @@
-import { SkullOutline, CartOutline, FileTrayFullOutline, FileTrayStackedOutline, CubeOutline, WalletOutline, NotificationsOutline, PeopleOutline, ReceiptOutline, SettingsOutline, BarChartOutline, BagCheckOutline, DocumentsOutline, DocumentTextOutline, ShieldCheckmarkOutline, RepeatSharp, WarningOutline, Cart, People, PersonAddOutline, Contract, Analytics, CogOutline, DocumentOutline, PushOutline, ShieldHalf, PieChartOutline, ReorderFourSharp, CartSharp, KeyOutline, LogoWhatsapp, Close, Skull, Bookmarks, BookmarkOutline, AlbumsOutline } from '@vicons/ionicons5';
+import { SkullOutline, CartOutline, FileTrayFullOutline, FileTrayStackedOutline, CubeOutline, WalletOutline, NotificationsOutline, PeopleOutline, ReceiptOutline, SettingsOutline, BarChartOutline, BagCheckOutline, DocumentsOutline, DocumentTextOutline, ShieldCheckmarkOutline, RepeatSharp, WarningOutline, Cart, People, PersonAddOutline, Contract, Analytics, CogOutline, DocumentOutline, PushOutline, ShieldHalf, PieChartOutline, ReorderFourSharp, CartSharp, KeyOutline, LogoWhatsapp, Close, Skull, Bookmarks, BookmarkOutline, AlbumsOutline, TrashOutline } from '@vicons/ionicons5';
 import { NIcon } from 'naive-ui';
 import { h } from 'vue';
 
@@ -267,7 +267,7 @@ export const roleMenus = {
                 },
                 {
                     label: "Pemusnahan Barang",
-                    icon: renderIcon(SkullOutline),
+                    icon: renderIcon(TrashOutline),
                     key: 'destruction-goods',
                     href: '/destruction-broken-goods',
                 }
@@ -278,7 +278,7 @@ export const roleMenus = {
         {
             label: "Penjualan",
             key: 'sales',
-            icon: CartSharp,
+            icon: CartOutline,
             children: [
                 {
                     label: 'Buat CO',
@@ -546,7 +546,7 @@ export const roleMenus = {
                 },
                 {
                     label: "Pemusnahan Barang",
-                    icon: renderIcon(SkullOutline),
+                    icon: renderIcon(TrashOutline),
                     key: 'destruction-goods',
                     href: '/destruction-broken-goods',
                 }
