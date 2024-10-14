@@ -142,8 +142,6 @@ import 'dayjs/locale/id'; // Import locale Indonesia
 
 dayjs.locale('id'); // Set locale to Indonesian
 
-
-
 export default defineComponent({
     setup() {
         const notification = useNotification();
@@ -186,6 +184,7 @@ export default defineComponent({
             unit: '',
             quantity: null,
             tax_amount: 0,
+            total_price: null as unknown as number,
             amount: 0,
             product_id: null as unknown as number,
             tax_id: null as unknown as number,
@@ -223,21 +222,31 @@ export default defineComponent({
                     title: 'Kemasan',
                     key: 'unit',
                     render(row) {
-                        return row.unit.replace("_", ' ');
+                        return row.unit?.replace("_", ' ');
                     }
                 },
                 {
                     title: 'Harga Barang',
                     key: 'amount',
+                    width: 200,
                     render(row) {
                         return formatRupiah(row.amount ?? 0);
                     }
                 },
                 {
+                    title: 'Total harga',
+                    key: 'total_price',
+                    width: 200,
+                    render(row) {
+                        return formatRupiah((row.total_price ?? 0));
+                    }
+                },
+                {
                     title: 'PPN',
                     key: 'tax_amount',
+                    width: 100,
                     render(row) {
-                        return formatRupiah(row.tax_amount ?? 0);
+                        return row.tax_amount;
                     }
                 },
                 {
@@ -369,7 +378,7 @@ export default defineComponent({
                 },
                 onSuccess: () => {
                     // Reset form dengan nilai awal
-                    form.document_code = (page.props.po_number as string),
+                    form.document_code = '',
                     form.term_of_payment = '',
                     form.description = '',
                     form.sub_total = null as unknown as number,
@@ -417,7 +426,6 @@ export default defineComponent({
 
                 },
             });
-
         }
 
         async function handleGetProducts() {
@@ -459,6 +467,7 @@ export default defineComponent({
                             amount: item.amount,
                             tax_id: item.tax_id,
                             product_id: item.product_id,
+                            total_price: item.total_price,
                             product: {
                                 code: item.product?.code || '',
                                 unit: item.product?.unit || '',
@@ -481,7 +490,7 @@ export default defineComponent({
             // Cek apakah ada transaction_items
             if (form.transaction_items && form.transaction_items.length > 0) {
                 const subtotal = form.transaction_items.reduce((total, item) => {
-                    return total + (item.amount ?? 0); // Menghitung subtotal dari amount
+                    return total + (item.total_price ?? 0); // Menghitung subtotal dari amount
                 }, 0);
 
                 // Menghitung PPN 11%
@@ -503,7 +512,7 @@ export default defineComponent({
             // Cek apakah ada transaction_items
             if (form.transaction_items && form.transaction_items.length > 0) {
                 const subtotal = form.transaction_items.reduce((total, item) => {
-                    return total + (item.amount ?? 0); // Menghitung subtotal dari amount
+                    return total + (item.total_price ?? 0); // Menghitung subtotal dari amount
                 }, 0);
 
                 // Simpan subtotal ke dalam form
@@ -522,7 +531,7 @@ export default defineComponent({
             // Cek apakah ada transaction_items
             if (form.transaction_items && form.transaction_items.length > 0) {
                 const subtotal = form.transaction_items.reduce((total, item) => {
-                    return total + (item.amount ?? 0); // Menghitung subtotal dari amount
+                    return total + (item.total_price ?? 0); // Menghitung subtotal dari amount
                 }, 0);
 
                 // Menghitung total harga termasuk PPN 11%

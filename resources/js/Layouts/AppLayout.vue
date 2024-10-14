@@ -9,7 +9,7 @@
           <n-layout position="absolute" style="top: 64px;" has-sider>
             <n-layout-sider :native-scrollbar="false" bordered collapse-mode="width"
               :collapsed-width="computedCollapsedWidth" :width="siderWidth" :collapsed="collapsed"
-              @collapse="collapsed = true" @expand="collapsed = false" show-trigger class="z-3">
+              @collapse="collapsed = true" @expand="collapsed = false"  class="z-3">
               <n-menu :collapsed="collapsed" :collapsed-width="computedCollapsedWidth" :collapsed-icon-size="22"
                 :options="menuOptions" :render-label="renderMenuLabel" :expand-icon="expandIcon"
                 default-value="dashboard" />

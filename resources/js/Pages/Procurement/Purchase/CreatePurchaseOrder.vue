@@ -113,14 +113,15 @@
                             <label for="product_name">
                                 Nama Barang<span class="text-danger">*</span>
                             </label>
-                            <n-select placeholder="" v-model:value="products.name" filterable :options="productOptions"
+                            <n-select size="large" placeholder="" v-model:value="products.name" filterable :options="productOptions"
                                 :loading="loading" clearable remote @search="handleSearch" />
                         </div>
                         <div class="col-md-6">
                             <label for="amount">
                                 Jumlah<span class="text-danger">*</span>
                             </label>
-                            <n-input id="amount" placeholder="" v-model:value="transaction_items.quantity" />
+                            <n-input size="large" id="amount" placeholder="" v-model:value="transaction_items.quantity"
+                                @input="(value) => transaction_items.quantity = value.replace(/\D/g, '')" />
                         </div>
 
                         <!-- Baris Kedua -->
@@ -128,13 +129,16 @@
                             <label for="product_price">
                                 Harga Barang<span class="text-danger">*</span>
                             </label>
-                            <n-input id="product_price" placeholder="" v-model:value="transaction_items.amount" />
+                            <n-input size="large" id="product_price" placeholder="" v-model:value="transaction_items.amount"
+                                @input="(value) => transaction_items.amount = value.replace(/\D/g, '')">
+                                <template #prefix>Rp </template>
+                            </n-input>
                         </div>
                         <div class="col-md-6">
                             <label for="ppn">
                                 PPN<span class="text-danger">*</span>
                             </label>
-                            <n-select id="ppn" :options="ppnOptions" placeholder=""
+                            <n-select size="large" id="ppn" :options="ppnOptions" placeholder=""
                                 v-model:value="transaction_items.tax_id" />
                         </div>
                         <div class="d-flex justify-content-end">
@@ -275,6 +279,17 @@ export default defineComponent({
         });
 
         function addProduct() {
+            // Validasi input
+            if (!products.value.name || !transaction_items.value.quantity || !transaction_items.value.amount || !transaction_items.value.tax_id) {
+                notification.error({
+                    title: 'Form barang harus diisi',
+                    closable: true,
+                    keepAliveOnHover: false,
+                    duration: 1500,
+                });
+                return; // Hentikan eksekusi jika ada field yang kosong
+            }
+
             // Ambil persentase PPN dari tax_id yang dipilih
             const selectedTax = ppnOptions.find(tax => tax.value === transaction_items.value.tax_id);
 
@@ -282,15 +297,17 @@ export default defineComponent({
             const selectedPpnValue = selectedTax ? selectedTax.percentage : 0; // Nilai PPN (0 jika tidak ada PPN)
             const productPrice = transaction_items.value.amount; // Ambil harga produk (amount)
             const ppnAmount = productPrice * selectedPpnValue; // Kalkulasi PPN
+            const totalPrice = productPrice * transaction_items.value.quantity;
 
 
             form.transaction_items.push({
                 unit: transaction_items.value.unit,
                 quantity: transaction_items.value.quantity,
                 product_id: transaction_items.value.product_id,
-                tax_amount: ppnAmount,
+                tax_amount: selectedTax?.value_tax,
                 amount: transaction_items.value.amount,
                 tax_id: transaction_items.value.tax_id,
+                total_price: Number(totalPrice),
                 product: {
                     code: products.value.code,
                     unit: transaction_items.value.unit,
@@ -298,6 +315,11 @@ export default defineComponent({
                 }
             });
 
+            //clear form 
+            products.value.name = "";
+            transaction_items.value.quantity = null as unknown as number;
+            transaction_items.value.amount = null as unknown as number;
+            transaction_items.value.tax_id = null as unknown as number;
 
             notification.success({
                 title: 'Berhasil',
@@ -311,7 +333,7 @@ export default defineComponent({
         const totalPPN = computed(() => {
             // Menghitung subtotal dari semua produk tanpa mengalikan quantity
             const subtotal = form.transaction_items.reduce((total, item) => {
-                return total + Number(item.amount ?? 0); // Konversi amount ke number
+                return total + Number(item.total_price ?? 0); // Konversi amount ke number
             }, 0);
 
             // Menghitung PPN 11%
@@ -327,7 +349,7 @@ export default defineComponent({
         const subtotal = computed(() => {
             // Menghitung subtotal dari semua produk tanpa mengalikan quantity
             const total = form.transaction_items.reduce((total, item) => {
-                return total + Number(item.amount ?? 0); // Konversi amount ke number
+                return total + Number(item.total_price ?? 0); // Konversi amount ke number
             }, 0);
 
             // Menyimpan subtotal ke dalam form
@@ -340,7 +362,7 @@ export default defineComponent({
         const totalPrice = computed(() => {
             // Menghitung subtotal dari semua produk tanpa mengalikan quantity
             const subtotal = form.transaction_items.reduce((total, item) => {
-                return total + Number(item.amount ?? 0); // Konversi amount ke number
+                return total + Number(item.total_price ?? 0); // Konversi amount ke number
             }, 0);
 
             // Menghitung total harga termasuk PPN 11%
@@ -371,6 +393,7 @@ export default defineComponent({
                 {
                     title: 'Kode Barang',
                     key: 'product_code',
+                    width: 150,
                     render(row) {
                         return row.product?.code;
                     }
@@ -378,6 +401,7 @@ export default defineComponent({
                 {
                     title: 'Nama Barang',
                     key: 'product_name',
+                    width: 200,
                     render(row) {
                         return row.product?.name;
                     }
@@ -385,33 +409,37 @@ export default defineComponent({
                 {
                     title: 'Jumlah',
                     key: 'quantity',
+                    width: 150
                 },
                 {
                     title: 'Kemasan',
                     key: 'unit',
+                    width: 150
                 },
                 {
                     title: 'Harga Barang',
                     key: 'amount',
+                    width: 200,
                     render(row) {
                         return formatRupiah(row.amount ?? 0);
                     }
                 },
                 {
-                    title: 'PPN',
-                    key: 'tax_amount',
+                    title: 'Total harga',
+                    key: 'total_price',
+                    width: 200,
                     render(row) {
-                        return formatRupiah(row.tax_amount ?? 0);
+                        return formatRupiah((row.total_price ?? 0));
                     }
                 },
-                // {
-                //     title: 'Total harga',
-                //     key: 'total_price',
-                //     width: 200,
-                //     render(row) {
-                //         // return formatRupiah((row.total_price ?? 0));
-                //     }
-                // },
+                {
+                    title: 'PPN',
+                    key: 'tax_amount',
+                    width: 100,
+                    render(row) {
+                        return row.tax_amount;
+                    }
+                },
                 {
                     title: 'Action',
                     key: 'actions',
@@ -508,6 +536,8 @@ export default defineComponent({
                 },
             ];
 
+            console.log(form.transaction_items);
+
             form.post(route('procurement.create-po'), {
                 onError: (err) => {
                     Swal.fire({
@@ -519,27 +549,27 @@ export default defineComponent({
                 onSuccess: () => {
                     // Reset form dengan nilai awal
                     form.document_code = (page.props.po_number as string),
-                    form.term_of_payment = '',
-                    form.due_date = null,
-                    form.description = '',
-                    form.sub_total = null as unknown as number,
-                    form.total = null as unknown as number,
-                    form.tax_amount = null as unknown as number,
-                    form.transaction_details = [],
-                    form.transaction_items = [],
+                        form.term_of_payment = '',
+                        form.due_date = null,
+                        form.description = '',
+                        form.sub_total = null as unknown as number,
+                        form.total = null as unknown as number,
+                        form.tax_amount = null as unknown as number,
+                        form.transaction_details = [],
+                        form.transaction_items = [],
 
-                    // Kosongkan objek yang menggunakan ref
-                    transaction_details.value = {
-                        supplier: '',
-                        storehouse: '',
-                        located: '',
-                        purchase_order_date: null,
-                        send_date: null,
-                        transportation: '',
-                        sender: '',
-                        delivery_type: '',
-                        employee_name: (page.props.auth.user as User).fullname,
-                    };
+                        // Kosongkan objek yang menggunakan ref
+                        transaction_details.value = {
+                            supplier: '',
+                            storehouse: '',
+                            located: '',
+                            purchase_order_date: null,
+                            send_date: null,
+                            transportation: '',
+                            sender: '',
+                            delivery_type: '',
+                            employee_name: (page.props.auth.user as User).fullname,
+                        };
 
                     products.value = {
                         code: '',
@@ -550,14 +580,14 @@ export default defineComponent({
 
                     transaction_items.value = {
                         unit: '',
-                        quantity: null,
+                        quantity: null as unknown as number,
                         tax_amount: null as unknown as number,
                         amount: null as unknown as number,
                         product_id: null as unknown as number,
                         tax_id: null as unknown as number,
                     };
                     form.transaction_items.splice(0, form.transaction_items.length);
-                    
+
                     Swal.fire({
                         icon: 'success',
                         title: 'Success submit PO!'
@@ -604,6 +634,7 @@ export default defineComponent({
         const ppnOptions = (page.props.tax as Tax[]).map((data) => ({
             label: data.name,
             value: data.id,
+            value_tax: data.value,
             percentage: data.value / 100 // Tambahkan persentase PPN
         }));
 

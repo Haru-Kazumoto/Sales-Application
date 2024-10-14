@@ -3,7 +3,7 @@
         <TitlePage title="STOK BARANG GUDANG DKU" />
         <div class="d-flex flex-column gap-2">
             <div class="row g-3 ">
-                <div class="col-12 col-lg-8 ">
+                <div class="col-12 col-lg-6 ">
                     <span class="fs-4">Daftar Produk</span>
                 </div>
                 <div class="col-12 col-lg-2 d-flex gap-3 ">
@@ -12,11 +12,14 @@
                 <div class="col-12 col-lg-2 d-flex gap-3 ">
                     <n-input placeholder="Cari Produk" />
                 </div>
+                <div class="col-12 col-lg-2 d-flex gap-3 ">
+                    <n-input placeholder="Cari Produk" />
+                </div>
             </div>
             <div class="card shadow" style="border: none;">
                 <div class="card-body">
-                    <n-data-table :columns="columns" :data="data" :pagination="pagination" :bordered="false"
-                        size="small" pagination-behavior-on-filter="first" />
+                    <n-data-table :columns="columns" :data="($page.props.products as any).data" :pagination="pagination"
+                        :bordered="false" size="small" pagination-behavior-on-filter="first" />
                 </div>
             </div>
         </div>
@@ -29,15 +32,7 @@ import TitlePage from '../../../Components/TitlePage.vue';
 import CountCard from '../../../Components/CountCard.vue';
 import { DataTableColumns, NButton, NTag } from 'naive-ui';
 
-interface RowData {
-    item_name: string;
-    package: string;
-    stock: number;
-    item_status: string;
-    located: string;
-}
-
-function createColumns(): DataTableColumns<RowData> {
+function createColumns() {
     return [
         {
             title: '#',
@@ -49,45 +44,38 @@ function createColumns(): DataTableColumns<RowData> {
         },
         {
             title: 'NAMA BARANG',
-            key: 'item_name',
+            key: 'name',
             width: 300,
-            render(rowData) {
-                return rowData.item_name;  // Menampilkan SKU
-            },
+        },
+        {
+            title: 'KODE BARANG',
+            key: 'code',
+            width: 100,
         },
         {
             title: 'KEMASAN',
-            key: 'package',
+            key: 'unit',
             width: 100,
-            render(rowData) {
-                return rowData.package;  // Menampilkan nama item
-            },
         },
         {
             title: 'STOK',
-            key: 'stock',
+            key: 'last_stock',
             width: 100,
-            render(rowData) {
-                return rowData.stock;  // Menampilkan nama supplier
-            },
         },
         {
             title: 'ALOKASI',
-            key: 'located',
+            key: 'warehouse',
             width: 100,
-            render(rowData) {
-                return rowData.located;
-            }
         },
         {
-            title: 'STATUS',
+            title: 'Status',
             key: 'item_status',
             width: 100,
             render(rowData) {
                 // Tentukan warna dan tipe tag berdasarkan item_status pembayaran
                 let type: any;
 
-                switch (rowData.item_status) {
+                switch (rowData.status) {
                     case 'STOK HABIS':
                         type = 'error';
                         break;
@@ -110,59 +98,26 @@ function createColumns(): DataTableColumns<RowData> {
                         type,
                         bordered: false
                     },
-                    { default: () => rowData.item_status }
+                    { default: () => rowData.status }
                 );
             },
         },
-        {
-            title: "ACTION",
-            key: "action",
-            width: 100,
-            render(rowData) {
-                return h(
-                    NButton,
-                    {
-                        type: 'primary',
-                        size: 'small',
-                    },
-                    { default: () => 'Detail' }
-                );
-            }
-        }
 
     ];
 }
 
 export default defineComponent({
     setup() {
-        // Data dummy untuk tabel
-        const data: RowData[] = [
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DKU" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DKU" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DKU" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DKU" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DKU" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DKU" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DKU" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DKU" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DKU" },
-        ];
 
         // Pagination dummy data
         const pagination = reactive({
             page: 1,
             pageSize: 10,
-            pageCount: Math.ceil(data.length / 10),
-            itemCount: data.length,
         });
 
-        // Columns for DataTable
-        const columns = createColumns();
-
         return {
-            data,
             pagination,
-            columns,
+            columns: createColumns(),
         };
     },
     components: {

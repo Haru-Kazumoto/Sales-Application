@@ -2,7 +2,7 @@
 
     <Head title="Create CO" />
     <div class="d-flex flex-column gap-4">
-        <TitlePage title="CUSTOMER ORDER" />
+        <TitlePage title="CUSTOMER ORDER | DKU" />
         <!-- INPUT CO FORM -->
         <div class="card shadow" style="border: none;">
             <!-- INPUT CO -->
@@ -104,6 +104,10 @@
                         <label for="">NAMA PRODUK</label>
                         <n-select filterable :loading="loading" :options="productOptions" clearable remote
                             placeholder="" @search="handleSearchProduct" size="large" v-model:value="products.name" />
+                        <!-- Warning quantity atau status quantity -->
+                        <span :style="{ color: stockStatusColor }">
+                            {{ stockMessage }}
+                        </span>
                     </div>
                     <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">QUANTITY</label>
@@ -132,7 +136,8 @@
                     </div>
                     <div class="col-6 d-flex flex-column gap-1">
                         <label for="">HARGA</label>
-                        <n-input size="large" disabled placeholder="" v-model:value="transaction_details.total_discount_1">
+                        <n-input size="large" disabled placeholder=""
+                            v-model:value="transaction_details.total_discount_1">
                             <template #prefix>Rp</template>
                         </n-input>
                     </div>
@@ -147,7 +152,8 @@
                     </div>
                     <div class="col-6 d-flex flex-column gap-1">
                         <label for="">HARGA</label>
-                        <n-input size="large" disabled placeholder="" v-model:value="transaction_details.total_discount_2">
+                        <n-input size="large" disabled placeholder=""
+                            v-model:value="transaction_details.total_discount_2">
                             <template #prefix>Rp</template>
                         </n-input>
                     </div>
@@ -162,7 +168,8 @@
                     </div>
                     <div class="col-6 d-flex flex-column gap-1">
                         <label for="">HARGA</label>
-                        <n-input size="large" disabled placeholder="" v-model:value="transaction_details.total_discount_3">
+                        <n-input size="large" disabled placeholder=""
+                            v-model:value="transaction_details.total_discount_3">
                             <template #prefix>Rp</template>
                         </n-input>
                     </div>
@@ -233,6 +240,8 @@ export default defineComponent({
         const productsOptionsRef = ref<SelectOption[]>([]);
         const loading = ref(false);
         const loadingProducts = ref(false);
+        const stockMessage = ref(''); // Untuk pesan stok
+        const stockStatusColor = ref('black'); // Untuk warna teks
 
         function createColumns(): DataTableColumns<TransactionItems> {
             return [
@@ -299,7 +308,9 @@ export default defineComponent({
                     key: 'total_price_discount_1',
                     width: 250,
                     render(row) {
-                        return formatRupiah(transaction_details.value.total_discount_1 ?? 0);
+                        const discount1 = row.discount_1 ?? 0;
+                        const result_discount_1 = row.amount * (discount1 / 100);
+                        return formatRupiah(result_discount_1);
                     }
                 },
                 {
@@ -315,7 +326,15 @@ export default defineComponent({
                     key: 'total_price_discount_2',
                     width: 250,
                     render(row) {
-                        return formatRupiah(transaction_details.value.total_discount_2 ?? 0);
+                        const discount1 = row.discount_1 ?? 0;
+                        const discount2 = row.discount_2 ?? 0;
+
+                        // Total setelah discount 1
+                        const remaining_after_discount_1 = row.amount * (1 - discount1 / 100);
+
+                        // Diskon 2 dari harga sisa setelah diskon 1
+                        const result_discount_2 = remaining_after_discount_1 * (discount2 / 100);
+                        return formatRupiah(result_discount_2);
                     }
                 },
                 {
@@ -331,7 +350,17 @@ export default defineComponent({
                     key: 'total_price_discount_3',
                     width: 250,
                     render(row) {
-                        return formatRupiah(transaction_details.value.total_discount_3 ?? 0);
+                        const discount1 = row.discount_1 ?? 0;
+                        const discount2 = row.discount_2 ?? 0;
+                        const discount3 = row.discount_3 ?? 0;
+
+                        // Total setelah diskon 1 dan 2
+                        const remaining_after_discount_1 = row.amount * (1 - discount1 / 100);
+                        const remaining_after_discount_2 = remaining_after_discount_1 * (1 - discount2 / 100);
+
+                        // Diskon 3 dari harga sisa setelah diskon 2
+                        const result_discount_3 = remaining_after_discount_2 * (discount3 / 100);
+                        return formatRupiah(result_discount_3);
                     }
                 },
                 {
@@ -386,20 +415,22 @@ export default defineComponent({
             customer_order_date: (page.props.dateNow),
             customer: '',
             legality: '',
+            npwp: '',
             customer_address: '',
             salesman: (page.props.auth as any).user.fullname,
             transportation_cost: null as unknown as number,
             cashback: null as unknown as number,
             unloading_cost: null as unknown as number,
-            total_discount_1: '',
-            total_discount_2: '',
-            total_discount_3: '',
+            total_discount_1: null as unknown as number,
+            total_discount_2: null as unknown as number,
+            total_discount_3: null as unknown as number,
         });
 
         const products = ref({
             code: '',
             unit: '',
             name: '',
+            last_stock: null as unknown as number,
             transaction_items: [] as TransactionItems[],
         });
 
@@ -462,6 +493,9 @@ export default defineComponent({
             }
         );
 
+        // watch(() => transaction_items.value.quantity, (quantity) => {
+
+        // });
 
         watch(() => transaction_details.value.customer, (name) => {
             const selectedCustomer = customerOptions.find(data => data.label === name);
@@ -482,9 +516,21 @@ export default defineComponent({
                 products.value.code = selectedProduct.code;
                 transaction_items.value.product_id = selectedProduct.id as number;
                 transaction_items.value.unit = selectedProduct.unit as any;
+                products.value.last_stock = selectedProduct.last_stock; // Set last_stock
+
+                // Tentukan pesan dan warna status berdasarkan last_stock
+                if (products.value.last_stock < 10) {
+                    stockMessage.value = `Stok saat ini : (${products.value.last_stock})`;
+                    stockStatusColor.value = 'red'; // Merah jika stok kurang dari 10
+                } else {
+                    stockMessage.value = `Stok saat ini : (${products.value.last_stock})`;
+                    stockStatusColor.value = 'black'; // Default hitam
+                }
             } else {
                 products.value.code = '';
                 transaction_items.value.unit = '';
+                stockMessage.value = ''; // Kosongkan pesan jika tidak ada produk yang dipilih
+                stockStatusColor.value = 'black'; // Reset warna ke default
             }
         });
 
@@ -532,22 +578,40 @@ export default defineComponent({
             return formatRupiah(totalWithPPN);
         });
 
-
         function handleAddProduct() {
+            console.log('triggered');
+
+            // Pastikan kedua nilai adalah angka
+            const quantity = Number(transaction_items.value.quantity);
+            const lastStock = Number(products.value.last_stock);
+
+            console.log('Transaction Quantity:', quantity);
+            console.log('Last Stock:', lastStock);
+
+            // Periksa apakah quantity lebih besar dari stok
+            if (quantity > lastStock) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: `Quantity melebihi stok yang tersedia (${lastStock})!`,
+                });
+                return; // Hentikan eksekusi jika quantity tidak valid
+            }
+
             const ppnAmount = transaction_items.value.amount * 0.11;
-            const total = transaction_items.value.amount * transaction_items.value.quantity;
+            const total = transaction_items.value.amount * quantity;
 
             form.transaction_items.push({
                 unit: transaction_items.value.unit,
-                quantity: transaction_items.value.quantity,
+                quantity: quantity,
                 product_id: transaction_items.value.product_id,
                 tax_amount: ppnAmount,
                 amount: transaction_items.value.amount,
                 tax_id: transaction_items.value.tax_id,
                 total_price: total,
-                discount_1: transaction_items.value.discount_1,
-                discount_2: transaction_items.value.discount_2,
-                discount_3: transaction_items.value.discount_3,
+                discount_1: transaction_items.value.discount_1 || 0,
+                discount_2: transaction_items.value.discount_2 || 0,
+                discount_3: transaction_items.value.discount_3 || 0,
                 product: {
                     code: products.value.code,
                     unit: transaction_items.value.unit,
@@ -562,6 +626,7 @@ export default defineComponent({
             });
         }
 
+
         function removeProduct(index: number) {
             form.transaction_items.splice(index, 1);
         }
@@ -571,19 +636,19 @@ export default defineComponent({
                 {
                     name: "Total Harga Diskon 1",
                     category: "Total Discount 1",
-                    value: transaction_details.value.total_discount_1.toString(),
+                    value: transaction_details.value.total_discount_1 ? '0' : '0',
                     data_type: 'float',
                 },
                 {
                     name: "Total Harga Diskon 2",
                     category: "Total Discount 2",
-                    value: transaction_details.value.total_discount_2.toString(),
+                    value: transaction_details.value.total_discount_2 ? '0' : '0',
                     data_type: 'float',
                 },
                 {
                     name: "Total Harga Diskon 3",
                     category: "Total Discount 3",
-                    value: transaction_details.value.total_discount_3.toString(),
+                    value: transaction_details.value.total_discount_3 ? '0' : '0',
                     data_type: 'float',
                 },
                 {
@@ -633,10 +698,22 @@ export default defineComponent({
                     category: "Salesman",
                     value: transaction_details.value.salesman,
                     data_type: 'string',
+                },
+                {
+                    name: "Gudang",
+                    category: "Warehouse",
+                    value: "DKU",
+                    data_type: "string",
+                },
+                {
+                    name: "NPWP",
+                    category: "NPWP",
+                    value: transaction_details.value.npwp,
+                    data_type: "string",
                 }
             ];
 
-            form.post(route('sales.create-co.post'), {
+            form.post(route('sales.create-co-dku.post'), {
                 onError(error) {
                     Swal.fire({
                         icon: 'error',
@@ -661,6 +738,7 @@ export default defineComponent({
                             customer_address: '',
                             customer_order_date: (page.props.dateNow),
                             legality: '',
+                            npwp: '',
                             salesman: ((page.props.auth as any).user.fullname),
                             total_discount_1: null as unknown as number,
                             total_discount_2: null as unknown as number,
@@ -673,6 +751,7 @@ export default defineComponent({
                         code: '',
                         unit: '',
                         name: '',
+                        last_stock: null as unknown as number,
                         transaction_items: [],
                     };
 
@@ -711,11 +790,14 @@ export default defineComponent({
             address: data.address,
         }));
 
-        const productOptions = (page.props.products as Products[]).map((data) => ({
+        const productOptions = (page.props.products as any[]).map((data) => ({
             label: data.name,
             value: data.name,
             unit: data.unit,
             code: data.code,
+            warehouse: data.warehouse,
+            last_stock: data.last_stock, // Tambahkan last_stock ke options
+            status: data.status,         // Tambahkan status ke options
             id: data.id,
         }));
 
@@ -736,6 +818,8 @@ export default defineComponent({
             totalPPN,
             subtotal,
             totalPrice,
+            stockStatusColor,
+            stockMessage,
             handleSearchCustomer: (query: string) => {
                 if (!query.length) {
                     customerOptionsRef.value = []

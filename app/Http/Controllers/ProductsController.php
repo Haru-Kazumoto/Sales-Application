@@ -2,15 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\ProductServices;
+use App\JournalAction;
 use App\Models\Lookup;
+use App\Models\ProductJournal;
 use App\Models\Products;
 use App\Models\ProductType;
+use App\Models\TransactionDetail;
+use App\Models\TransactionItem;
+use App\Models\Transactions;
+use App\Models\TransactionType;
+use App\Models\Warehouse;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class ProductsController extends Controller
 {
+    private $productServices;
+
+    public function __construct(ProductServices $productServices)
+    {
+        $this->productServices = $productServices;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -174,5 +191,157 @@ class ProductsController extends Controller
         $product->delete();
 
         return redirect()->route('admin.products')->with('success', 'Product berhasil dihapus');
+    }
+
+    /**
+     * Show the create form
+     */
+    public function incomingProducts()
+    {   
+        return Inertia::render('Warehouse/IncomingItem');
+    }
+
+    /**
+     * Store new product to warehouse
+     */
+    public function storeProducts(Request $request)
+    {
+        dd($request->all());
+
+        $request->validate([
+            'document_code' => 'required|string',
+            'transaction_details' => 'required|array',
+            'transaction_details.*.name' => 'required|string',
+            'transaction_details.*.category' => 'required|string',
+            'transaction_details.*.value' => 'required|string',
+            'transaction_details.*.data_type' => 'required|string',
+            'transaction_items' => 'required|array',
+            'transaction_items.*.unit' => 'required|string',
+            'transaction_items.*.quantity' => 'required|numeric',
+            'transaction_items.*.item_gap' => 'nullable|numeric',
+            'transaction_items.*.gap_description' => 'nullable|string',
+            'transaction_items.*.product_id' => 'required|numeric',
+            'transaction_items.*.product' => 'required_if:transaction_items.*.product_id,null|array',
+            'transaction_items.*.product.code' => 'required_with:transaction_items.*.product|string',
+            'transaction_items.*.product.unit' => 'required_with:transaction_items.*.product|string',
+            'transaction_items.*.product.name' => 'required_with:transaction_items.*.product|string',
+        ]);
+
+        // Gunakan transaksi database
+        DB::transaction(function () use ($request) {
+            $tx_type = TransactionType::where('name', 'Barang Masuk')->first();
+
+            // Simpan transaksi
+            $transaction = Transactions::create([
+                'document_code' => $request->input('document_code'),
+                'correlation_id' => rand(10000,88888),
+                'created_by' => Auth::user()->id,
+                'transaction_type_id' => $tx_type->id,
+            ]);
+
+            $expiryDate = null; // Variable to store expiry date
+            $allocation = null;
+
+            // Simpan transaction details
+            foreach ($request->input('transaction_details') as $detail) {
+                TransactionDetail::create([
+                    'name' => $detail['name'],
+                    'category' => $detail['category'],
+                    'value' => $detail['value'],
+                    'data_type' => $detail['data_type'],
+                    'transactions_id' => $transaction->id,
+                ]);
+
+                // Cek apakah kategori adalah Expiry Date dan simpan value-nya
+                if ($detail['category'] === 'Expiry Date') {
+                    $expiryDate = $detail['value'];
+                }
+
+                if($detail['category'] === 'Allocation') {
+                    $allocation = $detail['value'];
+                }
+
+            }
+
+            // Simpan transaction items
+            foreach ($request->input('transaction_items') as $txItem) {
+                $product = Products::where('id', $txItem['product_id'])->first();
+                $warehouse = Warehouse::where('name', $allocation)->first();
+
+                //store to product journal
+                ProductJournal::create([
+                    'quantity' => $txItem['quantity'],
+                    'amount' => $txItem['amount'],
+                    'action' => "IN",
+                    'expiry_date' => $expiryDate, // Gunakan expiry date yang sudah diambil sebelumnya
+                    'transactions_id' => $transaction->id,
+                    'warehouse_id' => $warehouse->id,
+                    'product_id' => $product->id,
+                ]);
+
+                // Simpan transaction item
+                TransactionItem::create([
+                    'unit' => $txItem['unit'],
+                    'quantity' => $txItem['quantity'],
+                    'amount' => $txItem['amount'],
+                    'item_gap' => $txItem['item_gap'],
+                    'gap_description' => $txItem['gap_description'],
+                    'transactions_id' => $transaction->id,
+                    'product_id' => $product->id, // Menyimpan product_id hasil dari produk yang diambil atau baru
+                ]);
+            }
+        });
+
+        return redirect()->route('warehouse.incoming-item')->with('success', 'Barang berhasil masuk ke gudang!');
+    }
+
+    /**
+     * Index all stocks in warehouse
+     */
+    public function indexAllWarehouseProducts()
+    {
+        $products = $this->productServices->getStockProducts(null, null,10);
+
+        return Inertia::render('Warehouse/StockItems', compact('products'));
+    }
+
+    /**
+     * Index DNP Warehouse Products
+     */
+    public function indexDNPWarehouseProducts()
+    {
+        $products = $this->productServices->getStockProducts("DNP", null,15);
+
+        return Inertia::render('Warehouse/DnpWarehouse/Stocks', compact('products'));
+    }
+
+    /**
+     * Index DKU Warehouse Products
+     */
+    public function indexDKUWarehouseProducts()
+    {
+        $products = $this->productServices->getStockProducts("DKu", null,15);
+
+        return Inertia::render('Warehouse/DkuWarehouse/Stocks', compact('products'));
+    }
+
+    /**
+     * Index Expired products DKU
+     */
+    public function indexDkuWarehouseExpiredProducts()
+    {
+        $expiredProducts = $this->productServices->getExpiredProducts("DKU");
+
+        return Inertia::render('Warehouse/DkuWarehouse/ExpiredStocks', compact('expiredProducts'));
+    }
+
+    /**
+     * Index Expired products DNP
+     */
+    public function indexDnpWarehouseExpiredProducts()
+    {
+        $expiredProducts = $this->productServices->getExpiredProducts("DNP");
+
+        return Inertia::render('Warehouse/DnpWarehouse/ExpiredStocks', compact('expiredProducts'));
     }
 }

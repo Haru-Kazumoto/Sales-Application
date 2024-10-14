@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Services\PurchaseOrderService;
 use App\Models\Products;
-use App\Models\PurchaseOrder;
 use App\Models\SubSalesOrder;
-use App\Models\SubSalesOrderProduct;
 use App\Models\TransactionDetail;
 use App\Models\TransactionItem;
 use App\Models\Transactions;
+use App\Models\TransactionType;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -24,11 +22,12 @@ class SubSalesOrderController extends Controller
      */
     public function index()
     {
+        $transaction_type = TransactionType::where('name', 'Pengiriman Barang Penjualan')->first();
         $transactions = Transactions::with([
             'transactionDetails', // Memuat relasi transactionDetails
             'transactionItems.product' // Memuat relasi transactionItems beserta product di dalamnya
         ])
-            ->where('transaction_type_id', 6)
+            ->where('transaction_type_id', $transaction_type->id)
             ->get();
 
         return Inertia::render('Procurement/ItemsReceipt/ListSalesOrders', compact('transactions'));
@@ -71,6 +70,7 @@ class SubSalesOrderController extends Controller
             'transaction_items.*.amount' => 'required|numeric',
             'transaction_items.*.tax_id' => 'required|numeric',
             'transaction_items.*.product_id' => 'required|numeric',
+            'transaction_items.*.total_price' => 'required|numeric',
             'transaction_items.*.product' => 'required_if:transaction_items.*.product_id,null|array',
             'transaction_items.*.product.code' => 'required_with:transaction_items.*.product|string',
             'transaction_items.*.product.unit' => 'required_with:transaction_items.*.product|string',
@@ -79,6 +79,8 @@ class SubSalesOrderController extends Controller
 
         // Gunakan transaksi database
         DB::transaction(function () use ($request) {
+            $tx_type = TransactionType::where('name', 'Pengiriman Barang Penjualan')->first();
+
             // Simpan transaksi
             $transaction = Transactions::create([
                 'document_code' => $request->input('document_code'),
@@ -90,7 +92,7 @@ class SubSalesOrderController extends Controller
                 'sub_total' => $request->input('sub_total'), //required
                 'total' => $request->input('total'), //required
                 'tax_amount' => $request->input('tax_amount'), //required
-                'transaction_type_id' => 6,
+                'transaction_type_id' => $tx_type->id,
             ]);
 
             // Simpan transaction details
@@ -108,20 +110,9 @@ class SubSalesOrderController extends Controller
             foreach ($request->input('transaction_items') as $txItem) {
                 $product = Products::find($txItem['product_id']);
 
-                // Jika produk sudah ada (product_id), ambil id-nya. Jika tidak, buat produk baru.
-                // if(isset($txItem['product_id'])) {
-                //     $product = Products::find($txItem['product_id']);
-                // } 
-                // else {
-                //     $product = Products::create([
-                //         'code' => $txItem['product']['code'],
-                //         'unit' => $txItem['product']['unit'],
-                //         'name' => $txItem['product']['name'],
-                //     ]);
-                // }
-
                 // Simpan transaction item
                 TransactionItem::create([
+                    'total_price' => $txItem['total_price'],
                     'unit' => $txItem['unit'],
                     'quantity' => $txItem['quantity'],
                     'tax_amount' => $txItem['tax_amount'],
@@ -172,6 +163,31 @@ class SubSalesOrderController extends Controller
         $pdf = Pdf::loadView('documents.sub-sales-order-document', $data);
 
         return $pdf->stream('sub_sales_order_'.rand(100000,900000).'_.pdf');
+    }
+
+    /**
+     * Retrieve data from SSO NUMBER
+     * @param string $sso_number
+     * @return RedirectResponse|\Inertia\Response
+     */
+    public function getDataBySsoNumber(string $sso_number)
+    {
+        $tx_type = TransactionType::where('name', 'Pengiriman Barang Penjualan')->first();
+
+        // Mengambil transaksi berdasarkan transaction_id dari transaction detail yang ditemukan
+        $transaction = Transactions::with(['transactionDetails', 'transactionItems.product'])
+            ->where('document_code', $sso_number) // Pastikan menggunakan field yang benar
+            ->where('transaction_type_id', $tx_type->id)
+            ->first();
+
+        // Memeriksa apakah transaksi ada
+        if (!$transaction) 
+        {
+            return redirect()->back()->with('failed', 'Nomor transaksi salah atau tidak ditemukan');
+        }
+
+        // Mengembalikan view dengan data transaksi
+        return Inertia::render('Warehouse/IncomingItem', compact('transaction'));
     }
 
     /**

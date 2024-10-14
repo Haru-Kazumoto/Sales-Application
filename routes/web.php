@@ -130,17 +130,25 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
 
     //warehouse Routes
     Route::name('warehouse.')->group(function() {
-        Route::get('/stock-goods', fn() => Inertia::render('Warehouse/StockItems'))->name('stock-goods');
-        Route::get('/dnp-stock-goods', fn() => Inertia::render('Warehouse/DnpWarehouse/Stocks'))->name('dnp-stock-goods');
-        Route::get('/dnp-expired-stocks', fn() => Inertia::render('Warehouse/DnpWarehouse/ExpiredStocks'))->name('dnp-expired-stocks');
-        Route::get('/dku-stock-goods', fn() => Inertia::render('Warehouse/DkuWarehouse/Stocks'))->name('dku-stock-goods');
-        Route::get('/dku-expired-stocks', fn() => Inertia::render('Warehouse/DkuWarehouse/ExpiredStocks'))->name('dku-expired-stocks');
-        Route::get('/incoming-item', fn() => Inertia::render('Warehouse/IncomingItem'))->name('incoming-item');
+        Route::get('/stock-goods', [App\Http\Controllers\ProductsController::class, 'indexAllWarehouseProducts'])->name('stock-goods');
+
+        Route::get('/dnp-stock-goods', [App\Http\Controllers\ProductsController::class, 'indexDNPWarehouseProducts'])->name('dnp-stock-goods');
+        Route::get('/dku-stock-goods', [App\Http\Controllers\ProductsController::class, 'indexDKUWarehouseProducts'])->name('dku-stock-goods');
+        Route::get('/dnp-expired-stocks', [App\Http\Controllers\ProductsController::class, 'indexDnpWarehouseExpiredProducts'])->name('dnp-expired-stocks');
+        Route::get('/dku-expired-stocks', [App\Http\Controllers\ProductsController::class, 'indexDkuWarehouseExpiredProducts'])->name('dku-expired-stocks');
         Route::get('/return-broken-goods', fn() => Inertia::render('Warehouse/BrokenGoods/ReturnBrokenGoods'))->name('return-broken-goods');
         Route::get('/destruction-broken-goods', fn() => Inertia::render('Warehouse/BrokenGoods/DestructionGoods'))->name('destruction-broken-goods');
-        Route::get('/travel-document', fn() => Inertia::render('Warehouse/TravelDocument'))->name('travel-document');
-        Route::get('/list-travel-document', fn() => Inertia::render('Warehouse/ListTravelDocument'))->name('list-travel-document');
-        Route::get('/create-travel-document', fn() => Inertia::render('Warehouse/CreateTravelDocument'))->name('create-travel-document');
+        
+        Route::get('/incoming-item', [App\Http\Controllers\ProductsController::class, 'incomingProducts'])->name('incoming-item');
+        Route::get('/incoming-item/{sso_number}', [App\Http\Controllers\SubSalesOrderController::class, 'getDataBySsoNumber'])->name('process-sso-data');
+        Route::post('/store-products', [App\Http\Controllers\ProductsController::class,'storeProducts'])->name('store-products');
+
+        Route::get('/travel-document', [App\Http\Controllers\CustomerOrdersController::class, 'createTravelDocument'])->name('travel-document');
+        Route::get('/list-travel-document', [App\Http\Controllers\CustomerOrdersController::class, 'detailTravelDocument'])->name('list-travel-document');
+        Route::get('/create-travel-document/{transactions}', [App\Http\Controllers\CustomerOrdersController::class, 'detailTravelDocument'])->name('create-travel-document');
+        Route::post('/store-travel-document', [App\Http\Controllers\CustomerOrdersController::class, 'storeTravelDocument'])->name('travel-document.post');
+        Route::get('/index-travel-document', [App\Http\Controllers\CustomerOrdersController::class, 'indexTravelDocuments'])->name('index-travel-document');
+
         Route::get('/return-item', fn() => Inertia::render('Warehouse/DnpWarehouse/ReturnItem'))->name('return-item');
         Route::get('/booking-requests', fn() => Inertia::render('Warehouse/BookingItem/BookingRequest'))->name('booking-request');
         // Route::get('/list-travel-document', fn() => Inertia::render);
@@ -152,8 +160,11 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         Route::get('/list-transactions', fn() => Inertia::render('AgingFinance/Transaction/ListTransaction'))->name('list-transaction');
         //nanti ganti by id (model)
         Route::get('/pay', fn() => Inertia::render('AgingFinance/Transaction/DetailTransaction'))->name('detail-transaction.pay');
-        Route::get('/invoice-dnp', fn() => Inertia::render('AgingFinance/Sales/InvoiceDNP'))->name('invoice-dnp');
-        Route::get('/create-invoice-dnp', fn() => Inertia::render('AgingFinance/Sales/CreateInvoiceDNP'))->name('create-invoice-dnp');
+        Route::get('/invoice-dnp', [App\Http\Controllers\InvoiceController::class, 'listDnpInvoice'])->name('invoice-dnp');
+        Route::get('/invoice-dku', [App\Http\Controllers\InvoiceController::class, 'listDkuInvoice'])->name('invoice-dku');
+        Route::get('/list-invoices', [App\Http\Controllers\InvoiceController::class, 'indexInvoices'])->name('list-invoice');
+        Route::get('/create-invoice/{transactions}', [App\Http\Controllers\InvoiceController::class, 'createInvoice'])->name('create-invoice');
+        Route::post('/store-invoice', [App\Http\Controllers\InvoiceController::class, 'storeInvoice'])->name('invoice.store');
 
         Route::get('/whatsapp-message', fn() => Inertia::render('AgingFinance/WhatsappMessage'))->name('whatsapp-message');
         Route::get('/test-send-message', [App\Http\Controllers\MessageTemplateController::class, 'create'])->name('test-whatsapp-message');
@@ -161,8 +172,10 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
     });
 
     Route::name('sales.')->group(function() {
-        Route::get('/create-co', [App\Http\Controllers\CustomerOrdersController::class, 'create'])->name('create-co');
-        Route::post('/post-create-co', [App\Http\Controllers\CustomerOrdersController::class, 'store'])->name('create-co.post');
+        Route::get('/create-co-dnp', [App\Http\Controllers\CustomerOrdersController::class, 'createDnp'])->name('create-co');
+        Route::get('/create-co-dku', [App\Http\Controllers\CustomerOrdersController::class, 'createDku'])->name('create-co-dku');
+        Route::post('/post-create-co-dnp', [App\Http\Controllers\CustomerOrdersController::class, 'storeDnp'])->name('create-co-dnp.post');
+        Route::post('/post-create-co-dku', [App\Http\Controllers\CustomerOrdersController::class, 'storeDku'])->name('create-co-dku.post');
         Route::get('/list-co', [App\Http\Controllers\CustomerOrdersController::class, 'index'])->name('list-co');
         Route::get('/customer-order/detail/{transactions}', [App\Http\Controllers\CustomerOrdersController::class, 'show'])->name('detail-co');
     });

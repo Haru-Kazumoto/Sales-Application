@@ -99,8 +99,7 @@
         <!-- PRODUCT CHOOSEN LIST -->
         <div class="card shadow" style="border: none;">
             <div class="card-body">
-                <n-data-table :bordered="false" :columns="columns"
-                    :data="enhancedTransactionItems" />
+                <n-data-table :bordered="false" :columns="columns" :data="enhancedTransactionItems" />
             </div>
         </div>
 
@@ -217,11 +216,13 @@ export default defineComponent({
                     }
                 },
                 {
-                    title: "TOTAL DISCOUNT 1",
-                    key: 'total_price_discount_1',
+                    title: "PRICE AFTER DISCOUNT 1",
+                    key: 'price_after_discount_1',
                     width: 250,
                     render(row) {
-                        return formatRupiah(discounts.value.total_discount_2);
+                        const discount1 = row.discount_1 ?? 0;
+                        const price_after_discount_1 = row.amount * (1 - discount1 / 100);
+                        return formatRupiah(price_after_discount_1);
                     }
                 },
                 {
@@ -229,14 +230,23 @@ export default defineComponent({
                     key: 'discount_2',
                     width: 200,
                     render(row) {
+                        return `${row.discount_2} %`
                     }
                 },
                 {
-                    title: "TOTAL DISCOUNT 2",
-                    key: 'total_price_discount_2',
+                    title: "PRICE AFTER DISCOUNT 2",
+                    key: 'price_after_discount_2',
                     width: 250,
                     render(row) {
-                        return formatRupiah(discounts.value.total_discount_1);
+                        const discount1 = row.discount_1 ?? 0;
+                        const discount2 = row.discount_2 ?? 0;
+
+                        // Harga setelah diskon 1
+                        const price_after_discount_1 = row.amount * (1 - discount1 / 100);
+
+                        // Harga setelah diskon 2
+                        const price_after_discount_2 = price_after_discount_1 * (1 - discount2 / 100);
+                        return formatRupiah(price_after_discount_2);
                     }
                 },
                 {
@@ -248,12 +258,39 @@ export default defineComponent({
                     }
                 },
                 {
-                    title: "TOTAL DISCOUNT 3",
-                    key: 'total_price_discount_3',
+                    title: "PRICE AFTER DISCOUNT 3",
+                    key: 'price_after_discount_3',
                     width: 250,
-                    // render(row) {
-                    //     return formatRupiah(discounts.value.total_discount_3 ?? 0);
-                    // }
+                    render(row) {
+                        const discount1 = row.discount_1 ?? 0;
+                        const discount2 = row.discount_2 ?? 0;
+                        const discount3 = row.discount_3 ?? 0;
+
+                        // Harga setelah diskon 1 dan 2
+                        const price_after_discount_1 = row.amount * (1 - discount1 / 100);
+                        const price_after_discount_2 = price_after_discount_1 * (1 - discount2 / 100);
+
+                        // Harga setelah diskon 3
+                        const price_after_discount_3 = price_after_discount_2 * (1 - discount3 / 100);
+                        return formatRupiah(price_after_discount_3);
+                    }
+                },
+                {
+                    title: "FINAL PRICE",
+                    key: 'final_price',
+                    width: 250,
+                    render(row) {
+                        const discount1 = row.discount_1 ?? 0;
+                        const discount2 = row.discount_2 ?? 0;
+                        const discount3 = row.discount_3 ?? 0;
+
+                        // Harga setelah diskon 1, 2, dan 3
+                        const price_after_discount_1 = row.amount * (1 - discount1 / 100);
+                        const price_after_discount_2 = price_after_discount_1 * (1 - discount2 / 100);
+                        const final_price = price_after_discount_2 * (1 - discount3 / 100);
+
+                        return formatRupiah(final_price);
+                    }
                 },
                 {
                     title: "ACTION",

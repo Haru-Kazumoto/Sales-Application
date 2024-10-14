@@ -8,7 +8,7 @@
                         <div class="card-body">
                             <div class="card-title">STOK TERSEDIA</div>
                             <div class="card-content d-flex flex-column gap-2">
-                                <span class="fs-3 fw-bold">200</span>
+                                <span class="fs-3 fw-bold">{{ ($page.props.stock_summary as any).available }}</span>
                                 <span>PRODUK</span>
                                 <n-button type="primary">LIHAT DETAIL</n-button>
                             </div>
@@ -20,7 +20,7 @@
                         <div class="card-body">
                             <div class="card-title">STOK HARUS DITAMBAH</div>
                             <div class="card-content d-flex flex-column gap-2">
-                                <span class="fs-3 fw-bold">10</span>
+                                <span class="fs-3 fw-bold">{{ ($page.props.stock_summary as any).need_to_add }}</span>
                                 <span>PRODUK</span>
                                 <n-button type="warning">LIHAT DETAIL</n-button>
                             </div>
@@ -32,7 +32,7 @@
                         <div class="card-body">
                             <div class="card-title">STOK HABIS</div>
                             <div class="card-content d-flex flex-column gap-2">
-                                <span class="fs-3 fw-bold">200</span>
+                                <span class="fs-3 fw-bold">{{ ($page.props.stock_summary as any).unavailable }}</span>
                                 <span>PRODUK</span>
                                 <n-button type="error">LIHAT DETAIL</n-button>
                             </div>
@@ -44,7 +44,7 @@
                         <div class="card-body">
                             <div class="card-title">BARANG EXPIRED</div>
                             <div class="card-content d-flex flex-column gap-2">
-                                <span class="fs-3 fw-bold">200</span>
+                                <span class="fs-3 fw-bold">{{ $page.props.expired_count }}</span>
                                 <span>PRODUK</span>
                                 <n-button type="error">LIHAT DETAIL</n-button>
                             </div>
@@ -71,7 +71,7 @@
                         </div>
                         <div class="card shadow" style="border: none;">
                             <div class="card-body">
-                                <n-data-table :columns="columns" :data="data" :pagination="pagination" :bordered="false"
+                                <n-data-table :columns="columns" :data="($page.props.products as any).data" :pagination="pagination" :bordered="false"
                                     size="small" pagination-behavior-on-filter="first" />
                             </div>
                         </div>
@@ -95,7 +95,7 @@
                         </div>
                         <div class="card shadow" style="border: none;">
                             <div class="card-body">
-                                <n-data-table :columns="columns" :data="data" :pagination="pagination" :bordered="false"
+                                <n-data-table :columns="expiredProductColumns" :data="$page.props.product_expireds" :pagination="pagination" :bordered="false"
                                     size="small" pagination-behavior-on-filter="first" />
                             </div>
                         </div>
@@ -110,17 +110,13 @@
 import { defineComponent, reactive, h } from 'vue';
 import TitlePage from '../../Components/TitlePage.vue';
 import CountCard from '../../Components/CountCard.vue';
-import { DataTableColumns, NButton, NTag } from 'naive-ui';
+import { NTag } from 'naive-ui';
+import dayjs from "dayjs";
+import 'dayjs/locale/id';
 
-interface RowData {
-    item_name: string;
-    package: string;
-    stock: number;
-    item_status: string;
-    located: string;
-}
+dayjs.locale("id");
 
-function createColumns(): DataTableColumns<RowData> {
+function createColumns() {
     return [
         {
             title: '#',
@@ -132,35 +128,28 @@ function createColumns(): DataTableColumns<RowData> {
         },
         {
             title: 'NAMA BARANG',
-            key: 'item_name',
+            key: 'name',
             width: 300,
-            render(rowData) {
-                return rowData.item_name;  // Menampilkan SKU
-            },
+        },
+        {
+            title: 'KODE BARANG',
+            key: 'code',
+            width: 100,
         },
         {
             title: 'KEMASAN',
-            key: 'package',
+            key: 'unit',
             width: 100,
-            render(rowData) {
-                return rowData.package;  // Menampilkan nama item
-            },
         },
         {
             title: 'STOK',
-            key: 'stock',
+            key: 'last_stock',
             width: 100,
-            render(rowData) {
-                return rowData.stock;  // Menampilkan nama supplier
-            },
         },
         {
             title: 'ALOKASI',
-            key: 'located',
+            key: 'warehouse',
             width: 100,
-            render(rowData) {
-                return rowData.located;
-            }
         },
         {
             title: 'Status',
@@ -170,7 +159,7 @@ function createColumns(): DataTableColumns<RowData> {
                 // Tentukan warna dan tipe tag berdasarkan item_status pembayaran
                 let type: any;
 
-                switch (rowData.item_status) {
+                switch (rowData.status) {
                     case 'STOK HABIS':
                         type = 'error';
                         break;
@@ -193,7 +182,63 @@ function createColumns(): DataTableColumns<RowData> {
                         type,
                         bordered: false
                     },
-                    { default: () => rowData.item_status }
+                    { default: () => rowData.status }
+                );
+            },
+        },
+
+    ];
+}
+
+function createColumnsExpiredProducts() {
+    return [
+        {
+            title: '#',
+            key: 'index',
+            width: 50,
+            render(rowData, rowIndex) {
+                return rowIndex + 1;  // Menghitung nomor urut
+            },
+        },
+        {
+            title: 'NAMA BARANG',
+            key: 'name',
+            width: 300,
+        },
+        {
+            title: 'JUMLAH BARANG',
+            key: 'quantity',
+            width: 150,
+        },
+        {
+            title: 'NOMOR SSO',
+            key: 'sso_number',
+            width: 150,
+        },
+        {
+            title: 'TANGGAL MASUK GUDANG',
+            key: 'warehouse_entry_date',
+            width: 200,
+            render(row) {
+                //pakai dayjs
+                return dayjs(row.warehouse_entry_date).format('dddd, D MMMMYYYY ');
+            }
+        },
+        {
+            title: 'TANGGAL EXPIRED',
+            key: 'expiry_date',
+            width: 100,
+            render(rowData) {
+                return h(
+                    NTag,
+                    {
+                        style: {
+                            marginRight: '6px',
+                        },
+                        type: 'error',
+                        bordered: false
+                    },
+                    { default: () => dayjs(rowData.expiry_date).format('dddd, D MMMMYYYY ') }
                 );
             },
         },
@@ -203,34 +248,17 @@ function createColumns(): DataTableColumns<RowData> {
 
 export default defineComponent({
     setup() {
-        // Data dummy untuk tabel
-        const data: RowData[] = [
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, item_status: "TERSEDIA", located: "DNP" },
-        ];
 
         // Pagination dummy data
         const pagination = reactive({
             page: 1,
             pageSize: 10,
-            pageCount: Math.ceil(data.length / 10),
-            itemCount: data.length,
         });
 
-        // Columns for DataTable
-        const columns = createColumns();
-
         return {
-            data,
             pagination,
-            columns,
+            columns: createColumns(),
+            expiredProductColumns: createColumnsExpiredProducts()
         };
     },
     components: {

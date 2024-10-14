@@ -77,7 +77,7 @@ export interface TransactionDetail {
     total_price_discount_1?: number | null;
     total_price_discount_2?: number | null;
     total_price_discount_3?: number | null;
-    value: string;
+    value?: string;
     data_type: string;
     transactions_id?: number;
     transaction?: Transactions;
@@ -85,10 +85,12 @@ export interface TransactionDetail {
 
 export interface TransactionItems {
     id?: number;
-    unit: string;
-    quantity: number | null;
-    tax_amount: number | null;
-    amount: number | null;
+    unit?: string;
+    quantity?: number | null;
+    tax_amount?: number | null;
+    amount?: number | null;
+    item_gap?: number | null;
+    gap_description?: string | null;
     discount_1?: number | null;
     discount_2?: number | null;
     discount_3?: number | null;
@@ -98,6 +100,7 @@ export interface TransactionItems {
     total_price?: number | null;
     transaction?: Transactions;
     product?: Products;
+    tax?: Tax;
 }
 
 export interface Tax {

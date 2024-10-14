@@ -10,6 +10,8 @@ class ProductJournal extends Model
 {
     use HasFactory;
 
+    protected $table = "product_journal";
+
     protected $fillable = [
         'quantity',
         'amount',
@@ -18,6 +20,7 @@ class ProductJournal extends Model
         'expiry_date',
         'warehouse_id',
         'transactions_id',
+        'product_id',
     ];
 
     public function warehouse(): BelongsTo

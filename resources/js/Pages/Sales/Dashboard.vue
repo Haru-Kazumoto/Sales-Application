@@ -6,7 +6,7 @@
                 <n-image src="images/sales-img.png" preview-disabled class="img-fluid mb-md-0" width="250"
                     height="auto" />
                 <div class="d-flex flex-column gap-2">
-                    <h1 class="fs-2 fs-md-1">Hi there, {{ $page.props.auth.user.fullname }}!</h1>
+                    <h1 class="fs-2 fs-md-1">Howdy, {{ $page.props.auth.user.fullname }}!</h1>
                     <span class="fs-5 fs-md-4">Welcome to the dashboard,<br>You're all set to make things happen today.
                         Let's go!</span>
                 </div>

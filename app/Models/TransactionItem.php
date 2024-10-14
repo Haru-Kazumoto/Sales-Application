@@ -17,11 +17,14 @@ class TransactionItem extends Model
         'quantity',
         'tax_amount',
         'amount',
+        'total_price',
         'discount_1',
         'discount_2',
         'discount_3',
         'transactions_id',
         'product_id',
+        'item_gap',
+        'gap_description',
         'tax_id',
     ];
 

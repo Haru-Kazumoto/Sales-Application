@@ -1,4 +1,6 @@
+import { BoxCheckmark20Regular, BoxDismiss24Regular, BoxEdit20Regular, BoxMultiple20Regular, DocumentAdd20Regular, DocumentBulletListMultiple20Regular, ReceiptCube24Regular } from '@vicons/fluent';
 import { SkullOutline, CartOutline, FileTrayFullOutline, FileTrayStackedOutline, CubeOutline, WalletOutline, NotificationsOutline, PeopleOutline, ReceiptOutline, SettingsOutline, BarChartOutline, BagCheckOutline, DocumentsOutline, DocumentTextOutline, ShieldCheckmarkOutline, RepeatSharp, WarningOutline, Cart, People, PersonAddOutline, Contract, Analytics, CogOutline, DocumentOutline, PushOutline, ShieldHalf, PieChartOutline, ReorderFourSharp, CartSharp, KeyOutline, LogoWhatsapp, Close, Skull, Bookmarks, BookmarkOutline, AlbumsOutline, TrashOutline } from '@vicons/ionicons5';
+import { WarehouseOutlined } from '@vicons/material';
 import { NIcon } from 'naive-ui';
 import { h } from 'vue';
 
@@ -103,7 +105,7 @@ export const roleMenus = {
                     label: "List Invoice",
                     key: "list-invoice",
                     href: '/list-invoices',
-                    icon: renderIcon(ReorderFourSharp),
+                    icon: renderIcon(ReceiptCube24Regular),
                 },
             ],
         },
@@ -182,19 +184,19 @@ export const roleMenus = {
     WAREHOUSE: [
         {
             label: "Barang Masuk",
-            icon: CubeOutline,
+            icon: BoxCheckmark20Regular,
             key: 'barang-masuk',
             href: '/incoming-item'
         },
         {
             label: "Stok Gudang Bekasi",
-            icon: FileTrayFullOutline,
+            icon: BoxMultiple20Regular,
             key: 'stock-goods',
             href: '/stock-goods'
         },
         {
             label: 'Booking Barang',
-            icon: CartOutline,
+            icon: BoxEdit20Regular  ,
             key: 'booking-items',
             href: '/booking-requests',
         },
@@ -206,20 +208,20 @@ export const roleMenus = {
                 {
                     label: "Buat Surat Jalan",
                     key: 'travel-document',
-                    icon: renderIcon(DocumentOutline),
+                    icon: renderIcon(DocumentAdd20Regular),
                     href: '/travel-document',
                 },
                 {
                     label: "List Surat Jalan",
                     key: 'list-travel-document',
-                    icon: renderIcon(DocumentsOutline),
-                    href: '/list-travel-document',
+                    icon: renderIcon(DocumentBulletListMultiple20Regular),
+                    href: '/index-travel-document',
                 },
             ]
         },
         {
             label: "Gudang DNP",
-            icon: FileTrayStackedOutline,
+            icon: WarehouseOutlined,
             key: 'dnp-storehouse',
             children: [
                 {
@@ -238,7 +240,7 @@ export const roleMenus = {
         },
         {
             label: "Gudang DKU",
-            icon: FileTrayStackedOutline,
+            icon: WarehouseOutlined,
             key: 'dku-storehouse',
             children: [
                 {
@@ -257,7 +259,7 @@ export const roleMenus = {
         },
         {
             label: "Barang Rusak",
-            icon: PushOutline,
+            icon: BoxDismiss24Regular,
             children: [
                 {
                     label: "Retur Barang Rusak",
@@ -281,10 +283,16 @@ export const roleMenus = {
             icon: CartOutline,
             children: [
                 {
-                    label: 'Buat CO',
+                    label: 'Buat CO DNP',
                     icon: renderIcon(DocumentOutline),
                     key: 'create-co',
-                    href: '/create-co',
+                    href: '/create-co-dnp',
+                },
+                {
+                    label: 'Buat CO DKU',
+                    icon: renderIcon(DocumentOutline),
+                    key: 'create-co-dku',
+                    href: '/create-co-dku'
                 },
                 {
                     label: 'List CO',

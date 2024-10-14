@@ -3,7 +3,8 @@
         <TitlePage title="List Invoice DNP" />
         <div class="card shadow-sm border-0">
             <div class="card-body">
-                <n-data-table :bordered="false" :columns="columns" :data="data"/>
+                <n-data-table :bordered="false" :columns="columns"
+                    :data="($page.props.travel_documents_dnp as any).data" />
             </div>
         </div>
     </div>
@@ -12,35 +13,34 @@
 <script lang="ts">
 import { defineComponent, h } from 'vue'
 import TitlePage from '../../../Components/TitlePage.vue';
-import { DataTableColumns, NButton } from 'naive-ui';
+import { DataTableColumns, NButton, NTag } from 'naive-ui';
 import { formatRupiah } from '../../../Utils/options-input.utils';
-import { router } from '@inertiajs/vue3';
+import { router, usePage } from '@inertiajs/vue3';
 
-interface RowData {
-    travel_letter_number: string;
-    customer_order_number: string;
-    salesman: string;
-    customer_name: string;
-    legality: string;
-    total: number;
-}
-
-function createColumns(): DataTableColumns<RowData> {
+function createColumns() {
     return [
         {
             title: "#",
             key: 'index',
             width: 50,
-            render(row, index)  {
+            render(row, index) {
                 return index + 1;
             }
         },
         {
             title: "NOMOR SURAT JALAN",
-            key: 'travel_letter_number',
+            key: 'document_code',
             width: 150,
             render(row) {
-                return row.travel_letter_number
+                return h(NTag, { type: "info" }, { default: () => row.document_code });
+            }
+        },
+        {
+            title: "NOMOR CO",
+            key: 'co_number',
+            width: 150,
+            render(row) {
+                return row.transaction_details.find((data) => data.category === "CO Number")?.value;
             }
         },
         {
@@ -48,7 +48,7 @@ function createColumns(): DataTableColumns<RowData> {
             key: "customer_name",
             width: 150,
             render(row) {
-                return row.customer_name;
+                return row.transaction_details.find((data) => data.category === "Customer")?.value;
             }
         },
         {
@@ -56,7 +56,7 @@ function createColumns(): DataTableColumns<RowData> {
             key: "salesman",
             width: 100,
             render(row) {
-                return row.salesman;
+                return row.transaction_details.find((data) => data.category === "Salesman")?.value;
             }
         },
         {
@@ -64,7 +64,7 @@ function createColumns(): DataTableColumns<RowData> {
             key: "legality",
             width: 100,
             render(row) {
-                return row.legality;
+                return row.transaction_details.find(data => data.category === "Legality")?.value;
             }
         },
         {
@@ -86,7 +86,7 @@ function createColumns(): DataTableColumns<RowData> {
                         type: 'primary',
                         size: 'small',
                         onClick: () => {
-                            router.visit(route('aging-finance.create-invoice-dnp'), {method: 'get'});
+                            router.visit(route('aging-finance.create-invoice', row.id), { method: 'get' });
                         }
                     },
                     {
@@ -98,20 +98,14 @@ function createColumns(): DataTableColumns<RowData> {
     ]
 }
 
-const data: RowData[] = [
-    {travel_letter_number: "DNP/BKS/SJ/12395", customer_order_number: "004/CO-DNP/VI/24", salesman: "IJUL", customer_name: "SARI ROTI", legality: "CV", total: 600000},
-    {travel_letter_number: "DNP/BKS/SJ/12395", customer_order_number: "004/CO-DNP/VI/24", salesman: "IJUL", customer_name: "SARI ROTI", legality: "CV", total: 600000},
-    {travel_letter_number: "DNP/BKS/SJ/12395", customer_order_number: "004/CO-DNP/VI/24", salesman: "IJUL", customer_name: "SARI ROTI", legality: "CV", total: 600000},
-    {travel_letter_number: "DNP/BKS/SJ/12395", customer_order_number: "004/CO-DNP/VI/24", salesman: "IJUL", customer_name: "SARI ROTI", legality: "CV", total: 600000},
-]
-
 export default defineComponent({
-    setup () {
-        
+    setup() {
+        const page = usePage();
+
+        console.log(page.props.travel_documents);
 
         return {
             columns: createColumns(),
-            data
         }
     },
     components: {
@@ -120,6 +114,4 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

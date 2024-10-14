@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex flex-column gap-4">
-        <TitlePage title="STOK BARANG GUDANG EXPIRED" />
+        <TitlePage title="STOK BARANG EXPIRED GUDANG DKU" />
         <div class="d-flex flex-column gap-2">
             <div class="row g-3 ">
                 <div class="col-12 col-lg-9 ">
@@ -12,7 +12,7 @@
             </div>
             <div class="card shadow" style="border: none;">
                 <div class="card-body">
-                    <n-data-table :columns="columns" :data="data" :pagination="pagination" :bordered="false"
+                    <n-data-table :columns="columns" :data="$page.props.expiredProducts" :pagination="pagination" :bordered="false"
                         size="small" pagination-behavior-on-filter="first" />
                 </div>
             </div>
@@ -25,19 +25,12 @@ import { defineComponent, reactive, h } from 'vue';
 import TitlePage from '../../../Components/TitlePage.vue';
 import CountCard from '../../../Components/CountCard.vue';
 import { DataTableColumns, NButton, NTag } from 'naive-ui';
+import dayjs from "dayjs";
+import 'dayjs/locale/id';
 
-interface RowData {
-    item_name: string;
-    package: string;
-    stock: number;
-    incoming_date: string;
-    so_number: string;
-    expired_date: string;
-    // item_status: string;
-    // located: string;
-}
+dayjs.locale('id');
 
-function createColumns(): DataTableColumns<RowData> {
+function createColumns() {
     return [
         {
             title: '#',
@@ -49,39 +42,31 @@ function createColumns(): DataTableColumns<RowData> {
         },
         {
             title: 'NAMA BARANG',
-            key: 'item_name',
+            key: 'name',
             width: 300,
-            render(rowData) {
-                return rowData.item_name;  // Menampilkan SKU
-            },
         },
         {
-            title: 'KEMASAN',
-            key: 'package',
-            width: 100,
-            render(rowData) {
-                return rowData.package;  // Menampilkan nama item
-            },
+            title: 'JUMLAH BARANG',
+            key: 'quantity',
+            width: 150,
         },
         {
-            title: 'STOK',
-            key: 'stock',
-            width: 100,
-            render(rowData) {
-                return rowData.stock;  // Menampilkan nama supplier
-            },
+            title: 'NOMOR SSO',
+            key: 'sso_number',
+            width: 150,
         },
         {
-            title: 'NO SO',
-            key: 'so_number',
-            width: 100,
-            render(rowData) {
-                return rowData.so_number;
+            title: 'TANGGAL MASUK GUDANG',
+            key: 'warehouse_entry_date',
+            width: 200,
+            render(row) {
+                //pakai dayjs
+                return dayjs(row.warehouse_entry_date).format('dddd, D MMMMYYYY ');
             }
         },
         {
-            title: 'EXPIRED DATE',
-            key: 'expired_date',
+            title: 'TANGGAL EXPIRED',
+            key: 'expiry_date',
             width: 100,
             render(rowData) {
                 return h(
@@ -93,54 +78,27 @@ function createColumns(): DataTableColumns<RowData> {
                         type: 'error',
                         bordered: false
                     },
-                    { default: () => rowData.expired_date }
+                    { default: () => dayjs(rowData.expiry_date).format('dddd, D MMMMYYYY ') }
                 );
             },
         },
-        {
-            title: "ACTION",
-            key: "action",
-            width: 100,
-            render(rowData) {
-                return h(
-                    NButton,
-                    {
-                        type: 'primary',
-                        size: 'small',
-                    },
-                    { default: () => 'Detail' }
-                );
-            }
-        }
 
     ];
 }
 
 export default defineComponent({
     setup() {
-        // Data dummy untuk tabel
-        const data: RowData[] = [
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, expired_date: "20/12/2024", so_number: "SS-3042-00012", incoming_date: "01/02/2024"},
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, expired_date: "20/12/2024", so_number: "SS-3042-00012", incoming_date: "01/02/2024"},
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, expired_date: "20/12/2024", so_number: "SS-3042-00012", incoming_date: "01/02/2024"},
-            { item_name: "BERUANG EMAS", package: "SAK", stock: 20, expired_date: "20/12/2024", so_number: "SS-3042-00012", incoming_date: "01/02/2024"},
-        ];
 
         // Pagination dummy data
         const pagination = reactive({
             page: 1,
             pageSize: 10,
-            pageCount: Math.ceil(data.length / 10),
-            itemCount: data.length,
         });
 
-        // Columns for DataTable
-        const columns = createColumns();
-
         return {
-            data,
             pagination,
-            columns,
+            columns:  createColumns(),
+            dayjs,
         };
     },
     components: {

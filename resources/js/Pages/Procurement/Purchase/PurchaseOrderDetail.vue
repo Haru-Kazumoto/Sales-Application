@@ -96,15 +96,15 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between py-2">
                         <span>Sub Total</span>
-                        <span>{{ subTotal }}</span>
+                        <span>{{ formatRupiah(form.sub_total) }}</span>
                     </div>
                     <div class="d-flex justify-content-between py-2">
                         <span>PPN 11%</span>
-                        <span>{{ resultPpn }}</span>
+                        <span>{{ formatRupiah(form.tax_amount) }}</span>
                     </div>
                     <div class="d-flex justify-content-between py-2 fw-bold border-top border-bottom">
                         <span>Total harga</span>
-                        <span>{{ total }}</span>
+                        <span>{{ formatRupiah(form.total) }}</span>
                     </div>
                     <div class="row g-3">
                         <div class="col-12 col-lg-7 d-flex flex-column ">
@@ -187,30 +187,33 @@ function createColumns(): DataTableColumns<TransactionItems> {
             key: 'unit',
             width: 100,
             render(row) {
-                return row.unit.replace("_", ' ');
+                return row.unit?.replace("_", ' ');
             }
         },
         {
             title: 'Harga Barang',
             key: 'amount',
-            width: 100,
+            width: 200,
             render(row) {
                 return formatRupiah(row.amount ?? 0);
+            }
+        },
+        {
+            title: 'Total harga',
+            key: 'total_price',
+            width: 200,
+            render(row) {
+                return formatRupiah((row.total_price ?? 0));
             }
         },
         {
             title: 'PPN',
             key: 'tax_amount',
             width: 100,
+            render(row) {
+                return row.tax_amount;
+            }
         },
-        // {
-        //     title: 'Total harga',
-        //     key: 'total_price',
-        //     width: 100,
-        //     render(row) {
-        //         // return formatRupiah((row.total_price ?? 0));
-        //     }
-        // },
 
     ];
 }
@@ -219,6 +222,7 @@ export default defineComponent({
     setup() {
         const page = usePage();
         const detailTransaction = page.props.transaction as Transactions;
+        console.log(detailTransaction);
 
         const form = useForm({
             document_code: detailTransaction.document_code || (page.props.po_number as string),
@@ -265,30 +269,31 @@ export default defineComponent({
             quantity: null,
             tax_amount: null,
             amount: null,
+            total_price: null,
         });
 
-        // Menghitung subtotal dari semua produk tanpa PPN
-        const totalPPN = computed(() => {
-            const data = form.transaction_items.reduce((total, item) => {
-                return total + (item.amount ?? 0);
-            }, 0);
-            return formatRupiah(data * 0.11); // Menggunakan formatRupiah untuk PPN
-        });
+        // // Menghitung subtotal dari semua produk tanpa PPN
+        // const totalPPN = computed(() => {
+        //     const data = form.transaction_items.reduce((total, item) => {
+        //         return total + (item.total_price ?? 0);
+        //     }, 0);
+        //     return formatRupiah(data * 0.11); // Menggunakan formatRupiah untuk PPN
+        // });
 
-        const subtotal = computed(() => {
-            const data = form.transaction_items.reduce((total, item) => {
-                return total + (item.amount ?? 0);
-            }, 0);
-            return formatRupiah(data);
-        });
+        // const subtotal = computed(() => {
+        //     const data = form.transaction_items.reduce((total, item) => {
+        //         return total + (item.total_price ?? 0);
+        //     }, 0);
+        //     return formatRupiah(data);
+        // });
 
-        const totalPrice = computed(() => {
-            const productPrice = form.transaction_items.reduce((total, item) => {
-                return total + (item.amount ?? 0);
-            }, 0);
-            const afterPpnPrice = productPrice * 0.11;
-            return formatRupiah(productPrice + afterPpnPrice);
-        });
+        // const totalPrice = computed(() => {
+        //     const productPrice = form.transaction_items.reduce((total, item) => {
+        //         return total + (item.total_price ?? 0);
+        //     }, 0);
+        //     const afterPpnPrice = productPrice * 0.11;
+        //     return formatRupiah(productPrice + afterPpnPrice);
+        // });
 
         function handleGenerateDocument() {
             Swal.fire({
@@ -313,9 +318,10 @@ export default defineComponent({
             transaction_details,
             products,
             transaction_items,
-            subTotal: subtotal,
-            resultPpn: totalPPN,
-            total: totalPrice,
+            formatRupiah,
+            // subTotal: subtotal,
+            // resultPpn: totalPPN,
+            // total: totalPrice,
             router,
             dayjs,
             handleGenerateDocument,

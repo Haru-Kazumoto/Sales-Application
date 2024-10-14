@@ -1,4 +1,5 @@
 <template>
+
     <Head title="SSO Detail" />
     <div class="d-flex flex-column gap-4">
         <TitlePage title="Sales Order" />
@@ -9,11 +10,12 @@
                         <!-- Baris Pertama -->
                         <div class="col-lg-3 col-6">
                             <label for="field3">No SO</label>
-                            <n-input id="field3" size="large" v-model:value="form.document_code"  disabled/>
+                            <n-input id="field3" size="large" v-model:value="form.document_code" disabled />
                         </div>
                         <div class="col-lg-3 col-6">
                             <label for="field2">No Bukti</label>
-                            <n-input id="field2" size="large" v-model:value="transaction_details.proof_number" disabled />
+                            <n-input id="field2" size="large" v-model:value="transaction_details.proof_number"
+                                disabled />
                         </div>
                         <div class="col-lg-3 col-6">
                             <label for="field1">No PO</label>
@@ -41,11 +43,12 @@
                         <div class="col-lg-3 col-6">
                             <label for="field8">Tanggal Kirim</label>
                             <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" id="field8" size="large"
-                                v-model:formatted-value="transaction_details.send_date"  disabled/>
+                                v-model:formatted-value="transaction_details.send_date" disabled />
                         </div>
                         <div class="col-lg-3 col-6">
                             <label for="field9">Transportasi</label>
-                            <n-input id="field9" size="large" v-model:value="transaction_details.transportation" disabled />
+                            <n-input id="field9" size="large" v-model:value="transaction_details.transportation"
+                                disabled />
                         </div>
 
                         <!-- Baris Ketiga -->
@@ -55,11 +58,13 @@
                         </div>
                         <div class="col-lg-3 col-6">
                             <label for="field11">Jenis Pengiriman</label>
-                            <n-input id="field11" size="large" v-model:value="transaction_details.delivery_type" disabled />
+                            <n-input id="field11" size="large" v-model:value="transaction_details.delivery_type"
+                                disabled />
                         </div>
                         <div class="col-lg-3 col-6">
                             <label for="field12">Karyawan</label>
-                            <n-input id="field12" size="large" disabled v-model:value="transaction_details.employee_name" />
+                            <n-input id="field12" size="large" disabled
+                                v-model:value="transaction_details.employee_name" />
                         </div>
                     </div>
 
@@ -111,8 +116,8 @@
                     </div>
                 </div>
             </div>
-            <n-button type="primary" class="d-flex flex-column ms-auto mb-4"
-                @click="handleGenerateDocument">Preview SSO</n-button>
+            <n-button type="primary" class="d-flex flex-column ms-auto mb-4" @click="handleGenerateDocument">Preview
+                SSO</n-button>
         </div>
     </div>
 </template>
@@ -184,24 +189,27 @@ function createColumns(): DataTableColumns<TransactionItems> {
         {
             title: 'Harga Barang',
             key: 'amount',
-            width: 100,
+            width: 200,
             render(row) {
                 return formatRupiah(row.amount ?? 0);
+            }
+        },
+        {
+            title: 'Total harga',
+            key: 'total_price',
+            width: 200,
+            render(row) {
+                return formatRupiah((row.total_price ?? 0));
             }
         },
         {
             title: 'PPN',
             key: 'tax_amount',
             width: 100,
+            render(row) {
+                return row.tax_amount;
+            }
         },
-        // {
-        //     title: 'Total harga',
-        //     key: 'total_price',
-        //     width: 100,
-        //     render(row) {
-        //         // return formatRupiah((row.total_price ?? 0));
-        //     }
-        // },
 
     ];
 }
@@ -210,6 +218,7 @@ export default defineComponent({
     setup() {
         const page = usePage();
         const detailTransaction = page.props.transaction as Transactions;
+        console.log(detailTransaction);
 
         const form = useForm({
             document_code: detailTransaction.document_code || (page.props.po_number as string),
@@ -265,21 +274,21 @@ export default defineComponent({
         // Menghitung subtotal dari semua produk tanpa PPN
         const totalPPN = computed(() => {
             const data = form.transaction_items.reduce((total, item) => {
-                return total + (item.amount ?? 0);
+                return total + (item.total_price ?? 0);
             }, 0);
             return formatRupiah(data * 0.11); // Menggunakan formatRupiah untuk PPN
         });
 
         const subtotal = computed(() => {
             const data = form.transaction_items.reduce((total, item) => {
-                return total + (item.amount ?? 0);
+                return total + (item.total_price ?? 0);
             }, 0);
             return formatRupiah(data);
         });
 
         const totalPrice = computed(() => {
             const productPrice = form.transaction_items.reduce((total, item) => {
-                return total + (item.amount ?? 0);
+                return total + (item.total_price ?? 0);
             }, 0);
             const afterPpnPrice = productPrice * 0.11;
             return formatRupiah(productPrice + afterPpnPrice);

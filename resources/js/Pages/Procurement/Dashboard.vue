@@ -1,48 +1,83 @@
 <template>
+
     <Head title="Dashboard" />
     <div class="d-flex flex-column gap-4">
-        <TitlePage title="Dashboard Procurement" />
-
+        <div class="d-flex flex-column my-2 ">
+            <span class="fs-3 fs-md-4 fw-semibold">Welcome back {{ ($page.props.auth as any).user.fullname }}</span>
+        </div>
         <!-- Row untuk card info -->
-        <div class="row g-3">
-            <!-- Total PO -->
-            <div class="col-12 col-sm-6 col-md-4">
-                <div class="card shadow h-100 overflow-hidden gradient-effect">
-                    <div class="card-body d-flex flex-column gap-1">
-                        <h5 class="card-title">Total PO</h5>
-                        <span class="fs-1 fw-bold">{{ $page.props.countTotalPo }}</span>
-                        <n-button type="primary" size="small" @click="handleRedirect">Lihat Detail</n-button>
+        <div class="">
+            <div class="row g-3 d-flex flex-nowrap align-items-stretch overflow-auto" id="horizontal-scroll" >
+                <div class="col-12 col-lg-4">
+                    <div class="card border-0 position-relative overflow-hidden h-100 shadow-sm">
+                        <!-- h-100 agar card mengikuti tinggi 100% -->
+                        <div class="card-body d-flex">
+                            <div class="d-flex flex-column">
+                                <div class="card-title d-flex gap-3 align-items-center">
+                                    <n-icon-wrapper :size="40" :border-radius="10" color="#dfd4fa">
+                                        <n-icon :size="18" :component="DocumentsOutline" color="#8c5cff" />
+                                    </n-icon-wrapper>
+                                    <span class="fw-semibold">TOTAL DOKUMEN<br>PO</span>
+                                </div>
+                                <div class="card-content">
+                                    <span class="fs-1 fw-medium">{{ $page.props.total_po }}</span>
+                                </div>
+                            </div>
+                            <n-image src="/images/po-card.png" width="150" class="position-absolute bottom-0 end-0"
+                                preview-disabled />
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Total Alokasi DNP -->
-            <div class="col-12 col-sm-6 col-md-4">
-                <div class="card shadow h-100 overflow-hidden gradient-effect">
-                    <div class="card-body d-flex flex-column gap-1">
-                        <h5 class="card-title">Total Alokasi DNP</h5>
-                        <span class="fs-1 fw-bold">{{ $page.props.countTotalLocatedDNP }}</span>
-                        <n-button type="primary" size="small" @click="handleRedirect">Lihat Detail</n-button>
+                <div class="col-12 col-lg-4">
+                    <div class="card border-0 position-relative overflow-hidden h-100 shadow-sm">
+                        <!-- h-100 agar card mengikuti tinggi 100% -->
+                        <div class="card-body d-flex">
+                            <div class="d-flex flex-column">
+                                <div class="card-title d-flex gap-3 align-items-center">
+                                    <n-icon-wrapper :size="40" :border-radius="10" color="#faf0d4">
+                                        <n-icon :size="25" :component="WarehouseOutlined" color="#ffbe5c" />
+                                    </n-icon-wrapper>
+                                    <span class="fw-semibold">TOTAL ALOKASI <br>PO DNP</span>
+                                </div>
+                                <div class="card-content">
+                                    <span class="fs-1 fw-medium">{{ $page.props.total_dnp_po }}</span>
+                                </div>
+                            </div>
+                            <n-image src="/images/dnp-goods.png" width="150" class="position-absolute bottom-0 end-0 mb-3"
+                                preview-disabled />
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Total Alokasi DKU -->
-            <div class="col-12 col-sm-6 col-md-4">
-                <div class="card shadow h-100 overflow-hidden gradient-effect">
-                    <div class="card-body d-flex flex-column gap-1">
-                        <h5 class="card-title">Total Alokasi DKU</h5>
-                        <span class="fs-1 fw-bold">{{ $page.props.countTotalLocatedDKU }}</span>
-                        <n-button type="primary" size="small" @click="handleRedirect">Lihat Detail</n-button>
+                <div class="col-12 col-lg-4">
+                    <div class="card border-0 position-relative overflow-hidden h-100 shadow-sm">
+                        <!-- h-100 agar card mengikuti tinggi 100% -->
+                        <div class="card-body d-flex">
+                            <div class="d-flex flex-column">
+                                <div class="card-title d-flex gap-3 align-items-center">
+                                    <n-icon-wrapper :size="40" :border-radius="10" color="#fad4d4">
+                                        <n-icon :size="18" :component="Box16Regular" color="#ff855c" />
+                                    </n-icon-wrapper>
+                                    <span class="fw-semibold">TOTAL ALOKASI<br>PO  DKU</span>
+                                </div>
+                                <div class="card-content mb-3">
+                                    <span class="fs-1 fw-medium">{{ $page.props.total_dku_po }}</span>
+                                </div>
+                            </div>
+                            <n-image src="/images/dku-goods.png" width="150" class="position-absolute bottom-0 end-0"
+                                preview-disabled />
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        
+
+
         <!-- Tabel Responsif -->
-        <div class="card shadow" style="border: none;">
-            <div class="card-body" >
-                <n-data-table :columns="columns" :data="data" :pagination="pagination" :bordered="false" size="small"
+        <div class="card border-0">
+            <div class="card-body">
+                <n-data-table :columns="columns" :data="$page.props.purchase_orders.data" :pagination="pagination" :bordered="false" size="small"
                     pagination-behavior-on-filter="first" />
             </div>
         </div>
@@ -57,20 +92,18 @@ import { defineComponent, reactive, h } from 'vue';
 import TitlePage from '../../Components/TitlePage.vue';
 import CountCard from '../../Components/CountCard.vue';
 import { DataTableColumns, NTag, RowProps } from 'naive-ui';
-import {router, Head} from '@inertiajs/vue3';
+import { router, Head } from '@inertiajs/vue3';
 import { formatRupiah } from '../../Utils/options-input.utils';
+import { DocumentsOutline } from '@vicons/ionicons5';
+import { WarehouseOutlined } from '@vicons/material';
+import { Box16Regular } from "@vicons/fluent";
+import {Transactions} from '../../types/model.ts';
+import dayjs from 'dayjs';
+import 'dayjs/locale/id'; // Import locale Indonesia
 
-interface RowData {
-    id: number;
-    purchase_order_date: string;
-    purchase_order_number: string;
-    supplier: string;
-    located: string;
-    delivery_type: string;
-    total_price: number;
-}
+dayjs.locale('id'); // Set locale to Indonesian
 
-function createColumns(): DataTableColumns<RowData> {
+function createColumns(): DataTableColumns<Transactions> {
     return [
         {
             title: '#',
@@ -85,7 +118,9 @@ function createColumns(): DataTableColumns<RowData> {
             key: 'purchase_order_date',
             width: 200,
             render(rowData) {
-                return rowData.purchase_order_date;  // Menampilkan nomor faktur
+                const data = rowData.transaction_details.find((data) => {return data.category === "PO Date"})?.value; 
+
+                return dayjs(data).format('dddd, D MMMM YYYY');
             },
         },
         {
@@ -93,7 +128,7 @@ function createColumns(): DataTableColumns<RowData> {
             key: 'supplier',
             width: 200,
             render(rowData) {
-                return rowData.supplier;  // Menampilkan nama salesman
+                return rowData.transaction_details.find((data) => {return data.category === "Supplier"})?.value;
             },
         },
         {
@@ -101,7 +136,7 @@ function createColumns(): DataTableColumns<RowData> {
             key: 'located',
             width: 200,
             render(rowData) {
-                return rowData.located;  // Menampilkan nama pelanggan
+                return rowData.transaction_details.find((data) => {return data.category === "Allocation"})?.value
             },
         },
         {
@@ -109,7 +144,7 @@ function createColumns(): DataTableColumns<RowData> {
             key: 'delivery_type',
             width: 200,
             render(rowData) {
-                return rowData.delivery_type
+                return rowData.transaction_details.find((data) => {return data.category === "Delivery Type"})?.value;  
             },
         },
         {
@@ -117,23 +152,11 @@ function createColumns(): DataTableColumns<RowData> {
             key: 'total_price',
             width: 200,
             render(rowData) {
-                return formatRupiah(rowData.total_price);  // Menampilkan jangka waktu pembayaran
+                return formatRupiah(rowData.total ?? 0);  // Menampilkan jangka waktu pembayaran
             },
         },
     ];
 }
-
-const data: RowData[] = [
-    {id: 1, purchase_order_date: '04-04-2006', purchase_order_number: '004/CO-DKU/VI/24', supplier: 'PT SRIBOGA', located: 'DNP', delivery_type: 'DEPO BEKASI', total_price: 500000000},
-    {id: 1, purchase_order_date: '04-04-2006', purchase_order_number: '004/CO-DKU/VI/24', supplier: 'PT SRIBOGA', located: 'DNP', delivery_type: 'DEPO BEKASI', total_price: 500000000},
-    {id: 1, purchase_order_date: '04-04-2006', purchase_order_number: '004/CO-DKU/VI/24', supplier: 'PT SRIBOGA', located: 'DNP', delivery_type: 'DEPO BEKASI', total_price: 500000000},
-    {id: 1, purchase_order_date: '04-04-2006', purchase_order_number: '004/CO-DKU/VI/24', supplier: 'PT SRIBOGA', located: 'DNP', delivery_type: 'DEPO BEKASI', total_price: 500000000},
-    {id: 1, purchase_order_date: '04-04-2006', purchase_order_number: '004/CO-DKU/VI/24', supplier: 'PT SRIBOGA', located: 'DNP', delivery_type: 'DEPO BEKASI', total_price: 500000000},
-    {id: 1, purchase_order_date: '04-04-2006', purchase_order_number: '004/CO-DKU/VI/24', supplier: 'PT SRIBOGA', located: 'DNP', delivery_type: 'DEPO BEKASI', total_price: 500000000},
-    {id: 1, purchase_order_date: '04-04-2006', purchase_order_number: '004/CO-DKU/VI/24', supplier: 'PT SRIBOGA', located: 'DNP', delivery_type: 'DEPO BEKASI', total_price: 500000000},
-    {id: 1, purchase_order_date: '04-04-2006', purchase_order_number: '004/CO-DKU/VI/24', supplier: 'PT SRIBOGA', located: 'DNP', delivery_type: 'DEPO BEKASI', total_price: 500000000},
-    {id: 1, purchase_order_date: '04-04-2006', purchase_order_number: '004/CO-DKU/VI/24', supplier: 'PT SRIBOGA', located: 'DNP', delivery_type: 'DEPO BEKASI', total_price: 500000000},
-]
 
 export default defineComponent({
     setup() {
@@ -147,14 +170,16 @@ export default defineComponent({
         });
 
         function handleRedirect() {
-            return router.visit(route('procurement.purchase-order-list'), {method: 'get'});
+            return router.visit(route('procurement.purchase-order-list'), { method: 'get' });
         }
 
         return {
             pagination,
             columns: createColumns(),
             handleRedirect,
-            data
+            DocumentsOutline,
+            WarehouseOutlined,
+            Box16Regular
         };
     },
     components: {
@@ -189,5 +214,48 @@ export default defineComponent({
     /* Pastikan gradien muncul di atas */
     pointer-events: none;
     /* Jangan mengganggu interaksi pengguna */
+}
+
+#horizontal-scroll {
+    overflow-x: auto;
+    /* Enable horizontal scrolling */
+    scroll-snap-type: x mandatory;
+    /* Enable scroll snapping */
+    -webkit-overflow-scrolling: touch;
+    /* Smooth scrolling for touch devices */
+}
+
+#horizontal-scroll .col-12 {
+    min-width: 250px;
+    /* Minimum width for each card to allow horizontal scroll */
+    scroll-snap-align: start;
+    /* Ensure card snaps into position when scrolling */
+}
+
+/* Hide scrollbar for Chrome, Safari, and Edge */
+#horizontal-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge, and Firefox */
+#horizontal-scroll {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+@media (max-width: 576px) {
+    #horizontal-scroll {
+        display: flex;
+        /* Make it a flexbox container */
+        flex-wrap: nowrap;
+        /* Prevent wrapping so cards scroll horizontally */
+    }
+
+    .col-12 {
+        flex: 0 0 auto;
+        /* Ensure cards don't shrink or grow */
+    }
 }
 </style>

@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Services\PurchaseOrderService;
 use App\Models\Lookup;
 use App\Models\Parties;
 use App\Models\Products;
-use App\Models\PurchaseOrderProduct;
 use App\Models\PurchaseOrder;
 use App\Models\StoreHouse;
-use App\Models\SubSalesOrder;
 use App\Models\Tax;
 use App\Models\TransactionDetail;
 use App\Models\TransactionItem;
 use App\Models\Transactions;
+use App\Models\TransactionType;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -67,10 +65,12 @@ class PurchaseOrderController extends Controller
     public function store(Request $request): RedirectResponse
     {
 
-        // dd($request->all());
+        // foreach ($request->input('transaction_items') as $txItem) {
+        //     dd(['total_price' => $txItem['total_price']]);
+        // }
 
         $request->validate([
-            'document_code' => 'required|string|unique:transactions,document_code',
+            'document_code' => 'required|string',
             'term_of_payment' => 'required|string',
             'due_date' => 'required',
             'description' => 'nullable|string',
@@ -89,6 +89,7 @@ class PurchaseOrderController extends Controller
             'transaction_items.*.amount' => 'required|numeric',
             'transaction_items.*.tax_id' => 'required|numeric',
             'transaction_items.*.product_id' => 'required|numeric',
+            'transaction_items.*.total_price' => 'required|numeric',
             'transaction_items.*.product' => 'required_if:transaction_items.*.product_id,null|array',
             'transaction_items.*.product.code' => 'required_with:transaction_items.*.product|string',
             'transaction_items.*.product.unit' => 'required_with:transaction_items.*.product|string',
@@ -97,6 +98,8 @@ class PurchaseOrderController extends Controller
 
         // Gunakan transaksi database
         DB::transaction(function () use ($request) {
+            $tx_type = TransactionType::where('name', 'Purchase Order')->first();
+
             // Simpan transaksi
             $transaction = Transactions::create([
                 'document_code' => $request->input('document_code'),
@@ -108,7 +111,7 @@ class PurchaseOrderController extends Controller
                 'sub_total' => $request->input('sub_total'), //required
                 'total' => $request->input('total'), //required
                 'tax_amount' => $request->input('tax_amount'), //required
-                'transaction_type_id' => 4,
+                'transaction_type_id' => $tx_type->id,
             ]);
 
             // Simpan transaction details
@@ -126,22 +129,9 @@ class PurchaseOrderController extends Controller
             foreach ($request->input('transaction_items') as $txItem) {
                 $product = Products::find($txItem['product_id']);
 
-                // Jika produk sudah ada (product_id), ambil id-nya. Jika tidak, buat produk baru.
-                // if(isset($txItem['product_id'])) 
-                // {
-                //     $product = Products::find($txItem['product_id']);
-                // } 
-                // else 
-                // {
-                //     $product = Products::create([
-                //         'code' => $txItem['product']['code'],
-                //         'unit' => $txItem['product']['unit'],
-                //         'name' => $txItem['product']['name'],
-                //     ]);
-                // }
-
                 // Simpan transaction item
                 TransactionItem::create([
+                    'total_price' => $txItem['total_price'],
                     'unit' => $txItem['unit'],
                     'quantity' => $txItem['quantity'],
                     'tax_amount' => $txItem['tax_amount'],
@@ -152,7 +142,7 @@ class PurchaseOrderController extends Controller
                 ]);
             }
         });
-
+        
         return redirect()->route('procurement.purchase-order')->with('success', 'Purchase Order Berhasil Tersubmit!');
     }
 
@@ -180,23 +170,6 @@ class PurchaseOrderController extends Controller
         {
             return redirect()->back()->with('failed', 'Nomor transaksi salah atau tidak ditemukan');
         }
-
-        // dd($transaction);
-
-        // Memeriksa apakah transaksi telah digunakan
-        // // Cek apakah ada transaksi dengan transaction_type_id 6
-        // $isTransactionHasUsed = Transactions::where('transaction_type_id', 6)
-        //     ->whereHas('transactionDetails', function ($query) use ($poNumber) {
-        //         $query->where('category', 'PO Number') // Pastikan category adalah PO Number
-        //             ->where('value', $poNumber); // Bandingkan dengan nomor PO yang diberikan
-        //     })
-        //     ->exists(); // Menggunakan exists() untuk memeriksa ada tidaknya data
-
-        // // Jika transaksi sudah ada
-        // if ($isTransactionHasUsed) 
-        // {
-        //     return redirect()->back()->with('failed', 'Nomor transaksi telah digunakan!');
-        // }
 
         // Mengembalikan view dengan data transaksi
         return Inertia::render('Procurement/ItemsReceipt/CreateSalesOrder', compact('transaction'));

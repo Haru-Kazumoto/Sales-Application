@@ -40,7 +40,7 @@ export default defineComponent({
                     },
                 },
                 {
-                    title: 'No PO',
+                    title: 'No SSO',
                     key: 'purchase_order_number',
                     render(rowData) {
                         return rowData.document_code;  // Menampilkan nomor faktur
