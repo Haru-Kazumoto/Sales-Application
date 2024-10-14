@@ -206,7 +206,7 @@ class ProductsController extends Controller
      */
     public function storeProducts(Request $request)
     {
-        dd($request->all());
+        // dd($request->all());
 
         $request->validate([
             'document_code' => 'required|string',
