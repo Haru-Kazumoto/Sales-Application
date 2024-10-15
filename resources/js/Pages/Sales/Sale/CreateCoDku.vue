@@ -537,44 +537,54 @@ export default defineComponent({
         const totalPPN = computed(() => {
             // Menghitung subtotal dari semua produk tanpa mengalikan quantity
             const subtotal = form.transaction_items.reduce((total, item) => {
-                return total + Number(item.amount ?? 0); // Konversi amount ke number
+                return total + Number(item.total_price ?? 0); // Konversi amount ke number
             }, 0);
 
             // Menghitung PPN 11%
             const ppn = subtotal * 0.11;
 
-            // Menyimpan PPN ke dalam form
-            form.tax_amount = ppn;
+            // Membulatkan PPN sesuai aturan yang kamu inginkan
+            const roundedPPN = Math.round(ppn);
+
+            // Menyimpan PPN yang sudah dibulatkan ke dalam form
+            form.tax_amount = roundedPPN;
 
             // Mengembalikan nilai PPN yang diformat
-            return formatRupiah(ppn);
+            // return roundedPPN;
+            return formatRupiah(roundedPPN);
         });
+
 
         const subtotal = computed(() => {
             // Menghitung subtotal dari semua produk tanpa mengalikan quantity
             const total = form.transaction_items.reduce((total, item) => {
-                return total + Number(item.amount ?? 0); // Konversi amount ke number
+                return total + Number(item.total_price ?? 0); // Konversi amount ke number
             }, 0);
 
             // Menyimpan subtotal ke dalam form
             form.sub_total = total;
 
             // Mengembalikan subtotal yang diformat
+            // return total;
             return formatRupiah(total);
         });
+
         const totalPrice = computed(() => {
             // Menghitung subtotal dari semua produk tanpa mengalikan quantity
             const subtotal = form.transaction_items.reduce((total, item) => {
-                return total + Number(item.amount ?? 0); // Konversi amount ke number
+                return total + Number(item.total_price ?? 0); // Konversi amount ke number
             }, 0);
 
             // Menghitung total harga termasuk PPN 11%
             const totalWithPPN = subtotal + (subtotal * 0.11);
 
             // Menyimpan total ke dalam form
-            form.total = totalWithPPN;
+            const roundedTotalWithPpn = Math.round(totalWithPPN);
+
+            form.total = roundedTotalWithPpn;
 
             // Mengembalikan total harga yang diformat
+            // return roundedTotalWithPpn;
             return formatRupiah(totalWithPPN);
         });
 

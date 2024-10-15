@@ -9,10 +9,10 @@
           <n-layout position="absolute" style="top: 64px;" has-sider>
             <n-layout-sider :native-scrollbar="false" bordered collapse-mode="width"
               :collapsed-width="computedCollapsedWidth" :width="siderWidth" :collapsed="collapsed"
-              @collapse="collapsed = true" @expand="collapsed = false"  class="z-3">
+              @collapse="collapsed = true" @expand="collapsed = false" class="z-3">
               <n-menu :collapsed="collapsed" :collapsed-width="computedCollapsedWidth" :collapsed-icon-size="22"
                 :options="menuOptions" :render-label="renderMenuLabel" :expand-icon="expandIcon"
-                default-value="dashboard" />
+                default-value="dashboard" @update:value="handleMenuClick" />
             </n-layout-sider>
             <n-layout :native-scrollbar="false">
               <div class="container-fluid flex-grow-1 min-vh-100 z-n1" style="background-color: #EEF8F5;">
@@ -34,7 +34,7 @@ import Sidebar from '../Components/Sidebar.vue';
 import Header from '../Components/Header.vue';
 import Footer from '../Components/Footer.vue';
 import { defineComponent, inject, computed, h, ref, provide, onMounted, onBeforeUnmount } from 'vue';
-import { Link, usePage } from '@inertiajs/vue3';
+import { Link, router, usePage } from '@inertiajs/vue3';
 import { NIcon } from 'naive-ui';
 import type { MenuOption } from 'naive-ui';
 import { AppsOutline, CartOutline, PersonOutline, CaretDownOutline, PeopleOutline } from '@vicons/ionicons5';
@@ -83,6 +83,15 @@ export default defineComponent({
         collapsed.value = false; // Ensure sidebar is expanded on larger screens
       }
     };
+
+    function handleMenuClick(key: string) {
+      // Arahkan ke route yang sesuai menggunakan Inertia.js
+      const selectedItem = menuOptions.value.find(item => item.key === key);
+      if (selectedItem && selectedItem.href) {
+        // Menggunakan Inertia untuk navigasi
+        router.visit(selectedItem.href);
+      }
+    }
 
     onMounted(() => {
       window.addEventListener('resize', updateWindowWidth);
@@ -142,7 +151,8 @@ export default defineComponent({
       },
       expandIcon() {
         return h(NIcon, null, { default: () => h(CaretDownOutline) });
-      }
+      },
+      handleMenuClick
     };
   }
 });
