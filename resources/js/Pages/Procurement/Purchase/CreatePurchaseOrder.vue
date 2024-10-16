@@ -132,7 +132,7 @@
                             <!-- <n-input size="large" id="product_price" placeholder="" v-model:value="transaction_items.amount"
                                 @input="(value) => transaction_items.amount = value.replace(/\D/g, '')"> -->
                             <n-input size="large" id="product_price" placeholder=""
-                                v-model:value="transaction_items.amount">
+                                v-model:value="transaction_items.amount" @input="(value) => transaction_items.amount = value.replace(',','.')">
                                 <template #prefix>Rp </template>
                             </n-input>
                         </div>
