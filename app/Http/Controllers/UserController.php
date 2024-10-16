@@ -17,10 +17,10 @@ class UserController extends Controller
      */
     public function index()
     {
-        // $users = User::with(['role', 'division'])->get();
-        $users = User::whereHas('role', function($query) {
-            $query->where('role_name', '!=', 'ADMIN');
-        })->with(['role', 'division'])->get();
+        $users = User::with(['role', 'division'])->get();
+        // $users = User::whereHas('role', function($query) {
+        //     $query->where('role_name', '!=', 'ADMIN');
+        // })->with(['role', 'division'])->get();
 
         return Inertia::render('Admin/UserManagement/User/User', compact('users'));
     }

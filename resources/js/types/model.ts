@@ -41,6 +41,7 @@ export interface Parties {
     code: string;
     name: string;
     legality: string;
+    number_plate?: string;
     type_parties?: string;
     phone?: string;
     fax?: string;

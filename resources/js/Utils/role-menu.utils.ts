@@ -1,4 +1,4 @@
-import { BoxCheckmark20Regular, BoxDismiss24Regular, BoxEdit20Regular, BoxMultiple20Regular, DocumentAdd20Regular, DocumentBulletListMultiple20Regular, ReceiptCube24Regular } from '@vicons/fluent';
+import { BoxCheckmark20Regular, BoxDismiss24Regular, BoxEdit20Regular, BoxMultiple20Regular, DocumentAdd20Regular, DocumentBulletListMultiple20Regular, ReceiptCube24Regular, VehicleTruckProfile20Regular } from '@vicons/fluent';
 import { SkullOutline, CartOutline, FileTrayFullOutline, FileTrayStackedOutline, CubeOutline, WalletOutline, NotificationsOutline, PeopleOutline, ReceiptOutline, SettingsOutline, BarChartOutline, BagCheckOutline, DocumentsOutline, DocumentTextOutline, ShieldCheckmarkOutline, RepeatSharp, WarningOutline, Cart, People, PersonAddOutline, Contract, Analytics, CogOutline, DocumentOutline, PushOutline, ShieldHalf, PieChartOutline, ReorderFourSharp, CartSharp, KeyOutline, LogoWhatsapp, Close, Skull, Bookmarks, BookmarkOutline, AlbumsOutline, TrashOutline } from '@vicons/ionicons5';
 import { WarehouseOutlined } from '@vicons/material';
 import { NIcon } from 'naive-ui';
@@ -60,6 +60,12 @@ export const roleMenus = {
             key: 'products',
             icon: CartOutline,
             href: '/product-management',
+        },
+        {
+            label: "Transports",
+            key: 'transports',
+            icon: VehicleTruckProfile20Regular,
+            href: '/transport-management',
         }
     ],
     FINANCE: [
