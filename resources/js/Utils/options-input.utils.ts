@@ -7,8 +7,8 @@ export const formatRupiah = (amount: number) => {
     return new Intl.NumberFormat('id-ID', {
         style: 'currency',
         currency: 'IDR',
-        minimumFractionDigits: 0, // Remove decimal places
-        maximumFractionDigits: 0
+        minimumFractionDigits: 2, // Remove decimal places
+        maximumFractionDigits: 2
     }).format(amount);
 };
 
