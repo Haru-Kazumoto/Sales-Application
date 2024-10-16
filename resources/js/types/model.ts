@@ -58,6 +58,7 @@ export interface Parties {
     country?: string;
     description?: string;
     parties_group_id?: number;
+    parties_group: PartiesGroup;
 }
 
 export interface PartiesGroup {
@@ -121,6 +122,7 @@ export interface Products {
 }
 
 export interface Lookup {
+    id?: number;
     label: string;
     value: string;
     category?: string;

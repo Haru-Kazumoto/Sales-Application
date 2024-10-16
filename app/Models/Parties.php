@@ -29,6 +29,7 @@ class Parties extends Model
         'province',
         'country',
         'description',
+        'number_plate',
         'parties_group_id',
     ];
 

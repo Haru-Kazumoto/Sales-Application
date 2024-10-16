@@ -91,6 +91,22 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
             Route::patch('/update-product/{product}', [App\Http\Controllers\ProductsController::class, 'update'])->name('products.update');
             Route::delete('/delet-product/{product}', [App\Http\Controllers\ProductsController::class, 'destroy'])->name('products.delete');
         });
+
+        Route::prefix('transport-management')->group(function() {
+            Route::get('', [App\Http\Controllers\TransportController::class, 'createTransport'])->name('create-transports');
+            Route::post('/post', [App\Http\Controllers\TransportController::class, 'storeTransport'])->name('transport.post');
+            Route::get('/edit/{parties}', [App\Http\Controllers\TransportController::class, 'update'])->name('transport.edit');
+            Route::patch('/update/{parties}', [App\Http\Controllers\TransportController::class, 'edit'])->name('transport.update');
+            Route::delete('/delete/{parties}', [App\Http\Controllers\TransportController::class, 'destroy'])->name('transport.delete');
+        }); 
+
+        Route::prefix('unit-management')->group(function() {
+            Route::get('', [App\Http\Controllers\UnitController::class, 'createUnit'])->name('create-unit');
+            Route::get('/edit/{unit}', [App\Http\Controllers\UnitController::class, 'update'])->name('unit.edit');
+            Route::post('/post', [App\Http\Controllers\UnitController::class, 'storeUnit'])->name('unit.post');
+            Route::patch('/update/{unit}', [App\Http\Controllers\UnitController::class, 'edit'])->name('unit.update');
+            Route::delete('/delete/{unit}', [App\Http\Controllers\UnitController::class, 'destroy'])->name('unit.delete');
+        });
     });
 
     // Procurement Routes

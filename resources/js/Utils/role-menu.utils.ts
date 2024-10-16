@@ -1,4 +1,4 @@
-import { BoxCheckmark20Regular, BoxDismiss24Regular, BoxEdit20Regular, BoxMultiple20Regular, DocumentAdd20Regular, DocumentBulletListMultiple20Regular, ReceiptCube24Regular, VehicleTruckProfile20Regular } from '@vicons/fluent';
+import { Box20Regular, BoxCheckmark20Regular, BoxDismiss24Regular, BoxEdit20Regular, BoxMultiple20Regular, DocumentAdd20Regular, DocumentBulletListMultiple20Regular, HomePerson24Regular, PeopleProhibited20Regular, PeopleSettings24Regular, PeopleSwap16Regular, PeopleTeam28Regular, ReceiptCube24Regular, VehicleTruckProfile20Regular } from '@vicons/fluent';
 import { SkullOutline, CartOutline, FileTrayFullOutline, FileTrayStackedOutline, CubeOutline, WalletOutline, NotificationsOutline, PeopleOutline, ReceiptOutline, SettingsOutline, BarChartOutline, BagCheckOutline, DocumentsOutline, DocumentTextOutline, ShieldCheckmarkOutline, RepeatSharp, WarningOutline, Cart, People, PersonAddOutline, Contract, Analytics, CogOutline, DocumentOutline, PushOutline, ShieldHalf, PieChartOutline, ReorderFourSharp, CartSharp, KeyOutline, LogoWhatsapp, Close, Skull, Bookmarks, BookmarkOutline, AlbumsOutline, TrashOutline } from '@vicons/ionicons5';
 import { WarehouseOutlined } from '@vicons/material';
 import { NIcon } from 'naive-ui';
@@ -26,19 +26,19 @@ export const roleMenus = {
                 {
                     label: "Role",
                     key: 'role',
-                    icon: renderIcon(Contract),
+                    icon: renderIcon(PeopleSettings24Regular),
                     href: '/role-management',
                 },
                 {
                     label: 'Divisi',
                     key: 'division',
-                    icon: renderIcon(Analytics),
+                    icon: renderIcon(PeopleSwap16Regular),
                     href: '/division-management'
                 },
                 {
                     label: 'Akses Menu',
                     key: 'menu-access',
-                    icon: renderIcon(CogOutline),
+                    icon: renderIcon(PeopleProhibited20Regular),
                     href: '/menu-access-management'
                 }
             ]
@@ -46,14 +46,20 @@ export const roleMenus = {
         {
             label: "Customer",
             key: 'customer',
-            icon: PeopleOutline,
+            icon: PeopleTeam28Regular,
             href: '/customer-management',
         },
         {
             label: "Supplier",
             key: 'supplier',
-            icon: PeopleOutline,
+            icon: HomePerson24Regular,
             href: '/supplier-management',
+        },
+        {
+            label: "Satuan",
+            key: 'units',
+            icon: Box20Regular,
+            href: '/unit-management',
         },
         {
             label: "Products",
