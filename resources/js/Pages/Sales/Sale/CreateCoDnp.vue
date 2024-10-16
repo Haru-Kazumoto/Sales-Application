@@ -581,15 +581,17 @@ export default defineComponent({
 
             const ppnAmount = transaction_items.value.amount * 0.11;
             const total = transaction_items.value.amount * quantity;
+            const roundedTotal = Math.round(total);
+            const roundedPpnAmount = Math.round(ppnAmount);
 
             form.transaction_items.push({
                 unit: transaction_items.value.unit,
                 quantity: quantity,
                 product_id: transaction_items.value.product_id,
-                tax_amount: ppnAmount,
+                tax_amount: roundedPpnAmount,
                 amount: transaction_items.value.amount,
                 tax_id: transaction_items.value.tax_id,
-                total_price: total,
+                total_price: roundedTotal,
                 discount_1: transaction_items.value.discount_1 || 0,
                 discount_2: transaction_items.value.discount_2 || 0,
                 discount_3: transaction_items.value.discount_3 || 0,

@@ -298,8 +298,11 @@ export default defineComponent({
             // Kalkulasi nilai PPN
             const selectedPpnValue = selectedTax ? selectedTax.percentage : 0; // Nilai PPN (0 jika tidak ada PPN)
             const productPrice = transaction_items.value.amount; // Ambil harga produk (amount)
+            const roundedProductPrice = Math.round(productPrice);
             const ppnAmount = productPrice * selectedPpnValue; // Kalkulasi PPN
-            const totalPrice = productPrice * transaction_items.value.quantity;
+            const totalPrice = roundedProductPrice * transaction_items.value.quantity;
+
+            const roundedTotalPrice = Math.round(totalPrice);
 
 
             form.transaction_items.push({
@@ -309,7 +312,7 @@ export default defineComponent({
                 tax_amount: selectedTax?.value_tax,
                 amount: transaction_items.value.amount,
                 tax_id: transaction_items.value.tax_id,
-                total_price: Number(totalPrice),
+                total_price: roundedTotalPrice,
                 product: {
                     code: products.value.code,
                     unit: transaction_items.value.unit,
