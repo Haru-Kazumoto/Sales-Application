@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class StoreHouse extends Model
+class Driver extends Model
 {
     use HasFactory;
 
-    protected $table = 'storehouse';
+    protected $table = 'driver';
 
-    protected $fillable = ['name','code'];
+    protected $fillable = ['code', 'name'];
 }

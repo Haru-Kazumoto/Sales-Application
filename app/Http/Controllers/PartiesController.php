@@ -11,18 +11,57 @@ use Inertia\Inertia;
 
 class PartiesController extends Controller
 {
-    public function createCustomer()
+    public function createCustomer(Request $request)
     {
-        $parties = Parties::where('type_parties', "CUSTOMER")->orderBy('created_at', 'desc')->paginate(10);
+        // Ambil data Parties dengan eager loading untuk relasi partiesGroup
+        $query = Parties::with('partiesGroup')
+            ->where('type_parties', "CUSTOMER"); // Filter khusus untuk CUSTOMER
+
+        // Filter berdasarkan field dan query yang diterima dari request
+        if ($request->filled('filter_field') && $request->filled('filter_query')) {
+            $field = $request->input('filter_field'); // Field yang dipilih (nama, tipe, nomor telepon)
+            $value = $request->input('filter_query'); // Nilai filter
+
+            // Tambahkan where dengan like untuk pencarian berdasarkan field yang dipilih
+            $query->where($field, 'like', '%' . $value . '%');
+        }
+
+        // Urutkan berdasarkan created_at dan paginasi data
+        $parties = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        // Pastikan total item sesuai dengan hasil yang difilter
+        $parties->appends($request->only('filter_field', 'filter_query'));
+
+        // Ambil data groups dan customer_type
         $groups = PartiesGroup::all();
         $customer_type = Lookup::where('category', 'TYPE_PARTIES')->get();
 
-        return Inertia::render('Admin/Customer', compact('parties','groups', 'customer_type'));
+        // Kirim data ke Vue menggunakan Inertia
+        return Inertia::render('Admin/Customer', compact('parties', 'groups', 'customer_type'));
     }
 
-    public function createSupplier()
+    public function createSupplier(Request $request)
     {
-        $parties = Parties::where('type_parties', "VENDOR")->orderBy('created_at', 'desc')->paginate(10);
+        // Ambil data Parties dengan eager loading untuk relasi partiesGroup
+        $query = Parties::with('partiesGroup')
+            ->where('type_parties', "VENDOR"); // Filter khusus untuk CUSTOMER
+
+        // Filter berdasarkan field dan query yang diterima dari request
+        if ($request->filled('filter_field') && $request->filled('filter_query')) {
+            $field = $request->input('filter_field'); // Field yang dipilih (nama, tipe, nomor telepon)
+            $value = $request->input('filter_query'); // Nilai filter
+
+            // Tambahkan where dengan like untuk pencarian berdasarkan field yang dipilih
+            $query->where($field, 'like', '%' . $value . '%');
+        }
+
+        // Urutkan berdasarkan created_at dan paginasi data
+        $parties = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        // Pastikan total item sesuai dengan hasil yang difilter
+        $parties->appends($request->only('filter_field', 'filter_query'));
+
+        // Ambil data groups dan customer_type
         $groups = PartiesGroup::all();
         $supplier_type = Lookup::where('category', 'TYPE_PARTIES')->get();
 

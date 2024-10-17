@@ -58,7 +58,7 @@ export interface Parties {
     country?: string;
     description?: string;
     parties_group_id?: number;
-    parties_group: PartiesGroup;
+    parties_group?: PartiesGroup;
 }
 
 export interface PartiesGroup {

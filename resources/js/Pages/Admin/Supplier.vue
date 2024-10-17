@@ -6,25 +6,35 @@
                 <form class="row g-3" @submit.prevent="handleSubmitCustomer">
                     <!-- First row -->
                     <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
-                        <label for="nama_customer" class="form-label">Kode Pemasok</label>
+                        <label for="nama_customer" class="form-label">Kode Pemasok
+                            <RequiredMark />
+                        </label>
                         <n-input placeholder="" size="large" v-model:value="form.code" />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
-                        <label for="nama_customer" class="form-label">Nama Pemasok</label>
+                        <label for="nama_customer" class="form-label">Nama Pemasok
+                            <RequiredMark />
+                        </label>
                         <n-input placeholder="" size="large" v-model:value="form.name" />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
-                        <label for="nama_customer" class="form-label">Legalitas</label>
+                        <label for="nama_customer" class="form-label">Legalitas
+                            <RequiredMark />
+                        </label>
                         <n-input placeholder="" size="large" v-model:value="form.legality" />
                     </div>
 
                     <!-- Second row -->
                     <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
-                        <label for="nama_customer" class="form-label">Tipe</label>
+                        <label for="nama_customer" class="form-label">Tipe
+                            <RequiredMark />
+                        </label>
                         <n-select size="large" v-model:value="form.type_parties" :options="supplier_type" />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
-                        <label for="nama_customer" class="form-label">Kelompok</label>
+                        <label for="nama_customer" class="form-label">Kelompok
+                            <RequiredMark />
+                        </label>
                         <n-select size="large" v-model:value="form.parties_group_id" placeholder="" :options="groups" />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
@@ -56,7 +66,7 @@
 
         <div class="row g-3">
             <div class="col-12 col-lg-6 d-flex align-items-lg-center gap-3">
-                <label>Total Jumlah Supplier</label>
+                <label>Total Jumlah Customer</label>
                 <span class="border px-4 py-1 bg-white" style="border-radius: 3px;">
                     {{ ($page.props.parties as any).total }}
                 </span>
@@ -64,19 +74,26 @@
             <div class="col-12 col-lg-6 d-flex">
                 <div class="ms-auto d-flex align-items-lg-center gap-2 justify-content-lg-end w-100">
                     <label>Pencarian Data</label>
-                    <n-input placeholder="" class="w-50" />
+                    <n-select class="w-25" v-model:value="filterField" placeholder="Pilih field" :options="[
+                        { label: 'Nama', value: 'name' },
+                        { label: 'Tipe', value: 'type_parties' },
+                        { label: 'Nomor Telepon', value: 'phone' }
+                    ]" />
+                    <n-input class="w-50" placeholder="Mau cari siapa hayo" @input="handleSearch"
+                        v-model:value="filterQuery" />
                 </div>
             </div>
         </div>
 
         <div class="card shadow-sm border-0 mb-5">
             <div class="card-body">
-                <n-data-table :columns="columns" :bordered="false" :data="$page.props.parties.data"
+                <n-data-table :columns="columns" :bordered="false" :data="($page.props.parties as any).data"
                     pagination-behavior-on-filter="first" />
                 <div class="d-flex mt-3">
-                    <n-pagination v-model:page="currentPage" :page-count="($page.props.parties as any).to"
-                        class="ms-auto" :page-size="($page.props.parties as any).per_page"
-                        @update:page="handlePageChange" />
+                    <n-pagination class="ms-auto" v-model:page="pagination.current_page"
+                        :page-count="pagination.last_page" :page-size="pagination.per_page"
+                        :item-count="pagination.total" @update:page="handlePageChange"
+                        @update:page-count="pagination.last_page = ($page.props.parties as any).last_page" />
                 </div>
             </div>
         </div>
@@ -84,9 +101,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, h, watch } from 'vue'
+import { defineComponent, ref, h, watch, reactive } from 'vue'
 import { router, useForm, usePage } from '@inertiajs/vue3';
 import TitlePage from '../../Components/TitlePage.vue';
+import RequiredMark from '../../Components/RequiredMark.vue';
 import { DataTableColumns, NButton, useNotification } from 'naive-ui';
 import { Flash, Lookup, Parties, PartiesGroup } from '../../types/model';
 import Swal from 'sweetalert2';
@@ -132,6 +150,9 @@ export default defineComponent({
                     title: "KELOMPOK",
                     key: "parties_group",
                     width: 150,
+                    render(row) {
+                        return row.parties_group?.name;
+                    }
                 },
                 {
                     title: "NO TELP",
@@ -178,9 +199,9 @@ export default defineComponent({
                                             icon: 'question',
                                             title: `Hapus supplier ${row.name}?`,
                                         }).then((result) => {
-                                            if(result.isConfirmed) {
+                                            if (result.isConfirmed) {
                                                 router.delete(route('admin.parties.supplier.delete', row.id), {
-                                                    onSuccess(){
+                                                    onSuccess() {
                                                         notification.success({
                                                             title: "Supplier berhasil dihapus",
                                                             duration: 1500,
@@ -222,10 +243,29 @@ export default defineComponent({
             parties_group_id: null as unknown as number,
         });
 
+        // Filter data
+        const filterField = ref('name'); // Default filter field
+        const filterQuery = ref(''); // Filter input value
+
+        // Fungsi untuk meng-handle pencarian
+        const handleSearch = () => {
+            router.get(route('admin.parties.supplier'), {
+                page: pagination.current_page,
+                filter_field: filterField.value,
+                filter_query: filterQuery.value
+            }, {
+                preserveState: true,
+                replace: true
+            });
+        };
+
         // Function to handle page change
         function handlePageChange(page: number) {
-            currentPage.value = page;
-            router.get(route('admin.parties.customer'), { page }, { preserveState: true }); // Request data for the selected page
+            router.get(route('admin.parties.supplier'), {
+                page,
+                filter_field: filterField.value,
+                filter_query: filterQuery.value
+            }, { preserveState: true }); // Request data for the selected page
         }
 
         function handleSubmitCustomer() {
@@ -238,9 +278,19 @@ export default defineComponent({
                         closable: false,
                         duration: 1500,
                     });
+                },
+                onError: () => {
+                    Swal.fire('Cek form kembali!', 'Form dengan <span class="text-danger">*</span> harus di isi!', 'error');
                 }
             });
         }
+
+        const pagination = reactive({
+            current_page: (page.props.parties as any).current_page,
+            per_page: (page.props.parties as any).per_page,
+            total: (page.props.parties as any).total,
+            last_page: (page.props.parties as any).last_page,
+        });
 
         const groups = (page.props.groups as PartiesGroup[]).map((data) => ({
             id: data.id,
@@ -255,16 +305,21 @@ export default defineComponent({
 
         return {
             handleSubmitCustomer,
+            handlePageChange,
+            handleSearch,
             columns: createColumns(),
             currentPage,
-            handlePageChange,
             form,
             groups,
-            supplier_type
+            supplier_type,
+            pagination,
+            filterField,
+            filterQuery,
         }
     },
     components: {
         TitlePage,
+        RequiredMark
     }
 })
 </script>

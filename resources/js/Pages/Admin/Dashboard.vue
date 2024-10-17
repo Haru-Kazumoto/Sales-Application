@@ -18,10 +18,10 @@
                     </div>
                 </div>
             </div>
-            <div class="row g-3">
+            <div class="row g-3 mb-5">
                 <!-- First row -->
-                <div class="col-12 col-md-6 col-lg-4 ">
-                    <div class="card border-0 shadow-sm d-flex flex-column h-100">
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card shadow-sm d-flex flex-column h-100 float-card">
                         <div class="card-body">
                             <div class="card-title d-flex gap-3 align-items-center">
                                 <n-icon-wrapper :size="40" :border-radius="10" color="#024CAA">
@@ -39,13 +39,13 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-6 col-lg-4 ">
-                    <div class="card border-0 shadow-sm d-flex flex-column h-100">
+                    <div class="card shadow-sm d-flex flex-column h-100 float-card">
                         <div class="card-body">
                             <div class="card-title d-flex gap-3 align-items-center">
                                 <n-icon-wrapper :size="40" :border-radius="10" color="#FF6500">
                                     <n-icon :size="25" :component="AdminPanelSettingsFilled" color="white" />
                                 </n-icon-wrapper>
-                                <Link :href="route('admin.user-management')" class="ms-auto">
+                                <Link :href="route('admin.role-management')" class="ms-auto">
                                 <n-button type="default" ghost>Direct</n-button>
                                 </Link>
                             </div>
@@ -58,13 +58,13 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-6 col-lg-4 ">
-                    <div class="card border-0 shadow-sm d-flex flex-column h-100">
+                    <div class="card shadow-sm d-flex flex-column h-100 float-card">
                         <div class="card-body">
                             <div class="card-title d-flex gap-3 align-items-center">
                                 <n-icon-wrapper :size="40" :border-radius="10" color="#347928">
                                     <n-icon :size="25" :component="GitNetworkSharp" color="white" />
                                 </n-icon-wrapper>
-                                <Link :href="route('admin.user-management')" class="ms-auto">
+                                <Link :href="route('admin.division-management')" class="ms-auto">
                                 <n-button type="default" ghost>Direct</n-button>
                                 </Link>
                             </div>
@@ -79,13 +79,13 @@
 
                 <!-- Second row -->
                 <div class="col-12 col-md-6 col-lg-4 ">
-                    <div class="card border-0 shadow-sm d-flex flex-column h-100">
+                    <div class="card shadow-sm d-flex flex-column h-100 float-card">
                         <div class="card-body">
                             <div class="card-title d-flex gap-3 align-items-center">
                                 <n-icon-wrapper :size="40" :border-radius="10" color="#B8001F">
                                     <n-icon :size="20" :component="Settings" color="white" />
                                 </n-icon-wrapper>
-                                <Link :href="route('admin.user-management')" class="ms-auto">
+                                <Link :href="route('admin.menu-access-management')" class="ms-auto">
                                 <n-button type="default" ghost>Direct</n-button>
                                 </Link>
                             </div>
@@ -98,13 +98,13 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-6 col-lg-4 ">
-                    <div class="card border-0 shadow-sm d-flex flex-column h-100">
+                    <div class="card shadow-sm d-flex flex-column h-100 float-card">
                         <div class="card-body">
                             <div class="card-title d-flex gap-3 align-items-center">
                                 <n-icon-wrapper :size="40" :border-radius="10" color="#FABC3F">
                                     <n-icon :size="20" :component="People" color="white" />
                                 </n-icon-wrapper>
-                                <Link :href="route('admin.user-management')" class="ms-auto">
+                                <Link :href="route('admin.parties.customer')" class="ms-auto">
                                 <n-button type="default" ghost>Direct</n-button>
                                 </Link>
                             </div>
@@ -116,18 +116,73 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-6 col-lg-4 ">
-                    <div class="card border-0 shadow-sm d-flex flex-column h-100">
+                    <div class="card shadow-sm d-flex flex-column h-100 float-card">
                         <div class="card-body">
                             <div class="card-title d-flex gap-3 align-items-center">
                                 <n-icon-wrapper :size="40" :border-radius="10" color="#FF9100">
-                                    <n-icon :size="20" :component="Box24Filled" color="white" />
+                                    <n-icon :size="20" :component="HomePerson24Filled" color="white" />
                                 </n-icon-wrapper>
-                                <Link :href="route('admin.user-management')" class="ms-auto">
+                                <Link :href="route('admin.parties.supplier')" class="ms-auto">
                                 <n-button type="default" ghost>Direct</n-button>
                                 </Link>
                             </div>
                             <div class="d-flex flex-column">
                                 <h5 class="fw-bold">Supplier</h5>
+                                <span>Menambahkan, mengurangi, dan mengedit data master pemasok</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4 ">
+                    <div class="card shadow-sm d-flex flex-column h-100 float-card">
+                        <div class="card-body">
+                            <div class="card-title d-flex gap-3 align-items-center">
+                                <n-icon-wrapper :size="40" :border-radius="10" color="#433878">
+                                    <n-icon :size="20" :component="Box24Filled" color="white" />
+                                </n-icon-wrapper>
+                                <Link :href="route('admin.create-unit')" class="ms-auto">
+                                <n-button type="default" ghost>Direct</n-button>
+                                </Link>
+                            </div>
+                            <div class="d-flex flex-column">
+                                <h5 class="fw-bold">Units</h5>
+                                <span>Menambahkan, mengurangi, dan mengedit data master pemasok</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-4 ">
+                    <div class="card shadow-sm d-flex flex-column h-100 float-card">
+                        <div class="card-body">
+                            <div class="card-title d-flex gap-3 align-items-center">
+                                <n-icon-wrapper :size="40" :border-radius="10" color="#6256CA">
+                                    <n-icon :size="20" :component="Cart" color="white" />
+                                </n-icon-wrapper>
+                                <Link :href="route('admin.products')" class="ms-auto">
+                                <n-button type="default" ghost>Direct</n-button>
+                                </Link>
+                            </div>
+                            <div class="d-flex flex-column">
+                                <h5 class="fw-bold">Products</h5>
+                                <span>Menambahkan, mengurangi, dan mengedit data master pemasok</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-4 ">
+                    <div class="card shadow-sm d-flex flex-column h-100 float-card">
+                        <div class="card-body">
+                            <div class="card-title d-flex gap-3 align-items-center">
+                                <n-icon-wrapper :size="40" :border-radius="10" color="#243642">
+                                    <n-icon :size="20" :component="VehicleTruckProfile24Filled" color="white" />
+                                </n-icon-wrapper>
+                                <Link :href="route('admin.create-transports')" class="ms-auto">
+                                <n-button type="default" ghost>Direct</n-button>
+                                </Link>
+                            </div>
+                            <div class="d-flex flex-column">
+                                <h5 class="fw-bold">Transports</h5>
                                 <span>Menambahkan, mengurangi, dan mengedit data master pemasok</span>
                             </div>
                         </div>
@@ -147,9 +202,9 @@ import ChartSales from '../../Components/ChartSales.vue';
 import ChartSalesTarget from '../../Components/ChartSalesTarget.vue';
 import TitlePage from '../../Components/TitlePage.vue';
 import { Link, usePage } from '@inertiajs/vue3';
-import { Person, GitNetworkSharp, Settings, People } from "@vicons/ionicons5";
+import { Person, GitNetworkSharp, Settings, People, Cart } from "@vicons/ionicons5";
 import { AdminPanelSettingsFilled } from "@vicons/material";
-import { Box24Filled } from "@vicons/fluent";
+import { Box24Filled, VehicleTruckProfile24Filled, HomePerson24Filled } from "@vicons/fluent";
 
 export default defineComponent({
     setup() {
@@ -162,7 +217,10 @@ export default defineComponent({
             GitNetworkSharp,
             Settings,
             People,
-            Box24Filled
+            Box24Filled, 
+            VehicleTruckProfile24Filled, 
+            Cart, 
+            HomePerson24Filled
         }
     },
     components: {
@@ -175,4 +233,17 @@ export default defineComponent({
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.float-card {
+    border-color: white;
+    transition: transform 0.3s ease-in-out, border 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.float-card:hover {
+    transform: scale(1.05);
+    border: 1px solid #28a745;
+    /* Warna hijau untuk border */
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.5);
+    /* Warna hijau untuk shadow */
+}
+</style>

@@ -5,27 +5,45 @@
             <div class="card-body">
                 <form class="row g-3" @submit.prevent="handleSubmitProduct">
                     <!-- FIRST ROW -->
-                    <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Kode Barang<span class="text-danger">*</span></label>
+                    <div class="col-12 col-lg-3 d-flex flex-column">
+                        <label for="">Kode Barang
+                            <RequiredMark />
+                        </label>
                         <n-input size="large" placeholder="" v-model:value="form.code" />
                     </div>
-                    <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Nama Produk<span class="text-danger">*</span></label>
+                    <div class="col-12 col-lg-3 d-flex flex-column">
+                        <label for="">Nama Produk
+                            <RequiredMark />
+                        </label>
                         <n-input size="large" placeholder="" v-model:value="form.name" />
                     </div>
-                    <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Kelompok<span class="text-danger">*</span></label>
+                    <div class="col-12 col-lg-3 d-flex flex-column">
+                        <label for="">Kelompok
+                            <RequiredMark />
+                        </label>
                         <n-select size="large" placeholder="" :options="productTypeOptions"
                             v-model:value="form.product_type_id" />
+                    </div>
+                    <div class="col-12 col-lg-3 d-flex flex-column">
+                        <label for="">Pemasok
+                            <RequiredMark />
+                        </label>
+                        <n-select placeholder="" v-model:value="form.supplier_id" filterable size="large"
+                            :options="supplierOptions" :loading="loading" clearable remote
+                            @search="handleSearch" />
                     </div>
 
                     <!-- SECOND ROW -->
                     <div class="col-12 col-lg-3 d-flex flex-column">
-                        <label for="">Kemasan<span class="text-danger">*</span></label>
+                        <label for="">Kemasan
+                            <RequiredMark />
+                        </label>
                         <n-select size="large" placeholder="" :options="unitOptions" v-model:value="form.unit" />
                     </div>
                     <div class="col-12 col-lg-3 d-flex flex-column">
-                        <label for="">Harga Tebus<span class="text-danger">*</span></label>
+                        <label for="">Harga Tebus
+                            <RequiredMark />
+                        </label>
                         <n-input size="large" placeholder="" v-model:value="form.redemp_price"
                             @input="(value) => form.redemp_price = value.replace(/\D/g, '')">
                             <template #prefix>
@@ -34,7 +52,9 @@
                         </n-input>
                     </div>
                     <div class="col-12 col-lg-3 d-flex flex-column">
-                        <label for="">Margin Normal<span class="text-danger">*</span></label>
+                        <label for="">Margin Normal
+                            <RequiredMark />
+                        </label>
                         <n-input size="large" placeholder="" v-model:value="form.normal_margin"
                             @input="(value) => form.normal_margin = value.replace(/\D/g, '')">
                             <template #prefix>
@@ -43,14 +63,18 @@
                         </n-input>
                     </div>
                     <div class="col-12 col-lg-3 d-flex flex-column">
-                        <label for="">Kategori Produk<span class="text-danger">*</span></label>
+                        <label for="">Kategori Produk
+                            <RequiredMark />
+                        </label>
                         <n-select size="large" placeholder="" v-model:value="form.category"
                             :options="categoryProductOptions" />
                     </div>
 
                     <!-- THIRD ROW -->
                     <div class="col-12 col-lg-3 d-flex flex-column">
-                        <label for="">OH Depo<span class="text-danger">*</span></label>
+                        <label for="">OH Depo
+                            <RequiredMark />
+                        </label>
                         <n-input size="large" placeholder="" v-model:value="form.oh_depo"
                             @input="(value) => form.oh_depo = value.replace(/\D/g, '')">
                             <template #prefix>
@@ -59,7 +83,9 @@
                         </n-input>
                     </div>
                     <div class="col-12 col-lg-3 d-flex flex-column">
-                        <label for="">Saving<span class="text-danger">*</span></label>
+                        <label for="">Saving
+                            <RequiredMark />
+                        </label>
                         <n-input size="large" placeholder="" v-model:value="form.saving"
                             @input="(value) => form.saving = value.replace(/\D/g, '')">
                             <template #prefix>
@@ -68,7 +94,9 @@
                         </n-input>
                     </div>
                     <div class="col-12 col-lg-3 d-flex flex-column">
-                        <label for="">Bad Debt<span class="text-danger">*</span></label>
+                        <label for="">Bad Debt
+                            <RequiredMark />
+                        </label>
                         <n-input size="large" placeholder="" v-model:value="form.bad_debt_dd"
                             @input="(value) => form.bad_debt_dd = value.replace(/\D/g, '')">
                             <template #prefix>
@@ -77,7 +105,9 @@
                         </n-input>
                     </div>
                     <div class="col-12 col-lg-3 d-flex flex-column">
-                        <label for="">Saving Marketing<span class="text-danger">*</span></label>
+                        <label for="">Saving Marketing
+                            <RequiredMark />
+                        </label>
                         <n-input size="large" placeholder="" v-model:value="form.saving_marketing"
                             @input="(value) => form.saving_marketing = value.replace(/\D/g, '')">
                             <template #prefix>
@@ -88,7 +118,9 @@
 
                     <!-- FOURTH ROW -->
                     <div class="col-12 col-lg-3 d-flex flex-column">
-                        <label for="">Harga Jual Retail<span class="text-danger">*</span></label>
+                        <label for="">Harga Jual Retail
+                            <RequiredMark />
+                        </label>
                         <n-input size="large" placeholder="" v-model:value="form.retail_price"
                             @input="(value) => form.retail_price = value.replace(/\D/g, '')">
                             <template #prefix>
@@ -97,7 +129,9 @@
                         </n-input>
                     </div>
                     <div class="col-12 col-lg-3 d-flex flex-column">
-                        <label for="">Harga Jual Hotel & Resto<span class="text-danger">*</span></label>
+                        <label for="">Harga Jual Hotel & Resto
+                            <RequiredMark />
+                        </label>
                         <n-input size="large" placeholder="" v-model:value="form.restaurant_price"
                             @input="(value) => form.restaurant_price = value.replace(/\D/g, '')">
                             <template #prefix>
@@ -106,7 +140,9 @@
                         </n-input>
                     </div>
                     <div class="col-12 col-lg-3 d-flex flex-column">
-                        <label for="">Harga Jual 3<span class="text-danger">*</span></label>
+                        <label for="">Harga Jual 3
+                            <RequiredMark />
+                        </label>
                         <n-input size="large" placeholder="" v-model:value="form.price_3"
                             @input="(value) => form.price_3 = value.replace(/\D/g, '')">
                             <template #prefix>
@@ -115,7 +151,9 @@
                         </n-input>
                     </div>
                     <div class="col-12 col-lg-3 d-flex flex-column">
-                        <label for="">Harga Jual DD<span class="text-danger">*</span></label>
+                        <label for="">Harga Jual DD
+                            <RequiredMark />
+                        </label>
                         <n-input size="large" placeholder="" v-model:value="form.dd_price"
                             @input="(value) => form.dd_price = value.replace(/\D/g, '')">
                             <template #prefix>
@@ -131,7 +169,7 @@
         </div>
         <div class="row g-3">
             <div class="col-12 col-lg-6 d-flex align-items-lg-center gap-3">
-                <label>Total Jumlah Customer</label>
+                <label>Total Jumlah Produk</label>
                 <span class="border px-4 py-1 bg-white" style="border-radius: 3px;">
                     {{ ($page.props.products as any).total }}
                 </span>
@@ -139,16 +177,27 @@
             <div class="col-12 col-lg-6 d-flex">
                 <div class="ms-auto d-flex align-items-lg-center gap-2 justify-content-lg-end w-100">
                     <label>Pencarian Data</label>
-                    <n-input class="w-50" />
+                    <n-select class="w-25" v-model:value="filterField" placeholder="Pilih field" :options="[
+                        { label: 'Kode', value: 'code' },
+                        { label: 'Nama', value: 'name' },
+                        { label: 'Kategori', value: 'category' },
+                        { label: 'Supplier', value: 'supplier' },
+                    ]" />
+                    <n-input class="w-50" placeholder="" @input="handleSearchQuery" v-model:value="filterQuery" />
                 </div>
             </div>
         </div>
 
         <div class="card shadow-sm border-0 mb-5">
             <div class="card-body">
-                <n-data-table :bordered="false" :columns="columns" :data="$page.props.products.data" />
-                <n-pagination v-model:page="currentPage" :page-count="$page.props.products.to"
-                    :page-size="$page.props.products.per_page" @update:page="handlePageChange" />
+                <n-data-table :columns="columns" :bordered="false" :data="($page.props.products as any).data"
+                    pagination-behavior-on-filter="first" />
+                <div class="d-flex mt-3">
+                    <n-pagination class="ms-auto" v-model:page="pagination.current_page"
+                        :page-count="pagination.last_page" :page-size="pagination.per_page"
+                        :item-count="pagination.total" @update:page="handlePageChange"
+                        @update:page-count="pagination.last_page = ($page.props.units as any).last_page" />
+                </div>
             </div>
         </div>
 
@@ -156,21 +205,22 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, h, ref, computed } from 'vue';
+import { defineComponent, h, ref, reactive } from 'vue';
 import TitlePage from '../../Components/TitlePage.vue';
-import { NButton, useNotification } from 'naive-ui';
+import RequiredMark from '../../Components/RequiredMark.vue';
+import { DataTableColumns, NButton, SelectOption, useNotification } from 'naive-ui';
 import { router, useForm, usePage } from '@inertiajs/vue3';
-import { Lookup } from '../../types/model';
+import { Flash, Lookup, Products } from '../../types/model';
 import { formatRupiah } from '../../Utils/options-input.utils';
 import Swal from 'sweetalert2';
-
-
 
 export default defineComponent({
     setup() {
         const currentPage = ref(1);
         const page = usePage();
         const notification = useNotification();
+        const supplierOptionsRef = ref<SelectOption[]>([]);
+        const loading = ref(false);
 
         const form = useForm({
             code: '',
@@ -188,6 +238,7 @@ export default defineComponent({
             bad_debt_dd: null as unknown as number,
             saving_marketing: null as unknown as number,
             product_type_id: null as unknown as number,
+            supplier_id: null as unknown as number,
         });
 
         function createColumns() {
@@ -215,7 +266,7 @@ export default defineComponent({
                     key: "segment",
                     width: 150,
                     render(row) {
-                        return row.product_type.name
+                        return row.product_type?.name
                     }
                 },
                 {
@@ -233,56 +284,89 @@ export default defineComponent({
                     title: "PEMASOK",
                     key: "supplier",
                     width: 150,
+                    render(row) {
+                        return row.parties?.name;
+                    }
                 },
                 {
                     title: "HARGA TEBUS",
                     key: 'redemption_price',
-                    width: 150,
+                    width: 200,
+                    render(row) {
+                        return formatRupiah(row.redemp_price);
+                    }
                 },
                 {
                     title: "HARGA JUAL RETAIL",
                     key: "retail_selling_price",
-                    width: 150,
+                    width: 200,
+                    render(row) {
+                        return formatRupiah(row.retail_price);
+                    }
                 },
                 {
                     title: "HARGA JUAL HOTEL & RESTO",
                     key: "selling_price",
-                    width: 150,
+                    width: 200,
+                    render(row) {
+                        return formatRupiah(row.restaurant_price);
+                    }
                 },
                 {
                     title: "HARGA 3",
                     key: "price_3",
-                    width: 150,
+                    width: 200,
+                    render(row) {
+                        return formatRupiah(row.price_3);
+                    }
                 },
                 {
                     title: "HARGA DD",
                     key: "price_dd",
-                    width: 150,
+                    width: 200,
+                    render(row) {
+                        return formatRupiah(row.dd_price);
+                    }
                 },
                 {
                     title: "MARGIN NORMAL",
                     key: "margin_normal",
-                    width: 100,
+                    width: 200,
+                    render(row) {
+                        return formatRupiah(row.normal_margin);
+                    }
                 },
                 {
                     title: "OH DEPO",
                     key: "over_head_depo",
-                    width: 100,
+                    width: 200,
+                    render(row) {
+                        return formatRupiah(row.oh_depo);
+                    }
                 },
                 {
                     title: "SAVING",
                     key: "saving",
-                    width: 100,
+                    width: 200,
+                    render(row) {
+                        return formatRupiah(row.saving);
+                    }
                 },
                 {
                     title: "BAD DEBT DD",
                     key: "bad_debt_dd",
-                    width: 100,
+                    width: 200,
+                    render(row) {
+                        return formatRupiah(row.bad_debt_dd);
+                    }
                 },
                 {
                     title: "SAVING MARKETING",
-                    key: "sacving_marketing",
-                    width: 100,
+                    key: "saving_marketing",
+                    width: 200,
+                    render(row) {
+                        return formatRupiah(row.saving_marketing);
+                    }
                 },
                 {
                     title: 'ACTION',
@@ -329,29 +413,53 @@ export default defineComponent({
             ]
         }
 
+        // Filter data
+        const filterField = ref('name'); // Default filter field
+        const filterQuery = ref(''); // Filter input value
+
+        // Fungsi untuk meng-handle pencarian
+        const handleSearchQuery = () => {
+            router.get(route('admin.products'), {
+                page: pagination.current_page,
+                filter_field: filterField.value,
+                filter_query: filterQuery.value
+            }, {
+                preserveState: true,
+                replace: true
+            });
+        };
+
+        // Function to handle page change
+        function handlePageChange(page: number) {
+            router.get(route('admin.products'), {
+                page,
+                filter_field: filterField.value,
+                filter_query: filterQuery.value
+            }, { preserveState: true }); // Request data for the selected page
+        }
+
         function handleSubmitProduct() {
             form.post(route('admin.products.post'), {
                 onSuccess() {
                     form.reset();
                     notification.success({
-                        title: page.props.flash.success,
+                        title: (page.props.flash as Flash).success,
                         duration: 1500,
                         closable: false,
                     });
                 },
                 onError() {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Isi form dengan tanda *",
-                    });
+                    Swal.fire('Cek kembali form', 'Form dengan <span class="text-danger">*</span> harus di isi!', 'error');
                 }
             });
         }
 
-        function handlePageChange(page: number) {
-            currentPage.value = page;
-            router.get(route('admin.products'), { page }, { preserveState: true }); // Request data for the selected page
-        }
+        const pagination = reactive({
+            current_page: (page.props.products as any).current_page,
+            per_page: (page.props.products as any).per_page,
+            total: (page.props.products as any).total,
+            last_page: (page.props.products as any).last_page,
+        });
 
         const unitOptions = (page.props.units as Lookup[]).map((data) => ({
             label: data.label,
@@ -364,23 +472,48 @@ export default defineComponent({
         }));
 
         const categoryProductOptions = [
-            { label: "NT", value: "NT" },
-            { label: "T", value: "T" },
-        ]
+            { label: "NT (NON TEPUNG)", value: "NT" },
+            { label: "T (TEPUNG)", value: "T" },
+        ];
+
+        const supplierOptions = (page.props.suppliers as any[]).map((data) => ({
+            label: data.name,
+            value: data.id,
+        }));
 
         return {
             columns: createColumns(),
             handlePageChange,
             handleSubmitProduct,
+            handleSearchQuery,
             currentPage,
             unitOptions,
             productTypeOptions,
             categoryProductOptions,
-            form
+            form,
+            filterField,
+            filterQuery,
+            pagination,
+            loading,
+            supplierOptions: supplierOptionsRef,
+            handleSearch: (query: string) => {
+                if (!query.length) {
+                    supplierOptionsRef.value = []
+                    return
+                }
+                loading.value = true;
+                window.setTimeout(() => {
+                    supplierOptionsRef.value = supplierOptions.filter(
+                        item => ~item.label.indexOf(query),
+                    );
+                    loading.value = false
+                }, 1000);
+            },
         }
     },
     components: {
-        TitlePage
+        TitlePage,
+        RequiredMark
     }
 })
 </script>

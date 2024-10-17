@@ -9,11 +9,24 @@ use Inertia\Inertia;
 
 class UnitController extends Controller
 {
-    public function createUnit()
+    public function createUnit(Request $request)
     {
-        $units = Lookup::where('category', 'UNIT')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        $query = Lookup::where('category', 'UNIT');
+
+         // Filter berdasarkan field dan query yang diterima dari request
+        if ($request->filled('filter_field') && $request->filled('filter_query')) {
+            $field = $request->input('filter_field'); // Field yang dipilih (nama, tipe, nomor telepon)
+            $value = $request->input('filter_query'); // Nilai filter
+
+            // Tambahkan where dengan like untuk pencarian berdasarkan field yang dipilih
+            $query->where($field, 'like', '%' . $value . '%');
+        }
+
+        // Urutkan berdasarkan created_at dan paginasi data
+        $units = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        // Pastikan total item sesuai dengan hasil yang difilter
+        $units->appends($request->only('filter_field', 'filter_query'));
 
         return Inertia::render('Admin/Units', compact('units'));
     }

@@ -13,19 +13,27 @@ use Inertia\Response;
 
 class TransportController extends Controller
 {
-    public function createTransport(): Response
+    public function createTransport(Request $request): Response
     {
-        // $transports = DB::table('parties')
-        //     ->join('parties_groups', 'parties.parties_group_id', '=', 'parties_groups.id')
-        //     ->where('parties_groups.name', 'ANGKUTAN')
-        //     ->orderBy('parties.created_at', 'desc')
-        //     ->paginate(10);
-        $transports = Parties::with('partiesGroup')
+        $query = Parties::with('partiesGroup')
             ->whereHas('partiesGroup', function($query) {
                 $query->where('name', 'ANGKUTAN');
-            })
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            });
+
+        // Filter berdasarkan field dan query yang diterima dari request
+        if($request->filled('filter_field') && $request->filled('filter_query')) {
+            $field = $request->input('filter_field'); // Field yang dipilih (nama, tipe, nomor telepon)
+            $value = $request->input('filter_query'); // Nilai filter
+
+            // Tambahkan where dengan like untuk pencarian berdasarkan field yang dipilih
+            $query->where($field, 'like', '%' . $value . '%');
+        }
+
+        // Urutkan berdasarkan created_at dan paginasi data
+        $transports = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        // Pastikan total item sesuai dengan hasil yang difilter
+        $transports->appends($request->only('filter_field', 'filter_query'));
 
         return Inertia::render('Admin/Transports', compact('transports'));
     }

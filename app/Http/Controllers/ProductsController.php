@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Services\ProductServices;
 use App\JournalAction;
 use App\Models\Lookup;
+use App\Models\Parties;
 use App\Models\ProductJournal;
 use App\Models\Products;
 use App\Models\ProductType;
@@ -33,22 +34,46 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        
+        //
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function createProduct()
+    public function createProduct(Request $request)
     {
-        $products = Products::with('productType')->orderBy('created_at', 'desc')->paginate(10);
+        $query = Products::with(['productType','parties']);
+
+         // Filter berdasarkan field dan query yang diterima dari request
+        if($request->filled('filter_field') && $request->filled('filter_query')) {
+            $field = $request->input('filter_field'); // Field yang dipilih (nama, tipe, nomor telepon)
+            $value = $request->input('filter_query'); // Nilai filter
+
+            // Tambahkan where dengan like untuk pencarian berdasarkan field yang dipilih
+            if($field === "supplier") {
+                $query->whereHas('parties', function ($q) use ($value) {
+                    $q->where('name', 'like', '%' . $value . '%'); // Menggunakan relasi parties
+                });
+            } else {
+                $query->where($field, 'like', '%' . $value . '%');
+            }
+        }
+
+        // Urutkan berdasarkan created_at dan paginasi data
+        $products = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        // Pastikan total item sesuai dengan hasil yang difilter
+        $products->appends($request->only('filter_field', 'filter_query'));
+
         $product_type = ProductType::all();
         $units = Lookup::where('category', 'UNIT')->get();
+        $suppliers = Parties::with('partiesGroup')->where('type_parties', "VENDOR")->get();
 
         return Inertia::render('Admin/Products', compact(
             'products',
             'product_type',
             'units',
+            'suppliers'
         ));
     }
 
@@ -73,6 +98,7 @@ class ProductsController extends Controller
             'oh_depo' => 'nullable|numeric',
             'saving' => 'nullable|numeric',
             'bad_debt_dd' => 'nullable|numeric',
+            'supplier_id' => 'nullable|numeric',
             'saving_marketing' => 'nullable|numeric',
             'product_type_id' => 'numeric|required',
         ]);
@@ -81,6 +107,7 @@ class ProductsController extends Controller
         // Menyimpan data ke tabel products
         DB::transaction(function() use ($request) {
             $product_type = ProductType::where('id', $request->input('product_type_id'))->first();
+            $supplier = Parties::where('id', $request->input('supplier_id'))->first();
 
             $product = new Products();
             $product->code = $request->input('code');
@@ -95,6 +122,7 @@ class ProductsController extends Controller
             $product->normal_margin = $request->input('normal_margin');
             $product->oh_depo = $request->input('oh_depo');
             $product->saving = $request->input('saving');
+            $product->supplier_id = $supplier->id;
             $product->bad_debt_dd = $request->input('bad_debt_dd');
             $product->saving_marketing = $request->input('saving_marketing');
             $product->product_type_id = $product_type->id;

@@ -16,7 +16,6 @@ class Products extends Model
         'unit',
         'name',
         'category',
-        'supplier',
         'redemp_price',
         'retail_price',
         'restaurant_price',
@@ -29,6 +28,7 @@ class Products extends Model
         'saving_marketing',
         'tax_id',
         'product_type_id',
+        'supplier_id',
     ];
 
     public function tax(): BelongsTo
@@ -44,5 +44,10 @@ class Products extends Model
     public function transactionItems(): HasMany
     {
         return $this->hasMany(TransactionItem::class);
+    }
+
+    public function parties(): BelongsTo
+    {
+        return $this->belongsTo(Parties::class, 'supplier_id');
     }
 }

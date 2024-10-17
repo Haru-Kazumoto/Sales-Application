@@ -6,17 +6,17 @@
                 <div class="row g-3">
                     <!-- First row -->
                     <div class="col-12 col-md-6 col-lg-6 d-flex flex-column">
-                        <label for="">Kode Unit
+                        <label for="">Kode Driver
                             <RequiredMark />
                         </label>
-                        <n-input size="large" placeholder="" v-model:value="form.value"
-                            @input="(value) => form.value = value.toUpperCase()" />
+                        <n-input size="large" placeholder="" v-model:value="form.code"
+                            @input="(value) => form.code = value.toUpperCase()" />
                     </div>
                     <div class="col-12 col-md-6 col-lg-6 d-flex flex-column">
-                        <label for="">Nama Unit
+                        <label for="">Nama Driver
                             <RequiredMark />
                         </label>
-                        <n-input size="large" placeholder="" v-model:value="form.label" />
+                        <n-input size="large" placeholder="" v-model:value="form.name" @input="(value) => form.name = value.toUpperCase()"/>
                     </div>
                 </div>
 
@@ -28,17 +28,17 @@
 
         <div class="row g-3">
             <div class="col-12 col-lg-6 d-flex align-items-lg-center gap-3">
-                <label>Total Jumlah Satuan</label>
+                <label>Total Jumlah Driver</label>
                 <span class="border px-4 py-1 bg-white" style="border-radius: 3px;">
-                    {{ ($page.props.units as any).total }}
+                    {{ ($page.props.drivers as any).total }}
                 </span>
             </div>
             <div class="col-12 col-lg-6 d-flex">
                 <div class="ms-auto d-flex align-items-lg-center gap-2 justify-content-lg-end w-100">
                     <label>Pencarian Data</label>
                     <n-select class="w-25" v-model:value="filterField" placeholder="Pilih field" :options="[
-                        { label: 'Kode', value: 'value' },
-                        { label: 'Nama', value: 'label' },
+                        { label: 'Kode', value: 'code' },
+                        { label: 'Nama', value: 'name' },
                     ]" />
                     <n-input class="w-50" placeholder="" @input="handleSearch"
                         v-model:value="filterQuery" />
@@ -48,13 +48,13 @@
 
         <div class="card shadow-sm border-0 mb-5">
             <div class="card-body">
-                <n-data-table :columns="columns" :bordered="false" :data="($page.props.units as any).data"
+                <n-data-table :columns="columns" :bordered="false" :data="($page.props.drivers as any).data"
                     pagination-behavior-on-filter="first" />
                 <div class="d-flex mt-3">
                     <n-pagination class="ms-auto" v-model:page="pagination.current_page"
-                        :page-count="pagination.last_page" :page-size="pagination.per_page"
+                        :page-size="pagination.per_page"
                         :item-count="pagination.total" @update:page="handlePageChange"
-                        @update:page-count="pagination.last_page = ($page.props.units as any).last_page" />
+                        @update:page-count="pagination.last_page = ($page.props.drivers as any).last_page" />
                 </div>
             </div>
         </div>
@@ -86,13 +86,13 @@ export default defineComponent({
                     }
                 },
                 {
-                    title: "KODE UNIT",
-                    key: 'value',
+                    title: "KODE DRIVER",
+                    key: 'code',
                     width: 200,
                 },
                 {
-                    title: "NAMA",
-                    key: "label",
+                    title: "NAMA DRIVER",
+                    key: "name",
                     width: 200,
                 },
                 {
@@ -107,7 +107,7 @@ export default defineComponent({
                                     type: "info",
                                     size: 'small',
                                     onClick() {
-                                        router.visit(route('admin.unit.edit', row.id));
+                                        router.visit(route('admin.driver.edit', row.id));
                                     }
                                 },
                                 { default: () => "EDIT" }
@@ -119,22 +119,22 @@ export default defineComponent({
                                     size: 'small',
                                     onClick() {
                                         Swal.fire({
-                                            title: `Hapus unit ${row.label}?`,
+                                            title: `Hapus driver ${row.name}?`,
                                             text: "Data akan dihapus secara permanen",
                                             icon: 'warning',
                                         }).then((result) => {
                                             if (result.isConfirmed) {
-                                                router.delete(route('admin.unit.delete', row.id), {
+                                                router.delete(route('admin.driver.delete', row.id), {
                                                     onSuccess: () => {
                                                         notification.success({
-                                                            title: "Berhasil menghapus data unit",
+                                                            title: "Berhasil menghapus data driver",
                                                             duration: 1500,
                                                             closable: false,
                                                         });
                                                     },
                                                     onError: () => {
                                                         notification.error({
-                                                            title: "Gagal menghapus data transport",
+                                                            title: "Gagal menghapus data driver",
                                                             meta: "Cek koneksi internet anda atau refresh page",
                                                             duration: 1700,
                                                             closable: false,
@@ -155,17 +155,17 @@ export default defineComponent({
         }
 
         const form = useForm({
-            label: "",
-            value: "",
+            code: "",
+            name: "",
         });
 
         // Filter data
-        const filterField = ref('label'); // Default filter field
+        const filterField = ref('name'); // Default filter field
         const filterQuery = ref(''); // Filter input value
 
         // Fungsi untuk meng-handle pencarian
         const handleSearch = () => {
-            router.get(route('admin.create-unit'), {
+            router.get(route('admin.create-driver'), {
                 page: pagination.current_page,
                 filter_field: filterField.value,
                 filter_query: filterQuery.value
@@ -177,7 +177,7 @@ export default defineComponent({
 
         // Function to handle page change
         function handlePageChange(page: number) {
-            router.get(route('admin.create-unit'), {
+            router.get(route('admin.create-driver'), {
                 page,
                 filter_field: filterField.value,
                 filter_query: filterQuery.value
@@ -185,7 +185,7 @@ export default defineComponent({
         }
 
         function handleSubmitUnit() {
-            form.post(route('admin.unit.post'), {
+            form.post(route('admin.driver.post'), {
                 onError: () => {
                     Swal.fire('Cek kembali form', 'form dengan <span style="color: red;">*</span> harus di isi', 'error');
                 },
@@ -202,10 +202,10 @@ export default defineComponent({
         }
 
         const pagination = reactive({
-            current_page: (page.props.units as any).current_page,
-            per_page: (page.props.units as any).per_page,
-            total: (page.props.units as any).total,
-            last_page: (page.props.units as any).last_page,
+            current_page: (page.props.drivers as any).current_page,
+            per_page: (page.props.drivers as any).per_page,
+            total: (page.props.drivers as any).total,
+            last_page: (page.props.drivers as any).last_page,
         });
 
         return {

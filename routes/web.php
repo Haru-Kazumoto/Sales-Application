@@ -107,6 +107,23 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
             Route::patch('/update/{unit}', [App\Http\Controllers\UnitController::class, 'edit'])->name('unit.update');
             Route::delete('/delete/{unit}', [App\Http\Controllers\UnitController::class, 'destroy'])->name('unit.delete');
         });
+
+        Route::prefix('driver-management')->group(function() {
+            Route::get('', [App\Http\Controllers\DriverController::class, 'createDriver'])->name('create-driver');
+            Route::get('/edit/{driver}', [App\Http\Controllers\DriverController::class, 'editDriver'])->name('driver.edit');
+            Route::post('/post', [App\Http\Controllers\DriverController::class, 'storeDriver'])->name('driver.post');
+            Route::patch('/update/{driver}', [App\Http\Controllers\DriverController::class, 'updateDriver'])->name('driver.update');
+            Route::delete('/delete/{driver}', [App\Http\Controllers\DriverController::class, 'deleteDriver'])->name('driver.delete');
+        }); 
+
+        Route::prefix('storehouse-management')->group(function() {
+            Route::get('', [App\Http\Controllers\StorehouseController::class, 'createStorehouse'])->name('create-storehouse');
+            Route::get('/edit/{storehouse}', [App\Http\Controllers\StorehouseController::class, 'editStorehouse'])->name('storehouse.edit');
+            Route::post('/post', [App\Http\Controllers\StorehouseController::class, 'storeStorehouse'])->name('storehouse.post');
+            Route::patch('/update/{storehouse}', [App\Http\Controllers\StorehouseController::class, 'updateStorehouse'])->name('storehouse.update');
+            Route::delete('/delete/{storehouse}', [App\Http\Controllers\StorehouseController::class, 'deleteStorehouse'])->name('storehouse.delete');
+        });
+
     });
 
     // Procurement Routes

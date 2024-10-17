@@ -61,30 +61,41 @@
 
         <div class="row g-3">
             <div class="col-12 col-lg-6 d-flex align-items-lg-center gap-3">
-                <label>Total Jumlah Transport</label>
+                <label>Total Jumlah Satuan</label>
                 <span class="border px-4 py-1 bg-white" style="border-radius: 3px;">
-                    {{ $page.props.transports.total }}
+                    {{ ($page.props.transports as any).total }}
                 </span>
             </div>
             <div class="col-12 col-lg-6 d-flex">
                 <div class="ms-auto d-flex align-items-lg-center gap-2 justify-content-lg-end w-100">
                     <label>Pencarian Data</label>
-                    <n-input class="w-50" size="large" placeholder=""/>
+                    <n-select class="w-25" v-model:value="filterField" placeholder="Pilih field" :options="[
+                        { label: 'Kode', value: 'code' },
+                        { label: 'Nama', value: 'name' },
+                        { label: 'Nomor Polisi', value: 'number_plate'}
+                    ]" />
+                    <n-input class="w-50" placeholder="" @input="handleSearch" v-model:value="filterQuery" />
                 </div>
             </div>
         </div>
 
-        <div class="card shadow-sm border-0 mb-4">
+        <div class="card shadow-sm border-0 mb-5">
             <div class="card-body">
-                <n-data-table :bordered="false" :columns="columns" :data="($page.props.transports as any).data"
-                    size="small" />
+                <n-data-table :columns="columns" :bordered="false" :data="($page.props.transports as any).data"
+                    pagination-behavior-on-filter="first" />
+                <div class="d-flex mt-3">
+                    <n-pagination class="ms-auto" v-model:page="pagination.current_page"
+                        :page-size="pagination.per_page"
+                        :item-count="pagination.total" @update:page="handlePageChange"
+                        @update:page-count="pagination.last_page = ($page.props.transports as any).last_page" />
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, h } from 'vue';
+import { defineComponent, h, ref, reactive } from 'vue';
 import TitlePage from '../../Components/TitlePage.vue';
 import RequiredMark from '../../Components/RequiredMark.vue';
 import { DataTableColumns, NButton, useNotification } from 'naive-ui';
@@ -222,6 +233,38 @@ export default defineComponent({
             address: '',
         });
 
+        // Filter data
+        const filterField = ref('label'); // Default filter field
+        const filterQuery = ref(''); // Filter input value
+
+        // Fungsi untuk meng-handle pencarian
+        const handleSearch = () => {
+            router.get(route('admin.create-transports'), {
+                page: pagination.current_page,
+                filter_field: filterField.value,
+                filter_query: filterQuery.value
+            }, {
+                preserveState: true,
+                replace: true
+            });
+        };
+
+        // Function to handle page change
+        function handlePageChange(page: number) {
+            router.get(route('admin.create-transports'), {
+                page,
+                filter_field: filterField.value,
+                filter_query: filterQuery.value
+            }, { preserveState: true }); // Request data for the selected page
+        }
+
+        const pagination = reactive({
+            current_page: (page.props.transports as any).current_page,
+            per_page: (page.props.transports as any).per_page,
+            total: (page.props.transports as any).total,
+            last_page: (page.props.transports as any).last_page,
+        });
+
         function handleSubmitTransport() {
             form.post(route('admin.transport.post'), {
                 onError: () => {
@@ -241,8 +284,13 @@ export default defineComponent({
 
         return {
             columns: createColumns(),
+            handleSearch,
+            handlePageChange,
             handleSubmitTransport,
             form,
+            filterField,
+            filterQuery,
+            pagination,
         }
     },
     components: {
