@@ -44,8 +44,9 @@
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">TERMIN<span class="text-danger">*</span></label>
-                            <n-select size="large" v-model:value="form.term_of_payment" :options="termPaymentOptions"
-                                placeholder="" />
+                            <n-input size="large" v-model:value="form.term_of_payment" placeholder="">
+                                <template #suffix>HARI</template>
+                            </n-input>
                         </div>
                     </div>
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4">
@@ -62,7 +63,7 @@
                                 placeholder="" />
                         </div>
                     </div>
-                    <div class="col-6 col-sm-6 col-md-6 col-lg-4">
+                    <!-- <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">BIAYA ANGKUTAN<span class="text-danger">*</span></label>
                             <n-input size="large" placeholder="" v-model:value="transaction_details.transportation_cost"
@@ -72,7 +73,7 @@
                                 </template>
                             </n-input>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">CASHBACK<span class="text-danger">*</span></label>
@@ -203,7 +204,7 @@
                 <div class="d-flex flex-column w-100 justify-content-between mt-2 gap-3">
                     <div class="d-flex justify-content-between">
                         <span>TERM OF PAYMENT</span>
-                        <span class="fw-bold">{{ form.term_of_payment.replace("_", "") }}</span>
+                        <span class="fw-bold">{{ `${form.term_of_payment} HARI` }}</span>
                     </div>
                     <div class="d-flex justify-content-between">
                         <span>JATUH TEMPO</span>
@@ -426,7 +427,7 @@ export default defineComponent({
             discount_2: null as unknown as number,
             discount_3: null as unknown as number,
             total_price: null as unknown as number,
-            total_price_discount: null as unknown as number,
+            // total_price_discount: null as unknown as number,
         });
 
         //TODO : create 3 watch for watch discoutns field and calculate it when filled
@@ -473,8 +474,9 @@ export default defineComponent({
 
             if (selectedCustomer) {
                 transaction_details.value.customer_address = selectedCustomer.address as any;
-                transaction_details.value.npwp = selectedCustomer.npwp as any,
-                    transaction_details.value.legality = selectedCustomer.legality as any || '';
+                transaction_details.value.npwp = selectedCustomer.npwp as any;
+                transaction_details.value.legality = selectedCustomer.legality as any || '';
+                form.term_of_payment = selectedCustomer.term_payment?.toString();
             } else {
                 transaction_details.value.customer_address = '';
                 transaction_details.value.npwp = '',
@@ -573,8 +575,8 @@ export default defineComponent({
             if (quantity > lastStock) {
                 Swal.fire({
                     icon: 'error',
-                    title: 'Oops...',
-                    text: `Quantity melebihi stok yang tersedia (${lastStock})!`,
+                    title: 'Quantity barang tidak cukup!',
+                    text: `Stok aktual ${lastStock}`,
                 });
                 return; // Hentikan eksekusi jika quantity tidak valid
             }
@@ -659,12 +661,12 @@ export default defineComponent({
                     value: transaction_details.value.customer_address,
                     data_type: 'string',
                 },
-                {
-                    name: 'Biaya Angkutan',
-                    category: 'Transportation Cost',
-                    value: transaction_details.value.transportation_cost as any,
-                    data_type: 'float',
-                },
+                // {
+                //     name: 'Biaya Angkutan',
+                //     category: 'Transportation Cost',
+                //     value: transaction_details.value.transportation_cost as any,
+                //     data_type: 'float',
+                // },
                 {
                     name: 'Cashback',
                     category: 'Cashback',
@@ -694,6 +696,12 @@ export default defineComponent({
                     category: "NPWP",
                     value: transaction_details.value.npwp,
                     data_type: "string",
+                },
+                {
+                    name: "Generated",
+                    category: "Generating",
+                    value: "false",
+                    data_type: 'boolean',
                 }
             ];
 
@@ -727,7 +735,7 @@ export default defineComponent({
                             total_discount_1: null as unknown as number,
                             total_discount_2: null as unknown as number,
                             total_discount_3: null as unknown as number,
-                            transportation_cost: null as unknown as number,
+                            // transportation_cost: null as unknown as number,
                             unloading_cost: null as unknown as number
                         };
 
@@ -773,6 +781,7 @@ export default defineComponent({
             legality: data.legality,
             address: data.address,
             npwp: data.npwp,
+            term_payment: data.term_payment,
         }));
 
         const productOptions = (page.props.products as any[]).map((data) => ({

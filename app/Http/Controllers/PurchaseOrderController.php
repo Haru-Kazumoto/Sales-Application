@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\PurchaseOrderServices;
+use App\Http\Services\TransactionServices;
 use App\Models\Lookup;
 use App\Models\Parties;
 use App\Models\Products;
@@ -23,17 +25,30 @@ use Inertia\Response;
 class PurchaseOrderController extends Controller
 {
 
+    private $transactionService;
+    private $purchaseOrderService;
+
+    public function __construct(TransactionServices $transactionService, PurchaseOrderServices $purchaseOrderServices) 
+    {
+        $this->transactionService = $transactionService;
+        $this->purchaseOrderService = $purchaseOrderServices;
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $transactions = Transactions::with([
-            'transactionDetails', // Memuat relasi transactionDetails
-            'transactionItems.product' // Memuat relasi transactionItems beserta product di dalamnya
-        ])
-            ->where('transaction_type_id', 4)
-            ->get();
+        $tx_type = TransactionType::where('name', 'Purchase Order')->first();
+
+        $transactions = $this->transactionService->getTransactions(
+            $tx_type->id, 
+            $request->filter_field,
+            $request->filter_query,
+            'desc',
+            10,
+            $request->dateRange
+        );
 
         return Inertia::render('Procurement/Purchase/ListPurchaseOrders', compact('transactions'));
     }
@@ -64,11 +79,6 @@ class PurchaseOrderController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-
-        // foreach ($request->input('transaction_items') as $txItem) {
-        //     dd(['total_price' => $txItem['total_price']]);
-        // }
-
         $request->validate([
             'document_code' => 'required|string',
             'term_of_payment' => 'required|string',
@@ -209,6 +219,54 @@ class PurchaseOrderController extends Controller
         return $pdf->stream('purchase_order_'.rand(100000,900000).'_.pdf');
     }
 
+    /**
+     * Index all Purchase Order with number plate is not set yet
+     * 
+     * @return void
+     */
+    public function indexNewPO(Request $request): Response
+    {
+        // Dapatkan semua filter dari request
+        $filterRangeDate = $request->get('range_date', null);  // Default null jika tidak ada
+        $filterField = $request->get('filter_field', null);
+        $filterQuery = $request->get('filter_query', null);
+        $orderBy = $request->get('order_by', 'asc');
+        $paginate = $request->get('paginate', 10);  // Default paginate 10 item
+
+        // Panggil service method dengan parameter dari request
+        $purchase_orders = $this->purchaseOrderService->getAllPurchaseOrderWithNumberPlateIsNull(
+            $filterRangeDate, 
+            $filterField, 
+            $filterQuery, 
+            $orderBy, 
+            10
+        );
+
+        // dd($purchase_orders);
+
+        return Inertia::render('Procurement/Purchase/SetNumberPlate', compact('purchase_orders'));
+    }
+
+    public function updateNumberPlate(Request $request) 
+    {
+        $request->validate([
+            'transactions_id' => "required|exists:transactions,id",
+            'number_plate' => 'required|string',
+        ]); 
+
+
+        $transactionDetail = TransactionDetail::where('transactions_id', $request->transactions_id)
+            ->where('category', 'Transportation')
+            ->first();
+
+        DB::transaction(function() use ($transactionDetail, $request) {
+            $transactionDetail->update([
+                'value' => $request->number_plate,
+            ]);
+        });
+
+        return back()->with('success', 'Nomor polisi berhasil di tambahkan!');
+    }
 
     /**
      * Show the form for editing the specified resource.

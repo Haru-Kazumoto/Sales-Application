@@ -50,4 +50,9 @@ class Products extends Model
     {
         return $this->belongsTo(Parties::class, 'supplier_id');
     }
+
+    public function promoProduct(): BelongsTo
+    {
+        return $this->belogsTo(PromoProgram::class, 'promo_product_id');
+    }
 }

@@ -124,6 +124,13 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
             Route::delete('/delete/{storehouse}', [App\Http\Controllers\StorehouseController::class, 'deleteStorehouse'])->name('storehouse.delete');
         });
 
+        Route::prefix('promo-program')->group(function() {
+            Route::get('', [App\Http\Controllers\PromoProgramController::class,'index'])->name('index-promo');
+            Route::get('/create-promo', [App\Http\Controllers\PromoProgramController::class,'createPromo'])->name('create-promo');
+            Route::post('/store-promo', [App\Http\Controllers\PromoProgramController::class, 'storePromo'])->name('store-promo');
+            Route::get('/detail/{promoProgram}', [App\Http\Controllers\PromoProgramController::class, 'show'])->name('detail-promo');
+        });
+
     });
 
     // Procurement Routes
@@ -132,6 +139,8 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         Route::get('/purchase-order', [App\Http\Controllers\PurchaseOrderController::class, 'create'])->name('purchase-order');
         Route::post('/purchase-order', [App\Http\Controllers\PurchaseOrderController::class, 'store'])->name('create-po');
         Route::get('/purchase-orders', [App\Http\Controllers\PurchaseOrderController::class, 'index'])->name('purchase-order-list');
+        Route::get('/po-set-number-plate', [App\Http\Controllers\PurchaseOrderController::class, 'indexNewPo'])->name('set-number-plates');        
+        Route::patch('/set-number-plate', [App\Http\Controllers\PurchaseOrderController::class, 'updateNumberPlate'])->name('update-number-plate');
         Route::get('/purchase-order/detail/{transaction}', [App\Http\Controllers\PurchaseOrderController::class, 'show'])->name('purchase-order.detail');
         Route::get('/generate-po-document/{transactions}', [App\Http\Controllers\PurchaseOrderController::class, 'generatePurchaseOrderDocument'])->name('generate-po-document');
 
@@ -175,6 +184,8 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         Route::get('/incoming-item', [App\Http\Controllers\ProductsController::class, 'incomingProducts'])->name('incoming-item');
         Route::get('/incoming-item/{sso_number}', [App\Http\Controllers\SubSalesOrderController::class, 'getDataBySsoNumber'])->name('process-sso-data');
         Route::post('/store-products', [App\Http\Controllers\ProductsController::class,'storeProducts'])->name('store-products');
+        
+        // reStoreStockProduct
 
         Route::get('/travel-document', [App\Http\Controllers\CustomerOrdersController::class, 'createTravelDocument'])->name('travel-document');
         Route::get('/list-travel-document', [App\Http\Controllers\CustomerOrdersController::class, 'detailTravelDocument'])->name('list-travel-document');
@@ -211,6 +222,7 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         Route::post('/post-create-co-dku', [App\Http\Controllers\CustomerOrdersController::class, 'storeDku'])->name('create-co-dku.post');
         Route::get('/list-co', [App\Http\Controllers\CustomerOrdersController::class, 'index'])->name('list-co');
         Route::get('/customer-order/detail/{transactions}', [App\Http\Controllers\CustomerOrdersController::class, 'show'])->name('detail-co');
+        Route::post('/re-store-products/{transactionItem}', [App\Http\Controllers\ProductsController::class,'reStoreStockProduct'])->name('restore-products');
     });
 });
 

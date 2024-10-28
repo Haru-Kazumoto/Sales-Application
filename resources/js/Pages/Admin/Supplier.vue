@@ -270,7 +270,7 @@ export default defineComponent({
 
         function handleSubmitCustomer() {
             form.post(route('admin.parties.supplier.post'), {
-                preserveScroll: true,
+                preserveScroll: false,
                 onSuccess: () => {
                     form.reset();
                     notification.success({

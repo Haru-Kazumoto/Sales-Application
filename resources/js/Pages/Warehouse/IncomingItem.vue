@@ -70,7 +70,7 @@
                             <label for="tanggal_masuk">
                                 Tanggal Masuk Gudang<span class="text-danger">*</span>
                             </label>
-                            <n-date-picker placeholder="" id="tanggal_masuk"
+                            <n-date-picker placeholder="" id="tanggal_masuk" type="datetime"
                                 v-model:formatted-value="transaction_details.warehouse_entry_date"
                                 value-format="yyyy-MM-dd HH:mm:ss" size="large" />
                         </div>
@@ -78,12 +78,12 @@
                             <label for="tanggal_masuk">
                                 Tanggal Expired<span class="text-danger">*</span>
                             </label>
-                            <n-date-picker placeholder="" id="tanggal_masuk" value-format="yyyy-MM-dd HH:mm:ss"
+                            <n-date-picker placeholder="" type="datetime" id="tanggal_masuk" value-format="yyyy-MM-dd HH:mm:ss"
                                 v-model:formatted-value="transaction_details.expiry_date" size="large" />
                         </div>
                         <div class="col-md-3">
                             <label for="transportasi">
-                                Transportasi<span class="text-danger">*</span>
+                                Nomor Polisi Ekspedisi<span class="text-danger">*</span>
                             </label>
                             <n-input placeholder="" disabled id="transportasi"
                                 v-model:value="transaction_details.transportation" size="large" />
@@ -258,10 +258,10 @@ export default defineComponent({
                 confirmButtonText: 'Submit',
             }).then((result) => {
                 if (result.isConfirmed && result.value) {
-                    // // Jika item_gap lebih dari 0, kurangi quantity pada row yang sesuai
-                    // if (result.value.item_gap > 0) {
-                    //     row.quantity = (row.quantity ?? 0) - result.value.item_gap;
-                    // }
+                    // Jika item_gap lebih dari 0, kurangi quantity pada row yang sesuai
+                    if (result.value.item_gap > 0) {
+                        row.quantity = (row.quantity ?? 0) - result.value.item_gap;
+                    }
 
                     // Gunakan index untuk memperbarui item yang tepat
                     const index = form.transaction_items.indexOf(row);

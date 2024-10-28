@@ -2,38 +2,39 @@
 
 namespace App\Http\Services;
 use App\Models\Transactions;
+use App\Traits\Filterable;
+use Illuminate\Database\Eloquent\Builder;
 
 class CustomerOrderServices {
-    public function getTransactions(?string $transactionType = null, ?int $perPage = null, ?string $category = null, ?string $value = null)
+
+    use Filterable;
+
+    public function getTransactions(
+        ?string $transactionType = null, 
+        ?string $generated = "false",
+        ?string $direction = 'desc',
+        ?int $perPage = null, 
+        ?string $category = null, 
+        ?string $value = null
+    )
     {
         // Build the base query
         $query = Transactions::with('transactionType', 'transactionDetails', 'transactionItems');
 
-        // Conditionally apply the transactionType filter if provided
-        if ($transactionType) {
-            $query->whereHas('transactionType', function ($query) use ($transactionType) {
-                $query->where('name', $transactionType);
+        if(!is_null($generated)) {
+            $query->whereHas('transactionDetails', function($query) use ($generated) {
+                $query->where('category', 'Generating')->where('value', $generated);
             });
         }
 
-        // Conditionally apply the transactionDetails filter if both category and value are provided
-        if ($category && $value) {
-            $query->whereHas('transactionDetails', function ($query) use ($category, $value) {
-                $query->where('category', $category)
-                    ->where('value', $value);
-            });
-        }
+        // Apply filters using helper functions
+        $query = $this->applyTransactionTypeFilter($query, $transactionType);
+        $query = $this->applyTransactionDetailsFilter($query, $category, $value);
 
         // Apply ordering
-        $query->orderBy('created_at', 'asc');
+        $query->orderBy('created_at', $direction);
 
         // Conditionally apply pagination if $perPage is provided, otherwise just get the results
-        if ($perPage) {
-            return $query->paginate($perPage);
-        }
-
-        return $query->get();
+        return $this->applyPagination($query, $perPage);
     }
-
-
 }

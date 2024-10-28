@@ -234,7 +234,7 @@ export default defineComponent({
         });
 
         // Filter data
-        const filterField = ref('label'); // Default filter field
+        const filterField = ref('code'); // Default filter field
         const filterQuery = ref(''); // Filter input value
 
         // Fungsi untuk meng-handle pencarian

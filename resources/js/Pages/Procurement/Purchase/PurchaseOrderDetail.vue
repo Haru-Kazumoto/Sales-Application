@@ -60,7 +60,7 @@
 
                         <!-- Baris Ketiga -->
                         <div class="col-md-3">
-                            <label for="field5">Transportasi</label>
+                            <label for="field5">Nomor Polisi Ekspedisi</label>
                             <n-input :disabled="true" id="field5" size="large"
                                 v-model:value="transaction_details.transportation" />
                         </div>
@@ -78,6 +78,11 @@
                             <label for="field8">Karyawan</label>
                             <n-input :disabled="true" id="field8" size="large"
                                 v-model:value="transaction_details.employee_name" />
+                        </div>
+                        <div class="col-md-3">
+                            <label for="catatan">Catatan</label>
+                            <n-input id="catatan" type="textarea" placeholder="Basic Textarea" style="width: 30rem;"
+                                v-model:value="form.description" :disabled="true" />
                         </div>
                     </form>
                 </div>
@@ -107,23 +112,18 @@
                         <span>{{ formatRupiah(form.total) }}</span>
                     </div>
                     <div class="row g-3">
-                        <div class="col-12 col-lg-7 d-flex flex-column ">
-                            <label for="catatan">Catatan</label>
-                            <n-input id="catatan" type="textarea" placeholder="Basic Textarea" style="width: 30rem;"
-                                v-model:value="form.description" :disabled="true" />
-                        </div>
-                        <div class="col-12 col-lg-5 ">
+                        <div class="d-flex flex-column w-100 justify-content-between gap-3">
                             <div class="d-flex justify-content-between">
                                 <span>TERM OF PAYMENT</span>
-                                <span class="fw-bold">{{ form.term_of_payment.replace("_", " ") }}</span>
+                                <span class="fw-bold">{{ form.term_of_payment.replace("_", " ") }} HARI</span>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <span>JATUH TEMPO</span>
                                 <span class="fw-bold">
                                     {{ form.due_date ? dayjs(form.due_date).format('dddd, D MMMM YYYY') : '' }}
                                 </span>
-                            </div>
 
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -222,7 +222,6 @@ export default defineComponent({
     setup() {
         const page = usePage();
         const detailTransaction = page.props.transaction as Transactions;
-        console.log(detailTransaction);
 
         const form = useForm({
             document_code: detailTransaction.document_code || (page.props.po_number as string),

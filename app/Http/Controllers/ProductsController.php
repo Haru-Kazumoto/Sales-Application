@@ -323,6 +323,32 @@ class ProductsController extends Controller
         return redirect()->route('warehouse.incoming-item')->with('success', 'Barang berhasil masuk ke gudang!');
     }
 
+    public function reStoreStockProduct(Request $request, TransactionItem $transactionItem)
+    {
+        // dd($request->all());
+        DB::transaction(function() use ($transactionItem, $request) {
+            $product = Products::where('id', $transactionItem['product_id'])->first();
+            $warehouse = Warehouse::where('name', $request->allocation)->first();
+
+            // $transactionItem->update([
+            //     'quantity' => 
+            // ]);
+
+            ProductJournal::create([
+                'quantity' => $request->quantity,
+                'amount' => $request->amount,
+                'action' => "IN",
+                'expiry_date' => null, // Gunakan expiry date yang sudah diambil sebelumnya
+                'transactions_id' => $transactionItem->transactions_id,
+                'warehouse_id' => $warehouse->id,
+                'product_id' => $product->id,
+            ]);
+
+        });
+
+        return back()->with('success', 'Barang telah dikembalikan ke gudang');
+    }
+
     /**
      * Index all stocks in warehouse
      */

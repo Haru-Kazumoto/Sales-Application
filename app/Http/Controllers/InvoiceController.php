@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Services\CustomerOrderServices;
+use App\Http\Services\TransactionServices;
 use App\Models\InvoicePayment;
 use App\Models\Lookup;
 use App\Models\Products;
@@ -22,10 +23,12 @@ class InvoiceController extends Controller
 {
 
     private $customerOrderServices;
+    private $transactionServices;
 
-    public function __construct(CustomerOrderServices $customerOrderServices)
+    public function __construct(CustomerOrderServices $customerOrderServices, TransactionServices $transactionsServices)
     {
         $this->customerOrderServices = $customerOrderServices;
+        $this->transactionServices = $transactionsServices;
     }
 
     /**
@@ -33,19 +36,22 @@ class InvoiceController extends Controller
      */
     public function indexInvoices()
     {
-        return Inertia::render('AgingFinance/Sales/ListInvoice');
+        $tx_type = TransactionType::where('name', 'Penjualan')->first();
+        $invoices = $this->transactionServices->getTransactions($tx_type->id, null,null,'desc',10);
+
+        return Inertia::render('AgingFinance/Sales/ListInvoice', compact('invoices'));
     }
 
     public function listDnpInvoice(): Response
     {
-        $travel_documents_dnp = $this->customerOrderServices->getTransactions("Surat Jalan",15,"Warehouse","DNP");
+        $travel_documents_dnp = $this->customerOrderServices->getTransactions("Surat Jalan",null,'desc',15,"Warehouse","DNP");
 
         return Inertia::render('AgingFinance/Sales/InvoiceDNP', compact('travel_documents_dnp'));
     }
 
     public function listDkuInvoice(): Response
     {
-        $travel_documents_dku = $this->customerOrderServices->getTransactions("Surat Jalan",15,"Warehouse","DKU");
+        $travel_documents_dku = $this->customerOrderServices->getTransactions("Surat Jalan",null,'desc',15,"Warehouse","DKU");
 
         return Inertia::render('AgingFinance/Sales/InvoiceDKU', compact('travel_documents_dku'));
     }
@@ -102,7 +108,7 @@ class InvoiceController extends Controller
         ]);
 
         DB::transaction(function() use ($request) {
-            $tx_type = TransactionType::where('name', 'Pembelian')->first();
+            $tx_type = TransactionType::where('name', 'Penjualan')->first();
 
             $transaction = Transactions::create([
                 'document_code' => $request->input('document_code'),
@@ -157,7 +163,7 @@ class InvoiceController extends Controller
 
         });
         
-        return redirect()->route('aging-finance.list-invoice')->with('success', 'Faktur berhasil dibuat!');
+        return redirect()->route('aging-finance.invoice-dnp')->with('success', 'Faktur berhasil dibuat!');
     }
 
 }

@@ -9,95 +9,118 @@
                 <div class="card-body">
                     <form class="row g-3">
                         <!-- Baris Pertama -->
-                        <div class="col-md-3">
+                        <div class="col-12 col-md-3 col-lg-4">
                             <label for="field1">
-                                No PO<span class="text-danger">*</span>
+                                No PO
+                                <RequiredMark />
                             </label>
                             <n-input placeholder="" id="field1" size="large" v-model:value="form.document_code"
                                 :disabled="true" />
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-12 col-md-3 col-lg-4">
                             <label for="field2">
-                                Pemasok<span class="text-danger">*</span>
+                                Pemasok
+                                <RequiredMark />
                             </label>
                             <n-select placeholder="" v-model:value="transaction_details.supplier" filterable
                                 size="large" :options="pemasokOptions" :loading="loading" clearable remote
                                 @search="handleSearchSupplier" />
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-12 col-md-3 col-lg-4">
                             <label for="field3">
-                                Gudang<span class="text-danger">*</span>
+                                Gudang
+                                <RequiredMark />
                             </label>
                             <n-select placeholder="" id="field3" size="large" :options="storehouseOptions"
                                 v-model:value="transaction_details.storehouse" />
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-12 col-md-3 col-lg-4">
                             <label for="field4">
-                                Alokasi<span class="text-danger">*</span>
+                                Alokasi
+                                <RequiredMark />
                             </label>
                             <n-select placeholder="" id="field4" size="large" :options="storeLocationOptions"
                                 v-model:value="transaction_details.located" />
                         </div>
 
                         <!-- Baris Kedua -->
-                        <div class="col-md-3">
+                        <div class="col-12 col-md-3 col-lg-4">
                             <label for="field5">
-                                Tanggal PO<span class="text-danger">*</span>
+                                Tanggal PO
+                                <RequiredMark />
                             </label>
                             <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="" id="field5"
                                 size="large" v-model:formatted-value="transaction_details.purchase_order_date" />
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-12 col-md-3 col-lg-4">
                             <label for="field6">
-                                Tanggal Kirim<span class="text-danger">*</span>
+                                Tanggal Kirim
+                                <RequiredMark />
                             </label>
                             <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="" id="field6"
                                 size="large" v-model:formatted-value="transaction_details.send_date" />
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-12 col-md-3 col-lg-4">
                             <label for="field7">
-                                Term Pembayaran<span class="text-danger">*</span>
+                                Term Pembayaran
+                                <RequiredMark />
                             </label>
-                            <n-select placeholder="" id="field7" size="large" :options="termPaymentOptions"
-                                v-model:value="form.term_of_payment" />
+                            <n-input placeholder="" id="field7" size="large" v-model:value="form.term_of_payment"
+                                @input="(value) => form.term_of_payment = value.replace(/\D/g, '')">
+                                <template #suffix>
+                                    HARI
+                                </template>
+                            </n-input>
                         </div>
-                        <div class="col-md-3">
+                        <!-- CHANGE -->
+                        <div class="col-12 col-md-3 col-lg-4">
                             <label for="field8">
-                                Tanggal Jatuh Tempo<span class="text-danger">*</span>
+                                Tanggal Jatuh Tempo
+                                <RequiredMark />
                             </label>
                             <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="" id="field8"
                                 size="large" v-model:formatted-value="form.due_date" />
                         </div>
 
                         <!-- Baris Ketiga -->
-                        <div class="col-md-3">
+                        <!-- CHANGE -->
+                        <div class="col-12 col-md-3 col-lg-4">
                             <label for="field5">
-                                Transportasi<span class="text-danger">*</span>
+                                Nomor Polisi Ekspedisi
                             </label>
                             <n-input placeholder="" id="field5" size="large"
                                 v-model:value="transaction_details.transportation"
                                 @input="(value) => transaction_details.transportation = capitalize(value)" />
                         </div>
-                        <div class="col-md-3">
+                        <!-- CHANGE -->
+                        <div class="col-12 col-md-3 col-lg-4">
                             <label for="field6">
-                                Pengirim<span class="text-danger">*</span>
+                                Nama Ekspedisi
+                                <RequiredMark />
                             </label>
-                            <n-input placeholder="" id="field6" size="large" v-model:value="transaction_details.sender"
-                                @input="(value) => transaction_details.sender = capitalize(value)" />
+                            <n-select placeholder="" id="field6" size="large" v-model:value="transaction_details.sender"
+                                :options="senderOptions" />
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-12 col-md-3 col-lg-4">
                             <label for="field7">
-                                Jenis Pengiriman<span class="text-danger">*</span>
+                                Jenis Pengiriman
+                                <RequiredMark />
                             </label>
                             <n-select placeholder="" id="field7" size="large" :options="sendType"
                                 v-model:value="transaction_details.delivery_type" />
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-12 col-md-3 col-lg-4">
                             <label for="field8">
-                                Karyawan<span class="text-danger">*</span>
+                                PIC
+                                <RequiredMark />
                             </label>
                             <n-input placeholder="" id="field8" size="large"
                                 v-model:value="transaction_details.employee_name" :disabled="true" />
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-4">
+                            <label for="catatan">Catatan</label>
+                            <n-input id="catatan" type="textarea" placeholder="" style="width: 30rem;"
+                                v-model:value="form.description" />
                         </div>
                     </form>
 
@@ -107,18 +130,21 @@
             <!-- Form Produk -->
             <div class="card shadow" style="border: none;">
                 <div class="card-body">
-                    <form @submit.prevent="addProduct" class="row g-3">
+                    <span class="fs-4 fw-semibold ">Penginputan Barang</span>
+                    <form @submit.prevent="addProduct" class="row g-3 mt-2">
                         <!-- Baris Pertama -->
                         <div class="col-md-6">
                             <label for="product_name">
-                                Nama Barang<span class="text-danger">*</span>
+                                Nama Barang
+                                <RequiredMark />
                             </label>
                             <n-select size="large" placeholder="" v-model:value="products.name" filterable
                                 :options="productOptions" :loading="loading" clearable remote @search="handleSearch" />
                         </div>
                         <div class="col-md-6">
                             <label for="amount">
-                                Jumlah<span class="text-danger">*</span>
+                                Jumlah
+                                <RequiredMark />
                             </label>
                             <n-input size="large" id="amount" placeholder="" v-model:value="transaction_items.quantity"
                                 @input="(value) => transaction_items.quantity = value.replace(/\D/g, '')" />
@@ -127,18 +153,21 @@
                         <!-- Baris Kedua -->
                         <div class="col-md-6">
                             <label for="product_price">
-                                Harga Barang<span class="text-danger">*</span>
+                                Harga Barang
+                                <RequiredMark />
                             </label>
                             <!-- <n-input size="large" id="product_price" placeholder="" v-model:value="transaction_items.amount"
                                 @input="(value) => transaction_items.amount = value.replace(/\D/g, '')"> -->
                             <n-input size="large" id="product_price" placeholder=""
-                                v-model:value="transaction_items.amount" @input="(value) => transaction_items.amount = value.replace(',','.')">
+                                v-model:value="transaction_items.amount"
+                                @input="(value) => transaction_items.amount = value.replace(',', '.')">
                                 <template #prefix>Rp </template>
                             </n-input>
                         </div>
                         <div class="col-md-6">
                             <label for="ppn">
-                                PPN<span class="text-danger">*</span>
+                                PPN
+                                <RequiredMark />
                             </label>
                             <n-select size="large" id="ppn" :options="ppnOptions" placeholder=""
                                 v-model:value="transaction_items.tax_id" />
@@ -175,15 +204,10 @@
                         <span>{{ total }}</span>
                     </div>
                     <div class="d-flex py-2">
-                        <div class="flex-column pe-3">
-                            <label for="catatan">Catatan</label>
-                            <n-input id="catatan" type="textarea" placeholder="" style="width: 30rem;"
-                                v-model:value="form.description" />
-                        </div>
-                        <div class="flex-column w-100 justify-content-between">
+                        <div class="d-flex flex-column w-100 justify-content-between gap-3">
                             <div class="d-flex justify-content-between">
                                 <span>TERM OF PAYMENT</span>
-                                <span class="fw-bold">{{ form.term_of_payment.replace("_", " ") }}</span>
+                                <span class="fw-bold">{{ form.term_of_payment.replace("_", " ") }} HARI</span>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <span>JATUH TEMPO</span>
@@ -207,6 +231,7 @@ import { defineComponent, h, ref, computed, watch } from 'vue'
 import { Lookup, Parties, POProduct, Products, PurchaseOrder, Storehouse, Tax, TransactionDetail, TransactionItems, Transactions, User } from '../../../types/model';
 import { DataTableColumns, NButton, SelectOption, useNotification } from 'naive-ui';
 import Swal from 'sweetalert2';
+import RequiredMark from '../../../Components/RequiredMark.vue';
 import TitlePage from '../../../Components/TitlePage.vue';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
 import { formatRupiah, capitalize } from '../../../Utils/options-input.utils';
@@ -226,7 +251,7 @@ export default defineComponent({
         const form = useForm({
             document_code: (page.props.po_number as string),
             term_of_payment: '',
-            due_date: null as string | null,
+            due_date: null as unknown as string,
             description: '',
             sub_total: null as unknown as number,
             total: null as unknown as number,
@@ -241,7 +266,7 @@ export default defineComponent({
             located: '',
             purchase_order_date: null as string | null,
             send_date: null as string | null,
-            transportation: '',
+            transportation: '-',
             sender: '',
             delivery_type: '',
             employee_name: (page.props.auth.user as User).fullname,
@@ -277,6 +302,13 @@ export default defineComponent({
                 products.value.code = ''; // Reset 'code' jika produk tidak ditemukan
                 transaction_items.value.product_id = null as unknown as number; // Reset 'product_id' jika produk tidak ditemukan
                 transaction_items.value.unit = "";
+            }
+        });
+
+        // Watcher untuk memantau perubahan pada purchase_order_date
+        watch(() => transaction_details.value.purchase_order_date, (newVal) => {
+            if (newVal) {
+                form.due_date = handleSetFutureDateTo(45, newVal);
             }
         });
 
@@ -564,7 +596,7 @@ export default defineComponent({
                     // Reset form dengan nilai awal
                     form.document_code = (page.props.po_number as string),
                         form.term_of_payment = '',
-                        form.due_date = null,
+                        form.due_date = null as unknown as string,
                         form.description = '',
                         form.sub_total = null as unknown as number,
                         form.total = null as unknown as number,
@@ -579,7 +611,7 @@ export default defineComponent({
                             located: '',
                             purchase_order_date: null,
                             send_date: null,
-                            transportation: '',
+                            transportation: '-',
                             sender: '',
                             delivery_type: '',
                             employee_name: (page.props.auth.user as User).fullname,
@@ -612,6 +644,13 @@ export default defineComponent({
 
         }
 
+        function handleSetFutureDateTo(days: number, start_date: any) {
+            const baseDate = new Date(start_date);
+            baseDate.setDate(baseDate.getDate() + days);
+
+            return baseDate.toISOString().slice(0, 19).replace('T', ' ');
+        }
+
         //options
         const storeLocationOptions = (page.props.store_locations as Lookup[]).map((data) => ({
             label: data.label,
@@ -641,8 +680,16 @@ export default defineComponent({
             value: data.name,
         }));
 
+        const senderOptions = [
+            { label: "DNP Ekspedisi", value: "DNP_EXPEDITION" },
+            { label: "DKU Ekspedisi", value: "DKU_EXPEDITION" }
+        ]
+
         const sendType = [
             { label: "DEPO BEKASI", value: "DEPO BEKASI" },
+            { label: "Direct", value: "DIRECT" },
+            { label: "Direct Depo", value: "DIRECT_DEPO" },
+            { label: "Beli DO", value: "DO" },
         ];
 
         const ppnOptions = (page.props.tax as Tax[]).map((data) => ({
@@ -658,23 +705,25 @@ export default defineComponent({
         }));
 
         return {
-            form,
             addProduct,
             removeProduct,
             handleSubmit,
             formatRupiah,
             capitalize,
+            handleSetFutureDateTo,
+            columns: createColumns(),
+            form,
             dayjs,
             products,
             transaction_items,
             units,
-            columns: createColumns(),
             pagination: { pageSize: 10 },
             transaction_details,
             storeLocationOptions,
             storehouseOptions,
             termPaymentOptions,
             sendType,
+            senderOptions,
             ppnOptions,
             subTotal: subtotal,
             resultPpn: totalPPN,
@@ -707,12 +756,14 @@ export default defineComponent({
                     )
                     loadingRef.value = false
                 }, 1000)
-            }
+            },
+
         }
     },
     components: {
         TitlePage,
-        Head
+        Head,
+        RequiredMark
     }
 });
 </script>

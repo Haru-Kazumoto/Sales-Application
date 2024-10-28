@@ -25,8 +25,7 @@
                     <!-- PASSWORD INPUT -->
                     <div class="d-flex flex-column gap-1">
                         <label for="password">Password</label>
-                        <n-input type="password" show-password-on="click" v-model:value="model.password"
-                            placeholder="Input Password" size="large">
+                        <n-input type="password" show-password-on="click" v-model:value="model.password" size="large">
                             <template #prefix>
                                 <n-icon :component="LockClosedOutline" />
                             </template>
@@ -78,7 +77,7 @@ export default defineComponent({
         function handleSubmit() {
             //create post login logic here...
             form.post(route('login'), {
-                preserveScroll: true,
+                preserveScroll: false,
                 onFinish: () => {
                     form.reset();
                 }

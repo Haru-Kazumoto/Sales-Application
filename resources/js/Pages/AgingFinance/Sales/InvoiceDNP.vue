@@ -70,7 +70,7 @@ function createColumns() {
         {
             title: "TOTAL",
             key: "total",
-            width: 100,
+            width: 200,
             render(row) {
                 return formatRupiah(row.total);
             }
@@ -101,8 +101,6 @@ function createColumns() {
 export default defineComponent({
     setup() {
         const page = usePage();
-
-        console.log(page.props.travel_documents);
 
         return {
             columns: createColumns(),

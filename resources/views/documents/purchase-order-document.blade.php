@@ -171,9 +171,8 @@
             <td>
                 <div class="company-address">
                     <span style="font-weight: bold;">PT. DANITAMA NIAGA PRIMA</span><br>
-                    Daniprisma Plaza Lantai 2<br>
-                    Jl. Sultan Hasanudin No.47-48 Kebayoran Baru<br>
-                    Jakarta Selatan 12160 - Indonesia<br>
+                    Jl. Cikunir Raya No.50 A, RT003/RW.011<br>
+                    Kota Bekasi 17422 - Indonesia<br>
                     Telphon: (021) 7258749, 7205444, 7207850<br>
                     Fax: (021) 7397847 Tlx. 47373 HANG IA<br>
                     E-mail: info@danitama.com

@@ -44,8 +44,9 @@
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">TERMIN<span class="text-danger">*</span></label>
-                            <n-select size="large" v-model:value="form.term_of_payment" :options="termPaymentOptions"
-                                placeholder="" />
+                            <n-input size="large" v-model:value="form.term_of_payment" placeholder="">
+                                <template #suffix>HARI</template>
+                            </n-input>
                         </div>
                     </div>
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4">
@@ -62,7 +63,7 @@
                                 placeholder="" />
                         </div>
                     </div>
-                    <div class="col-6 col-sm-6 col-md-6 col-lg-4">
+                    <!-- <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">BIAYA ANGKUTAN<span class="text-danger">*</span></label>
                             <n-input size="large" placeholder="" v-model:value="transaction_details.transportation_cost"
@@ -72,7 +73,7 @@
                                 </template>
                             </n-input>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">CASHBACK<span class="text-danger">*</span></label>
@@ -203,7 +204,7 @@
                 <div class="d-flex flex-column w-100 justify-content-between mt-2 gap-3">
                     <div class="d-flex justify-content-between">
                         <span>TERM OF PAYMENT</span>
-                        <span class="fw-bold">{{ form.term_of_payment.replace("_", "") }}</span>
+                        <span class="fw-bold">{{ `${form.term_of_payment} HARI` }}</span>
                     </div>
                     <div class="d-flex justify-content-between">
                         <span>JATUH TEMPO</span>
@@ -308,9 +309,7 @@ export default defineComponent({
                     key: 'total_price_discount_1',
                     width: 250,
                     render(row) {
-                        const discount1 = row.discount_1 ?? 0;
-                        const result_discount_1 = row.amount * (discount1 / 100);
-                        return formatRupiah(result_discount_1);
+                        return formatRupiah(transaction_details.value.total_discount_1 ?? 0);
                     }
                 },
                 {
@@ -326,15 +325,7 @@ export default defineComponent({
                     key: 'total_price_discount_2',
                     width: 250,
                     render(row) {
-                        const discount1 = row.discount_1 ?? 0;
-                        const discount2 = row.discount_2 ?? 0;
-
-                        // Total setelah discount 1
-                        const remaining_after_discount_1 = row.amount * (1 - discount1 / 100);
-
-                        // Diskon 2 dari harga sisa setelah diskon 1
-                        const result_discount_2 = remaining_after_discount_1 * (discount2 / 100);
-                        return formatRupiah(result_discount_2);
+                        return formatRupiah(transaction_details.value.total_discount_2 ?? 0);
                     }
                 },
                 {
@@ -350,17 +341,7 @@ export default defineComponent({
                     key: 'total_price_discount_3',
                     width: 250,
                     render(row) {
-                        const discount1 = row.discount_1 ?? 0;
-                        const discount2 = row.discount_2 ?? 0;
-                        const discount3 = row.discount_3 ?? 0;
-
-                        // Total setelah diskon 1 dan 2
-                        const remaining_after_discount_1 = row.amount * (1 - discount1 / 100);
-                        const remaining_after_discount_2 = remaining_after_discount_1 * (1 - discount2 / 100);
-
-                        // Diskon 3 dari harga sisa setelah diskon 2
-                        const result_discount_3 = remaining_after_discount_2 * (discount3 / 100);
-                        return formatRupiah(result_discount_3);
+                        return formatRupiah(transaction_details.value.total_discount_3 ?? 0);
                     }
                 },
                 {
@@ -415,15 +396,15 @@ export default defineComponent({
             customer_order_date: (page.props.dateNow),
             customer: '',
             legality: '',
-            npwp: '',
             customer_address: '',
+            npwp: '',
             salesman: (page.props.auth as any).user.fullname,
             transportation_cost: null as unknown as number,
             cashback: null as unknown as number,
             unloading_cost: null as unknown as number,
-            total_discount_1: null as unknown as number,
-            total_discount_2: null as unknown as number,
-            total_discount_3: null as unknown as number,
+            total_discount_1: null as any,
+            total_discount_3: null as any,
+            total_discount_2: null as any,
         });
 
         const products = ref({
@@ -431,6 +412,7 @@ export default defineComponent({
             unit: '',
             name: '',
             last_stock: null as unknown as number,
+            retail_price: null as unknown as number,
             transaction_items: [] as TransactionItems[],
         });
 
@@ -445,14 +427,8 @@ export default defineComponent({
             discount_2: null as unknown as number,
             discount_3: null as unknown as number,
             total_price: null as unknown as number,
-            total_price_discount: null as unknown as number,
+            // total_price_discount: null as unknown as number,
         });
-
-        // const discounts = ref({
-        //     total_discount_1: 0,
-        //     total_discount_2: 0,
-        //     total_discount_3: 0,
-        // });
 
         //TODO : create 3 watch for watch discoutns field and calculate it when filled
         watch(
@@ -493,19 +469,18 @@ export default defineComponent({
             }
         );
 
-        // watch(() => transaction_items.value.quantity, (quantity) => {
-
-        // });
-
         watch(() => transaction_details.value.customer, (name) => {
             const selectedCustomer = customerOptions.find(data => data.label === name);
 
             if (selectedCustomer) {
                 transaction_details.value.customer_address = selectedCustomer.address as any;
+                transaction_details.value.npwp = selectedCustomer.npwp as any;
                 transaction_details.value.legality = selectedCustomer.legality as any || '';
+                form.term_of_payment = selectedCustomer.term_payment?.toString();
             } else {
                 transaction_details.value.customer_address = '';
-                transaction_details.value.legality = '';
+                transaction_details.value.npwp = '',
+                    transaction_details.value.legality = '';
             }
         });
 
@@ -517,6 +492,7 @@ export default defineComponent({
                 transaction_items.value.product_id = selectedProduct.id as number;
                 transaction_items.value.unit = selectedProduct.unit as any;
                 products.value.last_stock = selectedProduct.last_stock; // Set last_stock
+                products.value.retail_price = selectedProduct.retail_price;
 
                 // Tentukan pesan dan warna status berdasarkan last_stock
                 if (products.value.last_stock < 10) {
@@ -531,6 +507,8 @@ export default defineComponent({
                 transaction_items.value.unit = '';
                 stockMessage.value = ''; // Kosongkan pesan jika tidak ada produk yang dipilih
                 stockStatusColor.value = 'black'; // Reset warna ke default
+                products.value.last_stock = null as unknown as number; // Set last_stock
+                products.value.retail_price = null as unknown as number;
             }
         });
 
@@ -588,22 +566,17 @@ export default defineComponent({
             return formatRupiah(totalWithPPN);
         });
 
-        function handleAddProduct() {
-            console.log('triggered');
 
+        function handleAddProduct() {
             // Pastikan kedua nilai adalah angka
             const quantity = Number(transaction_items.value.quantity);
             const lastStock = Number(products.value.last_stock);
-
-            console.log('Transaction Quantity:', quantity);
-            console.log('Last Stock:', lastStock);
-
             // Periksa apakah quantity lebih besar dari stok
             if (quantity > lastStock) {
                 Swal.fire({
                     icon: 'error',
-                    title: 'Oops...',
-                    text: `Quantity melebihi stok yang tersedia (${lastStock})!`,
+                    title: 'Quantity barang tidak cukup!',
+                    text: `Stok aktual ${lastStock}`,
                 });
                 return; // Hentikan eksekusi jika quantity tidak valid
             }
@@ -637,6 +610,7 @@ export default defineComponent({
                 closable: false,
             });
         }
+
 
 
         function removeProduct(index: number) {
@@ -687,12 +661,12 @@ export default defineComponent({
                     value: transaction_details.value.customer_address,
                     data_type: 'string',
                 },
-                {
-                    name: 'Biaya Angkutan',
-                    category: 'Transportation Cost',
-                    value: transaction_details.value.transportation_cost as any,
-                    data_type: 'float',
-                },
+                // {
+                //     name: 'Biaya Angkutan',
+                //     category: 'Transportation Cost',
+                //     value: transaction_details.value.transportation_cost as any,
+                //     data_type: 'float',
+                // },
                 {
                     name: 'Cashback',
                     category: 'Cashback',
@@ -714,14 +688,14 @@ export default defineComponent({
                 {
                     name: "Gudang",
                     category: "Warehouse",
-                    value: "DKU",
+                    value: "DNP",
                     data_type: "string",
                 },
                 {
-                    name: "NPWP",
-                    category: "NPWP",
-                    value: transaction_details.value.npwp,
-                    data_type: "string",
+                    name: "Generated",
+                    category: "Generating",
+                    value: "false",
+                    data_type: 'boolean',
                 }
             ];
 
@@ -748,14 +722,14 @@ export default defineComponent({
                             cashback: null as unknown as number,
                             customer: '',
                             customer_address: '',
+                            npwp: '',
                             customer_order_date: (page.props.dateNow),
                             legality: '',
-                            npwp: '',
                             salesman: ((page.props.auth as any).user.fullname),
                             total_discount_1: null as unknown as number,
                             total_discount_2: null as unknown as number,
                             total_discount_3: null as unknown as number,
-                            transportation_cost: null as unknown as number,
+                            // transportation_cost: null as unknown as number,
                             unloading_cost: null as unknown as number
                         };
 
@@ -800,6 +774,8 @@ export default defineComponent({
             value: data.name,
             legality: data.legality,
             address: data.address,
+            npwp: data.npwp,
+            term_payment: data.term_payment,
         }));
 
         const productOptions = (page.props.products as any[]).map((data) => ({
@@ -810,6 +786,7 @@ export default defineComponent({
             warehouse: data.warehouse,
             last_stock: data.last_stock, // Tambahkan last_stock ke options
             status: data.status,         // Tambahkan status ke options
+            retail_price: data.retail_price,
             id: data.id,
         }));
 

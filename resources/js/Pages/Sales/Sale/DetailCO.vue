@@ -131,6 +131,28 @@
                 </div>
             </div>
         </div>
+        <n-modal v-model:show="showModal">
+            <n-card style="width: 500px" title="Edit Quantity" :bordered="false" size="huge">
+                <div class="d-flex flex-column gap-1">
+                    <label for="quantity" class="fs-5">Quantity ({{ (selectedItem as any).quantity }})
+                        <RequiredMark />
+                    </label>
+                    <n-input v-model:value="newQuantity" placeholder="Enter new quantity"
+                        size="large" />
+                    <strong>Product Name: {{ (selectedItem as any).product.name }}</strong>
+
+                    <!-- Menampilkan nama produk sebagai contoh -->
+                    <!-- <div v-if="selectedItem">
+                    </div> -->
+                </div>
+                <template #footer>
+                    <div class="d-flex gap-2 justify-content-center">
+                        <n-button type="error" size="large" @click="showModal = false">Cancel</n-button>
+                        <n-button type="info" size="large" @click="reStoreStockProduct">Submit</n-button>
+                    </div>
+                </template>
+            </n-card>
+        </n-modal>
 
     </div>
 </template>
@@ -139,10 +161,10 @@
 import { computed, defineComponent, h, ref, watch } from 'vue'
 import TitlePage from '../../../Components/TitlePage.vue';
 import { DataTableColumns, NButton, SelectOption, useNotification } from 'naive-ui';
-import { useForm, usePage, Head } from '@inertiajs/vue3';
+import { useForm, usePage, Head, router } from '@inertiajs/vue3';
 import { ProductCustomerOrder } from '../../../types/dto';
 import Swal from 'sweetalert2';
-import { Lookup, Parties, Products, TransactionDetail, TransactionItems, Transactions, User } from '../../../types/model';
+import { Flash, Lookup, Parties, Products, TransactionDetail, TransactionItems, Transactions, User } from '../../../types/model';
 import { formatRupiah } from '../../../Utils/options-input.utils';
 import dayjs from 'dayjs';
 import 'dayjs/locale/id'; // Import locale Indonesia
@@ -154,6 +176,17 @@ export default defineComponent({
         const page = usePage();
         const notification = useNotification();
         const customer_order = page.props.customer_order as Transactions;
+        console.log(customer_order);
+        const showModal = ref(false);
+        const selectedItem = ref(null);
+        const selectedProduct = ref({}); // Menyimpan data produk yang dipilih
+        const newQuantity = ref(null);
+
+        function openModal(item) {
+            selectedItem.value = item; // Simpan data item ke selectedItem
+            showModal.value = true;    // Tampilkan modal
+            console.log(customer_order.transaction_details.find((data) => { return data.category === "Warehouse" })?.value);
+        }
 
         function createColumns(): DataTableColumns<TransactionItems> {
             return [
@@ -221,7 +254,7 @@ export default defineComponent({
                     width: 250,
                     render(row) {
                         const discount1 = row.discount_1 ?? 0;
-                        const price_after_discount_1 = row.amount * (1 - discount1 / 100);
+                        const price_after_discount_1 = row.amount ?? 0 * (1 - discount1 / 100);
                         return formatRupiah(price_after_discount_1);
                     }
                 },
@@ -242,7 +275,7 @@ export default defineComponent({
                         const discount2 = row.discount_2 ?? 0;
 
                         // Harga setelah diskon 1
-                        const price_after_discount_1 = row.amount * (1 - discount1 / 100);
+                        const price_after_discount_1 = row.amount ?? 0 * (1 - discount1 / 100);
 
                         // Harga setelah diskon 2
                         const price_after_discount_2 = price_after_discount_1 * (1 - discount2 / 100);
@@ -267,7 +300,7 @@ export default defineComponent({
                         const discount3 = row.discount_3 ?? 0;
 
                         // Harga setelah diskon 1 dan 2
-                        const price_after_discount_1 = row.amount * (1 - discount1 / 100);
+                        const price_after_discount_1 = row.amount ?? 0 * (1 - discount1 / 100);
                         const price_after_discount_2 = price_after_discount_1 * (1 - discount2 / 100);
 
                         // Harga setelah diskon 3
@@ -285,7 +318,7 @@ export default defineComponent({
                         const discount3 = row.discount_3 ?? 0;
 
                         // Harga setelah diskon 1, 2, dan 3
-                        const price_after_discount_1 = row.amount * (1 - discount1 / 100);
+                        const price_after_discount_1 = row.amount ?? 0 * (1 - discount1 / 100);
                         const price_after_discount_2 = price_after_discount_1 * (1 - discount2 / 100);
                         const final_price = price_after_discount_2 * (1 - discount3 / 100);
 
@@ -300,32 +333,38 @@ export default defineComponent({
                         return h(
                             NButton,
                             {
-                                type: 'error',
+                                type: 'info',
                                 size: 'small',
                                 onClick: () => {
-                                    Swal.fire({
-                                        icon: 'question',
-                                        text: `Delete ${row.product?.name}?`,
-                                        showCancelButton: true,
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            removeProduct(index);
-
-                                            notification.success({
-                                                title: `${row.product?.name} has been deleted!`,
-                                                closable: true,
-                                                keepAliveOnHover: false,
-                                                duration: 2000,
-                                            });
-                                        }
-                                    });
+                                    selectedProduct.value = row;
+                                    openModal(row)
                                 }
                             },
-                            { default: () => "Hapus" }
+                            { default: () => "Edit Quantity" }
                         )
                     }
                 }
             ]
+        }
+
+        function reStoreStockProduct() {
+            router.post(route('sales.restore-products', (selectedProduct.value as any).id), {
+                quantity: newQuantity.value,
+                amount: (selectedProduct.value as any).amount,
+                allocation: customer_order.transaction_details.find((data) => { return data.category === "Warehouse" })?.value, // Ganti dengan nama gudang yang sesuai
+            }, {
+                onSuccess: (page) => {
+                    showModal.value = false; // Tutup modal
+                    Swal.fire((page.props.flash as Flash).success,'','success');
+                },
+                onError: (errors) => {
+                    notification.error({
+                        title: 'Error',
+                        content: 'Gagal mengembalikan barang ke gudang'
+                    });
+                    console.error(errors);
+                }
+            });
         }
 
         const form = useForm({
@@ -446,6 +485,7 @@ export default defineComponent({
             columns: createColumns(),
             removeProduct,
             formatRupiah,
+            reStoreStockProduct,
             enhancedTransactionItems,
             dayjs,
             form,
@@ -454,6 +494,11 @@ export default defineComponent({
             subtotal,
             totalPrice,
             discounts,
+            showModal,
+            selectedItem,
+            customer_order,
+            selectedProduct,
+            newQuantity
         }
     },
     components: {

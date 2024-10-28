@@ -1,5 +1,5 @@
 <template>
-    <span class="ms-1 " style="color: red;">*</span>
+    <span class="ms-1" style="color: red; font-weight: bold !important;">*</span>
 </template>
 
 <script lang="ts">

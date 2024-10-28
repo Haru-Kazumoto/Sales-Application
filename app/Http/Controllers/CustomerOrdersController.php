@@ -231,6 +231,8 @@ class CustomerOrdersController extends Controller
 
         // Gunakan transaksi database
         DB::transaction(function () use ($request) {
+            $tx_type = TransactionType::where('name', 'Sales Order')->first();
+
             // Simpan customer order
             $transaction = Transactions::create([
                 'document_code' => $request->input('document_code'),
@@ -242,7 +244,7 @@ class CustomerOrdersController extends Controller
                 'sub_total' => $request->input('sub_total'),
                 'total' => $request->input('total'),
                 'tax_amount' => $request->input('tax_amount'),
-                'transaction_type_id' => 7, // Atur transaction_type_id untuk CO
+                'transaction_type_id' => $tx_type->id, // Atur transaction_type_id untuk CO
             ]);
 
             // Simpan transaction details
@@ -258,7 +260,7 @@ class CustomerOrdersController extends Controller
 
             // Simpan transaction items
             foreach ($request->input('transaction_items') as $txItem) {
-                $product = Products::find($txItem['product_id']);
+                $product = Products::where('id', $txItem['product_id'])->first();
                 $warehouse = Warehouse::where('name', 'DKU')->first();
 
                 // Simpan transaction item
@@ -267,7 +269,7 @@ class CustomerOrdersController extends Controller
                     'quantity' => $txItem['quantity'],
                     'tax_amount' => $txItem['tax_amount'],
                     'amount' => $txItem['amount'],
-                    'tax_id' => $txItem['tax_id'],
+                    'tax_id' => 3,
                     'total_price' => $txItem['total_price'],
                     'discount_1' => $txItem['discount_1'],
                     'discount_2' => $txItem['discount_2'],
@@ -285,6 +287,7 @@ class CustomerOrdersController extends Controller
                     'expiry_date' => null,
                     'warehouse_id' => $warehouse->id,
                     'transactions_id' => $transaction->id,
+                    'product_id' => $product->id,
                 ]);
             }
         });
@@ -307,8 +310,9 @@ class CustomerOrdersController extends Controller
      */
     public function createTravelDocument()
     {
-        $customer_orders_dnp = $this->customerOrderServices->getTransactions("Sales Order",15,'Warehouse','DNP');
-        $customer_orders_dku = $this->customerOrderServices->getTransactions("Sales Order",15,'Warehouse','DKU');
+        $customer_orders_dnp = $this->customerOrderServices->getTransactions("Sales Order","false","desc",15,'Warehouse','DNP');
+        $customer_orders_dku = $this->customerOrderServices->getTransactions("Sales Order","false","desc",15,'Warehouse','DKU');
+        // dd($customer_orders_dku);
         
         return Inertia::render('Warehouse/ListTravelDocument', compact('customer_orders_dnp','customer_orders_dku'));
     }
@@ -318,8 +322,8 @@ class CustomerOrdersController extends Controller
      */
     public function indexTravelDocuments()
     {
-        $travel_documents_dnp = $this->customerOrderServices->getTransactions("Surat Jalan",15,"Warehouse","DNP");
-        $travel_documents_dku = $this->customerOrderServices->getTransactions("Surat Jalan",15,"Warehouse","DKU");
+        $travel_documents_dnp = $this->customerOrderServices->getTransactions("Surat Jalan",null,"desc",15,"Warehouse","DNP");
+        $travel_documents_dku = $this->customerOrderServices->getTransactions("Surat Jalan",null,"desc",15,"Warehouse","DKU");
 
         return Inertia::render('Warehouse/IndexTravelDocument', compact('travel_documents_dnp', 'travel_documents_dku'));
     }
@@ -402,6 +406,19 @@ class CustomerOrdersController extends Controller
                     'data_type' => $detail['data_type'],
                     'transactions_id' => $transaction->id,
                 ]);
+
+                // Jika category adalah 'CO Number', lakukan pencarian pada CustomerOrder
+                if ($detail['category'] === 'CO Number') {
+                    // Cari CustomerOrder berdasarkan nomor CO dari value
+                    $customerOrder = Transactions::where('document_code', $detail['value'])->first();
+
+                    // Jika CustomerOrder ditemukan, update transaction_detail dengan category 'Generating'
+                    if ($customerOrder) {
+                        TransactionDetail::where('transactions_id', $customerOrder->transaction_id)
+                            ->where('category', 'Generating')
+                            ->update(['value' => 'true']);
+                    }
+                }
             }
 
             // Simpan transaction items
@@ -421,6 +438,7 @@ class CustomerOrdersController extends Controller
         return redirect()->route('warehouse.list-travel-document')->with('success', 'Surat jalan berhasil dibuat!');
     }
 
+    
 
     /**
      * Show the form for editing the specified resource.

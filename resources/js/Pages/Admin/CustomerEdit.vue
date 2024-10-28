@@ -103,7 +103,7 @@ export default defineComponent({
 
         function handleSubmitCustomer() {
             form.patch(route('admin.parties.customer.update', form.id), {
-                preserveScroll: true,
+                preserveScroll: false,
                 onSuccess: () => {
                     form.reset();
                     notification.success({

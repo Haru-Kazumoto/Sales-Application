@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class ProductServices {
-    
+
    /**
      * Get all data stock products from warehouse
      * 

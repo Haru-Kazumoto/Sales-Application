@@ -228,8 +228,8 @@
                 <div class="company-name"></div>
                 <div class="company-address">
                     <span style="font-weight: bold;">PT. DANITAMA NIAGA PRIMA</span><br>
-                    Jl. Raya Cikunir, Kp Jaha Rt/Rw. 003/011, Jatimekar<br>
-                    Jati Asih, Bekasi, 17422, Indonesia<br>
+                    Jl. Cikunir Raya No.50 A, RT003/RW.011<br>
+                    Kota Bekasi 17422 - Indonesia<br>
                     Telp : (021) 2961 3236, 2961 3237<br>
                     Fax: (021) 2961 3235<br>
                 </div>
@@ -246,7 +246,8 @@
                 <strong>Nama Perusahaan</strong><br>
                 <strong>Alamat</strong>
             </td>
-            <td style="width: 55%; word-wrap: break-word; word-break: break-all; white-space: normal; margin-right: 10px;">
+            <td
+                style="width: 55%; word-wrap: break-word; word-break: break-all; white-space: normal; margin-right: 10px;">
                 <strong>: PT. Danitama Niagaprima</strong><br>
                 <strong>: Jl. Cikunir Raya, Kp. Jaha, Jatimekar Jati Asih,<br> Bekasi</strong>
             </td>

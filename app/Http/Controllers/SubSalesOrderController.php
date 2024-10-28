@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\PartiesServices;
+use App\Http\Services\TransactionServices;
 use App\Models\Products;
 use App\Models\SubSalesOrder;
 use App\Models\TransactionDetail;
@@ -17,18 +19,29 @@ use Inertia\Inertia;
 
 class SubSalesOrderController extends Controller
 {
+    protected $transactionServices;
+    protected $partiesServices;
+
+    public function __construct(TransactionServices $transactionsServices, PartiesServices $partiesServices)
+    {
+        $this->transactionServices = $transactionsServices;
+        $this->partiesServices = $partiesServices;
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $transaction_type = TransactionType::where('name', 'Pengiriman Barang Penjualan')->first();
-        $transactions = Transactions::with([
-            'transactionDetails', // Memuat relasi transactionDetails
-            'transactionItems.product' // Memuat relasi transactionItems beserta product di dalamnya
-        ])
-            ->where('transaction_type_id', $transaction_type->id)
-            ->get();
+        $tx_type = TransactionType::where('name', 'Penerimaan Barang Pembelian')->first();
+        $transactions = $this->transactionServices->getTransactions(
+            $tx_type->id, 
+            $request->filter_field,
+            $request->filter_query,
+            'desc',
+            10,
+            $request->dateRange
+        );
 
         return Inertia::render('Procurement/ItemsReceipt/ListSalesOrders', compact('transactions'));
     }
@@ -39,7 +52,9 @@ class SubSalesOrderController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Procurement/ItemsReceipt/CreateSalesOrder');
+        $parties = $this->partiesServices->getPartiesByGroupAndType('VENDOR', 'Angkutan');
+
+        return Inertia::render('Procurement/ItemsReceipt/CreateSalesOrder', compact('parties'));
     }
 
     /**
@@ -79,7 +94,7 @@ class SubSalesOrderController extends Controller
 
         // Gunakan transaksi database
         DB::transaction(function () use ($request) {
-            $tx_type = TransactionType::where('name', 'Pengiriman Barang Penjualan')->first();
+            $tx_type = TransactionType::where('name', 'Penerimaan Barang Pembelian')->first();
 
             // Simpan transaksi
             $transaction = Transactions::create([
@@ -172,7 +187,7 @@ class SubSalesOrderController extends Controller
      */
     public function getDataBySsoNumber(string $sso_number)
     {
-        $tx_type = TransactionType::where('name', 'Pengiriman Barang Penjualan')->first();
+        $tx_type = TransactionType::where('name', 'Penerimaan Barang Pembelian')->first();
 
         // Mengambil transaksi berdasarkan transaction_id dari transaction detail yang ditemukan
         $transaction = Transactions::with(['transactionDetails', 'transactionItems.product'])

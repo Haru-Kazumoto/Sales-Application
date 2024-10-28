@@ -35,8 +35,9 @@
                     <!-- row 2 -->
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">Termin</label>
-                        <n-select size="large" placeholder="" v-model:value="form.term_of_payment"
-                            :options="termPaymentOptions" />
+                        <n-input size="large" placeholder="" v-model:value="form.term_of_payment" >
+                            <template #suffix>HARI</template>
+                        </n-input>
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">Tanggal Jatuh Tempo</label>
@@ -171,7 +172,7 @@ function createColumns() {
         {
             title: "HARGA",
             key: "amount",
-            width: 150,
+            width: 200,
             render(row) {
                 return formatRupiah(row.amount);
             }
@@ -179,7 +180,7 @@ function createColumns() {
         {
             title: "TOTAL",
             key: "calculate",
-            width: 150,
+            width: 200,
             render(row) {
                 const quantity = row.quantity;
                 const amount = row.amount;
@@ -194,6 +195,7 @@ export default defineComponent({
     setup() {
         const page = usePage();
         const travel_document = page.props.transactions as Transactions;
+        console.log(travel_document);
 
         const form = useForm({
             document_code: page.props.invoice_number as string,

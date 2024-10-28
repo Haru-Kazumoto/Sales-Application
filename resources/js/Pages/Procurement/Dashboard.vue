@@ -136,7 +136,31 @@ function createColumns(): DataTableColumns<Transactions> {
             key: 'located',
             width: 200,
             render(rowData) {
-                return rowData.transaction_details.find((data) => {return data.category === "Allocation"})?.value
+                const located = rowData.transaction_details.find((data) => {return data.category === "Allocation"})?.value;
+                let type: any;
+
+                switch(located){
+                    case 'DNP':
+                        type = "success";
+                        break;
+                    case 'DKU':
+                        type = "info";
+                        break;
+                    case 'DD':
+                        type = "warning";
+                        break;
+                    default:
+                        type = 'default';
+                }
+
+                return h(
+                    NTag,
+                    {
+                        type,
+                        strong: true,
+                    },
+                    { default: () => located }
+                );
             },
         },
         {

@@ -71,7 +71,7 @@ export default defineComponent({
         function handleSubmit() {
             //create post login logic here...
             form.post(route('register.post'), {
-                preserveScroll: true,
+                preserveScroll: false,
                 onSuccess: () => {
                     Swal.fire({
                         icon: 'success',

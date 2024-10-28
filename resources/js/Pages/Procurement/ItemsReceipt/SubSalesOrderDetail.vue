@@ -2,7 +2,14 @@
 
     <Head title="SSO Detail" />
     <div class="d-flex flex-column gap-4">
-        <TitlePage title="Sales Order" />
+        <div class="d-flex flex-column gap-3">
+            <TitlePage title="Detail SSO" />
+            <n-button text class="justify-content-start w-25 " size="large"
+                @click="router.visit(route('procurement.sales-order-list'), { method: 'get' })">
+                <n-icon :component="ArrowBack" style="margin-right: 5px;" />
+                Kembali
+            </n-button>
+        </div>
         <div class="d-flex flex-column gap-3">
             <div class="card shadow overflow-hidden" style="border: none">
                 <div class="card-body">
@@ -23,8 +30,8 @@
                         </div>
                         <div class="col-lg-3 col-6">
                             <label for="field4">Tanggal PO</label>
-                            <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" id="field8" size="large"
-                                v-model:formatted-value="transaction_details.purchase_order_date" disabled />
+                            <n-input size="large"
+                                v-model:value="transaction_details.purchase_order_date" disabled />
                         </div>
 
                         <!-- Baris Kedua -->
@@ -42,8 +49,8 @@
                         </div>
                         <div class="col-lg-3 col-6">
                             <label for="field8">Tanggal Kirim</label>
-                            <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" id="field8" size="large"
-                                v-model:formatted-value="transaction_details.send_date" disabled />
+                            <n-input size="large"
+                                v-model:value="transaction_details.send_date" disabled />
                         </div>
                         <div class="col-lg-3 col-6">
                             <label for="field9">Transportasi</label>
@@ -62,7 +69,7 @@
                                 disabled />
                         </div>
                         <div class="col-lg-3 col-6">
-                            <label for="field12">Karyawan</label>
+                            <label for="field12">PIC</label>
                             <n-input id="field12" size="large" disabled
                                 v-model:value="transaction_details.employee_name" />
                         </div>
@@ -103,8 +110,8 @@
                         <div class="d-flex flex-column w-100 justify-content-between">
                             <div class="d-flex justify-content-between">
                                 <span>TERM OF PAYMENT</span>
-                                <span class="fw-bold" v-if="form !== undefined">{{
-                                    form.term_of_payment.replace("_", " ") }}</span>
+                                <span class="fw-bold" v-if="form !== undefined">
+                                    {{ form.term_of_payment.replace("_", " ") + " HARI" }}</span>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <span>JATUH TEMPO</span>
@@ -183,7 +190,7 @@ function createColumns(): DataTableColumns<TransactionItems> {
             key: 'unit',
             width: 100,
             render(row) {
-                return row.unit.replace("_", ' ');
+                return row.unit?.replace("_", ' ');
             }
         },
         {
@@ -235,10 +242,10 @@ export default defineComponent({
         const po_number = form.transaction_details.find(data => data.category === "PO Number")?.value || '';
         const proof_number = form.transaction_details.find(data => data.category === "Proof Number")?.value || '';
         const supplier = form.transaction_details.find(data => data.category === "Supplier")?.value || '';
-        const storehouse = form.transaction_details.find(data => data.category === "Storehouse")?.value || '';
+        const storehouse = form.transaction_details.find(data => data.category === "Storehouse")?.value?.replace("_",' ') || '';
         const located = form.transaction_details.find(data => data.category === "Allocation")?.value || '';
-        const purchase_order_date = form.transaction_details.find(data => data.category === "PO Date")?.value || null;
-        const send_date = form.transaction_details.find(data => data.category === "Delivery Date")?.value || null;
+        const purchase_order_date = dayjs(form.transaction_details.find(data => data.category === "PO Date")?.value || null).format('dddd, D MMMM YYYY HH:mm');
+        const send_date = dayjs(form.transaction_details.find(data => data.category === "Delivery Date")?.value || null).format('dddd, D MMMM YYYY HH:mm');
         const transportation = form.transaction_details.find(data => data.category === "Transportation")?.value || '';
         const sender = form.transaction_details.find(data => data.category === "Sender")?.value || '';
         const delivery_type = form.transaction_details.find(data => data.category === "Delivery Type")?.value || '';
