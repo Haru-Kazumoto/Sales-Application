@@ -25,6 +25,13 @@ class ProductServices {
                 'products.unit',
                 'products.retail_price',
                 'warehouse.name AS warehouse',
+                'promo_products.id',
+                'promo_products.description',
+                'promo_products.min',
+                'promo_products.max', // contoh kolom dari tabel promo_products
+                'promo_products.promo_value',
+                'promo_products.start_date',
+                'promo_products.end_date',
                 DB::raw('SUM(CASE WHEN product_journal.action = "IN" THEN product_journal.quantity ELSE 0 END) - 
                         SUM(CASE WHEN product_journal.action = "OUT" THEN product_journal.quantity ELSE 0 END) AS last_stock'),
                 DB::raw('CASE 
@@ -39,19 +46,34 @@ class ProductServices {
                             THEN "STOK HABIS"
                         END AS status')
             )
-            ->join('product_journal', 'products.id', '=', 'product_journal.product_id') 
+            ->join('product_journal', 'products.id', '=', 'product_journal.product_id')
             ->join('warehouse', 'product_journal.warehouse_id', '=', 'warehouse.id')
-            ->groupBy('products.id','products.code', 'products.name', 'products.unit', 'warehouse.name', 'products.retail_price')
+            ->join('promo_products', 'products.promo_product_id', '=', 'promo_products.id') // Join ke tabel promo_products
+            ->groupBy(
+                'products.id', 
+                'products.code', 
+                'products.name', 
+                'products.unit', 
+                'warehouse.name', 
+                'products.retail_price', 
+                'promo_products.id',
+                'promo_products.description',
+                'promo_products.min',
+                'promo_products.max', // contoh kolom dari tabel promo_products
+                'promo_products.promo_value',
+                'promo_products.start_date',
+                'promo_products.end_date',
+            )
             ->orderByRaw("CASE 
                     WHEN (SUM(CASE WHEN product_journal.action = 'IN' THEN product_journal.quantity ELSE 0 END) - 
-                          SUM(CASE WHEN product_journal.action = 'OUT' THEN product_journal.quantity ELSE 0 END)) = 0 
+                        SUM(CASE WHEN product_journal.action = 'OUT' THEN product_journal.quantity ELSE 0 END)) = 0 
                     THEN 1 
                     WHEN (SUM(CASE WHEN product_journal.action = 'IN' THEN product_journal.quantity ELSE 0 END) - 
-                          SUM(CASE WHEN product_journal.action = 'OUT' THEN product_journal.quantity ELSE 0 END)) >= 10 
+                        SUM(CASE WHEN product_journal.action = 'OUT' THEN product_journal.quantity ELSE 0 END)) >= 10 
                     THEN 2 
                     ELSE 3 
-                 END")
-            ->orderBy('last_stock', 'asc'); // Urutkan last_stock dari terkecil hingga terbesar;
+                END")
+            ->orderBy('last_stock', 'asc'); // Urutkan last_stock dari terkecil hingga terbesar
 
 
         // Filter by warehouse if provided

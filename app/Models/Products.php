@@ -53,6 +53,6 @@ class Products extends Model
 
     public function promoProduct(): BelongsTo
     {
-        return $this->belogsTo(PromoProgram::class, 'promo_product_id');
+        return $this->belongsTo(PromoProgram::class, 'promo_product_id');
     }
 }

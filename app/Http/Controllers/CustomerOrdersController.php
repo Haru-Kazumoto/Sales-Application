@@ -59,7 +59,6 @@ class CustomerOrdersController extends Controller
         $customers = Parties::where('type_parties', 'CUSTOMER')->get();
         $payment_terms = Lookup::where('category', 'PAYMENT_TERM')->get();
         $products = $this->productServices->getStockProducts("DNP");
-        // dd($products);
 
         return Inertia::render('Sales/Sale/CreateCoDnp', [
             'coNumber' => $coNumber, 

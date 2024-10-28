@@ -17,6 +17,7 @@ class PromoProgramController extends Controller
                 '*', 
                 DB::raw("CASE WHEN end_date < CURDATE() THEN 'BERAKHIR' ELSE 'AKTIF' END AS status")
             )
+            ->orderByDesc('created_at')
             ->get();
 
         return Inertia::render('Admin/ListPromoProgram', compact('promos'));
@@ -46,7 +47,7 @@ class PromoProgramController extends Controller
         // Cek promo aktif untuk produk yang dipilih
         $activePromoProducts = Products::whereIn('id', collect($dataValidated['products'])
             ->pluck('product_id'))
-            ->whereHas('promo', function ($query) {
+            ->whereHas('promoProduct', function ($query) {
                 $query->where('end_date', '>', now())
                     ->orWhereDate('end_date', today());
             })

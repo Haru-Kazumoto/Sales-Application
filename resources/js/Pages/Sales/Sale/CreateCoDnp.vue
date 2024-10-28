@@ -110,6 +110,19 @@
                             {{ stockMessage }}
                         </span>
                     </div>
+                    <!-- <div class="col-6 col-md-6 col-lg-3">
+                        <n-input v-model:value="products.promo_value" />
+                    </div>
+                    <div class="col-6 col-md-6 col-lg-3">
+                        <n-input v-model:value="products.description" />
+                    </div>
+                    <div class="col-6 col-md-6 col-lg-3">
+                        <n-input v-model:value="products.min" />
+                    </div>
+                    <div class="col-6 col-md-6 col-lg-3">
+                        <n-input v-model:value="products.max" />
+                    </div> -->
+
                     <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">QUANTITY</label>
                         <n-input size="large" v-model:value="transaction_items.quantity" placeholder="" />
@@ -124,6 +137,20 @@
                             <template #prefix>Rp</template>
                         </n-input>
                     </div>
+                    <!-- Tambahan kolom untuk Promo, Deskripsi, dan Harga Diskon -->
+                    <div v-if="hasPromo" class="col-6 col-md-6 col-lg-4 d-flex flex-column gap-1">
+                        <label for="">PROMO VALUE</label>
+                        <n-input size="large" :value="promoPercentage + '%'" disabled />
+                    </div>
+                    <div v-if="products.description" class="col-6 col-md-6 col-lg-4 d-flex flex-column gap-1">
+                        <label for="">DESKRIPSI</label>
+                        <n-input size="large" :value="products.description" disabled />
+                    </div>
+                    <!-- <div v-if="hasPromo && discountedPrice !== null"
+                        class="col-6 col-md-6 col-lg-4 d-flex flex-column gap-1">
+                        <label for="">HARGA SETELAH DISKON</label>
+                        <n-input size="large" :value="`Rp ${discountedPrice}`" disabled />
+                    </div> -->
 
                     <!-- INPUT DISCOUNT FORM -->
                     <div class="col-6 d-flex flex-column gap-1">
@@ -413,6 +440,12 @@ export default defineComponent({
             name: '',
             last_stock: null as unknown as number,
             retail_price: null as unknown as number,
+            promo_value: null as unknown as number,
+            description: '',
+            min: null as unknown as number,
+            max: null as unknown as number,
+            start_date: null as unknown as string,
+            end_date: null as unknown as string,
             transaction_items: [] as TransactionItems[],
         });
 
@@ -484,8 +517,33 @@ export default defineComponent({
             }
         });
 
+        // Properti computed untuk promosi dan harga diskon
+        const hasPromo = computed(() => {
+            console.log("Promo Value:", products.value.promo_value);
+            return products.value.promo_value !== null;
+        });
+
+        const promoPercentage = computed(() => {
+            const promo = products.value.promo_value ?? 0;
+            console.log("Promo Percentage:", promo);
+            return promo;
+        });
+
+        const discountedPrice = computed(() => {
+            if (transaction_items.value.amount !== null && products.value.promo_value !== null) {
+                const discountAmount = (transaction_items.value.amount * products.value.promo_value) / 100;
+                const discounted = (transaction_items.value.amount - discountAmount).toFixed(2);
+                console.log("Discounted Price:", discounted);
+                return discounted;
+            }
+            return null;
+        });
+
+
         watch(() => products.value.name, (name) => {
             const selectedProduct = productOptions.find(data => data.label === name);
+            // console.log(selectedProduct);
+            // console.log(page.props.products);
 
             if (selectedProduct) {
                 products.value.code = selectedProduct.code;
@@ -493,9 +551,16 @@ export default defineComponent({
                 transaction_items.value.unit = selectedProduct.unit as any;
                 products.value.last_stock = selectedProduct.last_stock; // Set last_stock
                 products.value.retail_price = selectedProduct.retail_price;
+                products.value.promo_value = selectedProduct.promo_value;
+                products.value.description = selectedProduct.description;
+                products.value.min = selectedProduct.min;
+                products.value.max = selectedProduct.max;
+                products.value.start_date = selectedProduct.start_date;
+                products.value.end_date = selectedProduct.end_date;
 
                 // Tentukan pesan dan warna status berdasarkan last_stock
                 if (products.value.last_stock < 10) {
+                    console.log(page.props.products);
                     stockMessage.value = `Stok saat ini : (${products.value.last_stock})`;
                     stockStatusColor.value = 'red'; // Merah jika stok kurang dari 10
                 } else {
@@ -568,9 +633,10 @@ export default defineComponent({
 
 
         function handleAddProduct() {
-            // Pastikan kedua nilai adalah angka
+            // Pastikan quantity dan stok adalah angka
             const quantity = Number(transaction_items.value.quantity);
             const lastStock = Number(products.value.last_stock);
+
             // Periksa apakah quantity lebih besar dari stok
             if (quantity > lastStock) {
                 Swal.fire({
@@ -581,8 +647,12 @@ export default defineComponent({
                 return; // Hentikan eksekusi jika quantity tidak valid
             }
 
-            const ppnAmount = transaction_items.value.amount * 0.11;
-            const total = transaction_items.value.amount * quantity;
+            // Tentukan harga barang (amount) dengan harga diskon jika ada promo, atau harga asli jika tidak
+            const finalAmount = hasPromo.value ? Number(discountedPrice.value) : transaction_items.value.amount;
+
+            // Hitung pajak dan total harga
+            const ppnAmount = finalAmount * 0.11;
+            const total = finalAmount * quantity;
             const roundedTotal = Math.round(total);
             const roundedPpnAmount = Math.round(ppnAmount);
 
@@ -591,7 +661,7 @@ export default defineComponent({
                 quantity: quantity,
                 product_id: transaction_items.value.product_id,
                 tax_amount: roundedPpnAmount,
-                amount: transaction_items.value.amount,
+                amount: finalAmount, // Gunakan harga yang sudah didiskon jika ada promo
                 tax_id: transaction_items.value.tax_id,
                 total_price: roundedTotal,
                 discount_1: transaction_items.value.discount_1 || 0,
@@ -610,8 +680,6 @@ export default defineComponent({
                 closable: false,
             });
         }
-
-
 
         function removeProduct(index: number) {
             form.transaction_items.splice(index, 1);
@@ -794,6 +862,12 @@ export default defineComponent({
             status: data.status,         // Tambahkan status ke options
             retail_price: data.retail_price,
             id: data.id,
+            promo_value: data.promo_value,      // Tambahkan promo_value
+            description: data.description,      // Tambahkan description
+            min: data.min,                      // Tambahkan min
+            max: data.max,                      // Tambahkan max
+            start_date: data.start_date,        // Tambahkan start_date
+            end_date: data.end_date             // Tambahkan end_date
         }));
 
         return {
@@ -801,6 +875,9 @@ export default defineComponent({
             handleAddProduct,
             removeProduct,
             handleSubmitCo,
+            hasPromo,
+            promoPercentage,
+            discountedPrice,
             dayjs,
             form,
             termPaymentOptions,
