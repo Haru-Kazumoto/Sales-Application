@@ -138,13 +138,21 @@
                         </n-input>
                     </div>
                     <!-- Tambahan kolom untuk Promo, Deskripsi, dan Harga Diskon -->
-                    <div v-if="hasPromo" class="col-6 col-md-6 col-lg-4 d-flex flex-column gap-1">
+                    <div v-if="hasPromo" class="col-6 col-md-6 col-lg-2 d-flex flex-column gap-1">
                         <label for="">PROMO VALUE</label>
                         <n-input size="large" :value="promoPercentage + '%'" disabled />
                     </div>
                     <div v-if="products.description" class="col-6 col-md-6 col-lg-4 d-flex flex-column gap-1">
                         <label for="">DESKRIPSI</label>
                         <n-input size="large" :value="products.description" disabled />
+                    </div>
+                    <div v-if="products.min" class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
+                        <label for="">MINIMAL</label>
+                        <n-input size="large" :value="products.min" disabled/>
+                    </div>
+                    <div v-if="products.max" class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
+                        <label for="">MAKSIMAL</label>
+                        <n-input size="large" :value="products.max" disabled/>
                     </div>
                     <!-- <div v-if="hasPromo && discountedPrice !== null"
                         class="col-6 col-md-6 col-lg-4 d-flex flex-column gap-1">
@@ -529,14 +537,21 @@ export default defineComponent({
             return promo;
         });
 
+
         const discountedPrice = computed(() => {
-            if (transaction_items.value.amount !== null && products.value.promo_value !== null) {
-                const discountAmount = (transaction_items.value.amount * products.value.promo_value) / 100;
-                const discounted = (transaction_items.value.amount - discountAmount).toFixed(2);
-                console.log("Discounted Price:", discounted);
-                return discounted;
+            const { amount, quantity } = transaction_items.value;
+            const { promo_value, min, max } = products.value;
+
+            if (amount !== null && promo_value !== null) {
+                // Cek apakah quantity berada dalam range min dan max
+                if (quantity >= min && quantity <= max) {
+                    const discountAmount = (amount * promo_value) / 100;
+                    const discounted = (amount - discountAmount).toFixed(2);
+                    console.log("Discounted Price:", discounted);
+                    return discounted;
+                }
             }
-            return null;
+            return amount; // Kembalikan harga asli jika tidak memenuhi syarat
         });
 
 
