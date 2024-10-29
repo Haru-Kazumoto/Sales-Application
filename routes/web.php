@@ -3,17 +3,17 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/inspect/po-document',function() {
-    return view('documents.purchase-order-document');
-});
+// Route::get('/inspect/po-document',function() {
+//     return view('documents.purchase-order-document');
+// });
 
-Route::get('/inspect/sso-document', function() {
-    return view('documents.sub-sales-order-document');
-});
+// Route::get('/inspect/sso-document', function() {
+//     return view('documents.sub-sales-order-document');
+// });
 
-Route::get('/test-view', function() {
-    return Inertia::render('Test');
-});
+// Route::get('/test-view', function() {
+//     return Inertia::render('Test');
+// });
 
 
 // Dashboard Routes
@@ -194,7 +194,7 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         Route::get('/index-travel-document', [App\Http\Controllers\CustomerOrdersController::class, 'indexTravelDocuments'])->name('index-travel-document');
 
         Route::get('/return-item', fn() => Inertia::render('Warehouse/DnpWarehouse/ReturnItem'))->name('return-item');
-        Route::get('/booking-requests', fn() => Inertia::render('Warehouse/BookingItem/BookingRequest'))->name('booking-request');
+        Route::get('/booking-requests', [App\Http\Controllers\BookingOrderController::class, 'indexOrder'])->name('booking-request');
         // Route::get('/list-travel-document', fn() => Inertia::render);
     });
 
@@ -223,6 +223,13 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         Route::get('/list-co', [App\Http\Controllers\CustomerOrdersController::class, 'index'])->name('list-co');
         Route::get('/customer-order/detail/{transactions}', [App\Http\Controllers\CustomerOrdersController::class, 'show'])->name('detail-co');
         Route::post('/re-store-products/{transactionItem}', [App\Http\Controllers\ProductsController::class,'reStoreStockProduct'])->name('restore-products');
+
+        // Booking Item
+        Route::name('booking-item.')->prefix('booking-item/dnp')->group(function() {
+            Route::get('', [App\Http\Controllers\BookingOrderController::class, 'indexOrderDnp'])->name('index-booking-dnp');
+            Route::get('/create', [App\Http\Controllers\BookingOrderController::class, 'createBookingDnp'])->name('create-booking-dnp');
+            Route::post('/store', [App\Http\Controllers\BookingOrderController::class, 'storeBookingDnp'])->name('store-booking-dnp');
+        });
     });
 });
 

@@ -58,6 +58,11 @@ class TransactionServices
             $query = $this->scopeFilterByDateRange($query, $dateRange);
         }
 
-        return $this->applyPagination($query, $paginate);
+        if(!is_null($paginate))
+        {
+            return $this->applyPagination($query, $paginate);
+        }
+
+        return $query->get();
     }
 }

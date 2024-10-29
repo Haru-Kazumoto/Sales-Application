@@ -14,8 +14,7 @@
                 <n-data-table :columns="columns" :bordered="false" :data="$page.props.transactions.data" />
                 <div class="d-flex mt-3">
                     <n-pagination class="ms-auto" v-model:page="pagination.current_page"
-                        :page-count="pagination.last_page" :page-size="pagination.per_page"
-                        :item-count="pagination.total" @update:page="handlePageChange"
+                        :page-count="pagination.last_page" :page-size="pagination.per_page"  @update:page="handlePageChange"
                         @update:page-count="pagination.last_page = ($page.props.transactions as any).last_page" />
                 </div>
             </div>

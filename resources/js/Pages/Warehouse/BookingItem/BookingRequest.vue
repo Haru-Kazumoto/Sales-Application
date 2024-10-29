@@ -3,7 +3,8 @@
         <TitlePage title="BOOKING REQUEST" />
         <div class="card shadow" style="border: none;">
             <div class="card-body">
-                <n-data-table :bordered="false" :columns="columns" :data="data" size="small"/>
+                <n-data-table :bordered="false" :columns="columns"
+                    :data="($page.props.booking_request_order as any).data" size="small" />
             </div>
         </div>
     </div>
@@ -12,16 +13,10 @@
 <script lang="ts">
 import { defineComponent, h } from 'vue'
 import TitlePage from '../../../Components/TitlePage.vue';
-import { DataTableColumns, NButton } from 'naive-ui';
+import { DataTableColumns, NButton, NTag } from 'naive-ui';
+import { usePage } from '@inertiajs/vue3';
 
-interface RowData {
-    booking_date: string;
-    booking_number: string;
-    salesman: string;
-    customer: string;
-}
-
-function createColumns(): DataTableColumns<RowData> {
+function createColumns() {
     return [
         {
             title: "#",
@@ -36,23 +31,20 @@ function createColumns(): DataTableColumns<RowData> {
             key: 'booking_date',
             width: 200,
             render(row) {
-                return row.booking_date;
+                return row.transaction_details.find(data => data.category === "Booking Date")?.value;
             }
         },
         {
             title: "NOMOR BOOKING",
-            key: 'booking_number',
+            key: 'document_code',
             width: 200,
-            render(row) {
-                return row.booking_number;
-            }
         },
         {
             title: "SALESMAN",
             key: "salesman",
             width: 200,
             render(row) {
-                return row.salesman;
+                return row.transaction_details.find(data => data.category === "Salesman")?.value;
             }
         },
         {
@@ -60,7 +52,36 @@ function createColumns(): DataTableColumns<RowData> {
             key: "customer",
             width: 200,
             render(row) {
-                return row.customer;
+                const status = row.transaction_details.find(data => data.category === "Check")?.value;
+
+                let type;
+
+                switch (status) {
+                    case "PENDING":
+                        type = "warning";
+                        break;
+                    case "APPROVED":
+                        type = "success";
+                        break;
+                    case "REJECTED":
+                        type = "error";
+                        break;
+                    case "RELEASE_CO":
+                        type = "info";
+                        break;
+                    default:
+                        type = "success";
+                        break;
+                }
+
+                return h(
+                    NTag, {
+                    type,
+                    bordered: true,
+                    strong: true,
+                },
+                    { default: () => status }
+                )
             }
         },
         {
@@ -77,26 +98,21 @@ function createColumns(): DataTableColumns<RowData> {
                         },
                         size: 'small',
                     },
-                    {default: () => 'Detail'}
+                    { default: () => 'Detail' }
                 )
             }
         }
     ]
 }
 
-const data: RowData[] = [
-    {booking_date: "04-04-2006", booking_number: "004/CO-DKU/VI/24", salesman: "UDIN", customer: "ELUD BAKERY"},
-    {booking_date: "04-04-2006", booking_number: "004/CO-DKU/VI/24", salesman: "UDIN", customer: "ELUD BAKERY"},
-    {booking_date: "04-04-2006", booking_number: "004/CO-DKU/VI/24", salesman: "UDIN", customer: "ELUD BAKERY"}
-]
-
 export default defineComponent({
-    setup () {
-        
+    setup() {
+        const page = usePage();
+        const booking_request = page.props.booking_request_order as any[];
+        console.log(booking_request);
 
         return {
             columns: createColumns(),
-            data
         }
     },
     components: {
@@ -105,6 +121,4 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

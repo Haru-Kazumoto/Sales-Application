@@ -187,24 +187,24 @@ class ProductsController extends Controller
         DB::transaction(function() use ($request, $product) {
             $product_type = ProductType::where('id', $request->input('product_type_id'))->first();
 
-            $product->code = $request->input('code');
-            $product->unit = $request->input('unit');
-            $product->name = $request->input('name');
-            $product->category = $request->input('category');
-            $product->redemp_price = $request->input('redemp_price');
-            $product->retail_price = $request->input('retail_price');
-            $product->restaurant_price = $request->input('restaurant_price');
-            $product->price_3 = $request->input('price_3');
-            $product->dd_price = $request->input('dd_price');
-            $product->normal_margin = $request->input('normal_margin');
-            $product->oh_depo = $request->input('oh_depo');
-            $product->saving = $request->input('saving');
-            $product->bad_debt_dd = $request->input('bad_debt_dd');
-            $product->saving_marketing = $request->input('saving_marketing');
-            $product->product_type_id = $product_type->id;
-
             // Simpan perubahan
-            $product->save();
+            $product->update([
+                'code' => $request->input('code'),
+                'unit' => $request->input('unit'),
+                'name' => $request->input('name'),
+                'category' => $request->input('category'),
+                'redemp_price' => $request->input('redemp_price'),
+                'retail_price' => $request->input('retail_price'),
+                'restaurant_price' => $request->input('restaurant_price'),
+                'price_3' => $request->input('price_3'),
+                'dd_price' => $request->input('dd_price'),
+                'normal_margin' => $request->input('normal_margin'),
+                'oh_depo' => $request->input('oh_depo'),
+                'saving' => $request->input('saving'),
+                'bad_debt_dd' => $request->input('bad_debt_dd'),
+                'saving_marketing' => $request->input('saving_marketing'),
+                'product_type_id' => $product_type->id,
+            ]);
         });
 
         // Redirect dengan pesan sukses
@@ -355,6 +355,7 @@ class ProductsController extends Controller
     public function indexAllWarehouseProducts()
     {
         $products = $this->productServices->getStockProducts(null, null,10);
+        // dd($products);
 
         return Inertia::render('Warehouse/StockItems', compact('products'));
     }
@@ -365,6 +366,7 @@ class ProductsController extends Controller
     public function indexDNPWarehouseProducts()
     {
         $products = $this->productServices->getStockProducts("DNP", null,15);
+        // dd($products);
 
         return Inertia::render('Warehouse/DnpWarehouse/Stocks', compact('products'));
     }

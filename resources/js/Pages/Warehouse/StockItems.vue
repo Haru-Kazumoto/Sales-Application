@@ -18,7 +18,7 @@
             </div>
             <div class="card shadow" style="border: none;">
                 <div class="card-body">
-                    <n-data-table :columns="columns" :data="($page.props.products as any).data" :pagination="pagination"
+                    <n-data-table :columns="columns" :data="($page.props.products as any).data"
                         :bordered="false" size="small" pagination-behavior-on-filter="first" />
                 </div>
             </div>

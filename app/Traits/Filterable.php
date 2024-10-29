@@ -20,12 +20,9 @@ trait Filterable
      */
     public function applySearchFilter(Builder $query, ?string $filterField = null, ?string $filterQuery = null): Builder
     {
-        if (!is_null($filterField) && !is_null($filterQuery)) 
-        {
-            $query->where($filterField, 'like', "%{$filterQuery}%");
-        }
-
-        return $query;
+        return $filterField && $filterQuery 
+            ? $query->where($filterField, 'like', "%{$filterQuery}%")
+            : $query;
     }
 
     /**
@@ -37,34 +34,14 @@ trait Filterable
      */
     public function scopeFilterByDateRange(Builder $query, $range)
     {
-        switch ($range) {
-            case 'this_week':
-                // Filter for the current week
-                $query->whereBetween('created_at', [
-                    Carbon::now()->startOfWeek(), // Start of this week
-                    Carbon::now()->endOfWeek()    // End of this week
-                ]);
-                break;
+        $dateRanges = [
+            'this_week' => [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()],
+            'this_month' => [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()],
+            'this_year' => [Carbon::now()->startOfYear(), Carbon::now()->endOfYear()],
+        ];
 
-            case 'this_month':
-                // Filter for the current month
-                $query->whereBetween('created_at', [
-                    Carbon::now()->startOfMonth(), // Start of this month
-                    Carbon::now()->endOfMonth()    // End of this month
-                ]);
-                break;
-
-            case 'this_year':
-                // Filter for the current year
-                $query->whereBetween('created_at', [
-                    Carbon::now()->startOfYear(),  // Start of this year
-                    Carbon::now()->endOfYear()     // End of this year
-                ]);
-                break;
-
-            default:
-                // If no valid range is provided, return all results
-                break;
+        if (array_key_exists($range, $dateRanges)) {
+            $query->whereBetween('created_at', $dateRanges[$range]);
         }
 
         return $query;
@@ -77,10 +54,19 @@ trait Filterable
      * @param mixed $pagination
      * @return \Illuminate\Support\Collection|\Illuminate\Pagination\LengthAwarePaginator
      */
-    public function applyPagination(Builder $query, ?int $pagination = null): Collection|LengthAwarePaginator
+    public function applyPagination(Builder $query, ?int $pagination = null, array $appends = []): Collection|LengthAwarePaginator
     {
-        if (!is_null($pagination)) {
-            return $query->paginate($pagination);
+        $query->orderByDesc('created_at');
+
+        // Jika pagination diinginkan
+        if ($pagination) {
+            $paginator = $query->paginate($pagination);
+
+            if (!empty($appends)) {
+                $paginator->appends($appends); // Memastikan filter tetap terlampir
+            }
+
+            return $paginator;
         }
 
         return $query->get();
