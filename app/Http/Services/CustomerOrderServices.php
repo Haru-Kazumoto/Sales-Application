@@ -12,7 +12,6 @@ class CustomerOrderServices {
     public function getTransactions(
         ?string $transactionType = null, 
         ?string $generated = "false",
-        ?string $direction = 'desc',
         ?int $perPage = null, 
         ?string $category = null, 
         ?string $value = null
@@ -32,7 +31,7 @@ class CustomerOrderServices {
         $query = $this->applyTransactionDetailsFilter($query, $category, $value);
 
         // Apply ordering
-        $query->orderBy('created_at', $direction);
+        $query->orderByDesc('created_at');
 
         // Conditionally apply pagination if $perPage is provided, otherwise just get the results
         return $this->applyPagination($query, $perPage);

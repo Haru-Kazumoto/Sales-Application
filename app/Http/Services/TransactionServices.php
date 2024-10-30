@@ -22,7 +22,6 @@ class TransactionServices
         int $tx_type_id, 
         ?string $filterField = null, 
         ?string $filterQuery = null, 
-        ?string $order_by = 'desc',
         ?int $paginate = null,
         ?string $dateRange = null,
     ): Collection|LengthAwarePaginator
@@ -46,12 +45,7 @@ class TransactionServices
                 ) THEN 0 
                 ELSE 1 
             END
-        ");
-
-        if(!is_null($order_by))
-        {
-            $query->orderBy('created_at', 'desc');
-        }
+        ")->orderByDesc('created_at');
 
         // Tambahkan pengecekan untuk date range
         if (!is_null($dateRange)) {

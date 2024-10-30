@@ -38,7 +38,6 @@ class SubSalesOrderController extends Controller
             $tx_type->id, 
             $request->filter_field,
             $request->filter_query,
-            'desc',
             10,
             $request->dateRange
         );

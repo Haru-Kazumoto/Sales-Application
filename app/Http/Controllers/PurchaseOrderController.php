@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\LookupServices;
+use App\Http\Services\PartiesServices;
 use App\Http\Services\PurchaseOrderServices;
 use App\Http\Services\TransactionServices;
 use App\Models\Lookup;
@@ -25,13 +27,22 @@ use Inertia\Response;
 class PurchaseOrderController extends Controller
 {
 
-    private $transactionService;
-    private $purchaseOrderService;
+    protected $transactionService;
+    protected $purchaseOrderService;
+    protected $partiesService;
+    protected $lookupService;
 
-    public function __construct(TransactionServices $transactionService, PurchaseOrderServices $purchaseOrderServices) 
+    public function __construct(
+        TransactionServices $transactionService, 
+        PurchaseOrderServices $purchaseOrderServices, 
+        PartiesServices $partiesServices,
+        LookupServices $lookupServices
+    ) 
     {
         $this->transactionService = $transactionService;
         $this->purchaseOrderService = $purchaseOrderServices;
+        $this->partiesService = $partiesServices;
+        $this->lookupService = $lookupServices;
     }
 
     /**
@@ -45,7 +56,6 @@ class PurchaseOrderController extends Controller
             $tx_type->id, 
             $request->filter_field,
             $request->filter_query,
-            'desc',
             10,
             $request->dateRange
         );
@@ -58,11 +68,12 @@ class PurchaseOrderController extends Controller
      */
     public function create(): Response
     {
-        $payment_terms = Lookup::where('category', 'PAYMENT_TERM')->get();
-        $store_locations = Lookup::where('category', 'STORE_LOCATION')->get();
+        $payment_terms = $this->lookupService->getAllLookupBy('category', 'PAYMENT_TERM');
+        $store_locations = $this->lookupService->getAllLookupBy('category', 'STORE_LOCATION');
         $suppliers = Parties::where('type_parties', 'VENDOR')->get();
         $products = Products::all();
-        $units = Lookup::where('category', 'UNIT')->get();
+        $units = $this->lookupService->getAllLookupBy('category', 'UNIT');
+        $transports = $this->partiesService->getPartiesByGroupAndType('VENDOR', 'Angkutan');
         $tax = Tax::all();
 
         return Inertia::render('Procurement/Purchase/CreatePurchaseOrder', [
@@ -73,7 +84,8 @@ class PurchaseOrderController extends Controller
             'tax' => $tax,
             'products' => $products,
             'units' => $units,
-            'suppliers' => $suppliers
+            'suppliers' => $suppliers,
+            'transports' => $transports
         ]);
     }
 

@@ -98,8 +98,8 @@
                                 Nama Ekspedisi
                                 <RequiredMark />
                             </label>
-                            <n-select placeholder="" id="field6" size="large" v-model:value="transaction_details.sender"
-                                :options="senderOptions" />
+                            <n-select placeholder="" filterable id="field6" size="large" v-model:value="transaction_details.sender"
+                                :options="transportOptions" />
                         </div>
                         <div class="col-12 col-md-3 col-lg-4">
                             <label for="field7">
@@ -680,10 +680,10 @@ export default defineComponent({
             value: data.name,
         }));
 
-        const senderOptions = [
-            { label: "DNP Ekspedisi", value: "DNP_EXPEDITION" },
-            { label: "DKU Ekspedisi", value: "DKU_EXPEDITION" }
-        ]
+        const transportOptions = (page.props.transports as Parties[]).map((data) => ({
+            label: data.name,
+            value: data.name
+        }));
 
         const sendType = [
             { label: "DEPO BEKASI", value: "DEPO BEKASI" },
@@ -723,7 +723,7 @@ export default defineComponent({
             storehouseOptions,
             termPaymentOptions,
             sendType,
-            senderOptions,
+            transportOptions,
             ppnOptions,
             subTotal: subtotal,
             resultPpn: totalPPN,
