@@ -98,8 +98,8 @@
                                 Nama Ekspedisi
                                 <RequiredMark />
                             </label>
-                            <n-select placeholder="" filterable id="field6" size="large" v-model:value="transaction_details.sender"
-                                :options="transportOptions" />
+                            <n-select placeholder="" filterable id="field6" size="large"
+                                v-model:value="transaction_details.sender" :options="transportOptions" />
                         </div>
                         <div class="col-12 col-md-3 col-lg-4">
                             <label for="field7">
@@ -159,8 +159,7 @@
                             <!-- <n-input size="large" id="product_price" placeholder="" v-model:value="transaction_items.amount"
                                 @input="(value) => transaction_items.amount = value.replace(/\D/g, '')"> -->
                             <n-input size="large" id="product_price" placeholder=""
-                                v-model:value="transaction_items.amount"
-                                @input="(value) => transaction_items.amount = value.replace(',', '.')">
+                                v-model:value="transaction_items.amount">
                                 <template #prefix>Rp </template>
                             </n-input>
                         </div>
@@ -321,30 +320,44 @@ export default defineComponent({
                     keepAliveOnHover: false,
                     duration: 1500,
                 });
-                return; // Hentikan eksekusi jika ada field yang kosong
+                return;
             }
 
             // Ambil persentase PPN dari tax_id yang dipilih
             const selectedTax = ppnOptions.find(tax => tax.value === transaction_items.value.tax_id);
+            const selectedPpnValue = selectedTax ? selectedTax.percentage : 0;
 
-            // Kalkulasi nilai PPN
-            const selectedPpnValue = selectedTax ? selectedTax.percentage : 0; // Nilai PPN (0 jika tidak ada PPN)
-            const productPrice = transaction_items.value.amount; // Ambil harga produk (amount)
-            const roundedProductPrice = Math.round(productPrice);
-            const ppnAmount = productPrice * selectedPpnValue; // Kalkulasi PPN
-            const totalPrice = roundedProductPrice * transaction_items.value.quantity;
+            // Format nilai `amount` untuk menangani separator ribuan/desimal
+            const formattedAmount = transaction_items.value.amount
+                .replace(/\./g, '')  // Hapus semua titik sebagai pemisah ribuan
+                .replace(',', '.');   // Ganti koma menjadi titik untuk desimal
 
-            const roundedTotalPrice = Math.round(totalPrice);
+            // Parsing amount yang sudah diformat ke angka desimal
+            const productPrice = parseFloat(formattedAmount);
+            if (isNaN(productPrice)) {
+                notification.error({
+                    title: 'Nilai jumlah produk tidak valid',
+                    closable: true,
+                    duration: 1500,
+                });
+                return;
+            }
 
+            // Perhitungan tanpa pembulatan
+            const ppnAmount = productPrice * selectedPpnValue;
+            const totalPrice = productPrice * transaction_items.value.quantity;
+
+            // Format total harga agar memiliki dua desimal
+            const formattedTotalPrice = parseFloat(totalPrice.toFixed(2));
 
             form.transaction_items.push({
                 unit: transaction_items.value.unit,
                 quantity: transaction_items.value.quantity,
                 product_id: transaction_items.value.product_id,
                 tax_amount: selectedTax?.value_tax,
-                amount: transaction_items.value.amount,
+                amount: productPrice,
                 tax_id: transaction_items.value.tax_id,
-                total_price: roundedTotalPrice,
+                total_price: formattedTotalPrice,
                 product: {
                     code: products.value.code,
                     unit: transaction_items.value.unit,
@@ -352,7 +365,7 @@ export default defineComponent({
                 }
             });
 
-            //clear form 
+            // Clear form 
             products.value.name = "";
             transaction_items.value.quantity = null as unknown as number;
             transaction_items.value.amount = null as unknown as number;
@@ -366,6 +379,8 @@ export default defineComponent({
                 duration: 2000,
             });
         }
+
+
 
         const totalPPN = computed(() => {
             // Menghitung subtotal dari semua produk tanpa mengalikan quantity

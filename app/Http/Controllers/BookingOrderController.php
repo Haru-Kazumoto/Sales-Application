@@ -40,10 +40,29 @@ class BookingOrderController extends Controller
         $txType = TransactionType::where('name', 'Booking Order')->first();
         $booking_request_order = Transactions::where('transaction_type_id', $txType->id)
             ->with('transactionDetails','transactionItems.product')
-            ->orderByDesc('created_at')
+            ->orderByDesc('updated_at')
             ->paginate(10);
 
         return Inertia::render('Warehouse/BookingItem/BookingRequest', compact('booking_request_order'));
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function indexOrderDnp(Request $request)
+    {
+        $filter_field = $request->filter_field;
+        $filter_query = $request->filter_query;
+        $txType = TransactionType::where('name', 'Booking Order')->first();
+
+        $booking_request_products = TransactionItem::whereHas('transaction', function($query) use ($txType) {
+                $query->where('transaction_type_id', $txType->id);
+            })
+            ->with('transaction.transactionDetails', 'product')
+            ->orderByDesc('updated_at')
+            ->paginate(10);
+
+        return Inertia::render('Sales/BookingItem/DNP/ListBookingOrder', compact('booking_request_products'));
     }
 
     public function showOrder(Transactions $transactions) 
@@ -83,16 +102,19 @@ class BookingOrderController extends Controller
         DB::transaction(function() use ($statusTransaction, $transaction, $warehouse) {
             //Create product journal for product information that has out from warehouse since booked
             foreach($transaction->transactionItems as $items){
-                $product = Products::where('id', $items['product_id'])->first();
-
-                ProductJournal::create([
-                    'quantity' => $items['quantity'],
-                    'amount' => $items['amount'],
-                    'action' => 'OUT',
-                    'warehouse_id' => $warehouse->id,
-                    'transactions_id' => $transaction->id,
-                    'product_id' => $product->id,
-                ]);
+                if ($items['status_booking'] === 'APPROVED') {
+                    $product = Products::where('id', $items['product_id'])->first();
+    
+                    // Buat entry ProductJournal
+                    ProductJournal::create([
+                        'quantity' => $items['quantity'],
+                        'amount' => $items['amount'],
+                        'action' => 'OUT',
+                        'warehouse_id' => $warehouse->id,
+                        'transactions_id' => $transaction->id,
+                        'product_id' => $product->id,
+                    ]);
+                }
             }
 
             //set status of booking request to approved since the product has checked all
@@ -142,23 +164,6 @@ class BookingOrderController extends Controller
         return back()->with('success', 'Berhasil di approved');
     }
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function indexOrderDnp(Request $request)
-    {
-        $filter_field = $request->filter_field;
-        $filter_query = $request->filter_query;
-        $txType = TransactionType::where('name', 'Booking Order')->first();
-
-        $booking_request_products = TransactionItem::whereHas('transaction', function($query) use ($txType) {
-                $query->where('transaction_type_id', $txType->id);
-            })
-            ->with('transaction.transactionDetails', 'product')
-            ->paginate(10);
-
-        return Inertia::render('Sales/BookingItem/DNP/ListBookingOrder', compact('booking_request_products'));
-    }
 
     /**
      * Show the form for creating a new resource.

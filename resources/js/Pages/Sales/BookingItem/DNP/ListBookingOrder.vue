@@ -26,7 +26,6 @@ import { router, usePage } from "@inertiajs/vue3";
 import { NButton, NTag } from 'naive-ui';
 import dayjs from 'dayjs';
 import 'dayjs/locale/id'; // Import locale Indonesia
-import { breadcrumbLight } from 'naive-ui/es/breadcrumb/styles';
 
 dayjs.locale('id'); // Set locale to Indonesian
 
@@ -115,7 +114,7 @@ export default defineComponent({
                     key: "action",
                     width: 150,
                     render(row, index) {
-                        const status = row.transaction.transaction_details.find(data => data.category === "Check")?.value;
+                        const status = row.status_booking;
 
                         return h('div', { class: 'd-flex gap-2' }, [
                             // h(

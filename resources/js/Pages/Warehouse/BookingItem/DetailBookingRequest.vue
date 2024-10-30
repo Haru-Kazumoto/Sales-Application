@@ -39,8 +39,8 @@
             </div>
         </div>
 
-        <div class="d-flex">
-            <n-button type="primary" size="large" class="ms-auto"
+        <div class="d-flex" >
+            <n-button type="primary" size="large" class="ms-auto" v-if="detail.status === 'PENDING'"
                 @click="handleSubmit">APPROVE</n-button>
         </div>
 

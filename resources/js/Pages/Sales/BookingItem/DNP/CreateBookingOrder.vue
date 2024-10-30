@@ -234,6 +234,12 @@ export default defineComponent({
                     category: "Description",
                     value: "-",
                     data_type: 'text'
+                },
+                {
+                    name: "Gudang",
+                    category: "Warehouse",
+                    value: "DNP",
+                    data_type: 'string',
                 }
             ]
 

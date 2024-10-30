@@ -76,7 +76,7 @@ function createColumns() {
                 let type: any;
 
                 switch (rowData.status) {
-                    case 'STOK HABIS':
+                    case 'HABIS':
                         type = 'error';
                         break;
                     case 'PERLU TAMBAH':

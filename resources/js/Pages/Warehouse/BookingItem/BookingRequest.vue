@@ -40,6 +40,24 @@ function createColumns() {
             width: 200,
         },
         {
+            title: "BARANG GUDANG",
+            key: "warehouse",
+            width: 150,
+            render(row) {
+                const warehouse = row.transaction_details.find(data => data.category === "Warehouse")?.value;
+
+                return h(
+                    NTag,
+                    {
+                        type: warehouse !== "DNP" ? 'info' : 'success',
+                        strong: true,
+                        bordered: true,
+                    },
+                    { default: () => warehouse}
+                )
+            }
+        },
+        {
             title: "SALESMAN",
             key: "salesman",
             width: 200,
