@@ -11,13 +11,13 @@
                     <div class="col-12 col-lg-6">
                         <div class="d-flex flex-column gap-1">
                             <label for="">NOMOR CO <span class="text-danger">*</span></label>
-                            <n-input size="large" disabled v-model:value="form.document_code" placeholder="" />
+                            <n-input size="large" readonly v-model:value="form.document_code" placeholder="" />
                         </div>
                     </div>
                     <div class="col-12 col-lg-6">
                         <div class="d-flex flex-column gap-1">
                             <label for="">TANGGAL DIBUAT CO<span class="text-danger">*</span></label>
-                            <n-input size="large" disabled v-model:value="transaction_details.customer_order_date"
+                            <n-input size="large" readonly v-model:value="transaction_details.customer_order_date"
                                 placeholder="" />
                         </div>
                     </div>
@@ -59,7 +59,7 @@
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">SALESMAN<span class="text-danger">*</span></label>
-                            <n-input size="large" v-model:value="transaction_details.salesman" disabled
+                            <n-input size="large" v-model:value="transaction_details.salesman" readonly
                                 placeholder="" />
                         </div>
                     </div>
@@ -116,7 +116,7 @@
                     </div>
                     <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">KEMASAN</label>
-                        <n-input size="large" v-model:value="transaction_items.unit" disabled placeholder="" />
+                        <n-input size="large" v-model:value="transaction_items.unit" readonly placeholder="" />
                     </div>
                     <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">HARGA PRODUK</label>
@@ -137,7 +137,7 @@
                     </div>
                     <div class="col-6 d-flex flex-column gap-1">
                         <label for="">HARGA</label>
-                        <n-input size="large" disabled placeholder=""
+                        <n-input size="large" readonly placeholder=""
                             v-model:value="transaction_details.total_discount_1">
                             <template #prefix>Rp</template>
                         </n-input>
@@ -153,7 +153,7 @@
                     </div>
                     <div class="col-6 d-flex flex-column gap-1">
                         <label for="">HARGA</label>
-                        <n-input size="large" disabled placeholder=""
+                        <n-input size="large" readonly placeholder=""
                             v-model:value="transaction_details.total_discount_2">
                             <template #prefix>Rp</template>
                         </n-input>
@@ -169,7 +169,7 @@
                     </div>
                     <div class="col-6 d-flex flex-column gap-1">
                         <label for="">HARGA</label>
-                        <n-input size="large" disabled placeholder=""
+                        <n-input size="large" readonly placeholder=""
                             v-model:value="transaction_details.total_discount_3">
                             <template #prefix>Rp</template>
                         </n-input>

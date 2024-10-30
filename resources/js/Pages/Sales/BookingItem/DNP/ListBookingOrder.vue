@@ -78,7 +78,7 @@ export default defineComponent({
                     key: "status",
                     width: 150,
                     render(row) {
-                        const status = row.transaction.transaction_details.find(data => data.category === "Check")?.value;
+                        const status = row.status_booking;
 
                         let type;
 

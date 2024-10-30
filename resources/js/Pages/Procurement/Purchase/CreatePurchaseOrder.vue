@@ -15,7 +15,7 @@
                                 <RequiredMark />
                             </label>
                             <n-input placeholder="" id="field1" size="large" v-model:value="form.document_code"
-                                :disabled="true" />
+                                readonly />
                         </div>
                         <div class="col-12 col-md-3 col-lg-4">
                             <label for="field2">
@@ -115,7 +115,7 @@
                                 <RequiredMark />
                             </label>
                             <n-input placeholder="" id="field8" size="large"
-                                v-model:value="transaction_details.employee_name" :disabled="true" />
+                                v-model:value="transaction_details.employee_name" readonly />
                         </div>
                         <div class="col-12 col-md-3 col-lg-4">
                             <label for="catatan">Catatan</label>

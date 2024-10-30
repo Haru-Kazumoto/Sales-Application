@@ -38,17 +38,17 @@
                         </div>
                         <div class="col-lg-4 col-6">
                             <label for="field5">Alokasi<span class="text-danger">*</span></label>
-                            <n-input id="field5" size="large" disabled placeholder=""
+                            <n-input id="field5" size="large" readonly placeholder=""
                                 v-model:value="transaction_details.located" />
                         </div>
                         <div class="col-lg-4 col-6">
                             <label for="field6">Pemasok<span class="text-danger">*</span></label>
-                            <n-input id="field6" size="large" disabled placeholder=""
+                            <n-input id="field6" size="large" readonly placeholder=""
                                 v-model:value="transaction_details.supplier" />
                         </div>
                         <div class="col-lg-4 col-6">
                             <label for="field7">Gudang<span class="text-danger">*</span></label>
-                            <n-input id="field7" size="large" disabled placeholder=""
+                            <n-input id="field7" size="large" readonly placeholder=""
                                 v-model:value="transaction_details.storehouse" />
                         </div>
                         <div class="col-lg-4 col-6">
@@ -75,7 +75,7 @@
                         </div>
                         <div class="col-lg-4 col-6">
                             <label for="field12">PIC<span class="text-danger">*</span></label>
-                            <n-input id="field12" size="large" disabled placeholder=""
+                            <n-input id="field12" size="large" readonly placeholder=""
                                 v-model:value="transaction_details.employee_name" />
                         </div>
                         <div class="col-lg-4 col-6">

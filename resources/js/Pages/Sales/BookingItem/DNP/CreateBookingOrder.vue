@@ -14,7 +14,7 @@
                 <div class="row g-3">
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column">
                         <label for="">Nomor Booking</label>
-                        <n-input size="large" placeholder="" v-model:value="form.document_code" disabled />
+                        <n-input size="large" placeholder="" v-model:value="form.document_code" readonly />
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column">
                         <label for="">Nama Produk</label>
@@ -30,7 +30,7 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column">
                         <label for="">Kemasan</label>
-                        <n-input size="large" placeholder="" v-model:value="form.unit" disabled />
+                        <n-input size="large" placeholder="" v-model:value="form.unit" readonly />
                     </div>
                 </div>
                 <div class="d-flex w-100 my-2">
@@ -74,6 +74,10 @@ import { NButton, useNotification } from 'naive-ui';
 import { formatRupiah } from "../../../../utils/options-input.utils";
 import Swal from 'sweetalert2';
 import { Flash } from '../../../../types/model';
+import dayjs from 'dayjs';
+import 'dayjs/locale/id'; // Import locale Indonesia
+
+dayjs.locale('id'); // Set locale to Indonesian
 
 export default defineComponent({
     setup() {
@@ -224,6 +228,12 @@ export default defineComponent({
                     category: "Salesman",
                     value: (page.props.auth as any).user.fullname,
                     data_type: 'string',
+                },
+                {
+                    name: "Deskripsi",
+                    category: "Description",
+                    value: "-",
+                    data_type: 'text'
                 }
             ]
 

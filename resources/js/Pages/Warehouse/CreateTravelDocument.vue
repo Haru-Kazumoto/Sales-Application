@@ -17,20 +17,20 @@
                         <label for="">Nomor CO
                             <RequiredMark />
                         </label>
-                        <n-input placeholder="" disabled v-model:value="transaction_details.customer_order_number"
+                        <n-input placeholder="" readonly v-model:value="transaction_details.customer_order_number"
                             size="large" />
                     </div>
                     <div class="col-6 col-lg-4">
                         <label for="">Nomor Surat Jalan
                             <RequiredMark />
                         </label>
-                        <n-input placeholder="" disabled v-model:value="form.document_code" size="large" />
+                        <n-input placeholder="" readonly v-model:value="form.document_code" size="large" />
                     </div>
                     <div class="col-6 col-lg-4">
                         <label for="">Tanggal Surat Jalan
                             <RequiredMark />
                         </label>
-                        <n-date-picker disabled value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder=""
+                        <n-date-picker readonly value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder=""
                             class="w-100" id="field8" size="large"
                             v-model:value="transaction_details.travel_document_date" />
                     </div>
@@ -39,7 +39,7 @@
                         <label for="">Nama Customer
                             <RequiredMark />
                         </label>
-                        <n-input placeholder="" disabled v-model:value="transaction_details.customer" size="large" />
+                        <n-input placeholder="" readonly v-model:value="transaction_details.customer" size="large" />
                     </div>
                     <div class="col-6 col-lg-3">
                         <label for="">Gudang Pengiriman
@@ -59,7 +59,7 @@
                         <label for="">Salesman
                             <RequiredMark />
                         </label>
-                        <n-input placeholder="" disabled v-model:value="transaction_details.salesman" size="large" />
+                        <n-input placeholder="" readonly v-model:value="transaction_details.salesman" size="large" />
                     </div>
                     <!-- row3 -->
                     <div class="col-6 col-lg-4">

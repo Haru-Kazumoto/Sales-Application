@@ -11,13 +11,13 @@
                     <div class="col-12 col-lg-6">
                         <div class="d-flex flex-column gap-1">
                             <label for="">NOMOR CO <span class="text-danger">*</span></label>
-                            <n-input size="large" disabled v-model:value="form.document_code" placeholder="" />
+                            <n-input size="large" readonly v-model:value="form.document_code" placeholder="" />
                         </div>
                     </div>
                     <div class="col-12 col-lg-6">
                         <div class="d-flex flex-column gap-1">
                             <label for="">TANGGAL DIBUAT CO<span class="text-danger">*</span></label>
-                            <n-input size="large" disabled v-model:value="transaction_details.customer_order_date"
+                            <n-input size="large" readonly v-model:value="transaction_details.customer_order_date"
                                 placeholder="" />
                         </div>
                     </div>
@@ -59,7 +59,7 @@
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">SALESMAN<span class="text-danger">*</span></label>
-                            <n-input size="large" v-model:value="transaction_details.salesman" disabled
+                            <n-input size="large" v-model:value="transaction_details.salesman" readonly
                                 placeholder="" />
                         </div>
                     </div>
@@ -129,7 +129,7 @@
                     </div>
                     <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">KEMASAN</label>
-                        <n-input size="large" v-model:value="transaction_items.unit" disabled placeholder="" />
+                        <n-input size="large" v-model:value="transaction_items.unit" readonly placeholder="" />
                     </div>
                     <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">HARGA PRODUK</label>
@@ -140,24 +140,24 @@
                     <!-- Tambahan kolom untuk Promo, Deskripsi, dan Harga Diskon -->
                     <div v-if="hasPromo" class="col-6 col-md-6 col-lg-2 d-flex flex-column gap-1">
                         <label for="">PROMO VALUE</label>
-                        <n-input size="large" :value="promoPercentage + '%'" disabled />
+                        <n-input size="large" :value="promoPercentage + '%'" readonly />
                     </div>
                     <div v-if="products.description" class="col-6 col-md-6 col-lg-4 d-flex flex-column gap-1">
                         <label for="">DESKRIPSI</label>
-                        <n-input size="large" :value="products.description" disabled />
+                        <n-input size="large" :value="products.description" readonly />
                     </div>
                     <div v-if="products.min" class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">MINIMAL</label>
-                        <n-input size="large" :value="products.min" disabled/>
+                        <n-input size="large" :value="products.min" readonly/>
                     </div>
                     <div v-if="products.max" class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">MAKSIMAL</label>
-                        <n-input size="large" :value="products.max" disabled/>
+                        <n-input size="large" :value="products.max" readonly/>
                     </div>
                     <!-- <div v-if="hasPromo && discountedPrice !== null"
                         class="col-6 col-md-6 col-lg-4 d-flex flex-column gap-1">
                         <label for="">HARGA SETELAH DISKON</label>
-                        <n-input size="large" :value="`Rp ${discountedPrice}`" disabled />
+                        <n-input size="large" :value="`Rp ${discountedPrice}`" readonly />
                     </div> -->
 
                     <!-- INPUT DISCOUNT FORM -->
@@ -172,7 +172,7 @@
                     </div>
                     <div class="col-6 d-flex flex-column gap-1">
                         <label for="">HARGA</label>
-                        <n-input size="large" disabled placeholder=""
+                        <n-input size="large" readonly placeholder=""
                             v-model:value="transaction_details.total_discount_1">
                             <template #prefix>Rp</template>
                         </n-input>
@@ -188,7 +188,7 @@
                     </div>
                     <div class="col-6 d-flex flex-column gap-1">
                         <label for="">HARGA</label>
-                        <n-input size="large" disabled placeholder=""
+                        <n-input size="large" readonly placeholder=""
                             v-model:value="transaction_details.total_discount_2">
                             <template #prefix>Rp</template>
                         </n-input>
@@ -204,7 +204,7 @@
                     </div>
                     <div class="col-6 d-flex flex-column gap-1">
                         <label for="">HARGA</label>
-                        <n-input size="large" disabled placeholder=""
+                        <n-input size="large" readonly placeholder=""
                             v-model:value="transaction_details.total_discount_3">
                             <template #prefix>Rp</template>
                         </n-input>

@@ -15,21 +15,21 @@
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">NO CO</label>
                         <n-input size="large" placeholder="" v-model:value="transaction_details.customer_order_number"
-                            disabled />
+                            readonly />
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">Nomor Surat Jalan</label>
                         <n-input size="large" placeholder="" v-model:value="transaction_details.travel_document_number"
-                            disabled />
+                            readonly />
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">Nomor Faktur</label>
-                        <n-input size="large" placeholder="" v-model:value="form.document_code" disabled />
+                        <n-input size="large" placeholder="" v-model:value="form.document_code" readonly />
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">Tanggal Faktur</label>
                         <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="" size="large"
-                            v-model:value="transaction_details.invoice_date" disabled />
+                            v-model:value="transaction_details.invoice_date" readonly />
                     </div>
 
                     <!-- row 2 -->
@@ -47,26 +47,26 @@
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">Nomor Polisi</label>
                         <n-input size="large" placeholder="" v-model:value="transaction_details.number_plate"
-                            disabled />
+                            readonly />
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">Salesman</label>
-                        <n-input size="large" placeholder="" v-model:value="transaction_details.salesman" disabled />
+                        <n-input size="large" placeholder="" v-model:value="transaction_details.salesman" readonly />
                     </div>
 
                     <!-- row 3 -->
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">Nama Customer</label>
-                        <n-input size="large" placeholder="" v-model:value="transaction_details.customer" disabled />
+                        <n-input size="large" placeholder="" v-model:value="transaction_details.customer" readonly />
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">NPWP</label>
-                        <n-input size="large" placeholder="" v-model:value="transaction_details.npwp" disabled />
+                        <n-input size="large" placeholder="" v-model:value="transaction_details.npwp" readonly />
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">Alamat Customer</label>
                         <n-input size="large" placeholder="" v-model:value="transaction_details.customer_address"
-                            disabled />
+                            readonly />
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">PPN</label>

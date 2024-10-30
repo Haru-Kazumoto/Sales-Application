@@ -14,7 +14,7 @@
 import { defineComponent, h } from 'vue'
 import TitlePage from '../../../Components/TitlePage.vue';
 import { DataTableColumns, NButton, NTag } from 'naive-ui';
-import { usePage } from '@inertiajs/vue3';
+import { router, usePage } from '@inertiajs/vue3';
 
 function createColumns() {
     return [
@@ -48,8 +48,8 @@ function createColumns() {
             }
         },
         {
-            title: "CUSTOMER",
-            key: "customer",
+            title: "STATUS",
+            key: "status",
             width: 200,
             render(row) {
                 const status = row.transaction_details.find(data => data.category === "Check")?.value;
@@ -94,7 +94,7 @@ function createColumns() {
                     {
                         type: 'info',
                         onClick: () => {
-                            alert(row.customer);
+                            router.visit(route('warehouse.detail-booking-request', row.id));
                         },
                         size: 'small',
                     },
@@ -116,7 +116,7 @@ export default defineComponent({
         }
     },
     components: {
-        TitlePage
+        TitlePage,
     }
 })
 </script>

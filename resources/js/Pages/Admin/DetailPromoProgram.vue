@@ -13,38 +13,38 @@
                 <div class="row g-3">
                     <div class="col-12 col-md-6 col-lg-4">
                         <label for="">Nama Promo</label>
-                        <n-input size="large" placeholder="" v-model:value="form.name" disabled />
+                        <n-input size="large" placeholder="" v-model:value="form.name" readonly />
                     </div>
                     <div class="col-12 col-md-6 col-lg-2">
                         <label for="">Minimal Pembelian</label>
                         <n-input size="large" v-model:value="form.min" placeholder=""
-                            @input="(value) => form.min = value.replace(/\D/g, '')" disabled />
+                            @input="(value) => form.min = value.replace(/\D/g, '')" readonly />
                     </div>
                     <div class="col-12 col-md-6 col-lg-2">
                         <label for="">Maksimal Pembelian</label>
                         <n-input size="large" v-model:value="form.max" placeholder=""
-                            @input="(value) => form.max = value.replace(/\D/g, '')" disabled />
+                            @input="(value) => form.max = value.replace(/\D/g, '')" readonly />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <label for="">Persentase Promo</label>
-                        <n-input size="large" placeholder="" v-model:value="form.promo_value" disabled>
+                        <n-input size="large" placeholder="" v-model:value="form.promo_value" readonly>
                             <template #suffix>%</template>
                         </n-input>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <label for="">Deskripsi promo</label>
                         <n-input size="large" placeholder="" type="textarea" v-model:value="form.description"
-                            disabled />
+                            readonly />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <label for="">Tanggal Aktif</label>
                         <n-input size="large" v-model:value="form.start_date" placeholder=""
-                            disabled />
+                            readonly />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <label for="">Tanggal Non Aktif</label>
                         <n-input size="large" v-model:value="form.end_date" placeholder=""
-                            disabled />
+                            readonly />
                     </div>
                 </div>
             </div>

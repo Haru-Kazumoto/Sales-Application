@@ -26,6 +26,8 @@ class TransactionItem extends Model
         'item_gap',
         'gap_description',
         'tax_id',
+        'status_booking',
+        'reject_description',
     ];
 
     public function transaction(): BelongsTo
