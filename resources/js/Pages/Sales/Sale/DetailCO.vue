@@ -121,7 +121,7 @@
                 <div class="d-flex flex-column w-100 justify-content-between mt-2 gap-3">
                     <div class="d-flex justify-content-between">
                         <span>TERM OF PAYMENT</span>
-                        <span class="fw-bold">{{ form.term_of_payment.replace("_", ' ') }}</span>
+                        <span class="fw-bold">{{ form.term_of_payment("_", ' ') }}</span>
                     </div>
                     <div class="d-flex justify-content-between">
                         <span>JATUH TEMPO</span>

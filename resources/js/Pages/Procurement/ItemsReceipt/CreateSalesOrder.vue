@@ -115,7 +115,7 @@
                             <div class="d-flex justify-content-between">
                                 <span>TERM OF PAYMENT</span>
                                 <span class="fw-bold" v-if="form.term_of_payment !== undefined">{{
-                                    form.term_of_payment.replace("_", " ") }} HARI</span>
+                                    form.term_of_payment }} HARI</span>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <span>JATUH TEMPO</span>

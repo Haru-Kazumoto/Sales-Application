@@ -39,14 +39,14 @@
                         <!-- Baris Kedua -->
                         <div class="col-md-3">
                             <label for="field5">Tanggal PO</label>
-                            <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" readonly
-                                id="field5" size="large"
-                                v-model:formatted-value="transaction_details.purchase_order_date" />
+                            <n-input  readonly
+                                size="large"
+                                v-model:value="transaction_details.purchase_order_date" />
                         </div>
                         <div class="col-md-3">
                             <label for="field6">Tanggal Kirim</label>
-                            <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" readonly
-                                id="field6" size="large" v-model:formatted-value="transaction_details.send_date" />
+                            <n-input  readonly
+                                size="large" v-model:value="transaction_details.send_date" />
                         </div>
                         <div class="col-md-3">
                             <label for="field7">Term Pembayaran</label>
@@ -54,8 +54,8 @@
                         </div>
                         <div class="col-md-3">
                             <label for="field8">Tanggal Jatuh Tempo</label>
-                            <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" readonly
-                                id="field8" size="large" v-model:formatted-value="form.due_date" />
+                            <n-input  readonly
+                                size="large" v-model:value="form.due_date" />
                         </div>
 
                         <!-- Baris Ketiga -->
@@ -115,12 +115,12 @@
                         <div class="d-flex flex-column w-100 justify-content-between gap-3">
                             <div class="d-flex justify-content-between">
                                 <span>TERM OF PAYMENT</span>
-                                <span class="fw-bold">{{ form.term_of_payment.replace("_", " ") }} HARI</span>
+                                <span class="fw-bold">{{ form.term_of_payment }} HARI</span>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <span>JATUH TEMPO</span>
                                 <span class="fw-bold">
-                                    {{ form.due_date ? dayjs(form.due_date).format('dddd, D MMMM YYYY') : '' }}
+                                    {{ form.due_date  }}
                                 </span>
 
                             </div>
@@ -225,8 +225,8 @@ export default defineComponent({
 
         const form = useForm({
             document_code: detailTransaction.document_code || (page.props.po_number as string),
-            term_of_payment: detailTransaction.term_of_payment.replace("_", " ") || '',
-            due_date: detailTransaction.due_date || null,
+            term_of_payment: detailTransaction.term_of_payment || '',
+            due_date: dayjs(detailTransaction.due_date).format('dddd, D MMMM YYYY') || null,
             description: detailTransaction.description || '',
             sub_total: detailTransaction.sub_total || 0,
             total: detailTransaction.total || 0,
@@ -248,8 +248,8 @@ export default defineComponent({
             supplier,
             storehouse,
             located,
-            purchase_order_date,
-            send_date,
+            purchase_order_date: dayjs(purchase_order_date).format('dddd, D MMMM YYYY'),
+            send_date: dayjs(send_date).format('dddd, D MMMM YYYY'),
             transportation,
             sender,
             delivery_type,

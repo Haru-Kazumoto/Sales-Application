@@ -111,7 +111,7 @@
                             <div class="d-flex justify-content-between">
                                 <span>TERM OF PAYMENT</span>
                                 <span class="fw-bold" v-if="form !== undefined">
-                                    {{ form.term_of_payment.replace("_", " ") + " HARI" }}</span>
+                                    {{ form.term_of_payment + " HARI" }}</span>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <span>JATUH TEMPO</span>
@@ -229,7 +229,7 @@ export default defineComponent({
 
         const form = useForm({
             document_code: detailTransaction.document_code || (page.props.po_number as string),
-            term_of_payment: detailTransaction.term_of_payment.replace("_", " ") || '',
+            term_of_payment: detailTransaction.term_of_payment || '',
             due_date: detailTransaction.due_date || null,
             description: detailTransaction.description || '',
             sub_total: detailTransaction.sub_total || 0,

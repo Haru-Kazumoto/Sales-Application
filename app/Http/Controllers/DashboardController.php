@@ -22,7 +22,9 @@ class DashboardController extends Controller
 
         // Total PO
         $total_po = $queryBase->count();
-        $purchase_orders = $queryBase->with('transactionDetails', 'transactionItems')->paginate(10);
+        $purchase_orders = $queryBase->with('transactionDetails', 'transactionItems')
+            ->orderByDesc('created_at')
+            ->paginate(10);
 
         // Total DNP PO
         $total_dnp_po = (clone $queryBase)->whereHas('transactionDetails', function ($query) {

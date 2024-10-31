@@ -103,7 +103,7 @@ function createColumns(): DataTableColumns<Transactions> {
             key: "term_of_payment",
             width: 150,
             render(row) {
-                return row.term_of_payment.replace("_", " ");
+                return row.term_of_payment;
             }
         },
         {
