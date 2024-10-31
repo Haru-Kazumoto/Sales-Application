@@ -23,8 +23,7 @@
                                 <RequiredMark />
                             </label>
                             <n-select placeholder="" v-model:value="transaction_details.supplier" filterable
-                                size="large" :options="pemasokOptions" :loading="loading" clearable remote
-                                @search="handleSearchSupplier" />
+                                size="large" :options="pemasokOptions"/>
                         </div>
                         <div class="col-12 col-md-3 col-lg-4">
                             <label for="field3">
@@ -139,7 +138,7 @@
                                 <RequiredMark />
                             </label>
                             <n-select size="large" placeholder="" v-model:value="products.name" filterable
-                                :options="productOptions" :loading="loading" clearable remote @search="handleSearch" />
+                                :options="productOptions" :loading="loading"/>
                         </div>
                         <div class="col-md-6">
                             <label for="amount">
@@ -206,7 +205,7 @@
                         <div class="d-flex flex-column w-100 justify-content-between gap-3">
                             <div class="d-flex justify-content-between">
                                 <span>TERM OF PAYMENT</span>
-                                <span class="fw-bold">{{ form.term_of_payment.replace("_", " ") }} HARI</span>
+                                <span class="fw-bold">{{ form.term_of_payment }} HARI</span>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <span>JATUH TEMPO</span>
@@ -249,7 +248,7 @@ export default defineComponent({
 
         const form = useForm({
             document_code: (page.props.po_number as string),
-            term_of_payment: '',
+            term_of_payment: 45,
             due_date: null as unknown as string,
             description: '',
             sub_total: null as unknown as number,
@@ -305,11 +304,25 @@ export default defineComponent({
         });
 
         // Watcher untuk memantau perubahan pada purchase_order_date
-        watch(() => transaction_details.value.purchase_order_date, (newVal) => {
-            if (newVal) {
-                form.due_date = handleSetFutureDateTo(45, newVal);
+        watch(
+            [() => transaction_details.value.purchase_order_date, () => form.term_of_payment],
+            ([newPurchaseOrderDate, newTermOfPayment]) => {
+                if (newPurchaseOrderDate) {
+                    // Jika purchase_order_date sudah ada, set due_date berdasarkan term_of_payment
+                    const termDays = newTermOfPayment ; // Gunakan term_of_payment atau default 45
+                    form.due_date = handleSetFutureDateTo(termDays, newPurchaseOrderDate);
+                } else {
+                    // Jika purchase_order_date kosong dan term_of_payment diubah, tampilkan notifikasi peringatan
+                    if (newTermOfPayment !== undefined) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Tanggal Purchase Order Belum Diisi',
+                            text: 'Harap isi tanggal Purchase Order terlebih dahulu sebelum menentukan Term of Payment.',
+                        });
+                    }
+                }
             }
-        });
+        );
 
         function addProduct() {
             // Validasi input
@@ -744,8 +757,8 @@ export default defineComponent({
             resultPpn: totalPPN,
             total: totalPrice,
             loading: loadingRef,
-            productOptions: optionsRef,
-            pemasokOptions: pemasokOptionsRef,
+            productOptions,
+            pemasokOptions,
             handleSearch: (query: string) => {
                 if (!query.length) {
                     optionsRef.value = []

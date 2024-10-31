@@ -6,13 +6,20 @@
             <div class="d-flex align-items-center gap-3">
                 <n-button type="primary" size="medium"
                     @click="router.visit(route('sales.booking-item.create-booking-dnp'))">Buat Booking Order</n-button>
-                <n-select size="medium" placeholder="Status" style="width: 10rem;" />
-                <n-input size="medium" placeholder="Nomor Order" class="w-25" />
+                <n-select size="medium" placeholder="Status" style="width: 10rem;" :options="filterStatus" v-model:value="statusBooking"/>
+                <n-input class="w-25" placeholder="Nomor Booking" @input="handleSearch"
+                    v-model:value="filterQuery" />
             </div>
             <div class="card shadow-sm border-0">
                 <div class="card-body">
                     <n-data-table :bordered="false" :columns="columns"
                         :data="($page.props.booking_request_products as any).data" />
+                    <div class="d-flex mt-3">
+                        <n-pagination class="ms-auto" v-model:page="pagination.current_page"
+                            :page-count="pagination.last_page" :page-size="pagination.per_page"
+                            @update:page="handlePageChange"
+                            @update:page-count="pagination.last_page = $page.props.booking_request_products.last_page" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -20,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, h, ref, watch } from 'vue';
+import { defineComponent, h, ref, watch, reactive } from 'vue';
 import TitlePage from "../../../../Components/TitlePage.vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { NButton, NTag } from 'naive-ui';
@@ -44,9 +51,9 @@ export default defineComponent({
                 {
                     title: "TANGGAL BOOKING",
                     key: "booking_date",
-                    width: 200,
+                    width: 250,
                     render(row) {
-                        const date =  row.transaction.transaction_details.find(data => data.category === "Booking Date")?.value;
+                        const date = row.transaction.transaction_details.find(data => data.category === "Booking Date")?.value;
 
                         return dayjs(date).format('dddd, D MMMM YYYY HH:mm');
                     }
@@ -63,7 +70,7 @@ export default defineComponent({
                     title: "NAMA PRODUK",
                     key: "product_name",
                     width: 150,
-                    render(row){
+                    render(row) {
                         return row.product.name;
                     }
                 },
@@ -81,7 +88,7 @@ export default defineComponent({
 
                         let type;
 
-                        switch(status) {
+                        switch (status) {
                             case "PENDING":
                                 type = "warning";
                                 break;
@@ -100,13 +107,21 @@ export default defineComponent({
                         }
 
                         return h(
-                            NTag,{
-                                type,
-                                bordered: true,
-                                strong: true,
-                            },
-                            {default: () => status}
+                            NTag, {
+                            type,
+                            bordered: true,
+                            strong: true,
+                        },
+                            { default: () => status }
                         )
+                    }
+                },
+                {
+                    title: "DESKRIPSI",
+                    key: "description",
+                    width: 200,
+                    render(row) {
+                        return row.reject_description;
                     }
                 },
                 {
@@ -142,10 +157,57 @@ export default defineComponent({
 
         const page = usePage();
 
-        console.log(page.props.booking_request_products);
+        // Filter data
+        const filterField = ref('transaction.document_code'); // Default filter field
+        const filterQuery = ref(''); // Filter input value
+        const statusBooking = ref('ALL');
+
+        // Fungsi untuk meng-handle pencarian
+        function handleSearch() {
+            router.get(route('sales.booking-item.index-booking-dnp'), {
+                page: pagination.current_page,
+                filter_field: filterField.value,
+                filter_query: filterQuery.value,
+                // status_booking: statusBooking.value
+            }, {
+                preserveState: true,
+                replace: true
+            });
+        };
+
+        // Function to handle page change
+        function handlePageChange(page: number) {
+            // currentPage.value = page;
+            router.get(route('sales.booking-item.index-booking-dnp'), {
+                page,
+                filter_field: filterField.value,
+                filter_query: filterQuery.value,
+                // status_booking: statusBooking.value
+            }, { preserveState: true, replace: true }); // Request data for the selected page
+        }
+
+        const pagination = reactive({
+            current_page: (page.props.booking_request_products as any).current_page,
+            per_page: (page.props.booking_request_products as any).per_page,
+            total: (page.props.booking_request_products as any).total,
+            last_page: (page.props.booking_request_products as any).last_page,
+        });
+
+        const filterStatus = [
+            { label: "SEMUA STATUS", value: "ALL"},
+            { label: "REJECTED", value: "REJECTED"},
+            { label: "APPROVED", value: "APPROVED"},
+            { label: "PENDING", value: "PENDING"},
+        ]
 
         return {
             columns: createColumns(),
+            handleSearch,
+            handlePageChange,
+            filterQuery,
+            pagination,
+            statusBooking,
+            filterStatus,
             router
         }
     },

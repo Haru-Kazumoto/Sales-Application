@@ -15,6 +15,10 @@ import { defineComponent, h } from 'vue'
 import TitlePage from '../../../Components/TitlePage.vue';
 import { DataTableColumns, NButton, NTag } from 'naive-ui';
 import { router, usePage } from '@inertiajs/vue3';
+import dayjs from 'dayjs';
+import 'dayjs/locale/id'; // Import locale Indonesia
+
+dayjs.locale('id'); // Set locale to Indonesian
 
 function createColumns() {
     return [
@@ -29,9 +33,10 @@ function createColumns() {
         {
             title: "TANGGAL BOOKING",
             key: 'booking_date',
-            width: 200,
+            width: 250,
             render(row) {
-                return row.transaction_details.find(data => data.category === "Booking Date")?.value;
+                const date = row.transaction_details.find(data => data.category === "Booking Date")?.value;
+                return dayjs(date).format('dddd, D MMMM YYYY HH:mm');
             }
         },
         {

@@ -197,7 +197,7 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         Route::get('/booking-requests', [App\Http\Controllers\BookingOrderController::class, 'indexOrder'])->name('booking-request');
         Route::get('/booking-requests/detail/{transactions}', [App\Http\Controllers\BookingOrderController::class, 'showOrder'])->name('detail-booking-request');
         Route::patch('/booking-requests/reject-description/{transactions}', [App\Http\Controllers\BookingOrderController::class, 'setRejectDescription'])->name('set-reject-description');
-        Route::patch('/booking-requests/approve/{transactions}', [App\Http\Controllers\BookingOrderController::class, 'setApprovedStatus'])->name('set-approved');
+        Route::patch('/booking-requests/approve/{transactionItem}', [App\Http\Controllers\BookingOrderController::class, 'setApprovedStatus'])->name('set-approved');
         Route::patch('/booking-requests/approve-request/{transaction}',[App\Http\Controllers\BookingOrderController::class, 'approveBookingRequest'] )->name('approve-request');
     });
 

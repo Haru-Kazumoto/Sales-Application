@@ -12,6 +12,7 @@ use App\Models\TransactionItem;
 use App\Models\Transactions;
 use App\Models\TransactionType;
 use App\Models\Warehouse;
+use App\Traits\Filterable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,6 +20,7 @@ use Inertia\Inertia;
 
 class BookingOrderController extends Controller
 {
+    use Filterable;
 
     protected $productServices;
     protected $transactionServices;
@@ -51,16 +53,33 @@ class BookingOrderController extends Controller
      */
     public function indexOrderDnp(Request $request)
     {
-        $filter_field = $request->filter_field;
+        $filter_field = 'document_code';
         $filter_query = $request->filter_query;
         $txType = TransactionType::where('name', 'Booking Order')->first();
 
-        $booking_request_products = TransactionItem::whereHas('transaction', function($query) use ($txType) {
-                $query->where('transaction_type_id', $txType->id);
-            })
+        $booking_request_products = TransactionItem::whereHas('transaction', function($query) use ($txType, $filter_query) {
+            $query->where('transaction_type_id', $txType->id);
+            
+            // Menambahkan filter berdasarkan document_code jika filter_query ada
+            if ($filter_query) {
+                $query->where('document_code', 'LIKE', '%' . $filter_query . '%');
+            }
+
+            $query->whereHas('transactionDetails', function($query) {
+                $query->where('category', 'Warehouse')
+                      ->where('value', 'DNP');
+            });
+        })
             ->with('transaction.transactionDetails', 'product')
-            ->orderByDesc('updated_at')
-            ->paginate(10);
+            ->orderByRaw("CASE WHEN status_booking = 'APPROVED' THEN 0 ELSE 1 END")
+            ->orderByRaw("CASE WHEN status_booking = 'REJECTED' THEN 0 ELSE 2 END")
+            ->orderByDesc('updated_at');
+
+        // Menerapkan pagination setelah filtering
+        $booking_request_products = $this->applyPagination($booking_request_products, 10, [
+            'filter_field' => $filter_field,
+            'filter_query' => $filter_query,
+        ]);
 
         return Inertia::render('Sales/BookingItem/DNP/ListBookingOrder', compact('booking_request_products'));
     }
@@ -131,12 +150,10 @@ class BookingOrderController extends Controller
      * @param \App\Models\Transactions $transactions
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function setRejectDescription(Request $request, Transactions $transactions)
+    public function setRejectDescription(Request $request, TransactionItem $transactionItem)
     {
-        $description = TransactionItem::where('transactions_id', $transactions->id)->first();
-
-        DB::transaction(function() use ($description, $request) {
-            $description->update([
+        DB::transaction(function() use ($transactionItem, $request) {
+            $transactionItem->update([
                 'status_booking' => "REJECTED",
                 'reject_description' => $request->value
             ]);
@@ -151,12 +168,10 @@ class BookingOrderController extends Controller
      * @param \App\Models\Transactions $transactions
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function setApprovedStatus(Transactions $transactions)
+    public function setApprovedStatus(TransactionItem $transactionItem)
     {
-        $status = TransactionItem::where('transactions_id', $transactions->id)->first();
-
-        DB::transaction(function() use ($status) {
-            $status->update([
+        DB::transaction(function() use ($transactionItem) {
+            $transactionItem->update([
                 'status_booking' => "APPROVED",
             ]);
         });

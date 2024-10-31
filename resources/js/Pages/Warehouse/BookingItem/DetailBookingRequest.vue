@@ -168,7 +168,10 @@ export default defineComponent({
                                 NButton,
                                 {
                                     type: "primary",
-                                    disabled: status !== "PENDING"
+                                    disabled: status !== "PENDING",
+                                    onClick(){
+                                        approveItem(row.id);
+                                    }
                                 },
                                 { default: () => "APPROVE" }
                             ),
@@ -225,7 +228,7 @@ export default defineComponent({
         }
 
         function approveItem(tx_id: number) {
-            router.patch(route('warehouse.approve-request', tx_id), {}, {
+            router.patch(route('warehouse.set-approved', tx_id), {}, {
                 onSuccess: (page) => {
                     notification.success({ title: (page.props.flash as Flash).success, duration: 1500, closable: false });
                 },

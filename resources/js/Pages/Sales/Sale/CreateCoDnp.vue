@@ -148,11 +148,11 @@
                     </div>
                     <div v-if="products.min" class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">MINIMAL</label>
-                        <n-input size="large" :value="products.min" readonly/>
+                        <n-input size="large" :value="products.min" readonly />
                     </div>
                     <div v-if="products.max" class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">MAKSIMAL</label>
-                        <n-input size="large" :value="products.max" readonly/>
+                        <n-input size="large" :value="products.max" readonly />
                     </div>
                     <!-- <div v-if="hasPromo && discountedPrice !== null"
                         class="col-6 col-md-6 col-lg-4 d-flex flex-column gap-1">
@@ -557,8 +557,6 @@ export default defineComponent({
 
         watch(() => products.value.name, (name) => {
             const selectedProduct = productOptions.find(data => data.label === name);
-            // console.log(selectedProduct);
-            // console.log(page.props.products);
 
             if (selectedProduct) {
                 products.value.code = selectedProduct.code;
@@ -663,22 +661,44 @@ export default defineComponent({
             }
 
             // Tentukan harga barang (amount) dengan harga diskon jika ada promo, atau harga asli jika tidak
-            const finalAmount = hasPromo.value ? Number(discountedPrice.value) : transaction_items.value.amount;
+            const rawAmount = hasPromo.value ? discountedPrice.value : transaction_items.value.amount;
 
-            // Hitung pajak dan total harga
-            const ppnAmount = finalAmount * 0.11;
-            const total = finalAmount * quantity;
-            const roundedTotal = Math.round(total);
-            const roundedPpnAmount = Math.round(ppnAmount);
+            // Format nilai `amount` untuk menangani separator ribuan/desimal
+            const formattedAmount = rawAmount
+                .replace(/\./g, '')   // Hapus titik pemisah ribuan
+                .replace(',', '.');   // Ganti koma dengan titik untuk desimal
+
+            // Parse amount yang sudah diformat ke angka desimal
+            const finalAmount = parseFloat(formattedAmount);
+            if (isNaN(finalAmount)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Nilai harga tidak valid!',
+                });
+                return;
+            }
+
+            // Hitung total harga barang sebelum PPN (harga satuan * quantity)
+            const totalPriceBeforeTax = finalAmount * quantity;
+
+            // Hitung jumlah pajak PPN 11% dari harga total sebelum pajak
+            const taxAmount = totalPriceBeforeTax * 0.11;
+
+            // Hitung total harga setelah PPN
+            const totalPriceWithTax = totalPriceBeforeTax + taxAmount;
+
+            // Gunakan dua desimal untuk tax_amount dan total_price
+            const formattedTaxAmount = parseFloat(taxAmount.toFixed(2));
+            const formattedTotalPriceWithTax = parseFloat(totalPriceWithTax.toFixed(2));
 
             form.transaction_items.push({
                 unit: transaction_items.value.unit,
                 quantity: quantity,
                 product_id: transaction_items.value.product_id,
-                tax_amount: roundedPpnAmount,
-                amount: finalAmount, // Gunakan harga yang sudah didiskon jika ada promo
+                tax_amount: formattedTaxAmount,           // Nilai pajak 11%
+                amount: finalAmount,                      // Harga satuan setelah diskon jika ada promo
                 tax_id: transaction_items.value.tax_id,
-                total_price: roundedTotal,
+                total_price: formattedTotalPriceWithTax,  // Total harga termasuk PPN
                 discount_1: transaction_items.value.discount_1 || 0,
                 discount_2: transaction_items.value.discount_2 || 0,
                 discount_3: transaction_items.value.discount_3 || 0,
@@ -695,6 +715,8 @@ export default defineComponent({
                 closable: false,
             });
         }
+
+
 
         function removeProduct(index: number) {
             form.transaction_items.splice(index, 1);
