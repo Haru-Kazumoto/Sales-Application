@@ -233,6 +233,10 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
             Route::get('/create', [App\Http\Controllers\BookingOrderController::class, 'createBookingDnp'])->name('create-booking-dnp');
             Route::post('/store', [App\Http\Controllers\BookingOrderController::class, 'storeBookingDnp'])->name('store-booking-dnp');
         });
+
+        Route::name('booking-item.')->prefix('booking-item/dku')->group(function() {
+            Route::get('', [App\Http\Controllers\BookingOrderController::class, 'indexOrderDku'])->name('index-booking-dku');
+        });
     });
 });
 

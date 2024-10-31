@@ -99,7 +99,7 @@ class CustomerOrdersController extends Controller
         // Validasi input request
         $request->validate([
             'document_code' => 'required|string',
-            'term_of_payment' => 'required|string',
+            'term_of_payment' => 'required|numeric',
             'due_date' => 'required|date',
             'sub_total' => 'required|numeric',
             'total' => 'required|numeric',
@@ -202,7 +202,7 @@ class CustomerOrdersController extends Controller
         // Validasi input request
         $request->validate([
             'document_code' => 'required|string',
-            'term_of_payment' => 'required|string',
+            'term_of_payment' => 'required|numeric',
             'due_date' => 'required|date',
             'sub_total' => 'required|numeric',
             'total' => 'required|numeric',

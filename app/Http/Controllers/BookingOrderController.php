@@ -84,6 +84,42 @@ class BookingOrderController extends Controller
         return Inertia::render('Sales/BookingItem/DNP/ListBookingOrder', compact('booking_request_products'));
     }
 
+     /**
+     * Display a listing of the resource.
+     */
+    public function indexOrderDku(Request $request)
+    {
+        $filter_field = 'document_code';
+        $filter_query = $request->filter_query;
+        $txType = TransactionType::where('name', 'Booking Order')->first();
+
+        $booking_request_products = TransactionItem::whereHas('transaction', function($query) use ($txType, $filter_query) {
+            $query->where('transaction_type_id', $txType->id);
+            
+            // Menambahkan filter berdasarkan document_code jika filter_query ada
+            if ($filter_query) {
+                $query->where('document_code', 'LIKE', '%' . $filter_query . '%');
+            }
+
+            $query->whereHas('transactionDetails', function($query) {
+                $query->where('category', 'Warehouse')
+                      ->where('value', 'DKU');
+            });
+        })
+            ->with('transaction.transactionDetails', 'product')
+            ->orderByRaw("CASE WHEN status_booking = 'APPROVED' THEN 0 ELSE 1 END")
+            ->orderByRaw("CASE WHEN status_booking = 'REJECTED' THEN 0 ELSE 2 END")
+            ->orderByDesc('updated_at');
+
+        // Menerapkan pagination setelah filtering
+        $booking_request_products = $this->applyPagination($booking_request_products, 10, [
+            'filter_field' => $filter_field,
+            'filter_query' => $filter_query,
+        ]);
+
+        return Inertia::render('Sales/BookingItem/DKU/ListBookingOrder', compact('booking_request_products'));
+    }
+
     public function showOrder(Transactions $transactions) 
     {
         $transactions->load('transactionDetails', 'transactionItems.product');

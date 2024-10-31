@@ -84,7 +84,7 @@ class InvoiceController extends Controller
 
         $request->validate([
             'document_code' => 'required|string',
-            'term_of_payment' => 'required|string',
+            'term_of_payment' => 'required|numeric',
             'due_date' => 'required',
             'sub_total' => 'required|numeric', //required
             'total' => 'required|numeric', //required
