@@ -284,6 +284,7 @@ export default defineComponent({
             amount: null as unknown as number,
             product_id: null as unknown as number,
             tax_id: null as unknown as number,
+            tax_value: null as unknown as number
         });
 
         // Watcher untuk memantau perubahan pada 'products.name'
@@ -370,6 +371,7 @@ export default defineComponent({
                 tax_amount: selectedTax?.value_tax,
                 amount: productPrice,
                 tax_id: transaction_items.value.tax_id,
+                tax_value: selectedTax?.value_tax ?? 0,
                 total_price: formattedTotalPrice,
                 product: {
                     code: products.value.code,
@@ -511,7 +513,7 @@ export default defineComponent({
                     key: 'tax_amount',
                     width: 100,
                     render(row) {
-                        return row.tax_amount;
+                        return row.tax_value;
                     }
                 },
                 {

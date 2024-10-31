@@ -99,6 +99,7 @@ export interface TransactionItems {
     transactions_id?: number | null;
     product_id?: number | null;
     tax_id?: number | null;
+    tax_value: number | null;
     total_price?: number | null;
     transaction?: Transactions;
     product?: Products;

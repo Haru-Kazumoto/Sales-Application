@@ -211,7 +211,7 @@ function createColumns(): DataTableColumns<TransactionItems> {
             key: 'tax_amount',
             width: 100,
             render(row) {
-                return row.tax_amount;
+                return row.tax?.value;
             }
         },
 

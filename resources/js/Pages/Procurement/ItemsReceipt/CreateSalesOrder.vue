@@ -33,8 +33,7 @@
                         <!-- Baris Kedua -->
                         <div class="col-lg-4 col-6">
                             <label for="field4">Tanggal PO<span class="text-danger">*</span></label>
-                            <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" id="field8" size="large"
-                                v-model:formatted-value="transaction_details.purchase_order_date" placeholder="" />
+                            <n-input size="large" v-model:value="transaction_details.purchase_order_date" placeholder="" />
                         </div>
                         <div class="col-lg-4 col-6">
                             <label for="field5">Alokasi<span class="text-danger">*</span></label>
@@ -49,7 +48,7 @@
                         <div class="col-lg-4 col-6">
                             <label for="field7">Gudang<span class="text-danger">*</span></label>
                             <n-input id="field7" size="large" readonly placeholder=""
-                                v-model:value="transaction_details.storehouse" />
+                                v-model:value="transaction_details.storehouse" />    
                         </div>
                         <div class="col-lg-4 col-6">
                             <label for="field8">Tanggal Kirim<span class="text-danger">*</span></label>
@@ -257,7 +256,7 @@ export default defineComponent({
                     key: 'tax_amount',
                     width: 100,
                     render(row) {
-                        return row.tax_amount;
+                        return row.tax_value;
                     }
                 },
                 {
@@ -470,14 +469,14 @@ export default defineComponent({
                     transaction_details.value.supplier = supplier;
                     transaction_details.value.storehouse = storehouse;
                     transaction_details.value.located = located;
-                    transaction_details.value.purchase_order_date = purchase_order_date;
+                    transaction_details.value.purchase_order_date = dayjs(purchase_order_date).format('dddd, D MMMM YYYY HH:mm');
                     transaction_details.value.sender = sender.replace("_", ' ');
                     transaction_details.value.delivery_type = delivery_type.replace("_", " ");
                     transaction_details.value.transportation = number_plate;
 
                     // Reset form.transaction_items untuk memasukkan produk baru
                     form.transaction_items = [];
-
+                    console.log(data.transaction_items);
                     // Loop data dari backend dan masukkan ke form.transaction_items
                     data.transaction_items?.forEach(item => {
                         form.transaction_items.push({
@@ -486,6 +485,7 @@ export default defineComponent({
                             tax_amount: item.tax_amount,
                             amount: item.amount,
                             tax_id: item.tax_id,
+                            tax_value: item.tax?.value || 0,
                             product_id: item.product_id,
                             total_price: item.total_price,
                             product: {

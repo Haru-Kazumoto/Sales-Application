@@ -121,7 +121,7 @@
                 <div class="d-flex flex-column w-100 justify-content-between mt-2 gap-3">
                     <div class="d-flex justify-content-between">
                         <span>TERM OF PAYMENT</span>
-                        <span class="fw-bold">{{ form.term_of_payment("_", ' ') }}</span>
+                        <span class="fw-bold">{{ form.term_of_payment }} HARI</span>
                     </div>
                     <div class="d-flex justify-content-between">
                         <span>JATUH TEMPO</span>
@@ -176,7 +176,6 @@ export default defineComponent({
         const page = usePage();
         const notification = useNotification();
         const customer_order = page.props.customer_order as Transactions;
-        console.log(customer_order);
         const showModal = ref(false);
         const selectedItem = ref(null);
         const selectedProduct = ref({}); // Menyimpan data produk yang dipilih

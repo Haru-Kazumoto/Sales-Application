@@ -174,7 +174,7 @@ class PurchaseOrderController extends Controller
     public function show(Transactions $transaction)
     {
         // Memuat relasi yang diperlukan
-        $transaction->load(['transactionDetails', 'transactionItems.product']);
+        $transaction->load(['transactionDetails', 'transactionItems.product','transactionItems.tax']);
 
         // Mengembalikan view dengan data transaksi
         return Inertia::render('Procurement/Purchase/PurchaseOrderDetail', compact('transaction'));
@@ -183,7 +183,7 @@ class PurchaseOrderController extends Controller
     public function getDataByPoNumber(string $po_number)
     {
         // Mengambil transaksi berdasarkan transaction_id dari transaction detail yang ditemukan
-        $transaction = Transactions::with(['transactionDetails', 'transactionItems.product'])
+        $transaction = Transactions::with(['transactionDetails', 'transactionItems.product','transactionItems.tax'])
             ->where('document_code', $po_number) // Pastikan menggunakan field yang benar
             ->first();
 
