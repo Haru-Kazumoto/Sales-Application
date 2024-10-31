@@ -228,6 +228,17 @@ class BookingOrderController extends Controller
     }
 
     /**
+     * Show the form for creating a new resource.
+     */
+    public function createBookingDku()
+    {
+        $products = $this->productServices->getStockProducts("DKU");
+        $booking_number = rand(100,999).'-'.rand(100,999);
+
+        return Inertia::render('Sales/BookingItem/DKU/CreateBookingOrder', compact('products','booking_number'));
+    }
+
+    /**
      * Store a newly created resource in storage.
     */
     public function storeBookingDnp(Request $request)
@@ -282,6 +293,60 @@ class BookingOrderController extends Controller
         });
 
         return redirect()->route('sales.booking-item.index-booking-dnp')->with('success', 'Booking order berhasil dibuat!');
+    }
+
+    public function storeBookingDku(Request $request)
+    {
+        // dd($request->all());
+        $dataValidated = $request->validate([
+            'document_code' => 'required|string',
+            'total' => 'required|numeric',
+            'products' => 'required|array',
+            'products.*.unit' => "required|string",
+            'products.*.quantity' => "required|numeric",
+            'products.*.total' => "required|numeric",
+            'products.*.product_id' => 'required|numeric',
+            'transaction_details' => 'required|array',
+            'transaction_details.*.name' => 'required|string',
+            'transaction_details.*.category' => 'required|string',
+            'transaction_details.*.value' => 'required|string',
+            'transaction_details.*.data_type' => 'required|string',
+        ]);
+
+        DB::transaction(function() use ($dataValidated) {
+            $txType = TransactionType::where('name', 'Booking Order')->first();
+            
+            $transaction = Transactions::create([
+                'document_code' => $dataValidated['document_code'],
+                'sub_total' => $dataValidated['total'],
+                'correlation_id' => rand(10000,99999),
+                'transaction_type_id' => $txType->id,
+            ]);
+
+            foreach ($dataValidated['products'] as $txItem){
+                $product = Products::where('id', $txItem['product_id'])->first();
+
+                TransactionItem::create([
+                    'unit' => $txItem['unit'],
+                    'quantity' => intval($txItem['quantity']),
+                    'amount' => $txItem['total'],
+                    'product_id' => $product->id,
+                    'transactions_id' => $transaction->id,
+                ]);
+            }
+
+            foreach ($dataValidated['transaction_details'] as $detail) {
+                TransactionDetail::create([
+                    'name' => $detail['name'],
+                    'category' => $detail['category'],
+                    'value' => $detail['value'],
+                    'data_type' => $detail['data_type'],
+                    'transactions_id' => $transaction->id,
+                ]);
+            }
+        });
+
+        return redirect()->route('sales.booking-item.index-booking-dku')->with('success', 'Booking order berhasil dibuat!');
     }
 
     /**

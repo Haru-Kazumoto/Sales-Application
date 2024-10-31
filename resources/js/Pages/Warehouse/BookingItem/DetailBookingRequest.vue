@@ -253,6 +253,7 @@ export default defineComponent({
         function handleSubmit() {
             // Mengecek jika ada item dengan status_booking "PENDING"
             const hasPending = booking_request_products.some(data => data.status_booking === "PENDING");
+            console.log(hasPending);
 
             if (hasPending) {
                 // Tampilkan pesan error menggunakan Swal jika ada status PENDING

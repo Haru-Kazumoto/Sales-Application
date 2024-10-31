@@ -5,7 +5,7 @@
         <div class="d-flex flex-column gap-2">
             <div class="d-flex align-items-center gap-3">
                 <n-button type="primary" size="medium"
-                    @click="router.visit(route('sales.booking-item.create-booking-dnp'))">Buat Booking Order</n-button>
+                    @click="router.visit(route('sales.booking-item.create-booking-dku'))">Buat Booking Order</n-button>
                 <n-select size="medium" placeholder="Status" style="width: 10rem;" :options="filterStatus" v-model:value="statusBooking"/>
                 <n-input class="w-25" placeholder="Nomor Booking" @input="handleSearch"
                     v-model:value="filterQuery" />

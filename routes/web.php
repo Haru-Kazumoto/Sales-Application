@@ -236,6 +236,7 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
 
         Route::name('booking-item.')->prefix('booking-item/dku')->group(function() {
             Route::get('', [App\Http\Controllers\BookingOrderController::class, 'indexOrderDku'])->name('index-booking-dku');
+            Route::get('/create', [App\Http\Controllers\BookingOrderController::class, 'createBookingDku'])->name('create-booking-dku');
         });
     });
 });
