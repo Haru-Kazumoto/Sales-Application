@@ -43,7 +43,7 @@ class CustomerOrdersController extends Controller
             ->whereHas('transactionType', function($query) {
                 $query->where('name', 'Sales Order');
             })
-            ->orderBy('created_at', 'desc')
+            ->orderByDesc('created_at')
             ->paginate(10);
 
         return Inertia::render('Sales/Sale/ListCO', compact('customer_orders'));

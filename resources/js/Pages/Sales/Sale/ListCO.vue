@@ -22,7 +22,7 @@
 <script lang="ts">
 import { defineComponent, h } from 'vue'
 import TitlePage from '../../../Components/TitlePage.vue';
-import { DataTableColumns, NButton } from 'naive-ui';
+import { DataTableColumns, NButton, NTag } from 'naive-ui';
 import { Transactions } from '../../../types/model.ts';
 import { router, usePage } from '@inertiajs/vue3';
 import dayjs from 'dayjs';
@@ -60,6 +60,16 @@ export default defineComponent({
                     title: "NOMOR CO",
                     key: "document_code",
                     width: 100,
+                },
+                {
+                    title: "GUDANG",
+                    key: "warehouse",
+                    width: 150,
+                    render(row) {
+                        const warehouse = row.transaction_details.find(data => data.category === "Warehouse")?.value;
+
+                        return h(NTag, { type: warehouse === "DNP" ? 'success' : 'info', strong: true, bordered: true }, { default: () => warehouse });
+                    }
                 },
                 {
                     title: "CUSTOMER",

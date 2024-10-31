@@ -63,7 +63,7 @@
 
                         <!-- Baris Ketiga -->
                         <div class="col-lg-4 col-6">
-                            <label for="field10">Pengirim<span class="text-danger">*</span></label>
+                            <label for="field10">Nama Ekspedisi<span class="text-danger">*</span></label>
                             <n-select id="field10" size="large" placeholder="" filterable :options="angkutanOptions"
                                 v-model:value="transaction_details.sender" />
                         </div>

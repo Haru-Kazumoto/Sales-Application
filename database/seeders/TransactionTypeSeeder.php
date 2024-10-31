@@ -15,6 +15,9 @@ class TransactionTypeSeeder extends Seeder
     {
         $data = [
             ['name' => "Booking Order"],
+            ['name' => "Surat Jalan"],
+            ['name' => "Barang Masuk"],
+            ['name' => "Barang Keluar"],
         ];
 
         foreach($data as $d) 

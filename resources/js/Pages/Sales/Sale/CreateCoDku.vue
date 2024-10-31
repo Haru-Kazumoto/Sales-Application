@@ -688,7 +688,7 @@ export default defineComponent({
                 {
                     name: "Gudang",
                     category: "Warehouse",
-                    value: "DNP",
+                    value: "DKU",
                     data_type: "string",
                 },
                 {
