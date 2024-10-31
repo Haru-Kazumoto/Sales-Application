@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use App\Models\Transactions;
+use App\Models\TransactionType;
 use App\Traits\Filterable;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -28,9 +29,12 @@ class PurchaseOrderServices
         ?int $paginate = null
     ): Collection|LengthAwarePaginator
     {
+        $txType = TransactionType::where('name', 'Purchase Order')->first();
         $query = Transactions::query()->whereHas('transactionDetails', function($query) {
             $query->where('category','Transportation')->where('value', '-');
-        })->with('transactionDetails');
+        })
+            ->where('transaction_type_id', $txType->id)
+            ->with('transactionDetails');
 
         $query = $this->scopeFilterByDateRange($query,$filterRangeDate);
         $query = $this->applySearchFilter($query,$filterField,$filterQuery);
