@@ -135,6 +135,7 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
             Route::get('', [App\Http\Controllers\UserController::class, 'indexSalesUser'])->name('index-sales');
             Route::get('/assign/{user}',[App\Http\Controllers\UserController::class, 'assignCustomerSales'])->name('assign-customer-sales');
             Route::patch('/assign/{customer}/to/{sales}', [App\Http\Controllers\CustomerController::class, 'assignCustomerToSales'])->name('assign-customer-to-sales');
+            Route::patch('/unassign/{customer}', [App\Http\Controllers\CustomerController::class, 'unAssignCustomerSales'])->name('unassign-customer-from-sales');
         });
 
     });

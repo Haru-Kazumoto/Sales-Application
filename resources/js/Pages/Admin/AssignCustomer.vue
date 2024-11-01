@@ -120,6 +120,9 @@ export default defineComponent({
                             NButton,
                             {
                                 type: "error",
+                                onClick: () => {
+                                    handleUnAssignCustomer(row.id)
+                                }
                             },
                             { default: () => "HAPUS"}
                         )
@@ -183,9 +186,30 @@ export default defineComponent({
             }
         }
 
+        function handleUnAssignCustomer(customer_id: number) {
+            Swal.fire({
+                title: "Hapus customer dari sales?",
+                text: `Customer ${form.customer_name} akan dihapus dari data sales ${salesman.fullname}`,
+                icon: "warning",
+                showCancelButton: true,
+            }).then(result => {
+                if(result.isConfirmed){
+                    router.patch(route('admin.unassign-customer-from-sales', customer_id),{},{
+                        onSuccess: (page) => {
+                            Swal.fire((page.props.flash as any).success, '', 'success');
+                        }, 
+                        onError: () => {
+                            Swal.fire('Gagal menghapus customer', '', 'error');
+                        }
+                    });
+                }
+            });
+        }
+
         return {
             columns: createColumns(),
             handleAssignCustomer,
+            handleUnAssignCustomer,
             router,
             form,
             customerOptions,
