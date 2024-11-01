@@ -24,8 +24,7 @@
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">NAMA CUSTOMER<span class="text-danger">*</span></label>
-                            <n-select filterable :loading="loading" :options="customerOptions" clearable
-                                remoteplaceholder="" @search="handleSearchCustomer" size="large"
+                            <n-select filterable :loading="loading" :options="customerOptions"  size="large"
                                 v-model:value="transaction_details.customer" />
                         </div>
                     </div>
@@ -801,8 +800,8 @@ export default defineComponent({
             transaction_details,
             products,
             transaction_items,
-            customerOptions: customerOptionsRef,
-            productOptions: productsOptionsRef,
+            customerOptions,
+            productOptions,
             loading,
             totalPPN,
             subtotal,

@@ -24,8 +24,7 @@
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">NAMA CUSTOMER<span class="text-danger">*</span></label>
-                            <n-select filterable :loading="loading" :options="customerOptions" clearable
-                                remoteplaceholder="" @search="handleSearchCustomer" size="large"
+                            <n-select filterable :loading="loading" :options="customerOptions" size="large"
                                 v-model:value="transaction_details.customer" />
                         </div>
                     </div>
@@ -103,25 +102,13 @@
                     <!-- INPUT PRODUCTS FORM -->
                     <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">NAMA PRODUK</label>
-                        <n-select filterable :loading="loading" :options="productOptions" clearable remote
-                            placeholder="" @search="handleSearchProduct" size="large" v-model:value="products.name" />
+                        <n-select filterable  :options="productOptions"
+                            placeholder="" size="large" v-model:value="products.name" />
                         <!-- Warning quantity atau status quantity -->
                         <span :style="{ color: stockStatusColor }">
                             {{ stockMessage }}
                         </span>
                     </div>
-                    <!-- <div class="col-6 col-md-6 col-lg-3">
-                        <n-input v-model:value="products.promo_value" />
-                    </div>
-                    <div class="col-6 col-md-6 col-lg-3">
-                        <n-input v-model:value="products.description" />
-                    </div>
-                    <div class="col-6 col-md-6 col-lg-3">
-                        <n-input v-model:value="products.min" />
-                    </div>
-                    <div class="col-6 col-md-6 col-lg-3">
-                        <n-input v-model:value="products.max" />
-                    </div> -->
 
                     <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">QUANTITY</label>
@@ -698,6 +685,7 @@ export default defineComponent({
                 tax_amount: formattedTaxAmount,           // Nilai pajak 11%
                 amount: finalAmount,                      // Harga satuan setelah diskon jika ada promo
                 tax_id: transaction_items.value.tax_id,
+                tax_value: null,
                 total_price: formattedTotalPriceWithTax,  // Total harga termasuk PPN
                 discount_1: transaction_items.value.discount_1 || 0,
                 discount_2: transaction_items.value.discount_2 || 0,
@@ -921,8 +909,8 @@ export default defineComponent({
             transaction_details,
             products,
             transaction_items,
-            customerOptions: customerOptionsRef,
-            productOptions: productsOptionsRef,
+            customerOptions,
+            productOptions,
             loading,
             totalPPN,
             subtotal,

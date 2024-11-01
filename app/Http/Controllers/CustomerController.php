@@ -8,6 +8,8 @@ use App\Http\Services\PartiesServices;
 use App\Models\Lookup;
 use App\Models\Parties;
 use App\Models\PartiesGroup;
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -105,6 +107,30 @@ class CustomerController extends Controller
 
         return redirect()->route('admin.parties.customer')->with('success', 'Customer berhasil dibuat!');
     }
+
+    /**
+     * Assigning  a customer to a group of sales.
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return void
+     */
+    public function assignCustomerToSales(Parties $customer,User $sales): RedirectResponse
+    {
+        DB::transaction(function() use ($sales, $customer) {
+
+            $customer->user()->associate($sales);
+
+            $customer->save();
+        });
+
+        return back()->with('success', 'Berhasil menambahkan customer ke sales');
+    }
+
+    // public function unAssignCustomerSales(Parties $customer)
+    // {
+
+    // }
+
 
     /**
      * Display the specified resource.

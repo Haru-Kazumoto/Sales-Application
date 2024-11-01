@@ -8,7 +8,7 @@
                         <div class="card-body">
                             <div class="card-title">TOTAL TRANSAKSI</div>
                             <div class="card-content d-flex flex-column gap-2">
-                                <span class="fs-2 fw-bold">200</span>
+                                <span class="fs-2 fw-bold">{{ $page.props.count_invoice }}</span>
                                 <n-button type="primary">LIHAT DETAIL</n-button>
                             </div>
                         </div>

@@ -22,7 +22,7 @@ Route::middleware(['auth', 'verified', 'secure.path'])->group(function() {
     Route::get('/dashboard-warehouse', [App\Http\Controllers\DashboardController::class, 'indexWarehouseDashboard'])->name('dashboard.warehouse');
     Route::get('/dashboard-procurement', [App\Http\Controllers\DashboardController::class, 'indexProcurementDashboard'])->name('dashboard.procurement');
     Route::get('/dashboard-admin',[App\Http\Controllers\DashboardController::class, 'indexAdminDashboard'])->name('dashboard.admin');
-    Route::get('/dashboard-aging-finance',[App\Http\Controllers\DashboardController::class, 'indexAgingFinanceDashboard'])->name('dashboard.aging-finance');
+    Route::get('/dashboard-aging_finance',[App\Http\Controllers\DashboardController::class, 'indexAgingFinanceDashboard'])->name('dashboard.aging-finance');
     Route::get('/dashboard-sales', [App\Http\Controllers\DashboardController::class, 'indexSalesDashboard'])->name('dashboard.sales');
     Route::get('/dashboard-marketing', [App\Http\Controllers\DashboardController::class, 'indexMarketingDashboard'])->name('dashboard.marketing');
 });
@@ -129,6 +129,12 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
             Route::get('/create-promo', [App\Http\Controllers\PromoProgramController::class,'createPromo'])->name('create-promo');
             Route::post('/store-promo', [App\Http\Controllers\PromoProgramController::class, 'storePromo'])->name('store-promo');
             Route::get('/detail/{promoProgram}', [App\Http\Controllers\PromoProgramController::class, 'show'])->name('detail-promo');
+        });
+
+        Route::prefix('customer-sales')->group(function() {
+            Route::get('', [App\Http\Controllers\UserController::class, 'indexSalesUser'])->name('index-sales');
+            Route::get('/assign/{user}',[App\Http\Controllers\UserController::class, 'assignCustomerSales'])->name('assign-customer-sales');
+            Route::patch('/assign/{customer}/to/{sales}', [App\Http\Controllers\CustomerController::class, 'assignCustomerToSales'])->name('assign-customer-to-sales');
         });
 
     });

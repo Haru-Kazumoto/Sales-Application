@@ -31,10 +31,16 @@ class Parties extends Model
         'description',
         'number_plate',
         'parties_group_id',
+        'users_id',
     ];
 
     public function partiesGroup(): BelongsTo
     {
         return $this->belongsTo(PartiesGroup::class, 'parties_group_id');
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'users_id');
     }
 }

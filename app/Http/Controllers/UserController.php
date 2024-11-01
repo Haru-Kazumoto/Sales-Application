@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Division;
+use App\Models\Parties;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class UserController extends Controller
 {
@@ -162,4 +164,33 @@ class UserController extends Controller
 
         return redirect()->back()->with('success', 'User behasil dihapus');
     }
+
+    /**
+     * Index all sales user for assign the customer from data master (admin)
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return void
+     */
+    public function indexSalesUser(Request $request): Response
+    {
+        $sales_users = User::whereHas('division', function ($query) {
+            $query->where('division_name', 'SALES');
+        })->with('division')->paginate(10);
+
+        return Inertia::render('Admin/CustomerSales', compact('sales_users'));
+    }
+
+    public function assignCustomerSales(User $user)
+    {
+        $user
+            ->load('division','parties')
+            ->orderByDesc('created_at')
+            ->first();
+        $customers = Parties::where('type_parties', 'CUSTOMER')
+            ->where('users_id', null)
+            ->get();
+    
+        return Inertia::render('Admin/AssignCustomer', compact('user', 'customers'));
+    }
+
 }

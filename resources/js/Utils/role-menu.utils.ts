@@ -1,4 +1,4 @@
-import { Box20Regular, Box24Regular, BoxCheckmark20Regular, BoxDismiss24Regular, BoxEdit20Regular, BoxMultiple20Regular, DocumentAdd20Regular, DocumentAdd28Regular, DocumentBulletListMultiple20Regular, DocumentTableTruck24Regular, HomePerson24Regular, PeopleProhibited20Regular, PeopleSettings24Regular, PeopleSwap16Regular, PeopleTeam28Regular, PersonAccounts24Regular, ReceiptCube24Regular, Textbox16Regular, VehicleTruckProfile20Regular } from '@vicons/fluent';
+import { Box20Regular, Box24Regular, BoxCheckmark20Regular, BoxDismiss24Regular, BoxEdit20Regular, BoxMultiple20Regular, DocumentAdd20Regular, DocumentAdd28Regular, DocumentBulletListMultiple20Regular, DocumentTableTruck24Regular, HomePerson24Regular, PeopleList24Regular, PeopleProhibited20Regular, PeopleSettings24Regular, PeopleSwap16Regular, PeopleTeam28Regular, PersonAccounts24Regular, ReceiptCube24Regular, Textbox16Regular, VehicleTruckProfile20Regular } from '@vicons/fluent';
 import { SkullOutline, CartOutline, FileTrayFullOutline, FileTrayStackedOutline, CubeOutline, WalletOutline, NotificationsOutline, PeopleOutline, ReceiptOutline, SettingsOutline, BarChartOutline, BagCheckOutline, DocumentsOutline, DocumentTextOutline, ShieldCheckmarkOutline, RepeatSharp, WarningOutline, Cart, People, PersonAddOutline, Contract, Analytics, CogOutline, DocumentOutline, PushOutline, ShieldHalf, PieChartOutline, ReorderFourSharp, CartSharp, KeyOutline, LogoWhatsapp, Close, Skull, Bookmarks, BookmarkOutline, AlbumsOutline, TrashOutline } from '@vicons/ionicons5';
 import { WarehouseOutlined } from '@vicons/material';
 import { NIcon } from 'naive-ui';
@@ -90,6 +90,12 @@ export const roleMenus = {
             key: "promo-program",
             icon: Textbox16Regular,
             href: "/promo-program",
+        },
+        {
+            label: "Customer sales",
+            key: "customer-sales",
+            icon: PeopleList24Regular,
+            href: "/customer-sales"
         }
     ],
     FINANCE: [
@@ -338,26 +344,26 @@ export const roleMenus = {
                 }
             ]
         },
-        {
-            label: "Booking Barang",
-            key: "booking-item",
-            icon: BoxEdit20Regular,
-            // href: "/booking-item",
-            children: [
-                {
-                    label: "Booking Barang DNP",
-                    key: "booking-item-dnp",
-                    icon: renderIcon(Box24Regular),
-                    href: "/booking-item/dnp",
-                },
-                {
-                    label: "Booking Barang DKU",
-                    key: "booking-item-dku",
-                    icon: renderIcon(Box24Regular),
-                    href: "/booking-item/dku",
-                },
-            ]
-        }
+        // {
+        //     label: "Booking Barang",
+        //     key: "booking-item",
+        //     icon: BoxEdit20Regular,
+        //     // href: "/booking-item",
+        //     children: [
+        //         {
+        //             label: "Booking Barang DNP",
+        //             key: "booking-item-dnp",
+        //             icon: renderIcon(Box24Regular),
+        //             href: "/booking-item/dnp",
+        //         },
+        //         {
+        //             label: "Booking Barang DKU",
+        //             key: "booking-item-dku",
+        //             icon: renderIcon(Box24Regular),
+        //             href: "/booking-item/dku",
+        //         },
+        //     ]
+        // }
     ],
     MARKETING: [
         //marketing

@@ -150,7 +150,13 @@ class DashboardController extends Controller
 
     public function indexAgingFinanceDashboard(): Response
     {
-        return Inertia::render('AgingFinance/Dashboard');
+        $count_invoice = Transactions::whereHas('transactionType', function($query){
+            $query->where('name', 'Penjualan');
+        })->count();
+
+        return Inertia::render('AgingFinance/Dashboard',compact(
+            'count_invoice'
+        ));
     }
 
     public function indexSalesDashboard(): Response

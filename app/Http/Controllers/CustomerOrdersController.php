@@ -56,7 +56,9 @@ class CustomerOrdersController extends Controller
     {
         $coNumber = 'CO-'.rand(100000,999999);
         $dateNow = Carbon::now()->format('Y-m-d H:i:s');
-        $customers = Parties::where('type_parties', 'CUSTOMER')->get();
+        $customers = Parties::where('type_parties', 'CUSTOMER')
+            ->where('users_id', Auth::user()->id)
+            ->get();
         $payment_terms = Lookup::where('category', 'PAYMENT_TERM')->get();
         $products = $this->productServices->getStockProducts("DNP");
 
@@ -76,7 +78,9 @@ class CustomerOrdersController extends Controller
     {
         $coNumber = 'CO-'.rand(100000,999999);
         $dateNow = Carbon::now()->format('Y-m-d H:i:s');
-        $customers = Parties::where('type_parties', 'CUSTOMER')->get();
+        $customers = Parties::where('type_parties', 'CUSTOMER')
+            ->where('users_id', Auth::user()->id)
+            ->get();
         $payment_terms = Lookup::where('category', 'PAYMENT_TERM')->get();
         $products = $this->productServices->getStockProducts("DKU");
 
