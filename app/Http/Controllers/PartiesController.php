@@ -246,8 +246,4 @@ class PartiesController extends Controller
 
         return redirect()->route('admin.parties.supplier')->with('success', 'Supplier berhasil dihapus!');
     }
-
-    public function unAssignCustomerSales()
-    
-
 }
