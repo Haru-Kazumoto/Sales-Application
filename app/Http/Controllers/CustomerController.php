@@ -126,10 +126,10 @@ class CustomerController extends Controller
         return back()->with('success', 'Berhasil menambahkan customer ke sales');
     }
 
-    // public function unAssignCustomerSales(Parties $customer)
-    // {
-
-    // }
+    public function unAssignCustomerSales(Parties $customer)
+    {
+        // 
+    }
 
 
     /**
