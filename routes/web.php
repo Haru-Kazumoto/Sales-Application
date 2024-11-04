@@ -222,8 +222,9 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         Route::get('/invoice/detail/{transactions}', [App\Http\Controllers\InvoiceController::class, 'showDetailInvoice'])->name('detail-invoice');
         Route::post('/invoice/pay/{transactions}', [App\Http\Controllers\InvoiceController::class, 'invoicePayment'])->name('invoice.pay');
 
-        Route::get('/whatsapp-message', fn() => Inertia::render('AgingFinance/WhatsappMessage'))->name('whatsapp-message');
-        Route::get('/test-send-message', [App\Http\Controllers\MessageTemplateController::class, 'create'])->name('test-whatsapp-message');
+        Route::get('/whatsapp-message', [App\Http\Controllers\MessageTemplateController::class, 'createTemplateMessage'])->name('whatsapp-message');
+        Route::get('/test-send-message', [App\Http\Controllers\MessageTemplateController::class, 'createTest'])->name('test-whatsapp-message');
+        Route::patch('/store-template/{messageTemplate}', [App\Http\Controllers\MessageTemplateController::class, 'storeTemplate'])->name('store-template');
         Route::post('/save-message', [App\Http\Controllers\MessageTemplateController::class, 'saveMessage'])->name('save-message');
     });
 

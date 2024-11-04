@@ -59,11 +59,31 @@ class MessageTemplateController extends Controller
         }
     }
 
-    public function create() 
+    public function createTest() 
     {
         $templates = MessageTemplate::all();
 
         return Inertia::render("AgingFinance/TestWhatsappMessage", compact('templates'));
+    }
+
+    public function createTemplateMessage() 
+    {
+        $template_sales = MessageTemplate::where('name', 'SALES')->first();
+        $template_customer = MessageTemplate::where('name', 'CUSTOMER')->first();
+
+        return Inertia::render('AgingFinance/WhatsappMessage', compact('template_sales', 'template_customer'));
+    }
+
+    public function storeTemplate(MessageTemplate $messageTemplate, Request $request)
+    {
+        DB::transaction(function() use ($messageTemplate,$request){
+            $messageTemplate->update([
+                'name' => $request->name,
+                'message' => $request->message,
+            ]);
+        });
+
+        return back()->with('success', 'Berhasil menyimpan template pesan');
     }
 
     public function saveMessage(Request $request)

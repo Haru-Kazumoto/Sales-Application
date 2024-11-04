@@ -14,8 +14,8 @@ class MessageTemplateSeeder extends Seeder
     public function run(): void
     {
         $messages = [
-            ['name' => 'CUSTOMER', 'message' => 'Hi {name} mohon segera lengkapin pembayaran, butuh uwank', 'placeholder' => null],
-            ['name' => 'CUSTOMER', 'message' => 'Hi {name} mohon segera lengkapin pembayaran anda dibulan ini', 'placeholder' => null]
+            ['name' => 'SALES', 'message' => 'Hi {salesman} mohon segera tagih pembayaran customer anda sebesar {tagihan}', 'placeholder' => null],
+            ['name' => 'CUSTOMER', 'message' => 'Hi {nama_customer} mohon segera lengkapin pembayaran anda dibulan ini', 'placeholder' => null]
         ];
 
         foreach($messages as $message) {
