@@ -24,7 +24,7 @@
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">NAMA CUSTOMER<span class="text-danger">*</span></label>
-                            <n-select filterable :loading="loading" :options="customerOptions"  size="large"
+                            <n-select filterable :loading="loading" :options="customerOptions" size="large"
                                 v-model:value="transaction_details.customer" />
                         </div>
                     </div>
@@ -385,7 +385,7 @@ export default defineComponent({
             description: '',
             sub_total: null as unknown as number,
             total: null as unknown as number,
-            term_of_payment: '',
+            term_of_payment: null as unknown as number,
             tax_amount: null as unknown as number,
             transaction_details: [] as TransactionDetail[],
             transaction_items: [] as TransactionItems[],
@@ -475,11 +475,24 @@ export default defineComponent({
                 transaction_details.value.customer_address = selectedCustomer.address as any;
                 transaction_details.value.npwp = selectedCustomer.npwp as any;
                 transaction_details.value.legality = selectedCustomer.legality as any || '';
-                form.term_of_payment = selectedCustomer.term_payment?.toString();
+                form.term_of_payment = selectedCustomer.term_payment ?? 0;
             } else {
                 transaction_details.value.customer_address = '';
-                transaction_details.value.npwp = '',
-                    transaction_details.value.legality = '';
+                transaction_details.value.npwp = '';
+                transaction_details.value.legality = '';
+            }
+        });
+
+        watch(() => form.term_of_payment, (term) => {
+            if (term) {
+                // Buat tanggal baru yang merepresentasikan hari ini
+                const today = new Date();
+                // Tambahkan hari sesuai `term_of_payment`
+                today.setDate(today.getDate() + term);
+                // Set `due_date` menjadi hasil perhitungan
+                form.due_date = today.toISOString().slice(0, 19).replace('T', ' '); // Format ke "YYYY-MM-DD"
+            } else {
+                form.due_date = null;
             }
         });
 
@@ -592,6 +605,7 @@ export default defineComponent({
                 tax_amount: roundedPpnAmount,
                 amount: transaction_items.value.amount,
                 tax_id: transaction_items.value.tax_id,
+                tax_value: null,
                 total_price: roundedTotal,
                 discount_1: transaction_items.value.discount_1 || 0,
                 discount_2: transaction_items.value.discount_2 || 0,

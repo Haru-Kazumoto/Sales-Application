@@ -24,16 +24,31 @@ class TransactionServices
         ?string $filterQuery = null, 
         ?int $paginate = null,
         ?string $dateRange = null,
+        ?bool $showInvoicePayment = false,
     ): Collection|LengthAwarePaginator
     {
         $query = Transactions::with([
             'transactionDetails', 
-            'transactionItems.product' 
+            'transactionItems.product' ,
         ])
-            ->where('transaction_type_id', $tx_type_id);
-
+        ->where('transaction_type_id', $tx_type_id);
+    
+        // Terapkan filter pencarian
         $query = $this->applySearchFilter($query, $filterField, $filterQuery);
-
+    
+        // Menghitung total pembayaran dan sisa tagihan jika tidak menampilkan pembayaran invoice
+        if ($showInvoicePayment === false) {
+            $query->selectRaw('transactions.*, 
+                (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) as total_left, 
+                CASE 
+                    WHEN (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) > 0 
+                    THEN "INSTALMENT" 
+                    ELSE "PAID" 
+                END as status_payment'
+            );
+        }
+    
+        // Pengurutan berdasarkan kondisi tertentu
         $query->orderByRaw("
             CASE 
                 WHEN EXISTS (
@@ -46,17 +61,18 @@ class TransactionServices
                 ELSE 1 
             END
         ")->orderByDesc('created_at');
-
+    
         // Tambahkan pengecekan untuk date range
         if (!is_null($dateRange)) {
             $query = $this->scopeFilterByDateRange($query, $dateRange);
         }
-
-        if(!is_null($paginate))
-        {
+    
+        // Terapkan pagination jika ada
+        if (!is_null($paginate)) {
             return $this->applyPagination($query, $paginate);
         }
-
+    
         return $query->get();
     }
+    
 }

@@ -313,16 +313,6 @@ export default defineComponent({
                     const termDays = newTermOfPayment ; // Gunakan term_of_payment atau default 45
                     form.due_date = handleSetFutureDateTo(termDays, newPurchaseOrderDate);
                 } 
-                // else {
-                //     // Jika purchase_order_date kosong dan term_of_payment diubah, tampilkan notifikasi peringatan
-                //     if (newTermOfPayment !== null) {
-                //         Swal.fire({
-                //             icon: 'warning',
-                //             title: 'Tanggal Purchase Order Belum Diisi',
-                //             text: 'Harap isi tanggal Purchase Order terlebih dahulu sebelum menentukan Term of Payment.',
-                //         });
-                //     }
-                // }
             }
         );
 

@@ -14,7 +14,7 @@
                     <!-- USERNAME INPUT -->
                     <div class="d-flex flex-column gap-1">
                         <label for="username">Username</label>
-                        <n-input v-model:value="model.username" placeholder="Input Username" size="large">
+                        <n-input v-model:value="model.username" placeholder="Username" size="large">
                             <template #prefix>
                                 <n-icon :component="PersonOutline" />
                             </template>
@@ -25,7 +25,7 @@
                     <!-- PASSWORD INPUT -->
                     <div class="d-flex flex-column gap-1">
                         <label for="password">Password</label>
-                        <n-input type="password" show-password-on="click" v-model:value="model.password" size="large">
+                        <n-input type="password" show-password-on="click" v-model:value="model.password" size="large" placeholder="Password">
                             <template #prefix>
                                 <n-icon :component="LockClosedOutline" />
                             </template>

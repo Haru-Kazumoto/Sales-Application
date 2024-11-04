@@ -37,21 +37,21 @@ class InvoiceController extends Controller
     public function indexInvoices()
     {
         $tx_type = TransactionType::where('name', 'Penjualan')->first();
-        $invoices = $this->transactionServices->getTransactions($tx_type->id, null,null,10);
+        $invoices = $this->transactionServices->getTransactions($tx_type->id, null,null,10, true);
 
         return Inertia::render('AgingFinance/Sales/ListInvoice', compact('invoices'));
     }
 
     public function listDnpInvoice(): Response
     {
-        $travel_documents_dnp = $this->customerOrderServices->getTransactions("Surat Jalan",null,15,"Warehouse","DNP");
+        $travel_documents_dnp = $this->customerOrderServices->getTransactions("Surat Jalan","false",15,"Warehouse","DNP");
 
         return Inertia::render('AgingFinance/Sales/InvoiceDNP', compact('travel_documents_dnp'));
     }
 
     public function listDkuInvoice(): Response
     {
-        $travel_documents_dku = $this->customerOrderServices->getTransactions("Surat Jalan",null,15,"Warehouse","DKU");
+        $travel_documents_dku = $this->customerOrderServices->getTransactions("Surat Jalan","false",15,"Warehouse","DKU");
 
         return Inertia::render('AgingFinance/Sales/InvoiceDKU', compact('travel_documents_dku'));
     }
@@ -122,6 +122,15 @@ class InvoiceController extends Controller
                 'transaction_type_id' => $tx_type->id,
             ]);
 
+            $tx_details = $request->transaction_details;
+            $tx = Transactions::where('document_code', $tx_details[1]['value'])->first();
+            if($tx){
+                $status = TransactionDetail::where('transactions_id', $tx->id)
+                    ->where('category', 'Generating')
+                    ->first();
+                $status->update(['value' => 'true']);
+            }
+
             // Simpan transaction details
             foreach ($request->input('transaction_details') as $detail) {
                 TransactionDetail::create([
@@ -143,27 +152,62 @@ class InvoiceController extends Controller
                     'quantity' => $txItem['quantity'],
                     'amount' => $txItem['amount'],
                     'tax_id' => $txItem['tax_id'],
+                    'total_price' => $txItem['total_price'],
                     'transactions_id' => $transaction->id,
                     'product_id' => $product->id, 
                 ]);
-
-                $invoice_date = TransactionDetail::where('category', 'Invoice Date')->first();
-        
             }
-
-            //create invoice journal
-            InvoicePayment::create([
-                'invoice_number' => $request->input('document_code'),
-                'invoice_date' => $invoice_date->value,
-                'total_bill' => $request->input('total'),
-                'total_paid' => 0,
-                'action' => 'IN',
-                'transaction_id' => $transaction->id,
-            ]);
-
         });
         
-        return redirect()->route('aging-finance.invoice-dnp')->with('success', 'Faktur berhasil dibuat!');
+        return redirect()->route('aging-finance.list-invoice')->with('success', 'Faktur berhasil dibuat!');
     }
 
+    public function showDetailInvoice(Transactions $transactions)
+    {
+        $data = $transactions->load([
+            'transactionDetails',
+            'transactionItems.product',
+            'transactionItems.tax',
+            'invoicePayments' => function ($query) {
+                $query->select(
+                    'id',
+                    'transaction_id',
+                    'total_paid',
+                    'invoice_date',
+                    DB::raw('(SELECT total FROM transactions WHERE id = invoice_payment.transaction_id) - SUM(total_paid) AS sisa_pembayaran'),
+                    DB::raw("(CASE WHEN (SELECT total FROM transactions WHERE id = invoice_payment.transaction_id) - SUM(total_paid) > 0 THEN 'INSTALMENT' ELSE 'PAID' END) AS status_payment")
+                )->groupBy('id', 'transaction_id', 'total_paid', 'invoice_date');
+            }
+        ]);
+
+        $totalTagihan = $transactions->total;
+        $totalPaid = $transactions->invoicePayments->sum('total_paid');
+        $totalLeft = $totalTagihan - $totalPaid;
+        $statusPayment = $totalLeft > 0 ? 'INSTALMENT' : 'PAID';
+
+        return Inertia::render('AgingFinance/Sales/DetailInvoice', compact(
+            'data',
+            'totalTagihan',
+            'totalPaid',
+            'totalLeft',
+            'statusPayment',
+        ));
+    }
+
+    public function invoicePayment(Transactions $transactions, Request $request)
+    {
+        DB::transaction(function() use ($request, $transactions){
+
+            InvoicePayment::create([
+                'invoice_number' => $transactions->document_code,
+                'invoice_date' => $request->invoice_date,
+                'total_paid' => $request->total_paid,
+                'total_bill' => $transactions->total,
+                'action' => "IN",
+                'transaction_id' => $transactions->id,
+            ]);
+        });
+
+        return back()->with('success', 'Pembayaran berhasil!');
+    }
 }

@@ -35,7 +35,7 @@
                     <!-- row 2 -->
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">Termin</label>
-                        <n-input size="large" placeholder="" v-model:value="form.term_of_payment" >
+                        <n-input size="large" placeholder="" v-model:value="form.term_of_payment">
                             <template #suffix>HARI</template>
                         </n-input>
                     </div>
@@ -70,7 +70,8 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">PPN</label>
-                        <n-select size="large" placeholder="" @update:value="updateTax" :options="ppnOptions" v-model:value="tax.tax_id" />
+                        <n-select size="large" placeholder="" @update:value="updateTax" :options="ppnOptions"
+                            v-model:value="tax.tax_id" />
                     </div>
                 </div>
             </div>
@@ -97,21 +98,26 @@
                     <span>{{ totalPrice }}</span>
                 </div>
                 <div class="row g-2">
-                    <div class="col-12 col-lg-8 d-flex flex-column text-body-tertiary">
+                    <div class="col-12 col-md-6 col-lg-8 d-flex flex-column text-body-tertiary">
                         <span>Harap ditransfer ke : </span>
                         <span>PT. DANITAMA NIAGAPRIMA</span>
                         <span>NPWP: 01.345.766.7-064.000</span>
                         <span>BANK CENTRAL ASIA CAB HASANUDIN JAKARTA A/C NO. 523.0300.200</span>
                         <span>BANK CENTRAL ASIA CAB JATIASIH JAKARTA A/C NO. 675.5010.255</span>
                     </div>
-                    <div class="col-12 col-lg-4">
-                        <div class="d-flex justify-content-between">
-                            <span>Total Harga</span>
-                            <span class="fw-bold">Rp 200.000</span>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <span>Jatuh Tempo</span>
-                            <span class="fw-bold">12 September 2024</span>
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="d-flex flex-column w-100 justify-content-between gap-3">
+                            <div class="d-flex justify-content-between">
+                                <span>TERM OF PAYMENT</span>
+                                <span class="fw-bold">{{ form.term_of_payment }} HARI</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span>JATUH TEMPO</span>
+                                <span class="fw-bold">
+                                    {{ form.due_date ? dayjs(form.due_date).format('dddd, D MMMM YYYY') : '' }}
+                                </span>
+
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -132,6 +138,9 @@ import { Transactions, TransactionItems, TransactionDetail, Lookup, Tax, Flash }
 import { formatRupiah } from '../../../Utils/options-input.utils.ts';
 import Swal from 'sweetalert2';
 import dayjs from 'dayjs';
+import 'dayjs/locale/id'; // Import locale Indonesia
+
+dayjs.locale('id'); // Set locale to Indonesian
 
 function createColumns() {
     return [
@@ -199,11 +208,11 @@ export default defineComponent({
 
         const form = useForm({
             document_code: page.props.invoice_number as string,
-            term_of_payment: '',
+            term_of_payment: travel_document.term_of_payment,
             sub_total: null as unknown as number,
             total: null as unknown as number,
             tax_amount: null as unknown as number,
-            due_date: null as unknown as string,
+            due_date: travel_document.due_date,
             transaction_details: [] as TransactionDetail[],
             transaction_items: [] as TransactionItems[],
         });
@@ -231,6 +240,43 @@ export default defineComponent({
         const tax = ref({
             tax_id: null as unknown as number,
         });
+
+        watch(transaction_items, (data) => {
+            travel_document?.transaction_items?.forEach(item => {
+                form.transaction_items.push({
+                    unit: item.unit,
+                    quantity: item.quantity,
+                    amount: item.amount,
+                    total_price: item.total_price,
+                    product_id: item.product_id,
+                    tax_amount: item.tax_amount,
+                    tax_value: null,
+                    product: {
+                        code: item.product?.code || '',
+                        unit: item.product?.unit || '',
+                        name: item.product?.name || '',
+                    }
+                });
+            });
+        }, { immediate: true });
+
+        watch(
+            [() => transaction_details.value.invoice_date, () => form.term_of_payment],
+            ([newPurchaseOrderDate, newTermOfPayment]) => {
+                if (newPurchaseOrderDate) {
+                    // Jika purchase_order_date sudah ada, set due_date berdasarkan term_of_payment
+                    const termDays = newTermOfPayment ; // Gunakan term_of_payment atau default 45
+                    form.due_date = handleSetFutureDateTo(termDays, newPurchaseOrderDate);
+                } 
+            }
+        );
+
+        function handleSetFutureDateTo(days: number, start_date: any) {
+            const baseDate = new Date(start_date);
+            baseDate.setDate(baseDate.getDate() + days);
+
+            return baseDate.toISOString().slice(0, 19).replace('T', ' ');
+        }
 
         function handleSubmitInvoice() {
             form.transaction_details = [
@@ -303,7 +349,7 @@ export default defineComponent({
         const totalPPN = computed(() => {
             // Menghitung subtotal dari semua produk tanpa mengalikan quantity
             const subtotal = form.transaction_items.reduce((total, item) => {
-                return total + Number(item.amount ?? 0); // Konversi amount ke number
+                return total + Number(item.total_price ?? 0); // Konversi amount ke number
             }, 0);
 
             // Menghitung PPN 11%
@@ -319,7 +365,7 @@ export default defineComponent({
         const subtotal = computed(() => {
             // Menghitung subtotal dari semua produk tanpa mengalikan quantity
             const total = form.transaction_items.reduce((total, item) => {
-                return total + Number(item.amount ?? 0); // Konversi amount ke number
+                return total + Number(item.total_price ?? 0); // Konversi amount ke number
             }, 0);
 
             // Menyimpan subtotal ke dalam form
@@ -332,7 +378,7 @@ export default defineComponent({
         const totalPrice = computed(() => {
             // Menghitung subtotal dari semua produk tanpa mengalikan quantity
             const subtotal = form.transaction_items.reduce((total, item) => {
-                return total + Number(item.amount ?? 0); // Konversi amount ke number
+                return total + Number(item.total_price ?? 0); // Konversi amount ke number
             }, 0);
 
             // Menghitung total harga termasuk PPN 11%
@@ -356,21 +402,7 @@ export default defineComponent({
             percentage: data.value / 100 // Tambahkan persentase PPN
         }));
 
-        watch(transaction_items, (data) => {
-            travel_document?.transaction_items?.forEach(item => {
-                form.transaction_items.push({
-                    unit: item.unit,
-                    quantity: item.quantity,
-                    amount: item.amount,
-                    product_id: item.product_id,
-                    product: {
-                        code: item.product?.code || '',
-                        unit: item.product?.unit || '',
-                        name: item.product?.name || '',
-                    }
-                });
-            });
-        }, { immediate: true });
+
 
         // Method untuk update tax_id
         const updateTax = (selectedTaxId: number) => {
@@ -384,6 +416,7 @@ export default defineComponent({
             columns: createColumns(),
             handleSubmitInvoice,
             updateTax,
+            dayjs,
             router,
             form,
             transaction_details,

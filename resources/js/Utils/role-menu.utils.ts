@@ -236,12 +236,12 @@ export const roleMenus = {
             key: 'stock-goods',
             href: '/stock-goods'
         },
-        {
-            label: 'Booking Barang',
-            icon: BoxEdit20Regular  ,
-            key: 'booking-items',
-            href: '/booking-requests',
-        },
+        // {
+        //     label: 'Booking Barang',
+        //     icon: BoxEdit20Regular  ,
+        //     key: 'booking-items',
+        //     href: '/booking-requests',
+        // },
         {
             label: "Surat Jalan",
             key: 'travel-document',
@@ -299,24 +299,24 @@ export const roleMenus = {
                 }
             ]
         },
-        {
-            label: "Barang Rusak",
-            icon: BoxDismiss24Regular,
-            children: [
-                {
-                    label: "Retur Barang Rusak",
-                    icon: renderIcon(RepeatSharp),
-                    key: 'return-broken-goods',
-                    href: '/return-broken-goods',
-                },
-                {
-                    label: "Pemusnahan Barang",
-                    icon: renderIcon(TrashOutline),
-                    key: 'destruction-goods',
-                    href: '/destruction-broken-goods',
-                }
-            ],
-        },
+        // {
+        //     label: "Barang Rusak",
+        //     icon: BoxDismiss24Regular,
+        //     children: [
+        //         {
+        //             label: "Retur Barang Rusak",
+        //             icon: renderIcon(RepeatSharp),
+        //             key: 'return-broken-goods',
+        //             href: '/return-broken-goods',
+        //         },
+        //         {
+        //             label: "Pemusnahan Barang",
+        //             icon: renderIcon(TrashOutline),
+        //             key: 'destruction-goods',
+        //             href: '/destruction-broken-goods',
+        //         }
+        //     ],
+        // },
     ],
     SALES: [
         {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Services\CustomerOrderServices;
+use App\Http\Services\PartiesServices;
 use App\Http\Services\ProductServices;
 use App\Models\CustomerOrderProduct;
 use App\Models\CustomerOrders;
@@ -27,11 +28,13 @@ class CustomerOrdersController extends Controller
 {
     protected $productServices;
     protected $customerOrderServices;
+    protected $partiesService;
 
-    public function __construct(ProductServices $productServices, CustomerOrderServices $customerOrderServices)
+    public function __construct(ProductServices $productServices, CustomerOrderServices $customerOrderServices, PartiesServices $partiesServices)
     {
         $this->productServices = $productServices;
         $this->customerOrderServices = $customerOrderServices;
+        $this->partiesService = $partiesServices;
     }
 
     /**
@@ -336,6 +339,8 @@ class CustomerOrdersController extends Controller
      */
     public function detailTravelDocument(Transactions $transactions)
     {
+        $transports = $this->partiesService->getPartiesByGroupAndType('VENDOR', 'Angkutan');
+
         // Load the necessary relationships
         $transactions->load('transactionType', 'transactionDetails', 'transactionItems.product');
 
@@ -354,7 +359,7 @@ class CustomerOrdersController extends Controller
         $document_code = $prefixDocument.'/BKS/SJ/'.rand(10000,99999);
 
 
-        return Inertia::render('Warehouse/CreateTravelDocument', compact('transactions', 'document_code'));
+        return Inertia::render('Warehouse/CreateTravelDocument', compact('transactions', 'document_code', 'transports'));
     }
 
     /**
@@ -362,8 +367,7 @@ class CustomerOrdersController extends Controller
      */
     public function storeTravelDocument(Request $request) 
     {
-        // dd($request->all());
-
+    
         $request->validate([
             'document_code' => 'required|string',
             'sub_total' => 'required|numeric',
@@ -388,11 +392,12 @@ class CustomerOrdersController extends Controller
         DB::transaction(function () use ($request) {
             $tx_type = TransactionType::where('name', 'Surat Jalan')->first();
 
-            // Simpan customer order
             $transaction = Transactions::create([
                 'document_code' => $request->input('document_code'),
                 'correlation_id' => rand(10000,99999),
                 'sub_total' => $request->input('sub_total'),
+                'term_of_payment' => $request->input('term_of_payment'),
+                'due_date' => $request->input('due_date'),
                 'total' => $request->input('total'),
                 'tax_amount' => $request->input('tax_amount'),
                 'created_by' => Auth::user()->id,
@@ -400,8 +405,17 @@ class CustomerOrdersController extends Controller
                 'transaction_type_id' => $tx_type->id,
             ]);
 
+            $tx_details = $request->transaction_details;
+            $tx = Transactions::where('document_code', $tx_details[0]['value'])->first();
+            if($tx){
+                $status = TransactionDetail::where('transactions_id', $tx->id)
+                    ->where('category', 'Generating')
+                    ->first();
+                $status->update(['value' => 'true']);
+            }
+
             // Simpan transaction details
-            foreach ($request->input('transaction_details') as $detail) {
+            foreach ($request->transaction_details as $detail) {
                 TransactionDetail::create([
                     'name' => $detail['name'],
                     'category' => $detail['category'],
@@ -409,38 +423,30 @@ class CustomerOrdersController extends Controller
                     'data_type' => $detail['data_type'],
                     'transactions_id' => $transaction->id,
                 ]);
-
-                // Jika category adalah 'CO Number', lakukan pencarian pada CustomerOrder
-                if ($detail['category'] === 'CO Number') {
-                    // Cari CustomerOrder berdasarkan nomor CO dari value
-                    $customerOrder = Transactions::where('document_code', $detail['value'])->first();
-
-                    // Jika CustomerOrder ditemukan, update transaction_detail dengan category 'Generating'
-                    if ($customerOrder) {
-                        TransactionDetail::where('transactions_id', $customerOrder->transaction_id)
-                            ->where('category', 'Generating')
-                            ->update(['value' => 'true']);
-                    }
-                }
             }
 
             // Simpan transaction items
-            foreach ($request->input('transaction_items') as $txItem) {
+            foreach ($request->transaction_items as $txItem) {
                 $product = Products::find($txItem['product_id']);
 
                 // Simpan transaction item
                 TransactionItem::create([
                     'unit' => $txItem['unit'],
                     'quantity' => $txItem['quantity'],
+                    'tax_amount' => $txItem['tax_amount'],
+                    'amount' => $txItem['amount'],
+                    'total_price' => $txItem['total_price'],
+                    'discount_1' => $txItem['discount_1'],
+                    'discount_2' => $txItem['discount_2'],
+                    'discount_3' => $txItem['discount_3'],
                     'transactions_id' => $transaction->id,
-                    'product_id' => $product->id, 
+                    'product_id' => $product->id, // Menyimpan product_id dari produk yang ditemukan atau baru
                 ]);
             }
         });
 
-        return redirect()->route('warehouse.list-travel-document')->with('success', 'Surat jalan berhasil dibuat!');
+        return redirect()->route('warehouse.travel-document')->with('success', 'Surat jalan berhasil dibuat!');
     }
-
     
 
     /**

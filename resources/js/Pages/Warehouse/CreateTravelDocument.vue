@@ -52,7 +52,7 @@
                         <label for="">Pengiriman
                             <RequiredMark />
                         </label>
-                        <n-select placeholder="" v-model:value="transaction_details.delivery" :options="senderOptions"
+                        <n-select placeholder="" v-model:value="transaction_details.delivery" filterable :options="transportOptions"
                             size="large" />
                     </div>
                     <div class="col-6 col-lg-3">
@@ -104,9 +104,10 @@ import { DataTableColumns, FormRules, useMessage } from 'naive-ui';
 import TitlePage from '../../Components/TitlePage.vue';
 import { router, useForm, usePage } from '@inertiajs/vue3';
 import { ArrowBack } from '@vicons/ionicons5';
-import { Transactions, TransactionItems, TransactionDetail } from "../../types/model.ts";
+import { Transactions, TransactionItems, TransactionDetail, Parties } from "../../types/model.ts";
 import Swal from 'sweetalert2';
 import RequiredMark from '../../Components/RequiredMark.vue';
+import { formatRupiah } from '../../Utils/options-input.utils.ts';
 
 function createColumns(): DataTableColumns<TransactionItems> {
     return [
@@ -143,6 +144,22 @@ function createColumns(): DataTableColumns<TransactionItems> {
             title: "SATUAN",
             key: "unit",
             width: 100,
+        },
+        {
+            title: "HARGA BARANG",
+            key: "amount",
+            width: 200,
+            render(row) {
+                return formatRupiah(row.amount??0);
+            }
+        },
+        {
+            title: "TOTAL HARGA (INC PPN)",
+            key: 'total_price',
+            width: 200,
+            render(row) {
+                return formatRupiah(row.total_price??0);
+            }
         }
     ];
 }
@@ -155,6 +172,8 @@ export default defineComponent({
         const form = useForm({
             document_code: page.props.document_code as string,
             description: '',
+            term_of_payment: customer_order.term_of_payment,
+            due_date: customer_order.due_date,
             total: customer_order.total as number,
             sub_total: customer_order.sub_total as number,
             tax_amount: customer_order.tax_amount as number,
@@ -177,45 +196,19 @@ export default defineComponent({
             salesman: customer_order.transaction_details.find((data) => data.category === "Salesman")?.value,
         });
 
-        const products = ref({
-            code: '',
-            unit: '',
-            name: '',
-            transaction_items: [] as TransactionItems[],
-        });
-
-        const transaction_items = ref({
-            unit: '',
-            quantity: null as unknown as number,
-        });
-        const senderOptions = [
-            { label: "DNP Ekspedisi", value: "DNP_EXPEDITION" },
-            { label: "DKU Ekspedisi", value: "DKU_EXPEDITION" }
-        ]
-
-        const sendType = [
-            { label: "DEPO BEKASI", value: "DEPO BEKASI" },
-            { label: "Direct", value: "DIRECT" },
-            { label: "Direct Depo", value: "DIRECT_DEPO" },
-            { label: "Beli DO", value: "DO" },
-        ];
-
-        const driverOptions = [
-            { label: 'John Doe', value: 'john_doe' },
-            { label: 'Jane Smith', value: 'jane_smith' }
-        ];
-
-        const columns = createColumns();
-
-        const formRef = ref(null);
-        const message = useMessage();
-
         function  submitForm() {
             customer_order.transaction_items?.forEach((item) => {
                 form.transaction_items.push({
                     unit: item.unit,       // Asumsikan item memiliki properti 'unit'
                     quantity: item.quantity,  // Asumsikan item memiliki properti 'quantity'
                     product_id: item.product?.id,
+                    tax_value: null,
+                    tax_amount: item.tax_amount,
+                    total_price: item.total_price,
+                    tax_id: item.tax?.id,
+                    discount_1: item.discount_1,
+                    discount_2: item.discount_2,
+                    discount_3: item.discount_3,
                     amount: item.amount,
                     product: {
                         name: item.product?.name as string,
@@ -298,6 +291,12 @@ export default defineComponent({
                     value: transaction_details.value.customer_address,
                     data_type: 'string',
                 },
+                {
+                    name: "Status Generate",
+                    category: "Generating",
+                    value: "false",
+                    data_type: 'boolean',
+                }
             ];
 
             form.post(route('warehouse.travel-document.post'), {
@@ -329,10 +328,43 @@ export default defineComponent({
             })
         };
 
+        const products = ref({
+            code: '',
+            unit: '',
+            name: '',
+            transaction_items: [] as TransactionItems[],
+        });
+
+        const transaction_items = ref({
+            unit: '',
+            quantity: null as unknown as number,
+        });
+
+        const transportOptions = (page.props.transports as Parties[]).map((data) => ({
+            label: data.name,
+            value: data.name
+        }));
+
+        const sendType = [
+            { label: "DEPO BEKASI", value: "DEPO BEKASI" },
+            { label: "Direct", value: "DIRECT" },
+            { label: "Direct Depo", value: "DIRECT_DEPO" },
+            { label: "Beli DO", value: "DO" },
+        ];
+
+        const driverOptions = [
+            { label: 'John Doe', value: 'john_doe' },
+            { label: 'Jane Smith', value: 'jane_smith' }
+        ];
+
+        const columns = createColumns();
+
+        const formRef = ref(null);
+
         return {
             form,
             formRef,
-            senderOptions,
+            transportOptions,
             sendType,
             driverOptions,
             columns,

@@ -1,7 +1,7 @@
 <template>
     <div class="d-flex flex-column gap-4">
         <TitlePage title="Dashboard Aging Finance" />
-        <div class="d-flex flex-column gap-5">
+        <div class="d-flex flex-column gap-2">
             <div class="row g-3">
                 <div class="col-12 col-md-6 col-lg-3">
                     <div class="card" style="border-color: green;">
@@ -48,7 +48,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row g-3 ">
+            <div class="row g-3 mt-3">
                 <div class="col-12 col-lg-8 ">
                     <span class="fs-4">Daftar Transaksi</span>
                 </div>
@@ -58,11 +58,11 @@
                 <div class="col-12 col-lg-2 d-flex gap-3 ">
                     <n-input placeholder="Cari Nama Customer" />
                 </div>
-                <div class="card shadow" style="border: none;">
-                    <div class="card-body ">
-                        <n-data-table :columns="columns" :data="data" :pagination="pagination" :bordered="false"
-                            size="small" pagination-behavior-on-filter="first" />
-                    </div>
+            </div>
+            <div class="card shadow" style="border: none;">
+                <div class="card-body ">
+                    <n-data-table :columns="columns" :data="data" :pagination="pagination" :bordered="false"
+                        size="small" pagination-behavior-on-filter="first" />
                 </div>
             </div>
         </div>

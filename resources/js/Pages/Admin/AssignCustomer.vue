@@ -174,7 +174,12 @@ export default defineComponent({
                     if(result.isConfirmed) {
                         form.patch(route('admin.assign-customer-to-sales', { customer: form.customer_id, sales: form.sales_id }), {
                             onSuccess: (page) => {
-                                form.reset();
+                                form.customer_id = null as unknown as number;
+                                form.customer_address = '';
+                                form.customer_npwp = '';
+                                form.customer_legality = '';
+                                form.customer_name = '';
+
                                 Swal.fire((page.props.flash as any).success,'','success');
                             },
                             onError: () => {

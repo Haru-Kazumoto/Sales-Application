@@ -113,7 +113,7 @@ class DashboardController extends Controller
         $expiredProducts = ProductJournal::with(['transaction.transactionDetails', 'transaction.transactionItems.product'])
             ->where('expiry_date', '<=', Carbon::today())
             ->get();
-
+            
         // Transformasi data untuk menyesuaikan format yang diinginkan
         $product_expireds = $expiredProducts->map(function ($product) {
             $unit = $product->transaction->transactionItems->pluck('unit')->first();

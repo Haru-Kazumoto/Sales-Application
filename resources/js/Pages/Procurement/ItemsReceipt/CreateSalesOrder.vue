@@ -23,11 +23,11 @@
                         <div class="col-lg-4 col-6">
                             <label for="field2">No Bukti<span class="text-danger">*</span></label>
                             <n-input id="field2" size="large" placeholder=""
-                                v-model:value="transaction_details.proof_number" />
+                                v-model:value="transaction_details.proof_number" @input="(value) => transaction_details.proof_number = value.toUpperCase()"/>
                         </div>
                         <div class="col-lg-4 col-6">
                             <label for="field3">No SO<span class="text-danger">*</span></label>
-                            <n-input id="field3" size="large" placeholder="" v-model:value="form.document_code" />
+                            <n-input id="field3" size="large" placeholder="" v-model:value="form.document_code" @input="(value) => form.document_code = value.toUpperCase()"/>
                         </div>
 
                         <!-- Baris Kedua -->
@@ -376,6 +376,12 @@ export default defineComponent({
                     value: transaction_details.value.employee_name,
                     data_type: 'string',
                 },
+                {
+                    name: "Status Generate",
+                    category: "Generate Status",
+                    value: "false",
+                    data_type: "boolean",
+                }
             ];
 
             form.post(route('procurement.sales-order.post'), {

@@ -197,9 +197,19 @@ class SubSalesOrderController extends Controller
         // Memeriksa apakah transaksi ada
         if (!$transaction) 
         {
-            return redirect()->back()->with('failed', 'Nomor transaksi salah atau tidak ditemukan');
+            return back()->with('failed', 'Nomor dokumen salah atau tidak ditemukan');
         }
 
+        // Cek status 'Generate Status' di transactionDetails
+        $status_generate = $transaction->transactionDetails
+            ->where('category', 'Generate Status')
+            ->where('value', 'true')
+            ->first();
+
+        if ($status_generate) {
+            return back()->with('failed', 'Data SSO telah dimasukan ke gudang!');
+        }
+        
         // Mengembalikan view dengan data transaksi
         return Inertia::render('Warehouse/IncomingItem', compact('transaction'));
     }

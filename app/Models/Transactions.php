@@ -53,6 +53,6 @@ class Transactions extends Model
 
     public function invoicePayments(): HasMany
     {
-        return $this->hasMany(InvoicePayment::class);
+        return $this->hasMany(InvoicePayment::class, 'transaction_id');
     }
 }

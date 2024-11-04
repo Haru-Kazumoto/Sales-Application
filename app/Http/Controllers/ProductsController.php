@@ -267,6 +267,25 @@ class ProductsController extends Controller
                 'transaction_type_id' => $tx_type->id,
             ]);
 
+            $find_sso = Transactions::where('document_code', $transaction->document_code)
+                ->with('transactionDetails')
+                ->first();
+            if($find_sso) 
+            {
+                $transaction_details = $find_sso->transactionDetails;
+
+                foreach($transaction_details as $detail) 
+                {
+                    if($detail->category === "Generate Status")
+                    {
+                        $detail->update(['value' => 'true']);
+                    }
+                }
+            } else 
+            {
+                return back()->with('failed', 'SSO tidak ada.');
+            }
+
             $expiryDate = null; // Variable to store expiry date
             $allocation = null;
 

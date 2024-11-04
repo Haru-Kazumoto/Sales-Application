@@ -31,9 +31,9 @@
                             <label for="tanggal_po">
                                 Tanggal PO<span class="text-danger">*</span>
                             </label>
-                            <n-date-picker readonly value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder=""
-                                class="w-100" id="field8" size="large"
-                                v-model:formatted-value="transaction_details.purchase_order_date" />
+                            <n-input readonly placeholder=""
+                                class="w-100"  size="large"
+                                v-model:value="transaction_details.purchase_order_date" />
                         </div>
                         <div class="col-md-3 col-6">
                             <label for="alokasi">
@@ -78,7 +78,8 @@
                             <label for="tanggal_masuk">
                                 Tanggal Expired<span class="text-danger">*</span>
                             </label>
-                            <n-date-picker placeholder="" type="datetime" id="tanggal_masuk" value-format="yyyy-MM-dd HH:mm:ss"
+                            <n-date-picker placeholder="" type="datetime" id="tanggal_masuk"
+                                value-format="yyyy-MM-dd HH:mm:ss"
                                 v-model:formatted-value="transaction_details.expiry_date" size="large" />
                         </div>
                         <div class="col-md-3">
@@ -276,8 +277,6 @@ export default defineComponent({
                         // }
                     }
 
-                    console.log(form.transaction_items);
-
                     // Optionally: Notify success
                     Swal.fire('Berhasil!', 'Data telah diperbarui.', 'success');
                 }
@@ -403,6 +402,7 @@ export default defineComponent({
                             icon: 'error',
                             title: (page.props.flash as Flash).failed
                         });
+                        return;
                     }
 
                     const po_number = data.transaction_details.find(data => data.category === "PO Number")?.value || '';
@@ -412,8 +412,6 @@ export default defineComponent({
                     const storehouse = data.transaction_details.find(data => data.category === "Storehouse")?.value || '';
                     const transportation = data.transaction_details.find(data => data.category === "Transportation")?.value || '';
                     const sender = data.transaction_details.find(data => data.category === "Sender")?.value || '';
-
-                    console.log(allocation);
 
                     //set data
                     transaction_details.value.purchase_order_number = po_number;
@@ -427,27 +425,41 @@ export default defineComponent({
                     // Reset form.transaction_items untuk memasukkan produk baru
                     form.transaction_items = [];
 
-                    // Loop data dari backend dan masukkan ke form.transaction_items
-                    data.transaction_items?.forEach(item => {
-                        form.transaction_items.push({
-                            unit: item.unit,
-                            quantity: item.quantity,
-                            product_id: item.product_id,
-                            amount: item.amount,
-                            item_gap: item.item_gap,
-                            gap_description: item.gap_description,
-                            product: {
-                                code: item.product?.code || '',
-                                unit: item.product?.unit || '',
-                                name: item.product?.name || '',
-                            }
+                    if (Array.isArray(data.transaction_items)) {
+                        data.transaction_items.forEach(item => {
+                            form.transaction_items.push({
+                                unit: item.unit,
+                                quantity: item.quantity,
+                                product_id: item.product_id,
+                                amount: item.amount,
+                                item_gap: item.item_gap,
+                                tax_value: null as unknown as number,
+                                gap_description: item.gap_description,
+                                product: {
+                                    code: item.product?.code || '',
+                                    unit: item.product?.unit || '',
+                                    name: item.product?.name || '',
+                                }
+                            });
                         });
-                    });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Data produk tidak valid',
+                        });
+                    }
 
                     notification.success({
                         title: "Sukses mengambil produk PO",
                         duration: 1500,
                         closable: false,
+                    });
+                },
+                onError: (error) => {
+                    console.error(error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal memuat data',
                     });
                 }
             })

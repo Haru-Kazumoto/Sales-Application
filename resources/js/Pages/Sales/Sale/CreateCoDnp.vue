@@ -408,7 +408,7 @@ export default defineComponent({
             description: '',
             sub_total: null as unknown as number,
             total: null as unknown as number,
-            term_of_payment: '',
+            term_of_payment: null as unknown as number,
             tax_amount: null as unknown as number,
             transaction_details: [] as TransactionDetail[],
             transaction_items: [] as TransactionItems[],
@@ -458,6 +458,19 @@ export default defineComponent({
             // total_price_discount: null as unknown as number,
         });
 
+        watch(() => form.term_of_payment, (term) => {
+            if (term) {
+                // Buat tanggal baru yang merepresentasikan hari ini
+                const today = new Date();
+                // Tambahkan hari sesuai `term_of_payment`
+                today.setDate(today.getDate() + term);
+                // Set `due_date` menjadi hasil perhitungan
+                form.due_date = today.toISOString().slice(0, 19).replace('T', ' '); // Format ke "YYYY-MM-DD"
+            } else {
+                form.due_date = null;
+            }
+        });
+
         //TODO : create 3 watch for watch discoutns field and calculate it when filled
         watch(
             [
@@ -504,7 +517,7 @@ export default defineComponent({
                 transaction_details.value.customer_address = selectedCustomer.address as any;
                 transaction_details.value.npwp = selectedCustomer.npwp as any;
                 transaction_details.value.legality = selectedCustomer.legality as any || '';
-                form.term_of_payment = selectedCustomer.term_payment?.toString();
+                form.term_of_payment = selectedCustomer.term_payment??0;
             } else {
                 transaction_details.value.customer_address = '';
                 transaction_details.value.npwp = '',
@@ -809,8 +822,8 @@ export default defineComponent({
                 onSuccess() {
                     // Reset form dengan nilai awal
                     form.document_code = (page.props.coNumber as string),
-                        form.term_of_payment = '',
-                        form.due_date = null,
+                        form.term_of_payment = null as unknown as number,
+                        form.due_date = null as unknown as string,
                         form.description = '',
                         form.sub_total = null as unknown as number,
                         form.total = null as unknown as number,
@@ -828,7 +841,7 @@ export default defineComponent({
                             total_discount_1: null as unknown as number,
                             total_discount_2: null as unknown as number,
                             total_discount_3: null as unknown as number,
-                            // transportation_cost: null as unknown as number,
+                            transportation_cost: null as unknown as number,
                             unloading_cost: null as unknown as number
                         };
 
