@@ -7,7 +7,7 @@
             <Header />
           </n-layout-header>
           <n-layout position="absolute" style="top: 64px;" has-sider>
-            <n-layout-sider :native-scrollbar="false" bordered collapse-mode="width"
+            <n-layout-sider :native-scrollbar="false" bordered collapse-mode="width" show-trigger
               :collapsed-width="computedCollapsedWidth" :width="siderWidth" :collapsed="collapsed"
               @collapse="collapsed = true" @expand="collapsed = false" class="z-3">
               <n-menu :collapsed="collapsed" :collapsed-width="computedCollapsedWidth" :collapsed-icon-size="22"

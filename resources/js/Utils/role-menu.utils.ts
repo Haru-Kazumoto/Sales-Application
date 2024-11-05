@@ -535,12 +535,12 @@ export const roleMenus = {
             key: 'stock-goods',
             href: '/stock-goods'
         },
-        {
-            label: 'Booking Barang',
-            icon: CartOutline,
-            key: 'booking-items',
-            href: '/booking-requests',
-        },
+        // {
+        //     label: 'Booking Barang',
+        //     icon: CartOutline,
+        //     key: 'booking-items',
+        //     href: '/booking-requests',
+        // },
         {
             label: "Surat Jalan",
             key: 'travel-document',
