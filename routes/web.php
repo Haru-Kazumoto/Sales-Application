@@ -254,6 +254,7 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         Route::prefix('salesman-target')->group(function() {
             Route::get('', [App\Http\Controllers\UserTargetController::class, 'index'])->name('index-target');
             Route::get('/create-target/{user}', [App\Http\Controllers\UserTargetController::class, 'create'])->name('create-target');
+            Route::patch('/update-target/{user}', [App\Http\Controllers\UserTargetController::class, 'update'])->name('update-target');
         });
     });
 });

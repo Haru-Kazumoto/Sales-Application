@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->float('annual_target');
             $table->float('monthly_target');
-            $table->string('period');
+            $table->year('period');
 
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->timestamps();

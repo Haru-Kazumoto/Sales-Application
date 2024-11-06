@@ -6,6 +6,7 @@ use App\Models\Division;
 use App\Models\Parties;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\UserTarget;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -67,7 +68,7 @@ class UserController extends Controller
         DB::beginTransaction();
 
         try {
-            User::create([
+            $user = User::create([
                 'fullname' => $request->input('fullname'),
                 'user_uid' => rand(10000,66666),
                 'username' => $request->input('username'),
@@ -76,6 +77,21 @@ class UserController extends Controller
                 'role_id' => $request->input('role_id'),
                 'division_id' => $request->input('division_id'),
             ]);
+
+            // Cek apakah divisi user adalah "SALES"
+            $division = Division::find($request->input('division_id'));
+            if ($division && $division->division_name === 'SALES') {
+                // Buat UserTarget kosong untuk user SALES
+                $userTarget = new UserTarget([
+                    'annual_target' => 0,
+                    'monthly_target' => 0,
+                    'period' => now()->year,
+                ]);
+
+                // Associate UserTarget dengan User dan simpan
+                $userTarget->user()->associate($user);
+                $userTarget->save();
+            }
 
             DB::commit();
 
