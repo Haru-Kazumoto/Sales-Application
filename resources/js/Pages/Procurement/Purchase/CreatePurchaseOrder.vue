@@ -23,7 +23,7 @@
                                 <RequiredMark />
                             </label>
                             <n-select placeholder="" v-model:value="transaction_details.supplier" filterable
-                                size="large" :options="pemasokOptions"/>
+                                size="large" :options="pemasokOptions" />
                         </div>
                         <div class="col-12 col-md-3 col-lg-4">
                             <label for="field3">
@@ -138,7 +138,7 @@
                                 <RequiredMark />
                             </label>
                             <n-select size="large" placeholder="" v-model:value="products.name" filterable
-                                :options="productOptions" :loading="loading"/>
+                                :options="productOptions" :loading="loading" />
                         </div>
                         <div class="col-md-6">
                             <label for="amount">
@@ -310,9 +310,9 @@ export default defineComponent({
             ([newPurchaseOrderDate, newTermOfPayment]) => {
                 if (newPurchaseOrderDate) {
                     // Jika purchase_order_date sudah ada, set due_date berdasarkan term_of_payment
-                    const termDays = newTermOfPayment ; // Gunakan term_of_payment atau default 45
+                    const termDays = newTermOfPayment; // Gunakan term_of_payment atau default 45
                     form.due_date = handleSetFutureDateTo(termDays, newPurchaseOrderDate);
-                } 
+                }
             }
         );
 
@@ -603,8 +603,6 @@ export default defineComponent({
                 },
             ];
 
-            console.log(form.transaction_items);
-
             form.post(route('procurement.create-po'), {
                 onError: (err) => {
                     Swal.fire({
@@ -615,28 +613,27 @@ export default defineComponent({
                 },
                 onSuccess: () => {
                     // Reset form dengan nilai awal
-                    form.document_code = (page.props.po_number as string),
-                        form.term_of_payment = '',
-                        form.due_date = null as unknown as string,
-                        form.description = '',
-                        form.sub_total = null as unknown as number,
-                        form.total = null as unknown as number,
-                        form.tax_amount = null as unknown as number,
-                        form.transaction_details = [],
-                        form.transaction_items = [],
+                    form.document_code = (page.props.po_number as string);
+                    form.due_date = null as unknown as string;
+                    form.description = '';
+                    form.sub_total = null as unknown as number;
+                    form.total = null as unknown as number;
+                    form.tax_amount = null as unknown as number;
+                    form.transaction_details = [];
+                    form.transaction_items = [];
 
-                        // Kosongkan objek yang menggunakan ref
-                        transaction_details.value = {
-                            supplier: '',
-                            storehouse: '',
-                            located: '',
-                            purchase_order_date: null,
-                            send_date: null,
-                            transportation: '-',
-                            sender: '',
-                            delivery_type: '',
-                            employee_name: (page.props.auth.user as User).fullname,
-                        };
+                    // Kosongkan objek yang menggunakan ref
+                    transaction_details.value = {
+                        supplier: '',
+                        storehouse: '',
+                        located: '',
+                        purchase_order_date: null,
+                        send_date: null,
+                        transportation: '-',
+                        sender: '',
+                        delivery_type: '',
+                        employee_name: (page.props.auth.user as User).fullname,
+                    };
 
                     products.value = {
                         code: '',

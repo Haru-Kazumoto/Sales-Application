@@ -1,62 +1,70 @@
 <template>
     <div class="d-flex flex-column gap-4">
-        <TitlePage title="Dashboard Marketing" />
+
+        <div class="card shadow-sm overflow-hidden border-0 mt-4">
+            <div class="card-body d-flex flex-column flex-md-row align-items-center text-white text-md-start text-center p-md-2"
+                style="background: rgb(0,165,79); background: linear-gradient(114deg, rgba(0,165,79,1) 0%, rgba(16,195,101,1) 71%, rgba(24,210,54,1) 100%);">
+                <n-image src="images/marketing.png" preview-disabled class="img-fluid mb-md-0" width="300"
+                    height="auto" />
+                <div class="d-flex flex-column gap-2">
+                    <h1 class="fs-2 fs-md-1">Halo, {{ $page.props.auth.user.fullname }}! </h1>
+                    <span class="fs-5 fs-md-4">
+                        Mari kita mulai hari ini dengan tekad dan semangat yang baru! Semua tujuan menanti untuk
+                        dicapai.
+                    </span>
+                </div>
+            </div>
+        </div>
+
         <div class="row d-flex align-items-center ">
             <div class="col-12 col-lg-6">
-                <span class="fs-5">Ringkasan Penjualan</span>
-            </div>
-            <div class="col-12 col-lg-6">
-                <n-date-picker class="ms-lg-auto w-50" size="medium" />
+                <span class="fs-2 fw-semibold">Ringkasan Penjualan</span>
             </div>
         </div>
-        <div class="container-fluid">
-            <div class="row g-3 d-flex flex-nowrap overflow-auto" id="horizontal-scroll">
-                <div class="col-12 col-md-6 col-lg-3">
-                    <div class="card shadow-sm border-0">
-                        <div class="card-body">
-                            <div class="card-title">TARGET PENJUALAN</div>
-                            <div class="card-content mb-3">
-                                <span class="fs-3 fw-medium">Rp 1.000.000.000</span>
-                            </div>
-                            <span>BULAN SEPTEMBER 2024</span>
+
+        <div class="row g-3 d-flex flex-nowrap overflow-auto" id="horizontal-scroll">
+            <div class="col-12 col-md-6 col-lg-3 mb-3">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <div class="card-title">TARGET PENJUALAN</div>
+                        <div class="card-content">
+                            <span class="fs-3 fw-medium">Rp 1.000.000.000</span>
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-6 col-lg-3">
-                    <div class="card shadow-sm border-0">
-                        <div class="card-body">
-                            <div class="card-title">POTENSI PENJUALAN</div>
-                            <div class="card-content mb-3">
-                                <span class="fs-3 fw-medium">Rp 80.000.000</span>
-                            </div>
-                            <span>BULAN SEPTEMBER 2024</span>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3 mb-3">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <div class="card-title">POTENSI PENJUALAN</div>
+                        <div class="card-content ">
+                            <span class="fs-3 fw-medium">Rp 80.000.000</span>
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-6 col-lg-3">
-                    <div class="card shadow-sm border-0">
-                        <div class="card-body">
-                            <div class="card-title">KONVERSI PEMBAYARAN</div>
-                            <div class="card-content mb-3">
-                                <span class="fs-3 fw-medium">Rp 60.000.000</span>
-                            </div>
-                            <span>BULAN SEPTEMBER 2024</span>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3 mb-3">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <div class="card-title">KONVERSI PEMBAYARAN</div>
+                        <div class="card-content">
+                            <span class="fs-3 fw-medium">Rp 60.000.000</span>
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-6 col-lg-3">
-                    <div class="card shadow-sm border-0">
-                        <div class="card-body">
-                            <div class="card-title">KEKURANGAN TARGET</div>
-                            <div class="card-content mb-3">
-                                <span class="fs-3 fw-medium">Rp 40.000.000</span>
-                            </div>
-                            <span>BULAN SEPTEMBER 2024</span>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3 mb-3">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <div class="card-title">KEKURANGAN TARGET</div>
+                        <div class="card-content">
+                            <span class="fs-3 fw-medium">Rp 40.000.000</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
         <div class="row">
             <div class="col-12">
                 <div class="card shadow-sm border-0">

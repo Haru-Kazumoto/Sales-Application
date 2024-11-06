@@ -54,4 +54,9 @@ class User extends Authenticatable
         return $this->hasMany(Parties::class, 'users_id');
     }
 
+    public function userTarget(): HasOne
+    {
+        return $this->hasOne(UserTarget::class, 'user_id');
+    }
+
 }
