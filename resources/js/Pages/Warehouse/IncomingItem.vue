@@ -31,8 +31,7 @@
                             <label for="tanggal_po">
                                 Tanggal PO<span class="text-danger">*</span>
                             </label>
-                            <n-input readonly placeholder=""
-                                class="w-100"  size="large"
+                            <n-input readonly placeholder="" class="w-100" size="large"
                                 v-model:value="transaction_details.purchase_order_date" />
                         </div>
                         <div class="col-md-3 col-6">
@@ -74,14 +73,14 @@
                                 v-model:formatted-value="transaction_details.warehouse_entry_date"
                                 value-format="yyyy-MM-dd HH:mm:ss" size="large" />
                         </div>
-                        <div class="col-md-3">
+                        <!-- <div class="col-md-3">
                             <label for="tanggal_masuk">
                                 Tanggal Expired<span class="text-danger">*</span>
                             </label>
                             <n-date-picker placeholder="" type="datetime" id="tanggal_masuk"
                                 value-format="yyyy-MM-dd HH:mm:ss"
                                 v-model:formatted-value="transaction_details.expiry_date" size="large" />
-                        </div>
+                        </div> -->
                         <div class="col-md-3">
                             <label for="transportasi">
                                 Nomor Polisi Ekspedisi<span class="text-danger">*</span>
@@ -109,6 +108,70 @@
             </div>
         </div>
 
+        <n-modal v-model:show="modalOpen" :mask-closable="false" class="d-flex" preset="card" :style="bodyStyle"
+            title="Informasi barang" :bordered="false" size="huge" :segmented="segmented">
+            <span class="fs-5 fw-semibold">{{ choosen_product }} | {{ current_quantity }}</span>
+            <!-- Buatkan saya dinamic input jadi form nya bisa bertambah tambah sesuai kebutuhan -->
+            <div v-for="(product, index) in product_journals" :key="index" class="d-flex flex-column gap-3">
+
+                <n-divider>FORM {{ index + 1 }}</n-divider>
+                <div class="d-flex flex-column gap-1">
+                    <label for="" style="font-size: 16px;">KODE PEMBUATAN BARANG</label>
+                    <n-input size="large" placeholder="" v-model:value="product.batch_code"
+                        @input="(value) => product.batch_code = value.toUpperCase()" />
+                </div>
+                <div class="d-flex flex-column gap-1">
+                    <label for="" style="font-size: 16px;">TANGGAL EXPIRED</label>
+                    <n-date-picker placeholder="" type="datetime" v-model:formatted-value="product.expiry_date"
+                        value-format="yyyy-MM-dd HH:mm:ss" size="large" />
+                </div>
+                <div class="d-flex flex-column gap-1">
+                    <label for="" style="font-size: 16px;">QUANTITY</label>
+                    <n-input size="large" placeholder="" v-model:value="product.quantity"
+                        @input="(value) => product.quantity = value.replace(/\D/g, '')" />
+                </div>
+                <n-button type="error" ghost size="small" @click="removeFormProductJournal(index)">
+                    Hapus Form
+                </n-button>
+            </div>
+            <n-button type="primary" @click="addFormProductJournal" class="my-4 w-100">
+                Tambah Form
+            </n-button>
+
+            <template #footer>
+                <div class="d-flex">
+                    <div class="d-flex gap-2 ms-auto">
+                        <n-button type="error" size="large" @click="handleCloseModal">Batal</n-button>
+                        <n-button type="info" size="large" @click="handleAddProduct">Simpan</n-button>
+                    </div>
+                </div>
+            </template>
+        </n-modal>
+
+        <n-modal v-model:show="modalGapOpen" class="custom-card" preset="card" :style="bodyStyle"
+            title="Informasi selisih barang" :bordered="false" size="huge" :segmented="segmented">
+
+            <div class="d-flex flex-column gap-2">
+                <div class="d-flex flex-column gap-1">
+                    <label for="" style="font-size: 16px;">Jumlah selisih</label>
+                    <n-input size="large" placeholder=""></n-input>
+                </div>
+                <div class="d-flex flex-column gap-1">
+                    <label for="" style="font-size: 16px;">Deskripsi selisih</label>
+                    <n-input size="large" placeholder="" type="textarea"></n-input>
+                </div>
+            </div>
+
+            <template #footer>
+                <div class="d-flex">
+                    <div class="d-flex gap-2 ms-auto">
+                        <n-button type="error" size="large" @click="modalGapOpen = false">Batal</n-button>
+                        <n-button type="info" size="large">Simpan</n-button>
+                    </div>
+                </div>
+            </template>
+        </n-modal>
+
         <!-- Tombol Submit -->
         <div class="d-flex justify-content-end mb-4">
             <n-button type="primary" size="large" @click="handleSubmit">
@@ -134,6 +197,11 @@ export default defineComponent({
     setup() {
         const notification = useNotification();
         const page = usePage();
+        const modalGapOpen = ref(false);
+        const modalOpen = ref(false);
+        const choosen_product = ref('');
+        const current_quantity = ref(null as unknown as number);
+        const index_choosen = ref(null as unknown as number);
 
         const form = useForm({
             document_code: '',
@@ -141,12 +209,44 @@ export default defineComponent({
             transaction_details: [] as TransactionDetail[],
         });
 
+        const defaultProductJournal = {
+            quantity: null as unknown as number,
+            amount: null as unknown as number,
+            action: "IN",
+            batch_code: '',
+            expiry_date: null as unknown as string,
+            product_id: null as unknown as number,
+        };
+
+        // Product journals dimulai dengan satu item default
+        const product_journals = ref([{ ...defaultProductJournal }]);
+
+        // Fungsi untuk menambah item baru ke dalam product_journals
+        const addFormProductJournal = () => {
+            product_journals.value.push({ ...defaultProductJournal });
+        };
+
+        // Fungsi untuk menangani penutupan modal dan reset product_journals
+        const handleCloseModal = () => {
+            modalOpen.value = false;
+            resetFormProductJournal();
+        };
+
+        function removeFormProductJournal(index) {
+            product_journals.value.splice(index, 1);
+        }
+
+
+        // Fungsi untuk mereset product_journals menjadi satu item
+        const resetFormProductJournal = () => {
+            product_journals.value = [{ ...defaultProductJournal }];
+        };
+
         const transaction_details = ref({
             purchase_order_number: '',
             purchase_order_date: null as unknown as string,
             alocated: '',
             supplier: '',
-            expiry_date: null as unknown as string,
             shipping_warehouse: '',
             delivery_date: new Date(),
             warehouse_entry_date: null as unknown as string,
@@ -188,7 +288,7 @@ export default defineComponent({
                 {
                     title: "QTY BARANG DATANG",
                     key: 'quantity',
-                    width: 150,
+                    width: 200,
                 },
                 {
                     title: "SELISIH",
@@ -196,14 +296,6 @@ export default defineComponent({
                     width: 150,
                     render(row) {
                         return row.item_gap;
-                    }
-                },
-                {
-                    title: "TANGGAL KADALUARSA",
-                    key: 'expiry_date',
-                    width: 200,
-                    render(row) {
-                        return transaction_details.value.expiry_date ? dayjs(transaction_details.value.expiry_date).format('D MMMMYYYY') : '';
                     }
                 },
                 {
@@ -215,19 +307,43 @@ export default defineComponent({
                     }
                 },
                 {
+                    title: "Jumlah barang dibagi",
+                    key: 'shared_items',
+                    width: 200,
+                    render(row) {
+                        return row.product_journals?.length;
+                    }
+                },
+                {
                     title: "ACTION",
                     key: 'action',
                     width: 150,
-                    render(row) {
-                        return h(
-                            NButton,
-                            {
-                                type: 'info',
-                                size: 'small',
-                                onClick: () => handleOpenModal(row)
-                            },
-                            { default: () => 'Detail' }
-                        );
+                    render(row, index) {
+                        return h('div', { class: "d-flex gap-2" }, [
+                            h(
+                                NButton,
+                                {
+                                    type: 'info',
+                                    size: 'medium',
+                                    onClick: () => handleOpenModal(row)
+                                },
+                                { default: () => 'Info Selisih' }
+                            ),
+                            h(
+                                NButton,
+                                {
+                                    type: 'primary',
+                                    size: 'medium',
+                                    onClick: () => {
+                                        choosen_product.value = row.product?.name as string;
+                                        current_quantity.value = row.quantity;
+                                        index_choosen.value = index;
+                                        modalOpen.value = true;
+                                    }
+                                },
+                                { default: () => 'Info Barang' }
+                            )
+                        ]);
                     }
                 }
             ]
@@ -235,7 +351,7 @@ export default defineComponent({
 
         function handleOpenModal(row: TransactionItems) {
             Swal.fire({
-                title: 'Input Selisih dan Keterangan',
+                title: 'Informasi selisih',
                 html:
                     `<input id="item_gap" class="swal2-input" type="number" placeholder="Selisih" value="${row.item_gap || ''}">` +
                     `<input id="gap_description" class="swal2-input" type="text" placeholder="Keterangan" value="${row.gap_description || ''}">`,
@@ -284,6 +400,60 @@ export default defineComponent({
         }
 
         // Fungsi submit
+        function handleAddProduct(index) {
+            // Hitung total quantity dari semua item di product_journals
+            const totalQuantity = product_journals.value.reduce((total, journal) => {
+                return total + (Number(journal.quantity) || 0); // Konversi ke integer untuk penjumlahan
+            }, 0);
+
+            // Validasi: Cek apakah totalQuantity melebihi current_quantity
+            if (totalQuantity > current_quantity.value) {
+                notification.error({
+                    title: "Jumlah total kuantitas melebihi kuantitas yang tersedia!",
+                    duration: 2000,
+                    closable: false,
+                });
+                return; // Hentikan fungsi jika total kuantitas melebihi yang tersedia
+            }
+
+            const isValid = product_journals.value.every(journal => {
+                return journal.quantity !== null &&
+                    journal.batch_code !== '' &&
+                    journal.expiry_date !== null;
+            });
+
+            if (!isValid) {
+                // Jika ada field yang kosong, tampilkan notifikasi error dan hentikan proses
+                notification.error({
+                    title: "Gagal membuat informasi barang!",
+                    description: "Pastikan semua field telah diisi dengan benar.",
+                    duration: 1500,
+                    closable: false,
+                });
+                return; // Hentikan fungsi jika ada field yang kosong
+            }
+
+            try {
+                // Perbarui product_journals pada transaksi item yang sesuai berdasarkan index
+                if (form.transaction_items[index_choosen.value]) {
+                    form.transaction_items[index_choosen.value].product_journals = product_journals.value;
+                }
+            } catch (err) {
+                notification.error({
+                    title: "Gagal membuat informasi barang!",
+                    meta: err
+                });
+            } finally {
+                modalOpen.value = false;
+            }
+
+            Swal.fire({
+                icon: "success",
+                title: "Berhasil menambahkan informasi barang",
+            });
+        }
+
+
         function handleSubmit() {
             form.transaction_details = [
                 {
@@ -296,12 +466,6 @@ export default defineComponent({
                     name: "Tanggal PO",
                     category: "PO Date",
                     value: transaction_details.value.purchase_order_date,
-                    data_type: 'datetime',
-                },
-                {
-                    name: "Tanggal Expired",
-                    category: "Expiry Date",
-                    value: transaction_details.value.expiry_date,
                     data_type: 'datetime',
                 },
                 {
@@ -368,7 +532,6 @@ export default defineComponent({
                         purchase_order_date: null as unknown as string,
                         alocated: '',
                         supplier: '',
-                        expiry_date: null as unknown as string,
                         shipping_warehouse: '',
                         delivery_date: new Date(),
                         warehouse_entry_date: null as unknown as string,
@@ -435,6 +598,7 @@ export default defineComponent({
                                 item_gap: item.item_gap,
                                 tax_value: null as unknown as number,
                                 gap_description: item.gap_description,
+                                product_journals: [] as any[],
                                 product: {
                                     code: item.product?.code || '',
                                     unit: item.product?.unit || '',
@@ -480,11 +644,27 @@ export default defineComponent({
             columns: createColumns(),
             handleSubmit,
             handleProcessSso,
+            handleAddProduct,
+            addFormProductJournal,
+            handleCloseModal,
+            removeFormProductJournal,
             gudangOptions,
             alokasiOptions,
             pagination: { pageSize: 10 },
             form,
-            transaction_details
+            transaction_details,
+            product_journals,
+            bodyStyle: {
+                width: '600px'
+            },
+            segmented: {
+                content: 'soft',
+                footer: 'soft'
+            } as const,
+            modalOpen,
+            modalGapOpen,
+            choosen_product,
+            current_quantity,
         };
     },
     components: {

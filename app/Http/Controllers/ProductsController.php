@@ -89,6 +89,7 @@ class ProductsController extends Controller
             'unit' => 'required|string',
             'name' => 'required|string',
             'category' => 'required|string',
+            'package' => 'required|string',
             'redemp_price' => 'nullable|numeric',
             'retail_price' => 'nullable|numeric',
             'restaurant_price' => 'nullable|numeric',
@@ -113,6 +114,7 @@ class ProductsController extends Controller
             $product->code = $request->input('code');
             $product->unit = $request->input('unit');
             $product->name = $request->input('name');
+            $product->package = $request->input('package');
             $product->category = $request->input('category');
             $product->redemp_price = $request->input('redemp_price');
             $product->retail_price = $request->input('retail_price');
@@ -170,6 +172,7 @@ class ProductsController extends Controller
             'unit' => 'required|string',
             'name' => 'required|string',
             'category' => 'required|string',
+            'package' => 'required|string',
             'redemp_price' => 'nullable|numeric',
             'retail_price' => 'nullable|numeric',
             'restaurant_price' => 'nullable|numeric',
@@ -193,6 +196,7 @@ class ProductsController extends Controller
                 'unit' => $request->input('unit'),
                 'name' => $request->input('name'),
                 'category' => $request->input('category'),
+                'package' => $request->input('package'),
                 'redemp_price' => $request->input('redemp_price'),
                 'retail_price' => $request->input('retail_price'),
                 'restaurant_price' => $request->input('restaurant_price'),
@@ -235,7 +239,6 @@ class ProductsController extends Controller
     public function storeProducts(Request $request)
     {
         // dd($request->all());
-
         $request->validate([
             'document_code' => 'required|string',
             'transaction_details' => 'required|array',
@@ -254,6 +257,18 @@ class ProductsController extends Controller
             'transaction_items.*.product.unit' => 'required_with:transaction_items.*.product|string',
             'transaction_items.*.product.name' => 'required_with:transaction_items.*.product|string',
         ]);
+
+        foreach ($request->input('transaction_items') as $index => $txItem) {
+            if (empty($txItem['product_journals']) || !is_array($txItem['product_journals'])) {
+                return back()->with('failed', 'Terdapat produk yang belum diinput kode batch.');
+            }
+
+            foreach ($txItem['product_journals'] as $journal) {
+                if (empty($journal['batch_code'])) {
+                    return back()->with('failed', 'Terdapat produk yang belum diinput kode batch.');
+                }
+            }
+        }
 
         // Gunakan transaksi database
         DB::transaction(function () use ($request) {
@@ -286,7 +301,7 @@ class ProductsController extends Controller
                 return back()->with('failed', 'SSO tidak ada.');
             }
 
-            $expiryDate = null; // Variable to store expiry date
+            // $expiryDate = null; // Variable to store expiry date
             $allocation = null;
 
             // Simpan transaction details
@@ -300,9 +315,9 @@ class ProductsController extends Controller
                 ]);
 
                 // Cek apakah kategori adalah Expiry Date dan simpan value-nya
-                if ($detail['category'] === 'Expiry Date') {
-                    $expiryDate = $detail['value'];
-                }
+                // if ($detail['category'] === 'Expiry Date') {
+                //     $expiryDate = $detail['value'];
+                // }
 
                 if($detail['category'] === 'Allocation') {
                     $allocation = $detail['value'];
@@ -315,16 +330,19 @@ class ProductsController extends Controller
                 $product = Products::where('id', $txItem['product_id'])->first();
                 $warehouse = Warehouse::where('name', $allocation)->first();
 
-                //store to product journal
-                ProductJournal::create([
-                    'quantity' => $txItem['quantity'],
-                    'amount' => $txItem['amount'],
-                    'action' => "IN",
-                    'expiry_date' => $expiryDate, // Gunakan expiry date yang sudah diambil sebelumnya
-                    'transactions_id' => $transaction->id,
-                    'warehouse_id' => $warehouse->id,
-                    'product_id' => $product->id,
-                ]);
+                // store to product journal
+                foreach ($txItem['product_journals'] as $journal) {
+                    ProductJournal::create([
+                        'quantity' => $journal['quantity'],
+                        'amount' => $txItem['amount'],
+                        'action' => $journal['action'],
+                        'batch_code' => $journal['batch_code'], 
+                        'expiry_date' => $journal['expiry_date'],
+                        'transactions_id' => $transaction->id,
+                        'warehouse_id' => $warehouse->id,
+                        'product_id' => $product->id,
+                    ]);
+                }
 
                 // Simpan transaction item
                 TransactionItem::create([
@@ -374,9 +392,9 @@ class ProductsController extends Controller
     public function indexAllWarehouseProducts()
     {
         $products = $this->productServices->getStockProducts(null, null,10);
-        // dd($products);
+        $products_batch = $this->productServices->getStockProductsWithBatchCode(null,null,null,100);
 
-        return Inertia::render('Warehouse/StockItems', compact('products'));
+        return Inertia::render('Warehouse/StockItems', compact('products', 'products_batch'));
     }
 
     /**
@@ -385,9 +403,9 @@ class ProductsController extends Controller
     public function indexDNPWarehouseProducts()
     {
         $products = $this->productServices->getStockProducts("DNP", null,15);
-        // dd($products);
+        $products_batch = $this->productServices->getStockProductsWithBatchCode("DNP",null,null,15);
 
-        return Inertia::render('Warehouse/DnpWarehouse/Stocks', compact('products'));
+        return Inertia::render('Warehouse/DnpWarehouse/Stocks', compact('products','products_batch'));
     }
 
     /**
@@ -395,9 +413,10 @@ class ProductsController extends Controller
      */
     public function indexDKUWarehouseProducts()
     {
-        $products = $this->productServices->getStockProducts("DKu", null,15);
+        $products = $this->productServices->getStockProducts("DKU", null,15);
+        $products_batch = $this->productServices->getStockProductsWithBatchCode("DKU",null,null,15);
 
-        return Inertia::render('Warehouse/DkuWarehouse/Stocks', compact('products'));
+        return Inertia::render('Warehouse/DkuWarehouse/Stocks', compact('products','products_batch'));
     }
 
     /**

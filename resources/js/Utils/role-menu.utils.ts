@@ -361,16 +361,11 @@ export const roleMenus = {
     ],
     MARKETING: [
         //marketing
-
         {
             label: "Marketing Reports",
             key: "marketing-reports",
-            icon: BarChartOutline
-        },
-        {
-            label: "Sales Target",
-            key: "sales-target",
-            icon: PieChartOutline,
+            icon: BarChartOutline,
+            href: '/marketing-reports',
         },
         {
             label: "Target Salesman",

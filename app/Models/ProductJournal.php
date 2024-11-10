@@ -21,6 +21,7 @@ class ProductJournal extends Model
         'warehouse_id',
         'transactions_id',
         'product_id',
+        'batch_code',
     ];
 
     public function warehouse(): BelongsTo

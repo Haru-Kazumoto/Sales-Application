@@ -63,7 +63,7 @@ class CustomerOrdersController extends Controller
             ->where('users_id', Auth::user()->id)
             ->get();
         $payment_terms = Lookup::where('category', 'PAYMENT_TERM')->get();
-        $products = $this->productServices->getStockProducts("DNP");
+        $products = $this->productServices->getStockProductsWithBatchCode("DNP");
 
         return Inertia::render('Sales/Sale/CreateCoDnp', [
             'coNumber' => $coNumber, 
@@ -85,7 +85,7 @@ class CustomerOrdersController extends Controller
             ->where('users_id', Auth::user()->id)
             ->get();
         $payment_terms = Lookup::where('category', 'PAYMENT_TERM')->get();
-        $products = $this->productServices->getStockProducts("DKU");
+        $products = $this->productServices->getStockProductsWithBatchCode("DKU");
 
         return Inertia::render('Sales/Sale/CreateCoDku', [
             'coNumber' => $coNumber, 

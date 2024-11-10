@@ -66,8 +66,8 @@
                 <div class="row">
                     <div class="col-6 ">
                         <label for="">Produk Pilihan</label>
-                        <n-select size="large" placeholder="" filterable :options="productOptions" :loading="loading"
-                            clearable remote @search="handleSearchProducts" v-model:value="products.product_name" />
+                        <n-select filterable :options="productOptions" placeholder="" size="large"
+                            v-model:value="products.product_name" />
                     </div>
                     <div class="col-4 d-flex align-items-end">
                         <n-button size="large" type="primary" @click="addProduct">Tambah produk</n-button>
@@ -229,7 +229,7 @@ export default defineComponent({
             addProduct,
             removeProduct,
             handleSubmit,
-            productOptions: productsRef,
+            productOptions,
             loading: loadingRef,
             form,
             products,

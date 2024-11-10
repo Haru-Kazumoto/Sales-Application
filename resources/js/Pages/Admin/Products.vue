@@ -5,42 +5,48 @@
             <div class="card-body">
                 <form class="row g-3" @submit.prevent="handleSubmitProduct">
                     <!-- FIRST ROW -->
-                    <div class="col-12 col-lg-3 d-flex flex-column">
+                    <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">Kode Barang
                             <RequiredMark />
                         </label>
                         <n-input size="large" placeholder="" v-model:value="form.code" />
                     </div>
-                    <div class="col-12 col-lg-3 d-flex flex-column">
+                    <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">Nama Produk
                             <RequiredMark />
                         </label>
                         <n-input size="large" placeholder="" v-model:value="form.name" />
                     </div>
-                    <div class="col-12 col-lg-3 d-flex flex-column">
+                    <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">Kelompok
                             <RequiredMark />
                         </label>
                         <n-select size="large" placeholder="" :options="productTypeOptions"
                             v-model:value="form.product_type_id" />
                     </div>
-                    <div class="col-12 col-lg-3 d-flex flex-column">
+                    <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">Pemasok
                             <RequiredMark />
                         </label>
                         <n-select placeholder="" v-model:value="form.supplier_id" filterable size="large"
-                            :options="supplierOptions" :loading="loading" clearable remote
-                            @search="handleSearch" />
+                            :options="supplierOptions" :loading="loading" clearable remote @search="handleSearch" />
                     </div>
 
                     <!-- SECOND ROW -->
-                    <div class="col-12 col-lg-3 d-flex flex-column">
+                    <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">Kemasan
                             <RequiredMark />
                         </label>
                         <n-select size="large" placeholder="" :options="unitOptions" v-model:value="form.unit" />
                     </div>
-                    <div class="col-12 col-lg-3 d-flex flex-column">
+                    <div class="col-12 col-lg-4 d-flex flex-column">
+                        <label for="">Kemasan
+                            <RequiredMark />
+                        </label>
+                        <n-input size="large" placeholder="" v-model:value="form.package"
+                            @input="(value) => form.package = value.toUpperCase()" />
+                    </div>
+                    <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">Harga Tebus
                             <RequiredMark />
                         </label>
@@ -51,7 +57,7 @@
                             </template>
                         </n-input>
                     </div>
-                    <div class="col-12 col-lg-3 d-flex flex-column">
+                    <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">Margin Normal
                             <RequiredMark />
                         </label>
@@ -62,7 +68,7 @@
                             </template>
                         </n-input>
                     </div>
-                    <div class="col-12 col-lg-3 d-flex flex-column">
+                    <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">Kategori Produk
                             <RequiredMark />
                         </label>
@@ -71,7 +77,7 @@
                     </div>
 
                     <!-- THIRD ROW -->
-                    <div class="col-12 col-lg-3 d-flex flex-column">
+                    <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">OH Depo
                             <RequiredMark />
                         </label>
@@ -82,7 +88,7 @@
                             </template>
                         </n-input>
                     </div>
-                    <div class="col-12 col-lg-3 d-flex flex-column">
+                    <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">Saving
                             <RequiredMark />
                         </label>
@@ -93,7 +99,7 @@
                             </template>
                         </n-input>
                     </div>
-                    <div class="col-12 col-lg-3 d-flex flex-column">
+                    <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">Bad Debt
                             <RequiredMark />
                         </label>
@@ -104,7 +110,7 @@
                             </template>
                         </n-input>
                     </div>
-                    <div class="col-12 col-lg-3 d-flex flex-column">
+                    <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">Saving Marketing
                             <RequiredMark />
                         </label>
@@ -117,7 +123,7 @@
                     </div>
 
                     <!-- FOURTH ROW -->
-                    <div class="col-12 col-lg-3 d-flex flex-column">
+                    <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">Harga Jual Retail
                             <RequiredMark />
                         </label>
@@ -128,7 +134,7 @@
                             </template>
                         </n-input>
                     </div>
-                    <div class="col-12 col-lg-3 d-flex flex-column">
+                    <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">Harga Jual Hotel & Resto
                             <RequiredMark />
                         </label>
@@ -139,7 +145,7 @@
                             </template>
                         </n-input>
                     </div>
-                    <div class="col-12 col-lg-3 d-flex flex-column">
+                    <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">Harga Jual 3
                             <RequiredMark />
                         </label>
@@ -150,7 +156,7 @@
                             </template>
                         </n-input>
                     </div>
-                    <div class="col-12 col-lg-3 d-flex flex-column">
+                    <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">Harga Jual DD
                             <RequiredMark />
                         </label>
@@ -161,6 +167,7 @@
                             </template>
                         </n-input>
                     </div>
+
                     <div class="d-flex">
                         <n-button type="primary" class="ms-auto" attr-type="submit">Tambah Data</n-button>
                     </div>
@@ -194,7 +201,8 @@
                     pagination-behavior-on-filter="first" />
                 <div class="d-flex mt-3">
                     <n-pagination class="ms-auto" v-model:page="pagination.current_page"
-                        :page-count="pagination.last_page" :page-size="pagination.per_page"@update:page="handlePageChange"
+                        :page-count="pagination.last_page" :page-size="pagination.per_page"
+                        @update:page="handlePageChange"
                         @update:page-count="pagination.last_page = ($page.props.units as any).last_page" />
                 </div>
             </div>
@@ -226,6 +234,7 @@ export default defineComponent({
             unit: '',
             name: '',
             category: '',
+            package: '',
             redemp_price: null as unknown as number,
             retail_price: null as unknown as number,
             restaurant_price: null as unknown as number,
@@ -267,6 +276,11 @@ export default defineComponent({
                     render(row) {
                         return row.product_type?.name
                     }
+                },
+                {
+                    title: "KEMASAN",
+                    key: "package",
+                    width: 150,
                 },
                 {
                     title: "KATEGORI",

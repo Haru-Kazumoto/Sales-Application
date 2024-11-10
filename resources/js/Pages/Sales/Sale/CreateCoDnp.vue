@@ -102,8 +102,8 @@
                     <!-- INPUT PRODUCTS FORM -->
                     <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">NAMA PRODUK</label>
-                        <n-select filterable  :options="productOptions"
-                            placeholder="" size="large" v-model:value="products.name" />
+                        <n-select filterable :options="productOptions" placeholder="" size="large"
+                            v-model:value="products.name" />
                         <!-- Warning quantity atau status quantity -->
                         <span :style="{ color: stockStatusColor }">
                             {{ stockMessage }}
@@ -125,7 +125,7 @@
                         </n-input>
                     </div>
                     <!-- Tambahan kolom untuk Promo, Deskripsi, dan Harga Diskon -->
-                    <div v-if="hasPromo" class="col-6 col-md-6 col-lg-2 d-flex flex-column gap-1">
+                    <!-- <div v-if="hasPromo" class="col-6 col-md-6 col-lg-2 d-flex flex-column gap-1">
                         <label for="">PROMO VALUE</label>
                         <n-input size="large" :value="promoPercentage + '%'" readonly />
                     </div>
@@ -140,7 +140,7 @@
                     <div v-if="products.max" class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">MAKSIMAL</label>
                         <n-input size="large" :value="products.max" readonly />
-                    </div>
+                    </div> -->
                     <!-- <div v-if="hasPromo && discountedPrice !== null"
                         class="col-6 col-md-6 col-lg-4 d-flex flex-column gap-1">
                         <label for="">HARGA SETELAH DISKON</label>
@@ -279,7 +279,7 @@ export default defineComponent({
                 {
                     title: "NAMA PRODUK",
                     key: 'name',
-                    width: 200,
+                    width: 300,
                     render(row) {
                         return row.product?.name;
                     }
@@ -517,7 +517,7 @@ export default defineComponent({
                 transaction_details.value.customer_address = selectedCustomer.address as any;
                 transaction_details.value.npwp = selectedCustomer.npwp as any;
                 transaction_details.value.legality = selectedCustomer.legality as any || '';
-                form.term_of_payment = selectedCustomer.term_payment??0;
+                form.term_of_payment = selectedCustomer.term_payment ?? 0;
             } else {
                 transaction_details.value.customer_address = '';
                 transaction_details.value.npwp = '',
@@ -556,7 +556,7 @@ export default defineComponent({
 
 
         watch(() => products.value.name, (name) => {
-            const selectedProduct = productOptions.find(data => data.label === name);
+            const selectedProduct = productOptions.find(data => data.value === name);
 
             if (selectedProduct) {
                 products.value.code = selectedProduct.code;
@@ -715,6 +715,7 @@ export default defineComponent({
                 duration: 1500,
                 closable: false,
             });
+
         }
 
 
@@ -891,22 +892,24 @@ export default defineComponent({
         }));
 
         const productOptions = (page.props.products as any[]).map((data) => ({
-            label: data.name,
-            value: data.name,
+            label: `${data.name} - ${data.batch_code}`,
+            value: `${data.name} - ${data.batch_code}`,
             unit: data.unit,
             code: data.code,
             warehouse: data.warehouse,
-            last_stock: data.last_stock, // Tambahkan last_stock ke options
-            status: data.status,         // Tambahkan status ke options
+            batch_code: data.batch_code,
+            last_stock: data.last_stock,
+            status: data.status,
             retail_price: data.retail_price,
             id: data.id,
-            promo_value: data.promo_value,      // Tambahkan promo_value
-            description: data.description,      // Tambahkan description
-            min: data.min,                      // Tambahkan min
-            max: data.max,                      // Tambahkan max
-            start_date: data.start_date,        // Tambahkan start_date
-            end_date: data.end_date             // Tambahkan end_date
+            promo_value: data.promo_value,
+            description: data.description,
+            min: data.min,
+            max: data.max,
+            start_date: data.start_date,
+            end_date: data.end_date
         }));
+
 
         return {
             columns: createColumns(),

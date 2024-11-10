@@ -41,8 +41,9 @@ class TransactionServices
             $query->selectRaw('transactions.*, 
                 (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) as total_left, 
                 CASE 
-                    WHEN (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) > 0 
-                    THEN "INSTALMENT" 
+                    WHEN (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) = total THEN "UNPAID"
+  	                WHEN due_date <= CURDATE() THEN "OVERDUE"
+                    WHEN (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) > 0 THEN "INSTALMENT" 
                     ELSE "PAID" 
                 END as status_payment'
             );
