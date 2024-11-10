@@ -455,6 +455,7 @@ export default defineComponent({
             discount_2: null as unknown as number,
             discount_3: null as unknown as number,
             total_price: null as unknown as number,
+            product_journals: [] as any[],
             // total_price_discount: null as unknown as number,
         });
 
@@ -560,9 +561,9 @@ export default defineComponent({
 
             if (selectedProduct) {
                 products.value.code = selectedProduct.code;
-                transaction_items.value.product_id = selectedProduct.id as number;
-                transaction_items.value.unit = selectedProduct.unit as any;
-                products.value.last_stock = selectedProduct.last_stock; // Set last_stock
+                transaction_items.value.product_id = selectedProduct.id;
+                transaction_items.value.unit = selectedProduct.unit;
+                products.value.last_stock = selectedProduct.last_stock;
                 products.value.retail_price = selectedProduct.retail_price;
                 products.value.promo_value = selectedProduct.promo_value;
                 products.value.description = selectedProduct.description;
@@ -571,24 +572,39 @@ export default defineComponent({
                 products.value.start_date = selectedProduct.start_date;
                 products.value.end_date = selectedProduct.end_date;
 
+                // Reset product_journals dan tambahkan item baru
+                product_journals.value = {
+                    // quantity: transaction_items.value.quantity, // Isi sesuai quantity yang akan digunakan
+                    // amount: selectedProduct.retail_price,       // Harga satuan
+                    action: "OUT",
+                    batch_code: selectedProduct.batch_code,
+                    expiry_date: selectedProduct.expiry_date,
+                    product_id: selectedProduct.id,
+                }
+
+
                 // Tentukan pesan dan warna status berdasarkan last_stock
                 if (products.value.last_stock < 10) {
-                    console.log(page.props.products);
                     stockMessage.value = `Stok saat ini : (${products.value.last_stock})`;
-                    stockStatusColor.value = 'red'; // Merah jika stok kurang dari 10
+                    stockStatusColor.value = 'red';
                 } else {
                     stockMessage.value = `Stok saat ini : (${products.value.last_stock})`;
-                    stockStatusColor.value = 'black'; // Default hitam
+                    stockStatusColor.value = 'black';
                 }
             } else {
+                // Reset data jika tidak ada produk yang dipilih
                 products.value.code = '';
                 transaction_items.value.unit = '';
-                stockMessage.value = ''; // Kosongkan pesan jika tidak ada produk yang dipilih
-                stockStatusColor.value = 'black'; // Reset warna ke default
-                products.value.last_stock = null as unknown as number; // Set last_stock
-                products.value.retail_price = null as unknown as number;
+                stockMessage.value = '';
+                stockStatusColor.value = 'black';
+                products.value.last_stock = null;
+                products.value.retail_price = null;
+
+                // Reset product_journals
+                transaction_items.value.product_journals = [];
             }
         });
+
 
         const totalPPN = computed(() => {
             // Menghitung subtotal dari semua produk tanpa mengalikan quantity
@@ -642,6 +658,25 @@ export default defineComponent({
             // Mengembalikan total harga yang diformat
             // return roundedTotalWithPpn;
             return formatRupiah(totalWithPPN);
+        });
+
+        const defaultProductJournal = {
+            quantity: null as unknown as number,
+            amount: null as unknown as number,
+            action: "IN",
+            batch_code: '',
+            expiry_date: null as unknown as string,
+            product_id: null as unknown as number,
+        };
+
+        // Product journals dimulai dengan satu item default
+        const product_journals = ref({
+            quantity: null as unknown as number,
+            amount: null as unknown as number,
+            action: "IN",
+            batch_code: '',
+            expiry_date: null as unknown as string,
+            product_id: null as unknown as number,
         });
 
 
@@ -703,6 +738,16 @@ export default defineComponent({
                 discount_1: transaction_items.value.discount_1 || 0,
                 discount_2: transaction_items.value.discount_2 || 0,
                 discount_3: transaction_items.value.discount_3 || 0,
+                product_journals: [
+                    {
+                        quantity: quantity,
+                        amount: finalAmount,
+                        action: "OUT",
+                        batch_code: product_journals.value.batch_code,
+                        expiry_date: product_journals.value.expiry_date,
+                        product_id: product_journals.value.product_id,
+                    }
+                ],
                 product: {
                     code: products.value.code,
                     unit: transaction_items.value.unit,
@@ -715,7 +760,6 @@ export default defineComponent({
                 duration: 1500,
                 closable: false,
             });
-
         }
 
 
@@ -898,6 +942,7 @@ export default defineComponent({
             code: data.code,
             warehouse: data.warehouse,
             batch_code: data.batch_code,
+            expiry_date: data.expiry_date,
             last_stock: data.last_stock,
             status: data.status,
             retail_price: data.retail_price,

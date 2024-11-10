@@ -183,17 +183,19 @@ class CustomerOrdersController extends Controller
                 ]);
 
                 //decrease quantity at warehouse
-                ProductJournal::create([
-                    'quantity' => $txItem['quantity'],
-                    'amount' => $txItem['amount'],
-                    'action' => "OUT",
-                    'expiry_date' => null,
-                    'warehouse_id' => $warehouse->id,
-                    'transactions_id' => $transaction->id,
-                    'product_id' => $product->id,
-                ]);
+                foreach ($txItem['product_journals'] as $journal) {
+                    ProductJournal::create([
+                        'quantity' => $journal['quantity'],
+                        'amount' => $txItem['amount'],
+                        'action' => $journal['action'],
+                        'batch_code' => $journal['batch_code'], 
+                        // 'expiry_date' => $journal['expiry_date'],
+                        'transactions_id' => $transaction->id,
+                        'warehouse_id' => $warehouse->id,
+                        'product_id' => $product->id,
+                    ]);
+                }
             }
-
         });
 
         return redirect()->route('sales.create-co')->with('success', 'Customer Order berhasil disubmit!');

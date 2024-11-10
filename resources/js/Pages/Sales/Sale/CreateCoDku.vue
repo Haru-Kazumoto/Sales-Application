@@ -497,7 +497,7 @@ export default defineComponent({
         });
 
         watch(() => products.value.name, (name) => {
-            const selectedProduct = productOptions.find(data => data.label === name);
+            const selectedProduct = productOptions.find(data => data.value === name);
 
             if (selectedProduct) {
                 products.value.code = selectedProduct.code;
@@ -792,8 +792,8 @@ export default defineComponent({
         }));
 
         const productOptions = (page.props.products as any[]).map((data) => ({
-            label: data.name,
-            value: data.name,
+            label: `${data.name} - ${data.batch_code}`,
+            value: `${data.name} - ${data.batch_code}`,
             unit: data.unit,
             code: data.code,
             warehouse: data.warehouse,
@@ -801,6 +801,7 @@ export default defineComponent({
             status: data.status,         // Tambahkan status ke options
             retail_price: data.retail_price,
             id: data.id,
+            batch_code: data.batch_code,
         }));
 
         return {
