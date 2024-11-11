@@ -63,6 +63,34 @@ class PurchaseOrderController extends Controller
         return Inertia::render('Procurement/Purchase/ListPurchaseOrders', compact('transactions'));
     }
 
+    function generatePONumber()
+    {
+        // Ambil tahun dan bulan sekarang
+        $yearMonth = date('ym'); // '2411' untuk November 2024
+        
+        // Cari nomor PO terakhir yang dimulai dengan "PO-2411-"
+        $lastPONumber = DB::table('transactions')
+                        ->where('document_code', 'like', 'PO-'.$yearMonth.'-%')
+                        ->orderByDesc('document_code')
+                        ->first();
+
+        // Jika tidak ada nomor PO sebelumnya, mulai dari 1
+        $nextIncrement = 1;
+        if ($lastPONumber) {
+            // Ambil bagian angka increment dari nomor PO terakhir
+            $lastIncrement = substr($lastPONumber->document_code, -6);
+            $nextIncrement = (int) $lastIncrement + 1;
+        }
+
+        // Format nomor urut dengan padding 6 digit
+        $formattedIncrement = str_pad($nextIncrement, 6, '0', STR_PAD_LEFT);
+        
+        // Gabungkan format PO yang lengkap
+        $poNumber = 'PO-'.$yearMonth.'-'.$formattedIncrement;
+        
+        return $poNumber;
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -77,7 +105,7 @@ class PurchaseOrderController extends Controller
         $tax = Tax::all();
 
         return Inertia::render('Procurement/Purchase/CreatePurchaseOrder', [
-            'po_number' => 'PO-'.rand(100000, 6666666),
+            'po_number' => $this->generatePONumber(),
             'storehouses' => StoreHouse::all(),
             'payment_terms' => $payment_terms,
             'store_locations' => $store_locations,
