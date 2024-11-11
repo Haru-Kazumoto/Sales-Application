@@ -210,7 +210,7 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
 
     //Aging Finance Routes
     Route::name('aging-finance.')->group(function() {
-        Route::get('/aging', fn() => Inertia::render('AgingFinance/Transaction/Aging'))->name('aging');
+        Route::get('/aging', [App\Http\Controllers\InvoiceController::class, 'indexAging'])->name('aging');
         Route::get('/list-transactions', fn() => Inertia::render('AgingFinance/Transaction/ListTransaction'))->name('list-transaction');
         //nanti ganti by id (model)
         Route::get('/pay', fn() => Inertia::render('AgingFinance/Transaction/DetailTransaction'))->name('detail-transaction.pay');

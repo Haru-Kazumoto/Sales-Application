@@ -50,6 +50,9 @@
                     </div>  
                 </div>
             </n-tab-pane>
+            <n-tab-pane name="gap-products" tab="Selisih produk">
+                LIST SELISIH PRODUK BARANG, LALU BUAT PAGE BARU KE (SELISIH PRODUK BARANG) ISINYA DESKRIPSI SELISIH DAN EKSPEKTASI AKSI YANG AKAN DILAKUKAN UNTUK SELISIH BARANG TERSEBUT
+            </n-tab-pane>
         </n-tabs>
     </div>
 </template>

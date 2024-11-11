@@ -210,4 +210,13 @@ class InvoiceController extends Controller
 
         return back()->with('success', 'Pembayaran berhasil!');
     }
+
+    public function indexAging()
+    {
+        $tx_type = TransactionType::where('name', 'Penjualan')->first();
+        $invoices = $this->transactionServices->getTransactions($tx_type->id, null,null,10, true);
+        // dd($data);
+
+        return Inertia::render('AgingFinance/Transaction/Aging', compact('invoices'));
+    }
 }

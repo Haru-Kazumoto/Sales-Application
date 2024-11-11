@@ -130,12 +130,12 @@
                     <n-input size="large" placeholder="" v-model:value="product.quantity"
                         @input="(value) => product.quantity = value.replace(/\D/g, '')" />
                 </div>
-                <n-button type="error" ghost size="small" @click="removeFormProductJournal(index)">
-                    Hapus Form
+                <n-button type="error" ghost size="large" @click="removeFormProductJournal(index)">
+                    Hapus Form Kode Batch
                 </n-button>
             </div>
-            <n-button type="primary" @click="addFormProductJournal" class="my-4 w-100">
-                Tambah Form
+            <n-button type="primary" size="large" @click="addFormProductJournal" class="my-4 w-100">
+                Tambah Form Kode Batch
             </n-button>
 
             <template #footer>

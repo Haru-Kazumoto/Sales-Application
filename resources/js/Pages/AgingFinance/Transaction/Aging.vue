@@ -18,7 +18,7 @@
         <div class="d-flex flex-column">
             <span v-if="checkedRowKeys.length > 0" role="alert" class="alert alert-success">
                 Select {{ checkedRowKeys.length }} row{{ checkedRowKeys.length < 2 ? '' : 's' }} </span>
-                    <n-data-table :columns="columns" :data="data" :pagination="pagination" :row-key="rowKey"
+                    <n-data-table :columns="columns" :data="($page.props.invoices as any).data" :pagination="pagination"
                         @update:checked-row-keys="handleCheck" size="small" />
                     <n-button type="primary" class="ms-auto my-3" style="width: 15rem;" @click="handleSendReminder">Send
                         Reminder</n-button>
@@ -27,26 +27,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, h, ref } from 'vue'
 import TitlePage from '../../../Components/TitlePage.vue';
-import type { DataTableColumns, DataTableRowKey } from 'naive-ui'
+import { NTag, type DataTableColumns, type DataTableRowKey } from 'naive-ui'
 import Swal from 'sweetalert2';
+import dayjs from "dayjs";
+import 'dayjs/locale/id'; // Import locale Indonesia
 
-interface RowData {
-    key: number;
-    invoice_date: string;
-    invoice: string;
-    invoice_no: string;
-    salesman: string;
-    customer: string;
-    payment_status: string;
-    term_of_payment: string;
-    due_date: string;
-    transaction_age: string;
-}
+dayjs.locale('id'); // Set locale to Indonesian 
 
-
-function createColumns(): DataTableColumns<RowData> {
+function createColumns() {
     return [
         {
             type: 'selection',
@@ -62,91 +52,83 @@ function createColumns(): DataTableColumns<RowData> {
         {
             title: 'TANGGAL FAKTUR',
             key: 'invoice_date',
-            width: 150,
-            render(rowData) {
-                return rowData.invoice_date;  // Menampilkan tanggal faktur
-            },
-        },
-        {
-            title: 'FAKTUR',
-            key: 'invoice',
-            width: 100,
-            render(rowData) {
-                return rowData.invoice;  // Menampilkan faktur
+            width: 250,
+            render(row) {
+                const date = row.transaction_details.find(data => data.category === "Invoice Date")?.value;  // Menampilkan tanggal faktur
+                return dayjs(date).format('dddd, D MMMMYYYY ')
             },
         },
         {
             title: 'NO FAKTUR',
-            key: 'invoice_no',
-            width: 150,
-            render(rowData) {
-                return rowData.invoice_no;  // Menampilkan No faktur
-            },
+            key: 'document_code',
+            width: 200,
         },
         {
             title: 'SALESMAN',
             key: 'salesman',
-            width: 100,
-            render(rowData) {
-                return rowData.salesman;  // Menampilkan nama salesman
+            width: 200,
+            render(row) {
+                return row.transaction_details.find(data => data.category === "Salesman")?.value;
             },
         },
         {
             title: 'CUSTOMER',
             key: 'customer',
-            width: 100,
-            render(rowData) {
-                return rowData.customer;  // Menampilkan nama customer
-            },
-        },
-        {
-            title: 'PAYMENT STATUS',
-            key: 'payment_status',
-            width: 100,
-            render(rowData) {
-                return rowData.payment_status;  // Menampilkan status pembayaran
+            width: 250,
+            render(row) {
+                return row.transaction_details.find(data => data.category === "Customer")?.value;
             },
         },
         {
             title: 'TERM OF PAYMENT',
             key: 'term_of_payment',
-            width: 100,
+            width: 200,     
             render(rowData) {
-                return rowData.term_of_payment;  // Menampilkan term of payment
+                return rowData.term_of_payment + " HARI";  // Menampilkan term of payment
             },
         },
         {
             title: 'DUE DATE',
             key: 'due_date',
-            width: 100,
-            render(rowData) {
-                return rowData.due_date;  // Menampilkan due date
-            },
+            width: 200,
+            render(row) {
+                return dayjs(row.due_date).format('dddd, D MMMMYYYY ');  // Menampilkan due date
+              },
         },
         {
-            title: 'UMUR TRANSAKSI',
-            key: 'transaction_age',
-            width: 100,
-            render(rowData) {
-                return rowData.transaction_age;  // Menampilkan umur transaksi
-            },
-        }
+            title: "Status",
+            key: "status_payment",
+            width: 200,
+            render(row) {
+                let type;
+
+                switch (row.status_payment) {
+                    case "INSTALMENT":
+                        type = "warning";
+                        break;
+                    case "PAID":
+                        type = "success";
+                        break;
+                    case "UNPAID":
+                        type = 'error';
+                        break;
+                    default:
+                        type = '';
+                        break;
+                }
+
+                return h(
+                    NTag,
+                    {
+                        type,
+                        strong: true,
+                        size: 'large',
+                    }, { default: () => row.status_payment }
+                )
+            }
+        },
     ];
 }
-
-
-const data: RowData[] = Array.from({ length: 10 }).map((_, index) => ({
-    key: index + 1,
-    invoice_date: `2024-09-${String(index + 1).padStart(2, '0')}`,
-    invoice: `Faktur-${index + 1}`,
-    invoice_no: `INV-2024-${index + 1}`,
-    salesman: `Salesman ${index + 1}`,
-    customer: `Customer ${index + 1}`,
-    payment_status: index % 2 === 0 ? 'Paid' : 'Pending',
-    term_of_payment: index % 2 === 0 ? '30 Days' : '60 Days',
-    due_date: `2024-10-${String(index + 1).padStart(2, '0')}`,
-    transaction_age: `${index + 1} Days`,
-}));
 
 export default defineComponent({
     setup() {
@@ -181,14 +163,12 @@ export default defineComponent({
         }
 
         return {
-            data,
             columns: createColumns(),
             handleSendReminder,
             checkedRowKeys: checkedRowKeysRef,
             pagination: {
                 pageSize: 10
             },
-            rowKey: (row: RowData) => row.key,
             handleCheck(rowKeys: DataTableRowKey[]) {
                 checkedRowKeysRef.value = rowKeys
             }
