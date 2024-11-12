@@ -303,9 +303,14 @@ class ProductsController extends Controller
 
             // $expiryDate = null; // Variable to store expiry date
             $allocation = null;
+            $po_number = null;
 
             // Simpan transaction details
             foreach ($request->input('transaction_details') as $detail) {
+                // this will automatically set the po number, because index of po number is 0 or the first data will be get for eached
+                $po_number = $detail['value']; 
+                // dd($po_number);
+
                 TransactionDetail::create([
                     'name' => $detail['name'],
                     'category' => $detail['category'],
@@ -314,6 +319,7 @@ class ProductsController extends Controller
                     'transactions_id' => $transaction->id,
                 ]);
 
+                // validation is unactive since the change of queries of warehouse products
                 // Cek apakah kategori adalah Expiry Date dan simpan value-nya
                 // if ($detail['category'] === 'Expiry Date') {
                 //     $expiryDate = $detail['value'];
@@ -341,6 +347,8 @@ class ProductsController extends Controller
                         'transactions_id' => $transaction->id,
                         'warehouse_id' => $warehouse->id,
                         'product_id' => $product->id,
+                        'po_number' => $po_number,
+                        'sso_number' => $request->document_code
                     ]);
                 }
 
@@ -354,6 +362,23 @@ class ProductsController extends Controller
                     'transactions_id' => $transaction->id,
                     'product_id' => $product->id, // Menyimpan product_id hasil dari produk yang diambil atau baru
                 ]);
+
+                // WHen the product has the gap item then create product journal for information of gap products\
+                if (isset($txItem['item_gap']) && $txItem['item_gap'] > 1){
+                    ProductJournal::create([
+                        'quantity' => $txItem['item_gap'],
+                        'amount' => $txItem['amount'],
+                        'action' => "IN_GAP",
+                        'batch_code' => null,
+                        'expiry_date' => null,
+                        'description' => $txItem['gap_description'],
+                        'transactions_id' => $transaction->id,
+                        'warehouse_id' => $warehouse->id,
+                        'product_id' => $product->id,
+                        'po_number' => $po_number,
+                        'sso_number' => $request->document_code
+                    ]);
+                }
             }
         });
 
@@ -393,8 +418,11 @@ class ProductsController extends Controller
     {
         $products = $this->productServices->getStockProducts(null, null,10);
         $products_batch = $this->productServices->getStockProductsWithBatchCode(null,null,null,100);
+        $products_gap = ProductJournal::where('action', 'IN_GAP')
+            ->with('product','warehouse')
+            ->paginate(15);
 
-        return Inertia::render('Warehouse/StockItems', compact('products', 'products_batch'));
+        return Inertia::render('Warehouse/StockItems', compact('products', 'products_batch', 'products_gap'));
     }
 
     /**

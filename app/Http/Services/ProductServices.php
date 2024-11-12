@@ -138,6 +138,7 @@ class ProductServices {
             ->join('product_journal', 'products.id', '=', 'product_journal.product_id')
             ->join('warehouse', 'product_journal.warehouse_id', '=', 'warehouse.id')
             ->leftJoin('promo_products', 'products.promo_product_id', '=', 'promo_products.id')
+            ->whereIn('product_journal.action', ['IN', 'OUT']) //only get the IN and OUT data action
             ->groupBy(
                 'products.id',
                 'products.code',

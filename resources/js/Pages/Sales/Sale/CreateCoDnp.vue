@@ -130,7 +130,7 @@
                         <div class="row g-3">
                             <span>PRODUK INI MENDAPATKAN PROMO {{ products.promo_name }}</span>
                             <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
-                                <label for="">PROMO VALUE</label>
+                                <label for="">PROMO </label>
                                 <n-input size="large" :value="promoPercentage + '%'" readonly />
                             </div>
                             <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
@@ -558,9 +558,9 @@ export default defineComponent({
         const promoPercentage = computed(() => {
             const promo = products.value.promo_value ?? 0;
             // Pastikan promo dikonversi menjadi persentase desimal
-            const percentage = promo / 100;
-            console.log("Promo Percentage (decimal):", percentage);
-            return percentage;
+            // const percentage = promo / 100;
+            // console.log("Promo Percentage (decimal):", percentage);
+            return promo;
         });
 
 
@@ -571,7 +571,7 @@ export default defineComponent({
             if (amount !== null && promo_value !== null) {
                 // Cek apakah quantity berada dalam range min dan max
                 if (quantity >= min && quantity <= max) {
-                    const discountAmount = amount * promoPercentage.value; // Menghitung diskon
+                    const discountAmount = amount * (promoPercentage.value / 100); // Menghitung diskon
                     const discounted = (amount - discountAmount).toFixed(0); // Mengurangi harga dengan diskon
                     console.log("Discounted Price:", discounted);
                     return discounted; // Mengembalikan harga yang telah dikurangi diskon
@@ -594,17 +594,21 @@ export default defineComponent({
                 transaction_items.value.unit = selectedProduct.unit;
                 products.value.last_stock = selectedProduct.last_stock;
                 products.value.retail_price = selectedProduct.retail_price;
-                products.value.description = selectedProduct.description;
 
                 // Isi nilai promo_value hanya jika promosi masih berlaku
                 if (today <= endDate) {
+                    products.value.description = selectedProduct.description;
                     products.value.promo_value = selectedProduct.promo_value;
                     products.value.min = selectedProduct.min;
                     products.value.max = selectedProduct.max;
                     products.value.start_date = selectedProduct.start_date;
                     products.value.end_date = selectedProduct.end_date;
                     products.value.promo_name = selectedProduct.promo_name;
-                } 
+                } else {
+                    // Reset promo-related values if the promotion has expired
+                    products.value.promo_value = null;
+                    products.value.promo_name = null;
+                }
 
                 // Reset product_journals dan tambahkan item baru
                 product_journals.value = {
@@ -637,6 +641,7 @@ export default defineComponent({
                 transaction_items.value.product_journals = [];
             }
         });
+
 
 
 

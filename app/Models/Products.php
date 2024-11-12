@@ -56,4 +56,9 @@ class Products extends Model
     {
         return $this->belongsTo(PromoProgram::class, 'promo_product_id');
     }
+
+    public function productJournals(): HasMany
+    {
+        return $this->hasMany(ProductJournal::class);
+    }
 }

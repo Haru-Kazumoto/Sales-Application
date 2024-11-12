@@ -22,11 +22,18 @@ class ProductJournal extends Model
         'transactions_id',
         'product_id',
         'batch_code',
+        'po_number',
+        'sso_number',
     ];
 
     public function warehouse(): BelongsTo
     {
         return $this->belongsTo(Warehouse::class, 'warehouse_id');
+    }
+
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Products::class, 'product_id');
     }
 
     public function transaction(): BelongsTo

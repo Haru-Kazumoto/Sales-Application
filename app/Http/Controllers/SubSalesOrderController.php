@@ -200,15 +200,16 @@ class SubSalesOrderController extends Controller
             return back()->with('failed', 'Nomor dokumen salah atau tidak ditemukan');
         }
 
-        // Cek status 'Generate Status' di transactionDetails
-        $status_generate = $transaction->transactionDetails
-            ->where('category', 'Generate Status')
-            ->where('value', 'true')
-            ->first();
+        //SINCE THE UPDATE, WAREHOUSE IS ABLE TO GENERATE SSO multiple times for gradual data entry needs
+        // // Cek status 'Generate Status' di transactionDetails
+        // $status_generate = $transaction->transactionDetails
+        //     ->where('category', 'Generate Status')
+        //     ->where('value', 'true')
+        //     ->first();
 
-        if ($status_generate) {
-            return back()->with('failed', 'Data SSO telah dimasukan ke gudang!');
-        }
+        // if ($status_generate) {
+        //     return back()->with('failed', 'Data SSO telah dimasukan ke gudang!');
+        // }
         
         // Mengembalikan view dengan data transaksi
         return Inertia::render('Warehouse/IncomingItem', compact('transaction'));

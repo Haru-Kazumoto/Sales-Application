@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex flex-column gap-4">
-        <TitlePage title="STOK BARANG GUDANG" />
+        <TitlePage title="STOK BARANG GUDANG " />
         <n-tabs type="line" animated>
             <n-tab-pane name="all" tab="Semua Produk">
                 <div class="d-flex flex-column gap-2">
@@ -47,11 +47,26 @@
                             <n-data-table :columns="batchColumns" :data="($page.props.products_batch as any).data"
                                 :bordered="false" size="small" pagination-behavior-on-filter="first" />
                         </div>
-                    </div>  
+                    </div>
                 </div>
             </n-tab-pane>
             <n-tab-pane name="gap-products" tab="Selisih produk">
-                LIST SELISIH PRODUK BARANG, LALU BUAT PAGE BARU KE (SELISIH PRODUK BARANG) ISINYA DESKRIPSI SELISIH DAN EKSPEKTASI AKSI YANG AKAN DILAKUKAN UNTUK SELISIH BARANG TERSEBUT
+                <div class="d-flex flex-column gap-2">
+                    <div class="row g-3 ">
+                        <div class="col-12 col-lg-8">
+                            <span class="fs-4">Daftar Selisih Produk</span>
+                        </div>
+                        <div class="col-12 col-lg-4 d-flex gap-3 ">
+                            <n-input placeholder="Cari Nama Produk" size="large"/>
+                        </div>
+                    </div>
+                    <div class="card shadow" style="border: none;">
+                        <div class="card-body">
+                            <n-data-table :columns="gapColumns" :data="($page.props.products_gap as any).data"
+                                :bordered="false" size="small" pagination-behavior-on-filter="first" />
+                        </div>
+                    </div>
+                </div>
             </n-tab-pane>
         </n-tabs>
     </div>
@@ -62,6 +77,7 @@ import { defineComponent, reactive, h } from 'vue';
 import TitlePage from '../../Components/TitlePage.vue';
 import CountCard from '../../Components/CountCard.vue';
 import { DataTableColumns, NButton, NTag } from 'naive-ui';
+import { usePage } from '@inertiajs/vue3';
 
 function createColumns() {
     return [
@@ -216,8 +232,74 @@ function createColumnsBatch() {
     ];
 }
 
+function createColumnGapProducts() {
+    return [
+        {
+            title: "#",
+            key: "index",
+            width: 60,
+            render(row, index) {
+                return index + 1;
+            }
+        },
+        {
+            title: "NAMA BARANG",
+            key: "name",
+            width: 250,
+            render(row){
+                return row.product?.name;
+            }
+        },
+        {
+            title: "KODE BARANG",
+            key: "code",
+            width: 250,
+            render(row){
+                return row.product.code;
+            }
+        },
+        {
+            title: "KEMASAN",
+            key: "unit",
+            width: 150,
+            render(row) {
+                return row.product.unit;
+            }
+        },
+        {
+            title: "SELISIH",
+            key: "gap",
+            width: 150,
+            render(row) {
+                return row.quantity;
+            }
+        },
+        {
+            title: "DESKRIPSI SELISIH",
+            key: "description",
+            width: 250,
+            render(row) {
+                return row.description;
+            }
+        },
+        {
+            title: "NOMOR SSO",
+            key: "sso_number",
+            width: 200,
+        },
+        {
+            title: "NOMOR PO",
+            key: "po_number",
+            width: 200,
+        }
+    ]
+}
+
 export default defineComponent({
     setup() {
+        const page = usePage();
+
+        // console.log(page.props.products_gap);
 
         // Pagination dummy data
         const pagination = reactive({
@@ -229,6 +311,7 @@ export default defineComponent({
             pagination,
             columns: createColumns(),
             batchColumns: createColumnsBatch(),
+            gapColumns: createColumnGapProducts(),
         };
     },
     components: {
