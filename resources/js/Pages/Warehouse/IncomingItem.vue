@@ -445,6 +445,7 @@ export default defineComponent({
                 });
             } finally {
                 modalOpen.value = false;
+                resetFormProductJournal();
             }
 
             Swal.fire({
