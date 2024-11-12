@@ -305,10 +305,14 @@ class ProductsController extends Controller
             $allocation = null;
             $po_number = null;
 
+            foreach($request->input('transaction_details') as $txDetail) {
+                $po_number = $txDetail['value'];
+                break;
+            }
+
             // Simpan transaction details
             foreach ($request->input('transaction_details') as $detail) {
                 // this will automatically set the po number, because index of po number is 0 or the first data will be get for eached
-                $po_number = $detail['value']; 
                 // dd($po_number);
 
                 TransactionDetail::create([
@@ -328,7 +332,6 @@ class ProductsController extends Controller
                 if($detail['category'] === 'Allocation') {
                     $allocation = $detail['value'];
                 }
-
             }
 
             // Simpan transaction items
