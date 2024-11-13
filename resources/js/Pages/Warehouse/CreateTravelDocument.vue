@@ -49,7 +49,7 @@
                             :options="sendType" size="large" />
                     </div>
                     <div class="col-6 col-lg-3">
-                        <label for="">Pengiriman
+                        <label for="">Nama Ekspedisi
                             <RequiredMark />
                         </label>
                         <n-select placeholder="" v-model:value="transaction_details.delivery" filterable :options="transportOptions"

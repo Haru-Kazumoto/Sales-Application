@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex flex-column gap-3">
-        <TitlePage title="List Invoice DKU" />
+        <TitlePage title="List Faktur DKU" />
         <div class="card shadow-sm border-0">
             <div class="card-body">
                 <n-data-table :bordered="false" :columns="columns" :data="($page.props.travel_documents_dku as any).data"/>

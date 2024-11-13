@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex flex-column gap-3">
-        <TitlePage title="List Invoice DNP" />
+        <TitlePage title="List Faktur DNP" />
         <div class="card shadow-sm border-0">
             <div class="card-body">
                 <n-data-table :bordered="false" :columns="columns"

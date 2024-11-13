@@ -126,19 +126,19 @@ export const roleMenus = {
             icon: renderIcon(PieChartOutline),
             children: [
                 {
-                    label: "Invoice DNP",
+                    label: "Faktur DNP",
                     key: "invoice-dnp",
                     href: '/invoice-dnp',
                     icon: renderIcon(ReceiptOutline),
                 },
                 {
-                    label: "Invoice DKU",
+                    label: "Faktur DKU",
                     key: "invoice-dku",
                     href: '/invoice-dku',
                     icon: renderIcon(ReceiptOutline),
                 },
                 {
-                    label: "List Invoice",
+                    label: "List Faktur",
                     key: "list-invoice",
                     href: '/list-invoices',
                     icon: renderIcon(ReceiptCube24Regular),

@@ -882,6 +882,12 @@ export default defineComponent({
                     data_type: "string",
                 },
                 {
+                    name: "Alokasi",
+                    category: "Allocation",
+                    value: "DKU",
+                    data_type: "string",
+                },
+                {
                     name: "NPWP",
                     category: "NPWP",
                     value: transaction_details.value.npwp,

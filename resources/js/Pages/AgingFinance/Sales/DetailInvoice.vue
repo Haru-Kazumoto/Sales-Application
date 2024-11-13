@@ -115,7 +115,7 @@
         <div class="card shadow-sm border-0 mb-5">
             <div class="card-body">
                 <div class="d-flex align-items-center">
-                    <span class="fs-5 fw-semibold">Log Pembayaran Faktur</span>
+                    <span class="fs-5 fw-semibold">Log Pembayaran</span>
                     <n-button type="info" class="ms-auto" @click="showModal = true"
                         :disabled="$page.props.statusPayment === 'PAID' ? true : false">BUAT PEMBAYARAN</n-button>
                 </div>
@@ -186,7 +186,7 @@
             </div>
 
             <n-modal v-model:show="showModal" class="custom-card" preset="card" :style="bodyStyle"
-                title="Pembayaran Faktur" :bordered="false" size="huge" :segmented="segmented">
+                title="Pembayaran" :bordered="false" size="huge" :segmented="segmented">
 
                 <div class="d-flex flex-column gap-3">
                     <!-- <div class="d-flex flex-column gap-1">
@@ -207,8 +207,7 @@
                     <div class="d-flex">
                         <div class="d-flex align-items-center gap-2 ms-auto">
                             <n-button type="error" @click="showModal = false">Batal</n-button>
-                            <n-button type="primary" @click="handlePayInvoice(($page.props.data as any).id)">Buat
-                                Faktur</n-button>
+                            <n-button type="primary" @click="handlePayInvoice(($page.props.data as any).id)">Bayar</n-button>
                         </div>
                     </div>
                 </template>
