@@ -350,6 +350,7 @@ export default defineComponent({
         const handleOpenModalTable = (row, index) => {
             choosen_product.value = row.product?.name as string;
             index_choosen.value = index;
+            current_quantity.value = row.quantity;
 
             // // Hitung total quantity yang ada di product_journals saat ini
             // const totalQuantityUsed = product_journals.value.reduce((total, journal) => {
