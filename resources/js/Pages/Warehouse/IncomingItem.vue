@@ -335,10 +335,8 @@ export default defineComponent({
                                     type: 'primary',
                                     size: 'medium',
                                     onClick: () => {
-                                        choosen_product.value = row.product?.name as string;
-                                        current_quantity.value = row.quantity;
-                                        index_choosen.value = index;
-                                        modalOpen.value = true;
+                                        handleOpenModalTable(row, index);
+                                        // modalOpen.value = true;
                                     }
                                 },
                                 { default: () => 'Info Barang' }
@@ -348,6 +346,32 @@ export default defineComponent({
                 }
             ]
         }
+
+        const handleOpenModalTable = (row, index) => {
+            choosen_product.value = row.product?.name as string;
+            index_choosen.value = index;
+
+            // // Hitung total quantity yang ada di product_journals saat ini
+            // const totalQuantityUsed = product_journals.value.reduce((total, journal) => {
+            //     return total + (Number(journal.quantity) || 0); // Pastikan quantity adalah angka
+            // }, 0);
+            // console.log(totalQuantityUsed);
+
+            // // Kurangi row.quantity dengan totalQuantityUsed
+            // current_quantity.value = row.quantity - totalQuantityUsed;
+
+            // Jika sudah ada data yang disimpan sebelumnya di transaction_items[index], tampilkan di modal
+            const existingProductJournals = form.transaction_items[index_choosen.value]?.product_journals;
+            if (existingProductJournals && existingProductJournals.length > 0) {
+                product_journals.value = existingProductJournals.map(journal => ({ ...journal }));
+            } else {
+                // Jika tidak ada data sebelumnya, reset ke default
+                resetFormProductJournal();
+            }
+
+            modalOpen.value = true;
+        };
+
 
         function handleOpenModal(row: TransactionItems) {
             Swal.fire({
@@ -438,6 +462,7 @@ export default defineComponent({
                 if (form.transaction_items[index_choosen.value]) {
                     form.transaction_items[index_choosen.value].product_journals = product_journals.value;
                 }
+
             } catch (err) {
                 notification.error({
                     title: "Gagal membuat informasi barang!",
