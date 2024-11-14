@@ -88,7 +88,7 @@
 
                     <!-- FOURTH ROW -->
                     <div class="col-12 col-lg-3 d-flex flex-column">
-                        <label for="">Harga Jual Retail<span class="text-danger">*</span></label>
+                        <label for="">Harga Jual Grosir<span class="text-danger">*</span></label>
                         <n-input size="large" placeholder="" v-model:value="form.retail_price"
                             @input="(value) => form.retail_price = value.replace(/\D/g, '')">
                             <template #prefix>
@@ -106,7 +106,7 @@
                         </n-input>
                     </div>
                     <div class="col-12 col-lg-3 d-flex flex-column">
-                        <label for="">Harga Jual 3<span class="text-danger">*</span></label>
+                        <label for="">Harga Jual Bakery<span class="text-danger">*</span></label>
                         <n-input size="large" placeholder="" v-model:value="form.price_3"
                             @input="(value) => form.price_3 = value.replace(/\D/g, '')">
                             <template #prefix>

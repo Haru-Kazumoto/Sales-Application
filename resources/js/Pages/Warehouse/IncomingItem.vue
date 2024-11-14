@@ -82,18 +82,18 @@
                                 v-model:formatted-value="transaction_details.expiry_date" size="large" />
                         </div> -->
                         <div class="col-md-3">
+                            <label for="pengirim">
+                                Nama Ekspedisi<span class="text-danger">*</span>
+                            </label>
+                            <n-input placeholder="" readonly id="pengirim" v-model:value="transaction_details.sender"
+                                size="large" />
+                        </div>
+                        <div class="col-md-3">
                             <label for="transportasi">
                                 Nomor Polisi Ekspedisi<span class="text-danger">*</span>
                             </label>
                             <n-input placeholder="" readonly id="transportasi"
                                 v-model:value="transaction_details.transportation" size="large" />
-                        </div>
-                        <div class="col-md-3">
-                            <label for="pengirim">
-                                Pengirim<span class="text-danger">*</span>
-                            </label>
-                            <n-input placeholder="" readonly id="pengirim" v-model:value="transaction_details.sender"
-                                size="large" />
                         </div>
                     </div>
                 </form>
@@ -265,7 +265,7 @@ export default defineComponent({
                     }
                 },
                 {
-                    title: 'Kode Barang',
+                    title: 'KODE BARANG',
                     key: 'product_code',
                     width: 150,
                     render(row) {
@@ -273,7 +273,7 @@ export default defineComponent({
                     }
                 },
                 {
-                    title: 'Nama Barang',
+                    title: 'NAMA BARANG',
                     key: 'product_name',
                     width: 200,
                     render(row) {

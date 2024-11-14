@@ -70,7 +70,7 @@ function createColumns(): DataTableColumns<Transactions> {
             },
         },
         {
-            title: "PENGIRIMAN",
+            title: "NAMA EKSPEDISI",
             key: "delivery",
             width: 200,
             render(rowData) {

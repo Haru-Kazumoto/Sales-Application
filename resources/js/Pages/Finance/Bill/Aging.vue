@@ -1,13 +1,13 @@
 <template>
     <div class="d-flex flex-column gap-4">
         <TitlePage title="Aging Dashboard" />
-        <div class="d-flex flex-row gap-2">
+        <!-- <div class="d-flex flex-row gap-2">
             <n-date-picker size="large" type="date" style="width: 10rem;" />
             <n-date-picker size="large" type="date" style="width: 10rem;" />
             <n-select size="large" style="width: 10rem;" placeholder="Customer" />
             <n-select size="large" style="width: 10rem;" placeholder="Salesman" />
             <n-select size="large" style="width: 10rem;" placeholder="Jatuh tempo" />
-        </div>
+        </div> -->
         <div class="d-flex flex-column">
             <span v-if="checkedRowKeys.length > 0" role="alert" class="alert alert-success">
                 Select {{ checkedRowKeys.length }} row{{ checkedRowKeys.length < 2 ? '' : 's' }}

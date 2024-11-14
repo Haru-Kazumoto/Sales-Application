@@ -124,7 +124,7 @@
 
                     <!-- FOURTH ROW -->
                     <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Harga Jual Retail
+                        <label for="">Harga Jual Grosir
                             <RequiredMark />
                         </label>
                         <n-input size="large" placeholder="" v-model:value="form.retail_price"
@@ -146,7 +146,7 @@
                         </n-input>
                     </div>
                     <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Harga Jual 3
+                        <label for="">Harga Jual Bakery
                             <RequiredMark />
                         </label>
                         <n-input size="large" placeholder="" v-model:value="form.price_3"
@@ -310,7 +310,7 @@ export default defineComponent({
                     }
                 },
                 {
-                    title: "HARGA JUAL RETAIL",
+                    title: "HARGA JUAL GROSIR",
                     key: "retail_selling_price",
                     width: 200,
                     render(row) {

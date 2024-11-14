@@ -167,6 +167,7 @@ export interface User {
     fullname: string;
     username: string;
     user_uid: string;
+    phone: string;
     email: string;
     role: Role;
     division: Division

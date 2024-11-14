@@ -226,6 +226,8 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         Route::get('/test-send-message', [App\Http\Controllers\MessageTemplateController::class, 'createTest'])->name('test-whatsapp-message');
         Route::patch('/store-template/{messageTemplate}', [App\Http\Controllers\MessageTemplateController::class, 'storeTemplate'])->name('store-template');
         Route::post('/save-message', [App\Http\Controllers\MessageTemplateController::class, 'saveMessage'])->name('save-message');
+
+        Route::post('/send-message', [App\Http\Controllers\BlastWhatsappController::class, 'sendWhatsapp'])->name('send.message');
     });
 
     Route::name('sales.')->group(function() {

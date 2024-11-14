@@ -39,6 +39,18 @@ class MessageTemplateController extends Controller
         return $template;
     }
 
+    public function sendBlastWhatsapp(int $id_template, string $targetPhone, array $placeholders){
+        $template = MessageTemplate::find($id_template);
+        $message = $this->replacePlaceholders($template->message,$placeholders);
+        // Call the service to send the message
+        $response = $this->whatsappService->sendMessage($targetPhone, $message);
+
+        if ($response) {
+            return response()->json(['status' => 'success', 'data' => $response]);
+        } else {
+            return response()->json(['status' => 'error', 'message' => 'Failed to send message'], 500);
+        }
+    }
 
     public function sendWhatsapp(Request $request) {
         $recipient = $request->input('to');       // Recipient phone number

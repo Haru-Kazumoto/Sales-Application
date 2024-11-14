@@ -24,6 +24,11 @@
                             <ErrorInput :error="$page.props.errors['username']" />
                         </div>
                         <div>
+                            <label for="Username">Nomor Telepon</label>
+                            <n-input id="Username" placeholder="" v-model:value="model.phone" />
+                            <ErrorInput :error="$page.props.errors['phone']" />
+                        </div>
+                        <div>
                             <label for="Email">Email</label>
                             <n-input id="Email" placeholder="" v-model:value="model.email" />
                             <ErrorInput :error="$page.props.errors['email']" />
@@ -78,11 +83,12 @@ export default defineComponent({
 
         const userSelected = page.props.user as User;
 
-        const form = useForm<UserUpdateDTO>({
+        const form = useForm({
             username: userSelected.username,
             fullname: userSelected.fullname,
             password: '',
             password_confirmation: '',
+            phone: userSelected.phone,
             email: userSelected.email,
             role_id: userSelected.role.id,
             division_id: userSelected.division.id,

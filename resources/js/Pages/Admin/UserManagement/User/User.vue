@@ -53,6 +53,7 @@ export default defineComponent({
                 {
                     title: '#',
                     key: 'index',
+                    width: 60,
                     render(rowData, rowIndex) {
                         return rowIndex + 1;  // Menghitung nomor urut
                     },
@@ -60,6 +61,7 @@ export default defineComponent({
                 {
                     title: 'User UID',
                     key: 'user-uid',
+                    width: 150,
                     render(rowData) {
                         return rowData.user_uid;  // Menampilkan nomor faktur
                     },
@@ -67,13 +69,20 @@ export default defineComponent({
                 {
                     title: 'Nama karyawan',
                     key: 'employee-name',
+                    width: 200,
                     render(rowData) {
                         return rowData.fullname;
                     },
                 },
                 {
+                    title: "Nomor Telepon",
+                    key: "phone",
+                    width: 150,
+                },
+                {
                     title: 'Divisi',
                     key: 'division',
+                    width: 150,
                     render(rowData) {
                         return rowData.division.division_name;
                     },
@@ -81,6 +90,7 @@ export default defineComponent({
                 {
                     title: 'Role',
                     key: 'role',
+                    width: 150,
                     render(rowData) {
                         return rowData.role.role_name;
                     },
@@ -88,7 +98,7 @@ export default defineComponent({
                 {
                     title: 'Action',
                     key: 'action',
-                    width: 200,
+                    width: 150,
                     render(row) {
                         return h('div', { class: 'd-flex gap-2' }, [
                             h(

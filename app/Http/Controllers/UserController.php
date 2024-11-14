@@ -49,6 +49,7 @@ class UserController extends Controller
             'fullname' => 'required|string',
             'username' => 'required|string|unique:users,username',
             'email' => 'required|string|email|unique:users,email',
+            'phone' => 'required|string',
             'password' => 'required|string',
             'role_id' => 'required|numeric|exists:roles,id',
             'division_id' => 'required|numeric|exists:divisions,id',
@@ -73,6 +74,7 @@ class UserController extends Controller
                 'user_uid' => rand(10000,66666),
                 'username' => $request->input('username'),
                 'email' => $request->input('email'),
+                'phone' => $request->phone,
                 'password' => Hash::make($request->input('password')),
                 'role_id' => $request->input('role_id'),
                 'division_id' => $request->input('division_id'),
@@ -136,6 +138,7 @@ class UserController extends Controller
             'password_confirmation' => 'same:password',
             'division_id' => 'required|numeric|exists:divisions,id',
             'role_id' => 'required|numeric|exists:roles,id',
+            'phone' => 'required|string'
         ]);
 
         DB::beginTransaction();
@@ -147,6 +150,7 @@ class UserController extends Controller
             $user->email = $request->input('email');
             $user->division_id = $request->input('division_id');
             $user->role_id = $request->input('role_id');
+            $user->phone = $request->phone;
     
             // Update password only if it's provided
             if ($request->filled('password')) {
