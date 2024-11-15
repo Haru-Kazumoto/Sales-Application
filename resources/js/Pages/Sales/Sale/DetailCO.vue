@@ -61,7 +61,7 @@
                                 placeholder="" />
                         </div>
                     </div>
-                    <div class="col-6 col-sm-6 col-md-6 col-lg-4">
+                    <div class="col-6 col-sm-6 col-md-6 col-lg-4" v-if="$page.props.auth.user.division.division_name === 'MARKETING'">
                         <div class="d-flex flex-column gap-1">
                             <label for="">BIAYA ANGKUTAN<span class="text-danger">*</span></label>
                             <n-input readonly size="large" placeholder=""

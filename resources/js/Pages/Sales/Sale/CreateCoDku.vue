@@ -75,7 +75,7 @@
                     </div> -->
                     <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">CASHBACK<span class="text-danger">*</span></label>
+                            <label for="">CASHBACK + PPH 4%</label>
                             <n-input size="large" v-model:value="transaction_details.cashback" placeholder=""
                                 @input="(value) => transaction_details.cashback = value.replace(/\D/g, '')">
                                 <template #prefix>Rp </template>
@@ -84,7 +84,7 @@
                     </div>
                     <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">BIAYA BONGKAR<span class="text-danger">*</span></label>
+                            <label for="">BIAYA BONGKAR</label>
                             <n-input size="large" v-model:value="transaction_details.unloading_cost" placeholder=""
                                 @input="(value) => transaction_details.unloading_cost = value.replace(/\D/g, '')">
                                 <template #prefix>Rp </template>

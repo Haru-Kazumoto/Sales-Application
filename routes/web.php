@@ -166,14 +166,18 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
 
     // Finance Routes
     Route::name('finance.')->group(function () {
-        Route::get('/create-po', fn() => Inertia::render('Finance/Purchase/CreatePurchaseOrder'))->name('create-po');
-        Route::get('/create-so', fn() => Inertia::render('Finance/ItemsReceipt/CreateSalesOrder'))->name('create-so'); 
         Route::get('/aging', fn() => Inertia::render('Finance/Bill/Aging'))->name('aging');
         Route::get('/invoices', fn() => Inertia::render('Finance/Bill/Sales'))->name('invoices');
-        Route::get('/claim-promo', fn() => Inertia::render('Finance/Claim/ClaimPromo'))->name('claim-promo');
+        
+        Route::get('/claim-promo', [App\Http\Controllers\ClaimPromoController::class, 'indexClaimPromo'])->name('claim.index');
         Route::get('/detail-claim', fn() => Inertia::render('Finance/Claim/ClaimPromoDetail'))->name('claim-promo.detail');
-        Route::get('/claim-promo-list', fn() => Inertia::render('Finance/Claim/ListClaimPromo'))->name('list-claim-promo');
-        Route::get('/form-claim', fn() => Inertia::render('Finance/Claim/FormClaim'))->name('form-claim-promo');
+        Route::get('/claim-promo-list', [App\Http\Controllers\ClaimPromoController::class, 'indexDataClaimPromo'])->name('list-claim-promo');
+        Route::get('/form-claim', [App\Http\Controllers\ClaimPromoController::class, 'createClaim'])->name('form-claim-promo.get');
+        Route::post('/form-claim', [App\Http\Controllers\ClaimPromoController::class, 'createClaim'])->name('form-claim-promo');
+        Route::post('/post/claim', [App\Http\Controllers\ClaimPromoController::class, 'storeClaim'])->name('claim.post');
+        Route::patch('/update-status-payment/{transactions}', [App\Http\Controllers\ClaimPromoController::class, 'changeStatusPaymentClaim'])->name('change-status');
+
+        // Route::get('/form-claim', [App\Http\Controllers\ClaimPromoController::class, 'createClaim'])->name('form-claim-promo');
         // Route::get('/test', fn() => Inertia::render('Test'));
     });
 

@@ -36,8 +36,9 @@ class BlastWhatsappController extends Controller
 
             $salesman = User::where('fullname', $salesman_detail->value)->first();
             $customer = Parties::where('name', $customer_detail->value)->first();
-            // dd($customer->name, $salesman->fullname);
+
             // send to sales
+            // nama customer, due date, jumlah tagihan, salesman
             $this->messageTemplate->sendBlastWhatsapp(1, $salesman->phone, [
                 [
                     "key" => 'salesman',

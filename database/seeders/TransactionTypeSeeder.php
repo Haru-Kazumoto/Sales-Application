@@ -14,10 +14,11 @@ class TransactionTypeSeeder extends Seeder
     public function run(): void
     {
         $data = [
-            ['name' => "Booking Order"],
-            ['name' => "Surat Jalan"],
-            ['name' => "Barang Masuk"],
-            ['name' => "Barang Keluar"],
+            // ['name' => "Booking Order"],
+            // ['name' => "Surat Jalan"],
+            // ['name' => "Barang Masuk"],
+            // ['name' => "Barang Keluar"],
+            ['name' => 'Klaim Promo']
         ];
 
         foreach($data as $d) 

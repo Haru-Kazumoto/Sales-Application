@@ -15,7 +15,7 @@
         <!-- Bagian tabel: responsive dengan card -->
         <div class="card shadow-sm" style="border: none;">
             <div class="card-body">
-                <n-data-table :bordered="false" :data="data" :columns="columns" size="small" />
+                <n-data-table :bordered="false" :data="$page.props.data_claim.data" :columns="columns" size="small" />
             </div>
         </div>
     </div>
@@ -23,157 +23,149 @@
 
 
 <script lang="ts">
-import { defineComponent, h } from 'vue'
+import { defineComponent, h, ref } from 'vue'
 import TitlePage from '../../../Components/TitlePage.vue';
 import { formatRupiah } from '../../../Utils/options-input.utils';
 import { DataTableColumns, NButton, NTag } from 'naive-ui';
-import { router } from '@inertiajs/vue3';
+import { router, usePage } from '@inertiajs/vue3';
+import dayjs from 'dayjs';
+import 'dayjs/locale/id'; // Import locale Indonesia
+import Swal from 'sweetalert2';
 
-interface RowData {
-    key: number;
-    promo_claim_date: string;
-    promo_claim_number: string;
-    distributor_name: string;
-    total_claim: number;
-    status_claim: string;
-}
+dayjs.locale('id'); // Set locale to Indonesian
 
-function createColumns(): DataTableColumns<RowData> {
-    return [
-        {
-            title: '#',
-            key: 'index',
-            width: 50,
-            render(rowData, rowIndex) {
-                return rowIndex + 1; // Untuk memberikan nomor urut baris
-            },
-        },
-        {
-            title: "TGL KLAIM PROMO",
-            key: 'promo_claim_date',
-            width: 200,
-            render(row) {
-                return row.promo_claim_date;
-            }
-        },
-        {
-            title: "NOMOR KLAIM PROMO",
-            key: 'promo_claim_number',
-            width: 200,
-            render(row) {
-                return row.promo_claim_number;
-            }
-        },
-        {
-            title: "NAMA DISTRIBUTOR",
-            key: 'distributor_name',
-            width: 250,
-            render(row) {
-                return row.distributor_name;
-            }
-        },
-        {
-            title: "TOTAL KLAIM",
-            key: 'total_claim',
-            width: 200,
-            render(row) {
-                return formatRupiah(row.total_claim);
-            }
-        },
-        {
-            title: "STATUS",
-            key: 'status_claim',
-            width: 200,
-            render(row) {
-                let type: any;
-
-                switch (row.status_claim) {
-                    case 'PAID':
-                        type = 'success';
-                        break;
-                    case 'UNPAID':
-                        type = 'warning';
-                        break;
-                    default:
-                        type = 'success'; // Default type
-                        break;
-                }
-
-                return h(
-                    NTag,
-                    {
-                        bordered: false,
-                        type: type,
-                    },
-                    { default: () => row.status_claim }
-                );
-            }
-        },
-        {
-            title: 'ACTION',
-            key: 'actions',
-            render(row) {
-                return h('div', { class: 'd-flex gap-2' }, [
-                    h(
-                        NButton,
-                        {
-                            type: 'info',
-                            size: 'small',
-                            onClick: () => {
-                                router.visit(route('finance.claim-promo.detail'), { method: 'get' });
-                            }
-                        },
-                        { default: () => 'Detail' }
-                    )
-                ]);
-            }
-        }
-    ];
-}
-
-const data: RowData[] = [
-    {
-        key: 1,
-        promo_claim_date: '12/02/2024',
-        promo_claim_number: '007/DKU/ACC/1/2024',
-        distributor_name: 'PT DUTA KOMODITI UTAMA',
-        total_claim: 22000,
-        status_claim: 'UNPAID',
-    },
-    {
-        key: 1,
-        promo_claim_date: '12/02/2024',
-        promo_claim_number: '007/DKU/ACC/1/2024',
-        distributor_name: 'PT DUTA KOMODITI UTAMA',
-        total_claim: 22000,
-        status_claim: 'UNPAID',
-    },
-    {
-        key: 1,
-        promo_claim_date: '12/02/2024',
-        promo_claim_number: '007/DKU/ACC/1/2024',
-        distributor_name: 'PT DUTA KOMODITI UTAMA',
-        total_claim: 22000,
-        status_claim: 'UNPAID',
-    },
-    {
-        key: 1,
-        promo_claim_date: '12/02/2024',
-        promo_claim_number: '007/DKU/ACC/1/2024',
-        distributor_name: 'PT DUTA KOMODITI UTAMA',
-        total_claim: 22000,
-        status_claim: 'UNPAID',
-    }
-];
 
 
 export default defineComponent({
     setup() {
+        const showModal = ref(false);
+        const document_code = ref(null as unknown as string);
+        const page = usePage();
+        
+        function createColumns() {
+            return [
+                {
+                    title: '#',
+                    key: 'index',
+                    width: 50,
+                    render(rowData, rowIndex) {
+                        return rowIndex + 1; // Untuk memberikan nomor urut baris
+                    },
+                },
+                {
+                    title: "TANGGAL CLAIM PROMO",
+                    key: 'created_at',
+                    width: 250,
+                    render(row) {
+                        return dayjs(row.creted_at).format('dddd, D MMMM YYYY HH:mm')
+                    }
+                },
+                {
+                    title: "NOMOR KLAIM PROMO",
+                    key: 'document_code',
+                    width: 250,
+                },
+                {
+                    title: "NAMA DISTRIBUTOR",
+                    key: 'distributor_name',
+                    width: 250,
+                    render(row) {
+                        return row.transaction_details.find(data => data.category === "Distributor")?.value;
+                    }
+                },
+                {
+                    title: "TOTAL KLAIM",
+                    key: 'total_claim',
+                    width: 200,
+                    render(row) {
+                        return formatRupiah(0);
+                    }
+                },
+                {
+                    title: "STATUS",
+                    key: 'status_claim',
+                    width: 200,
+                    render(row) {
+                        const status = row.transaction_details.find(data => data.category === "Claim Payment")?.value;
+                        let type: any;
 
+                        switch (status) {
+                            case 'PAID':
+                                type = 'success';
+                                break;
+                            case 'UNPAID':
+                                type = 'warning';
+                                break;
+                            default:
+                                type = ''; // Default type
+                                break;
+                        }
+
+                        return h(
+                            NTag,
+                            {
+                                bordered: false,
+                                type: type,
+                            },
+                            { default: () => status }
+                        );
+                    }
+                },
+                {
+                    title: 'ACTION',
+                    key: 'actions',
+                    render(row) {
+                        return h('div', { class: 'd-flex gap-2' }, [
+                            h(
+                                NButton,
+                                {
+                                    type: 'info',
+                                    size: 'small',
+                                    onClick: () => {
+                                        document_code.value = row.document_code;
+
+                                        Swal.fire({
+                                            icon: 'warning',
+                                            title: document_code.value,
+                                            text: "Ubah status menjadi PAID untuk promo ini?",
+                                            showCancelButton: true,
+                                            confirmButtonText: 'UBAH',
+                                            cancelButtonText: 'BATAL',
+                                            cancelButtonColor: 'red',
+                                            confirmButtonColor: '#00a54f'
+                                        }).then(result => {
+                                            if (result.isConfirmed) {
+                                                router.patch(route('finance.change-status', row.id),{},{
+                                                    onSuccess: (page) => {
+                                                        Swal.fire(page.props.flash.success,'','success');
+                                                    },
+                                                    onError: (error) => {
+                                                        Swal.fire('Gagal memperbarui status, silahkan lapor pengembang','','error');
+                                                    }
+                                                })
+                                            }
+                                        });
+                                    }
+                                },
+                                { default: () => 'Ubah Status' }
+                            )
+                        ]);
+                    }
+                }
+            ];
+        }
 
         return {
-            data,
             columns: createColumns(),
+            bodyStyle: {
+                width: '600px'
+            },
+            segmented: {
+                content: 'soft',
+                footer: 'soft'
+            } as const,
+            showModal,
+            document_code
         }
     },
     components: {

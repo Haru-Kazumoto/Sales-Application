@@ -28,6 +28,7 @@ class TransactionItem extends Model
         'tax_id',
         'status_booking',
         'reject_description',
+        'has_claimed',
     ];
 
     public function transaction(): BelongsTo
