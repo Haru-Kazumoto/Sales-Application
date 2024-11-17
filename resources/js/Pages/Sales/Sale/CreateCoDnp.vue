@@ -718,13 +718,13 @@ export default defineComponent({
 
             // Tentukan harga barang (amount) berdasarkan prioritas diskon
             let finalAmount = transaction_items.value.amount; // Default ke harga asli
-            if (transaction_items.value.discount_3) {
-                finalAmount = transaction_details.value.total_discount_3;
-            } else if (transaction_items.value.discount_2) {
-                finalAmount = transaction_details.value.total_discount_2;
-            } else if (transaction_items.value.discount_1) {
-                finalAmount = transaction_details.value.total_discount_1;
-            }
+            // if (transaction_items.value.discount_3) {
+            //     finalAmount = transaction_details.value.total_discount_3;
+            // } else if (transaction_items.value.discount_2) {
+            //     finalAmount = transaction_details.value.total_discount_2;
+            // } else if (transaction_items.value.discount_1) {
+            //     finalAmount = transaction_details.value.total_discount_1;
+            // }
 
             if (finalAmount === null || isNaN(finalAmount)) {
                 Swal.fire({
@@ -784,31 +784,31 @@ export default defineComponent({
                 closable: false,
             });
 
-            // Reset field form secara manual
-            transaction_items.value = {
-                unit: '',
-                quantity: null as unknown as number,
-                product_id: null as unknown as number,
-                tax_id: null as unknown as number,
-                amount: null as unknown as number,
-                discount_1: null as unknown as number,
-                discount_2: null as unknown as number,
-                discount_3: null as unknown as number,
-            };
-            product_journals.value = {
-                batch_code: '',
-                expiry_date: '',
-                product_id: null as unknown as number,
-            };
-            products.value = {
-                code: '',
-                name: '',
-                last_stock: 0,
-                promo_name: '',
-                description: '',
-                min: null as unknown as number,
-                max: null as unknown as number,
-            };
+            // // Reset field form secara manual
+            // transaction_items.value = {
+            //     unit: '',
+            //     quantity: null as unknown as number,
+            //     product_id: null as unknown as number,
+            //     tax_id: null as unknown as number,
+            //     amount: null as unknown as number,
+            //     discount_1: null as unknown as number,
+            //     discount_2: null as unknown as number,
+            //     discount_3: null as unknown as number,
+            // };
+            // product_journals.value = {
+            //     batch_code: '',
+            //     expiry_date: '',
+            //     product_id: null as unknown as number,
+            // };
+            // products.value = {
+            //     code: '',
+            //     name: '',
+            //     last_stock: 0,
+            //     promo_name: '',
+            //     description: '',
+            //     min: null as unknown as number,
+            //     max: null as unknown as number,
+            // };
         }
 
         function removeProduct(index: number) {
