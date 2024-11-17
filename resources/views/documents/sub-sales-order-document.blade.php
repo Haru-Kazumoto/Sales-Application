@@ -225,13 +225,17 @@
     <table class="header" cellpadding="0" cellspacing="0">
         <tr>
             <td>
-                <div class="company-name"></div>
+                <img src="{{ $alocation === 'DNP' ? public_path('images/dnp_hd.png') : public_path('images/PT DKU.png') }}" 
+                alt="Logo Perusahaan" class="logo">
+            </td>
+            <td>
                 <div class="company-address">
                     <span style="font-weight: bold;">PT. DANITAMA NIAGA PRIMA</span><br>
                     Jl. Cikunir Raya No.50 A, RT003/RW.011<br>
                     Kota Bekasi 17422 - Indonesia<br>
-                    Telp : (021) 2961 3236, 2961 3237<br>
-                    Fax: (021) 2961 3235<br>
+                    Telphon: (021) 7258749, 7205444, 7207850<br>
+                    Fax: (021) 7397847 Tlx. 47373 HANG IA<br>
+                    E-mail: info@danitama.com
                 </div>
             </td>
         </tr>
@@ -240,29 +244,31 @@
     <h2 style="text-align: center;">Sub Sales Order</h2>
 
     <!-- Customer and Transport Information -->
-    <table class="customer-info" style="font-size: 12px;">
+    <table class="customer-info" style="font-size: 12px; width: 100%; border-collapse: collapse;">
         <tr>
-            <td style="width: 25%; vertical-align: top;">
+            <!-- Kolom Judul -->
+            <td style="width: 20%; vertical-align: top; padding: 5px;">
                 <strong>Nama Perusahaan</strong><br>
                 <strong>Alamat</strong>
             </td>
-            <td
-                style="width: 55%; word-wrap: break-word; word-break: break-all; white-space: normal; margin-right: 10px;">
+            <!-- Kolom Isi -->
+            <td style="width: 35%; vertical-align: top; padding: 5px;">
                 <strong>: PT. Danitama Niagaprima</strong><br>
-                <strong>: Jl. Cikunir Raya, Kp. Jaha, Jatimekar Jati Asih,<br> Bekasi</strong>
+                <strong>: Jl. Cikunir Raya, Kp. Jaha, Jatimekar Jati Asih, Bekasi</strong>
             </td>
-            <td style="width: 30%; vertical-align: top; text-align: end;">
+            <!-- Kolom Judul Tambahan -->
+            <td style="width: 15%; vertical-align: top; text-align: end; padding: 5px;">
                 <strong>No. SO Induk</strong><br>
                 <span>No. Sub SO</span><br>
                 <span>Tanggal</span><br>
             </td>
-            <td style="width: 25%; word-wrap: break-word; word-break: break-all; white-space: normal;">
-                <span>: {{ $proof_number }}</span><br>
+            <!-- Kolom Isi Tambahan -->
+            <td style="width: 25%; vertical-align: top; padding: 5px;">
                 <span>: {{ $sales_order->document_code }}</span><br>
+                <span>: {{ $proof_number }}</span><br>
                 <span>: {{ $purchase_order_date }}</span><br>
             </td>
         </tr>
-
     </table>
 
     <div style="display: flex; flex-direction: column; gap: 5px; font-size: 13px; ">
@@ -270,7 +276,7 @@
             Kepada Yth: <br>
             <strong>{{ $supplier }}</strong><br>
             Harap diberikan barang yang tercantum dibawah ini kepada : <br>
-            <strong>PT / CV : GI. Transport</strong>
+            <strong>PT / CV : {{ $sender }}</strong>
         </span>
     </div>
 
@@ -288,11 +294,11 @@
         </thead>
         <tbody>
             @foreach ($sales_order->transactionItems as $index => $txItem)
-                <tr>
-                    <td class="text-center">{{ $index + 1 }}</td>
-                    <td>{{ $txItem->product->code }} - {{ $txItem->product->name }}</td>
-                    <td>{{ $txItem->quantity }} {{ $txItem->package }}</td>
-                </tr>
+            <tr>
+                <td class="text-center">{{ $index + 1 }}</td>
+                <td>{{ $txItem->product->code }} - {{ $txItem->product->name }}</td>
+                <td>{{ $txItem->quantity }} {{ $txItem->package }}</td>
+            </tr>
             @endforeach
         </tbody>
     </table>
@@ -320,8 +326,10 @@
 
             <td class="right-cell" rowspan="2"
                 style="border: 1px solid black; padding: 10px; text-align: center; width: 20%; margin-top: 40px;">
-                <div style="display: flex; flex-direction: column; gap: 150px;">
-                    <span>Hormat Kami</span>
+                <div style="margin-bottom: 10rem;">
+                    <span>Hormat Kami,</span>
+                </div>
+                <div style="text-align: center;">
                     <span>Katimin</span>
                 </div>
             </td>

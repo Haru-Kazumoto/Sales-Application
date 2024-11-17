@@ -59,6 +59,6 @@ class Products extends Model
 
     public function productJournals(): HasMany
     {
-        return $this->hasMany(ProductJournal::class);
+        return $this->hasMany(ProductJournal::class, 'product_id');
     }
 }

@@ -17,6 +17,7 @@ use App\Models\TransactionItem;
 use App\Models\Transactions;
 use App\Models\TransactionType;
 use App\Models\Warehouse;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -449,29 +450,32 @@ class CustomerOrdersController extends Controller
 
         return redirect()->route('warehouse.travel-document')->with('success', 'Surat jalan berhasil dibuat!');
     }
+
+    public function generateTravelDocument(Transactions $transactions)
+    {
+        // Memuat relasi yang diperlukan
+        $transactions
+            ->load('transactionDetails', 'transactionItems.product.productJournals');
+
+        // Mengambil detail berdasarkan kategori
+        $customer = $transactions->transactionDetails->firstWhere('category', "Customer")->value ?? null;
+        $customer_address = $transactions->transactionDetails->firstWhere('category', "Customer Address")->value ?? null;
+        $number_plate = $transactions->transactionDetails->firstWhere('category', "Number Plate")->value ?? null;
+        $travel_document_date = Carbon::parse($transactions->transactionDetails->firstWhere('category', 'Travel Document Date')->value)->format('d F Y');
+        $warehouse = $transactions->transactionDetails->firstWhere('category', 'Warehouse')->value ?? '';
+        // Data yang akan dikirimkan ke view PDF
+        $data = [
+            'travel_document' => $transactions, // document_code, produk
+            'customer' => $customer, // nama customer
+            'customer_address' => $customer_address,
+            'number_plate' => $number_plate,
+            'travel_document_date' => $travel_document_date,
+            'warehouse' => $warehouse,
+        ];
+
+        $pdf = Pdf::loadView('documents.travel-document', $data);
+
+        return $pdf->stream('travel_document_'.rand(10000,90000).'.pdf');
+    }
     
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(CustomerOrders $customerOrders)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, CustomerOrders $customerOrders)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(CustomerOrders $customerOrders)
-    {
-        //
-    }
 }

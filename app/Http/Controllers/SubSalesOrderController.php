@@ -165,6 +165,8 @@ class SubSalesOrderController extends Controller
         $proof_number = $transactions->transactionDetails->firstWhere('category', "Proof Number")->value ?? null;
         $purchase_order_date = $transactions->transactionDetails->firstWhere('category', 'PO Date')->value ?? null;
         $supplier = $transactions->transactionDetails->firstWhere('category', 'Supplier')->value ?? '';
+        $alocation = $transactions->transactionDetails->firstWhere('category', 'Allocation')->value ?? '';
+        $sender = $transactions->transactionDetails->firstWhere('category', 'Sender')->value ?? '';
 
         // Data yang akan dikirimkan ke view PDF
         $data = [
@@ -172,6 +174,8 @@ class SubSalesOrderController extends Controller
             'proof_number' => $proof_number,
             'supplier' => $supplier,
             'purchase_order_date' => $purchase_order_date,
+            'alocation' => $alocation,
+            'sender' => $sender
         ];
 
         $pdf = Pdf::loadView('documents.sub-sales-order-document', $data);

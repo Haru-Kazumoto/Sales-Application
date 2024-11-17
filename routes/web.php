@@ -203,6 +203,7 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         Route::get('/create-travel-document/{transactions}', [App\Http\Controllers\CustomerOrdersController::class, 'detailTravelDocument'])->name('create-travel-document');
         Route::post('/store-travel-document', [App\Http\Controllers\CustomerOrdersController::class, 'storeTravelDocument'])->name('travel-document.post');
         Route::get('/index-travel-document', [App\Http\Controllers\CustomerOrdersController::class, 'indexTravelDocuments'])->name('index-travel-document');
+        Route::get('/generate-travel-document/{transactions}', [App\Http\Controllers\CustomerOrdersController::class, 'generateTravelDocument'])->name('travel-document.generate-document');
 
         Route::get('/return-item', fn() => Inertia::render('Warehouse/DnpWarehouse/ReturnItem'))->name('return-item');
         Route::get('/booking-requests', [App\Http\Controllers\BookingOrderController::class, 'indexOrder'])->name('booking-request');

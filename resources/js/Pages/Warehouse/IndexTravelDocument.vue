@@ -112,10 +112,7 @@ function createColumns(): DataTableColumns<Transactions> {
                         type: 'primary',
                         size: 'small',
                         onClick: () => {
-                            Swal.fire({
-                                icon: 'info',
-                                title: "Coming soon!"
-                            });
+                            window.open(route('warehouse.travel-document.generate-document', row.id), '_blank');
                         }
                     },
                     { default: () => 'Preview Surat Jalan' }

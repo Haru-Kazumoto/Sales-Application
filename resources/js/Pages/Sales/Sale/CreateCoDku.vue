@@ -2,7 +2,7 @@
 
     <Head title="Create CO" />
     <div class="d-flex flex-column gap-4">
-        <TitlePage title="CUSTOMER ORDER | DNP" />
+        <TitlePage title="CUSTOMER ORDER | DKU" />
         <!-- INPUT CO FORM -->
         <div class="card shadow" style="border: none;">
             <!-- INPUT CO -->
@@ -886,7 +886,7 @@ export default defineComponent({
                 {
                     name: "Gudang",
                     category: "Warehouse",
-                    value: "DNP",
+                    value: "DKU",
                     data_type: "string",
                 },
                 {
@@ -909,7 +909,7 @@ export default defineComponent({
                 }
             ];
 
-            form.post(route('sales.create-co-dnp.post'), {
+            form.post(route('sales.create-co-dku.post'), {
                 onError(error) {
                     Swal.fire({
                         icon: 'error',

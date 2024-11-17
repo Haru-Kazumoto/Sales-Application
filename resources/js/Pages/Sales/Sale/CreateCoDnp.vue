@@ -892,7 +892,7 @@ export default defineComponent({
                 {
                     name: "Alokasi",
                     category: "Allocation",
-                    value: "DKU",
+                    value: "DNP",
                     data_type: "string",
                 },
                 {
