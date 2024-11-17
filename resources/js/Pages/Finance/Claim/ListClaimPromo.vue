@@ -21,7 +21,6 @@
     </div>
 </template>
 
-
 <script lang="ts">
 import { defineComponent, h, ref } from 'vue'
 import TitlePage from '../../../Components/TitlePage.vue';
@@ -104,8 +103,9 @@ export default defineComponent({
                         return h(
                             NTag,
                             {
-                                bordered: false,
+                                // bordered: false,
                                 type: type,
+                                strong: true,
                             },
                             { default: () => status }
                         );
@@ -115,12 +115,14 @@ export default defineComponent({
                     title: 'ACTION',
                     key: 'actions',
                     render(row) {
+                        const status = row.transaction_details.find(data => data.category === "Claim Payment")?.value;
                         return h('div', { class: 'd-flex gap-2' }, [
                             h(
                                 NButton,
                                 {
                                     type: 'info',
                                     size: 'small',
+                                    disabled: status === "PAID",
                                     onClick: () => {
                                         document_code.value = row.document_code;
 
@@ -148,6 +150,39 @@ export default defineComponent({
                                     }
                                 },
                                 { default: () => 'Ubah Status' }
+                            ),
+                            h(
+                                NButton,
+                                {
+                                    type: 'primary',
+                                    size: 'small',
+                                    onClick: () => {
+                                        document_code.value = row.document_code;
+
+                                        Swal.fire({
+                                            icon: 'warning',
+                                            title: document_code.value,
+                                            text: "Ubah status menjadi PAID untuk promo ini?",
+                                            showCancelButton: true,
+                                            confirmButtonText: 'UBAH',
+                                            cancelButtonText: 'BATAL',
+                                            cancelButtonColor: 'red',
+                                            confirmButtonColor: '#00a54f'
+                                        }).then(result => {
+                                            if (result.isConfirmed) {
+                                                router.patch(route('finance.change-status', row.id),{},{
+                                                    onSuccess: (page) => {
+                                                        Swal.fire(page.props.flash.success,'','success');
+                                                    },
+                                                    onError: (error) => {
+                                                        Swal.fire('Gagal memperbarui status, silahkan lapor pengembang','','error');
+                                                    }
+                                                })
+                                            }
+                                        });
+                                    }
+                                },
+                                { default: () => 'Detail' }
                             )
                         ]);
                     }

@@ -147,17 +147,6 @@
                             </div>
                         </div>
                     </div>
-                    <!-- <div v-if="products.description" class="col-6 col-md-6 col-lg-4 d-flex flex-column gap-1">
-                    </div>
-                    <div v-if="products.min" class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
-                    </div>
-                    <div v-if="products.max" class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
-                    </div> -->
-                    <!-- <div v-if="hasPromo && discountedPrice !== null"
-                        class="col-6 col-md-6 col-lg-4 d-flex flex-column gap-1">
-                        <label for="">HARGA SETELAH DISKON</label>
-                        <n-input size="large" :value="`Rp ${discountedPrice}`" readonly />
-                    </div> -->
 
                     <!-- INPUT DISCOUNT FORM -->
                     <div class="col-6 d-flex flex-column gap-1">
@@ -314,22 +303,7 @@ export default defineComponent({
                         return formatRupiah(row.amount ?? 0);
                     }
                 },
-                {
-                    title: "TOTAL HARGA",
-                    key: 'total',
-                    width: 200,
-                    render(row) {
-                        return formatRupiah(row.total_price ?? 0);
-                    }
-                },
-                {
-                    title: "TOTAL HARGA (INC PPN)",
-                    key: 'tax_amount',
-                    width: 250,
-                    render(row) {
-                        return formatRupiah(row.tax_amount ?? 0);
-                    }
-                },
+
                 {
                     title: "DISCOUNT 1",
                     key: 'discount_1',
@@ -339,7 +313,7 @@ export default defineComponent({
                     }
                 },
                 {
-                    title: "TOTAL DISCOUNT 1",
+                    title: "HARGA DISCOUNT 1",
                     key: 'total_price_discount_1',
                     width: 250,
                     render(row) {
@@ -355,7 +329,7 @@ export default defineComponent({
                     }
                 },
                 {
-                    title: "TOTAL DISCOUNT 2",
+                    title: "HARGA DISCOUNT 2",
                     key: 'total_price_discount_2',
                     width: 250,
                     render(row) {
@@ -371,11 +345,19 @@ export default defineComponent({
                     }
                 },
                 {
-                    title: "TOTAL DISCOUNT 3",
+                    title: "HARGA DISCOUNT 3",
                     key: 'total_price_discount_3',
                     width: 250,
                     render(row) {
                         return formatRupiah(transaction_details.value.total_discount_3 ?? 0);
+                    }
+                },
+                {
+                    title: "TOTAL HARGA",
+                    key: 'total',
+                    width: 200,
+                    render(row) {
+                        return formatRupiah(row.total_price ?? 0);
                     }
                 },
                 {
@@ -734,20 +716,20 @@ export default defineComponent({
                 return; // Hentikan eksekusi jika quantity tidak valid
             }
 
-            // Tentukan harga barang (amount) dengan harga diskon jika ada promo, atau harga asli jika tidak
-            const rawAmount = hasPromo.value ? discountedPrice.value : transaction_items.value.amount;
+            // Tentukan harga barang (amount) berdasarkan prioritas diskon
+            let finalAmount = transaction_items.value.amount; // Default ke harga asli
+            if (transaction_items.value.discount_3) {
+                finalAmount = transaction_details.value.total_discount_3;
+            } else if (transaction_items.value.discount_2) {
+                finalAmount = transaction_details.value.total_discount_2;
+            } else if (transaction_items.value.discount_1) {
+                finalAmount = transaction_details.value.total_discount_1;
+            }
 
-            // Format nilai `amount` untuk menangani separator ribuan/desimal
-            const formattedAmount = rawAmount
-                .replace(/\./g, '')   // Hapus titik pemisah ribuan
-                .replace(',', '.');   // Ganti koma dengan titik untuk desimal
-
-            // Parse amount yang sudah diformat ke angka desimal
-            const finalAmount = parseFloat(formattedAmount);
-            if (isNaN(finalAmount)) {
+            if (finalAmount === null || isNaN(finalAmount)) {
                 Swal.fire({
                     icon: 'error',
-                    title: 'Nilai harga tidak valid!',
+                    title: 'Dimohon isi semua field produk',
                 });
                 return;
             }
@@ -755,25 +737,23 @@ export default defineComponent({
             // Hitung total harga barang sebelum PPN (harga satuan * quantity)
             const totalPriceBeforeTax = finalAmount * quantity;
 
-            // Hitung jumlah pajak PPN 11% dari harga total sebelum pajak
-            const taxAmount = totalPriceBeforeTax * 0.11;
-
-            // Hitung total harga setelah PPN
+            // --------------- WITH PPN
+            const taxAmount = totalPriceBeforeTax * 0.11; // Pajak PPN 11%
             const totalPriceWithTax = totalPriceBeforeTax + taxAmount;
 
-            // Gunakan dua desimal untuk tax_amount dan total_price
+            // Format angka pajak dan total harga
             const formattedTaxAmount = parseFloat(taxAmount.toFixed(2));
             const formattedTotalPriceWithTax = parseFloat(totalPriceWithTax.toFixed(2));
 
-            form.transaction_items.push({
+            // Salin data transaction_items untuk ditambahkan ke tabel
+            const newItem = {
                 unit: transaction_items.value.unit,
                 quantity: quantity,
                 product_id: transaction_items.value.product_id,
-                tax_amount: formattedTaxAmount,           // Nilai pajak 11%
-                amount: finalAmount,                      // Harga satuan setelah diskon jika ada promo
+                tax_amount: formattedTaxAmount,
+                amount: finalAmount,
                 tax_id: transaction_items.value.tax_id,
-                tax_value: null,
-                total_price: formattedTotalPriceWithTax,  // Total harga termasuk PPN
+                total_price: totalPriceBeforeTax,
                 discount_1: transaction_items.value.discount_1 || 0,
                 discount_2: transaction_items.value.discount_2 || 0,
                 discount_3: transaction_items.value.discount_3 || 0,
@@ -792,16 +772,44 @@ export default defineComponent({
                     unit: transaction_items.value.unit,
                     name: products.value.name,
                 }
-            });
+            };
 
+            // Tambahkan item ke array form.transaction_items
+            form.transaction_items.push(newItem);
+
+            // Notifikasi sukses
             notification.success({
                 title: "Produk ditambahkan!",
                 duration: 1500,
                 closable: false,
             });
+
+            // Reset field form secara manual
+            transaction_items.value = {
+                unit: '',
+                quantity: null as unknown as number,
+                product_id: null as unknown as number,
+                tax_id: null as unknown as number,
+                amount: null as unknown as number,
+                discount_1: null as unknown as number,
+                discount_2: null as unknown as number,
+                discount_3: null as unknown as number,
+            };
+            product_journals.value = {
+                batch_code: '',
+                expiry_date: '',
+                product_id: null as unknown as number,
+            };
+            products.value = {
+                code: '',
+                name: '',
+                last_stock: 0,
+                promo_name: '',
+                description: '',
+                min: null as unknown as number,
+                max: null as unknown as number,
+            };
         }
-
-
 
         function removeProduct(index: number) {
             form.transaction_items.splice(index, 1);
@@ -860,13 +868,13 @@ export default defineComponent({
                 {
                     name: 'Cashback',
                     category: 'Cashback',
-                    value: transaction_details.value.cashback as any,
+                    value: transaction_details.value.cashback as any ?? '0',
                     data_type: 'float',
                 },
                 {
                     name: 'Biaya Bongkar',
                     category: 'Unloading Cost',
-                    value: transaction_details.value.unloading_cost as any,
+                    value: transaction_details.value.unloading_cost as any ?? '0',
                     data_type: 'float',
                 },
                 {

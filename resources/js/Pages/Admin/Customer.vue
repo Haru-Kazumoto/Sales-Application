@@ -60,6 +60,9 @@
                         <label for="nama_customer" class="form-label">Alamat</label>
                         <n-input placeholder="" size="large" v-model:value="form.address" />
                     </div>
+                    <div class="col-12 col-md-6 col-lg-4">
+                        
+                    </div>
 
                     <div class="d-flex">
                         <n-button type="primary" class="ms-auto" attr-type="submit">Tambah Data</n-button>

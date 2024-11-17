@@ -7,7 +7,7 @@
                     <SalesCountCard type="primary" title="Total Klaim Promo" :count="100" viewName="dashboard.finance" />
                 </div>
                 <div class="col-12 col-sm-6 col-md-4">
-                    <SalesCountCard type="primary" title="Klaim Promo Berbayar" :count="5" viewName="dashboard.finance" />
+                    <SalesCountCard type="primary" title="Klaim Promo Terbayar" :count="5" viewName="dashboard.finance" />
                 </div>
                 <div class="col-12 col-sm-6 col-md-4">
                     <SalesCountCard type="warning" title="Tagihan Klaim Promo" :count="95" viewName="dashboard.finance" />
