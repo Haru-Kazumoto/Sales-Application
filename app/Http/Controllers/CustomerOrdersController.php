@@ -457,12 +457,20 @@ class CustomerOrdersController extends Controller
         $transactions
             ->load('transactionDetails', 'transactionItems.product.productJournals');
 
+            //shoulda get the product journals where action is only IN
+            // ->whereHas('transactionItems.product', function($query) {
+            //     $query->whereHas('productJournals', function($query) {
+            //         $query->where('action', 'IN');
+            //     });
+            // });
+
         // Mengambil detail berdasarkan kategori
         $customer = $transactions->transactionDetails->firstWhere('category', "Customer")->value ?? null;
         $customer_address = $transactions->transactionDetails->firstWhere('category', "Customer Address")->value ?? null;
         $number_plate = $transactions->transactionDetails->firstWhere('category', "Number Plate")->value ?? null;
         $travel_document_date = Carbon::parse($transactions->transactionDetails->firstWhere('category', 'Travel Document Date')->value)->format('d F Y');
         $warehouse = $transactions->transactionDetails->firstWhere('category', 'Warehouse')->value ?? '';
+        
         // Data yang akan dikirimkan ke view PDF
         $data = [
             'travel_document' => $transactions, // document_code, produk

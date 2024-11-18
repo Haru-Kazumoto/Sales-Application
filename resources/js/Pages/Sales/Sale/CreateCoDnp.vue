@@ -217,17 +217,25 @@
                     <span>{{ subtotal }}</span>
                 </div>
                 <div class="d-flex justify-content-between py-2">
-                    <span>PPN 11%</span>
-                    <span>{{ totalPPN }}</span>
+                    <span>Diskon</span>
+                    <span>Rp 100.000,00</span>
                 </div>
                 <div class="d-flex justify-content-between py-2 fw-bold border-top border-bottom">
                     <span>Total harga</span>
                     <span>{{ totalPrice }}</span>
                 </div>
+                <div class="d-flex justify-content-between py-2">
+                    <span>PPN 11%</span>
+                    <span>{{ totalPPN }}</span>
+                </div>
+                <div class="d-flex justify-content-between py-2 fw-bold border-top border-bottom">
+                    <span>Total Tagihan</span>
+                    <span>Rp 150.000,00</span>
+                </div>
                 <div class="d-flex flex-column w-100 justify-content-between mt-2 gap-3">
                     <div class="d-flex justify-content-between">
                         <span>TERM OF PAYMENT</span>
-                        <span class="fw-bold">{{ `${form.term_of_payment} HARI` }}</span>
+                        <span class="fw-bold">{{ form.term_of_payment ? `${form.term_of_payment} HARI` : ''}}</span>
                     </div>
                     <div class="d-flex justify-content-between">
                         <span>JATUH TEMPO</span>
