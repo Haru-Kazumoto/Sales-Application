@@ -24,8 +24,8 @@
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">NAMA CUSTOMER<span class="text-danger">*</span></label>
-                            <n-select filterable :loading="loading" :options="customerOptions" size="large" placeholder=""
-                                v-model:value="transaction_details.customer" />
+                            <n-select filterable :loading="loading" :options="customerOptions" size="large"
+                                placeholder="" v-model:value="transaction_details.customer" />
                         </div>
                     </div>
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4">
@@ -214,7 +214,7 @@
             <div class="card-body d-flex flex-column">
                 <div class="d-flex justify-content-between py-2">
                     <span>Sub Total</span>
-                    <span>{{ subtotal }}</span>
+                    <span>{{ formatRupiah(subtotal) }}</span>
                 </div>
                 <div class="d-flex justify-content-between py-2" v-if="totalDiscounts > 0">
                     <span>Diskon</span>
@@ -628,26 +628,49 @@ export default defineComponent({
             }
         });
 
+        // const subtotal = computed(() => {
+        //     // Menghitung subtotal dari semua produk tanpa mengalikan quantity
+        //     const total = form.transaction_items.reduce((total, item) => {
+        //         return total + Number(item.total_price ?? 0); // Konversi amount ke number
+        //     }, 0);
+
+        //     // Menyimpan subtotal ke dalam form
+        //     form.sub_total = total;
+
+        //     // Mengembalikan subtotal yang diformat
+        //     // return total;
+        //     return formatRupiah(total);
+        // });
         const subtotal = computed(() => {
-            // Menghitung subtotal dari semua produk tanpa mengalikan quantity
+            // Menghitung subtotal dari semua produk menggunakan harga asli sebelum diskon
             const total = form.transaction_items.reduce((total, item) => {
-                return total + Number(item.total_price ?? 0); // Konversi amount ke number
+                // Menghitung harga sebelum diskon: quantity * unit_price
+                const priceBeforeDiscount = (Number(item.amount) ?? 0) * (Number(item.quantity) ?? 0);
+                return total + priceBeforeDiscount; // Menambahkan harga sebelum diskon
             }, 0);
 
             // Menyimpan subtotal ke dalam form
             form.sub_total = total;
 
             // Mengembalikan subtotal yang diformat
-            // return total;
-            return formatRupiah(total);
+            return total;
         });
+
 
         const totalDiscounts = computed(() => {
             // Menghitung total diskon dari semua produk dalam transaction_items
             const resultDiscounts = form.transaction_items.reduce((total, item) => {
-                const discount1 = item.total_discount_1 || 0;
-                const discount2 = item.total_discount_2 || 0;
-                const discount3 = item.total_discount_3 || 0;
+                const quantity = item.quantity || 0;
+                const originalPrice = item.amount??0 * quantity;
+
+                // Menghitung diskon 1 berdasarkan harga asli
+                const discount1 = originalPrice * (item.discount_1 || 0) / 100;
+
+                // Menghitung diskon 2 berdasarkan harga setelah diskon 1
+                const discount2 = (originalPrice - discount1) * (item.discount_2 || 0) / 100;
+
+                // Menghitung diskon 3 berdasarkan harga setelah diskon 2
+                const discount3 = (originalPrice - discount1 - discount2) * (item.discount_3 || 0) / 100;
 
                 // Menambahkan total diskon untuk setiap item
                 return total + discount1 + discount2 + discount3;
@@ -658,13 +681,13 @@ export default defineComponent({
 
         const totalPrice = computed(() => {
             // Menghitung subtotal dari semua produk tanpa mengalikan quantity
-            const subtotal = form.transaction_items.reduce((total, item) => {
-                return total + Number(item.total_price ?? 0); // Konversi amount ke number
-            }, 0);
+            // const subtotal = form.transaction_items.reduce((total, item) => {
+            //     return total + Number(item.total_price ?? 0); // Konversi amount ke number
+            // }, 0);
 
             // Menghitung total harga termasuk PPN 11%
             // const totalWithPPN = subtotal + (subtotal * 0.11);
-            const totalWithDiscounts = subtotal + totalDiscounts.value;
+            const totalWithDiscounts = subtotal.value - totalDiscounts.value;
 
             // Menyimpan total ke dalam form
             const total = Math.round(totalWithDiscounts);
@@ -734,6 +757,22 @@ export default defineComponent({
                 return; // Hentikan eksekusi jika quantity tidak valid
             }
 
+            let finalAmount = transaction_items.value.amount; // Default ke harga asli
+            if (transaction_items.value.discount_3) {
+                finalAmount = transaction_details.value.total_discount_3;
+            } else if (transaction_items.value.discount_2) {
+                finalAmount = transaction_details.value.total_discount_2;
+            } else if (transaction_items.value.discount_1) {
+                finalAmount = transaction_details.value.total_discount_1;
+            }
+            if (finalAmount === null || isNaN(finalAmount)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Nilai harga tidak valid!',
+                });
+                return;
+            }
+
             // Tentukan harga barang (amount) berdasarkan harga asli
             const amount = Number(transaction_items.value.amount); // Harga asli
 
@@ -746,7 +785,7 @@ export default defineComponent({
             }
 
             // Hitung total harga barang sebelum diskon (harga satuan * quantity)
-            let totalPrice = amount * quantity;
+            let totalPrice = finalAmount * quantity;
 
             // kurangi total price dari program promo yang dibuat (jika ada dan aktif)
             if (isPromoActive.value) {
@@ -762,13 +801,13 @@ export default defineComponent({
             }
 
             // Hitung total dari semua diskon yang diisi
-            const totalDiscount =
-                (transaction_details.value.total_discount_1 || 0) +
-                (transaction_details.value.total_discount_2 || 0) +
-                (transaction_details.value.total_discount_3 || 0);
+            // const totalDiscount =
+            //     (transaction_details.value.total_discount_1 || 0) +
+            //     (transaction_details.value.total_discount_2 || 0) +
+            //     (transaction_details.value.total_discount_3 || 0);
 
-            // Kurangi total_price dengan total diskon
-            totalPrice -= totalDiscount;
+            // // Kurangi total_price dengan total diskon
+            // totalPrice -= totalDiscount;
 
             // Pastikan total_price tidak negatif
             totalPrice = Math.max(totalPrice, 0);
@@ -871,7 +910,7 @@ export default defineComponent({
                 // {
                 //     name: "Total Harga Diskon 1",
                 //     category: "Total Discount 1",
-                //     value: transaction_details.value.total_discount_1 ? '0' : '0',
+                //     value: form.transaction_items.find(data => data.total_discount_1)?.total_discount_1 ? '0' : '0',
                 //     data_type: 'float',
                 // },
                 // {
@@ -970,29 +1009,29 @@ export default defineComponent({
                 },
                 onSuccess() {
                     // Reset form dengan nilai awal
-                    form.document_code = (page.props.coNumber as string),
-                        form.term_of_payment = null as unknown as number,
-                        form.due_date = null as unknown as string,
-                        form.description = '',
-                        form.sub_total = null as unknown as number,
-                        form.total = null as unknown as number,
-                        form.tax_amount = null as unknown as number,
-                        form.transaction_details = [],
-                        form.transaction_items = [],
-                        transaction_details.value = {
-                            cashback: null as unknown as number,
-                            customer: '',
-                            customer_address: '',
-                            npwp: '',
-                            customer_order_date: (page.props.dateNow),
-                            legality: '',
-                            salesman: ((page.props.auth as any).user.fullname),
-                            total_discount_1: null as unknown as number,
-                            total_discount_2: null as unknown as number,
-                            total_discount_3: null as unknown as number,
-                            transportation_cost: null as unknown as number,
-                            unloading_cost: null as unknown as number
-                        };
+                    form.document_code = (page.props.coNumber as string);
+                    form.term_of_payment = null as unknown as number;
+                    form.due_date = null as unknown as string;
+                    form.description = '';
+                    form.sub_total = null as unknown as number;
+                    form.total = null as unknown as number;
+                    form.tax_amount = null as unknown as number;
+                    form.transaction_details = [];
+                    form.transaction_items = [];
+                    transaction_details.value = {
+                        cashback: null as unknown as number,
+                        customer: '',
+                        customer_address: '',
+                        npwp: '',
+                        customer_order_date: (page.props.dateNow),
+                        legality: '',
+                        salesman: ((page.props.auth as any).user.fullname),
+                        total_discount_1: null as unknown as number,
+                        total_discount_2: null as unknown as number,
+                        total_discount_3: null as unknown as number,
+                        transportation_cost: null as unknown as number,
+                        unloading_cost: null as unknown as number
+                    };
 
                     products.value = {
                         code: '',
