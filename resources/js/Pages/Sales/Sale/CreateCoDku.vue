@@ -661,7 +661,7 @@ export default defineComponent({
             // Menghitung total diskon dari semua produk dalam transaction_items
             const resultDiscounts = form.transaction_items.reduce((total, item) => {
                 const quantity = item.quantity || 0;
-                const originalPrice = item.amount??0 * quantity;
+                const originalPrice = item.amount * quantity;
 
                 // Menghitung diskon 1 berdasarkan harga asli
                 const discount1 = originalPrice * (item.discount_1 || 0) / 100;
