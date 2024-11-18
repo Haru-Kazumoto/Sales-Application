@@ -870,34 +870,34 @@ export default defineComponent({
                 });
             } finally {
                 // RESET FORM YANG DIISI
-                transaction_items.value = {
-                    unit: "",
-                    quantity: null as unknown as number,
-                    product_id: null,
-                    tax_id: null,
-                    discount_1: null as unknown as number,
-                    discount_2: null as unknown as number,
-                    discount_3: null as unknown as number,
-                    amount: null as unknown as number,
-                };
+                // transaction_items.value = {
+                //     unit: "",
+                //     quantity: null as unknown as number,
+                //     product_id: null,
+                //     tax_id: null,
+                //     discount_1: null as unknown as number,
+                //     discount_2: null as unknown as number,
+                //     discount_3: null as unknown as number,
+                //     amount: null as unknown as number,
+                // };
 
-                transaction_details.value = {
-                    total_discount_1: null as unknown as number,
-                    total_discount_2: null as unknown as number,
-                    total_discount_3: null as unknown as number,
-                };
+                // transaction_details.value = {
+                //     total_discount_1: null as unknown as number,
+                //     total_discount_2: null as unknown as number,
+                //     total_discount_3: null as unknown as number,
+                // };
 
-                product_journals.value = {
-                    batch_code: "",
-                    expiry_date: null,
-                    product_id: null,
-                };
+                // product_journals.value = {
+                //     batch_code: "",
+                //     expiry_date: null,
+                //     product_id: null,
+                // };
 
-                products.value = {
-                    code: "",
-                    name: "",
-                    last_stock: null as unknown as number,
-                };
+                // products.value = {
+                //     code: "",
+                //     name: "",
+                //     last_stock: null as unknown as number,
+                // };
             }
         }
 
