@@ -482,7 +482,6 @@ export default defineComponent({
 
                     // Reset form.transaction_items untuk memasukkan produk baru
                     form.transaction_items = [];
-                    console.log(data.transaction_items);
                     // Loop data dari backend dan masukkan ke form.transaction_items
                     data.transaction_items?.forEach(item => {
                         form.transaction_items.push({

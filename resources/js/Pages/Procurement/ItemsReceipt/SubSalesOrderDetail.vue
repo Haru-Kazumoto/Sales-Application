@@ -225,7 +225,6 @@ export default defineComponent({
     setup() {
         const page = usePage();
         const detailTransaction = page.props.transaction as Transactions;
-        console.log(detailTransaction);
 
         const form = useForm({
             document_code: detailTransaction.document_code || (page.props.po_number as string),

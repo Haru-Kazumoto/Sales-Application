@@ -88,7 +88,6 @@ export default defineComponent({
         const loadingRef = ref(false);
         const notification = useNotification();
         const promo = page.props.promoProgram as any;
-        console.log(promo);
 
         function createColumns() {
             return [

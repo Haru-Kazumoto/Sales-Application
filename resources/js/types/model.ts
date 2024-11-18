@@ -76,9 +76,9 @@ export interface TransactionDetail {
     id?: number;
     name: string;
     category: string;
-    total_price_discount_1?: number | null;
-    total_price_discount_2?: number | null;
-    total_price_discount_3?: number | null;
+    total_discount_1?: number | null;
+    total_discount_2?: number | null;
+    total_discount_3?: number | null;
     value?: string;
     data_type: string;
     transactions_id?: number;
@@ -96,6 +96,9 @@ export interface TransactionItems {
     discount_1?: number | null;
     discount_2?: number | null;
     discount_3?: number | null;
+    total_discount_1?: number | null;
+    total_discount_2?: number | null;
+    total_discount_3?: number | null;
     transactions_id?: number | null;
     product_id?: number | null;
     tax_id?: number | null;

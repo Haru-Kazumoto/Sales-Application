@@ -61,7 +61,8 @@
                                 placeholder="" />
                         </div>
                     </div>
-                    <div class="col-6 col-sm-6 col-md-6 col-lg-4" v-if="$page.props.auth.user.division.division_name === 'MARKETING'">
+                    <div class="col-6 col-sm-6 col-md-6 col-lg-4"
+                        v-if="$page.props.auth.user.division.division_name === 'MARKETING'">
                         <div class="d-flex flex-column gap-1">
                             <label for="">BIAYA ANGKUTAN<span class="text-danger">*</span></label>
                             <n-input readonly size="large" placeholder=""
@@ -137,8 +138,7 @@
                     <label for="quantity" class="fs-5">Quantity ({{ (selectedItem as any).quantity }})
                         <RequiredMark />
                     </label>
-                    <n-input v-model:value="newQuantity" placeholder="Enter new quantity"
-                        size="large" />
+                    <n-input v-model:value="newQuantity" placeholder="Enter new quantity" size="large" />
                     <strong>Product Name: {{ (selectedItem as any).product.name }}</strong>
 
                     <!-- Menampilkan nama produk sebagai contoh -->
@@ -184,7 +184,6 @@ export default defineComponent({
         function openModal(item) {
             selectedItem.value = item; // Simpan data item ke selectedItem
             showModal.value = true;    // Tampilkan modal
-            console.log(customer_order.transaction_details.find((data) => { return data.category === "Warehouse" })?.value);
         }
 
         function createColumns(): DataTableColumns<TransactionItems> {
@@ -200,7 +199,7 @@ export default defineComponent({
                 {
                     title: "NAMA PRODUK",
                     key: 'name',
-                    width: 200,
+                    width: 300,
                     render(row) {
                         return row.product?.name;
                     }
@@ -223,22 +222,7 @@ export default defineComponent({
                         return formatRupiah(row.amount ?? 0);
                     }
                 },
-                {
-                    title: "TOTAL HARGA",
-                    key: 'total',
-                    width: 200,
-                    render(row) {
-                        return formatRupiah(row.total_price ?? 0);
-                    }
-                },
-                {
-                    title: "TOTAL HARGA (INC PPN)",
-                    key: 'tax_amount',
-                    width: 250,
-                    render(row) {
-                        return formatRupiah(row.tax_amount ?? 0);
-                    }
-                },
+
                 {
                     title: "DISCOUNT 1",
                     key: 'discount_1',
@@ -248,15 +232,20 @@ export default defineComponent({
                     }
                 },
                 {
-                    title: "PRICE AFTER DISCOUNT 1",
-                    key: 'price_after_discount_1',
+                    title: "HARGA DISCOUNT 1",
+                    key: 'total_price_discount_1',
                     width: 250,
                     render(row) {
-                        const discount1 = row.discount_1 ?? 0;
-                        const price_after_discount_1 = row.amount ?? 0 * (1 - discount1 / 100);
-                        return formatRupiah(price_after_discount_1);
+                        // Menghitung harga setelah diskon 1
+                        const amount = row.amount ?? 0;
+                        const discount_1 = row.discount_1 ?? 0;
+                        const priceAfterDiscount1 = amount - (amount * discount_1 / 100);
+
+                        // Mengembalikan harga setelah diskon 1
+                        return formatRupiah(priceAfterDiscount1 ?? 0);
                     }
                 },
+
                 {
                     title: "DISCOUNT 2",
                     key: 'discount_2',
@@ -266,19 +255,19 @@ export default defineComponent({
                     }
                 },
                 {
-                    title: "PRICE AFTER DISCOUNT 2",
-                    key: 'price_after_discount_2',
+                    title: "HARGA DISCOUNT 2",
+                    key: 'total_price_discount_2',
                     width: 250,
                     render(row) {
-                        const discount1 = row.discount_1 ?? 0;
-                        const discount2 = row.discount_2 ?? 0;
+                        // Menghitung harga setelah diskon 2
+                        const amount = row.amount ?? 0;
+                        const discount_1 = row.discount_1 ?? 0;
+                        const discount_2 = row.discount_2 ?? 0;
+                        const priceAfterDiscount1 = amount - (amount * discount_1 / 100);
+                        const priceAfterDiscount2 = priceAfterDiscount1 - (priceAfterDiscount1 * discount_2 / 100);
 
-                        // Harga setelah diskon 1
-                        const price_after_discount_1 = row.amount ?? 0 * (1 - discount1 / 100);
-
-                        // Harga setelah diskon 2
-                        const price_after_discount_2 = price_after_discount_1 * (1 - discount2 / 100);
-                        return formatRupiah(price_after_discount_2);
+                        // Mengembalikan harga setelah diskon 2
+                        return formatRupiah(priceAfterDiscount2 ?? 0);
                     }
                 },
                 {
@@ -289,81 +278,87 @@ export default defineComponent({
                         return `${row.discount_3} %`
                     }
                 },
+
                 {
-                    title: "PRICE AFTER DISCOUNT 3",
-                    key: 'price_after_discount_3',
+                    title: "HARGA DISCOUNT 3",
+                    key: 'total_price_discount_3',
                     width: 250,
                     render(row) {
-                        const discount1 = row.discount_1 ?? 0;
-                        const discount2 = row.discount_2 ?? 0;
-                        const discount3 = row.discount_3 ?? 0;
+                        // Menghitung harga setelah diskon 3
+                        const amount = row.amount ?? 0;
+                        const discount_1 = row.discount_1 ?? 0;
+                        const discount_2 = row.discount_2 ?? 0;
+                        const discount_3 = row.discount_3 ?? 0;
+                        const priceAfterDiscount1 = amount - (amount * discount_1 / 100);
+                        const priceAfterDiscount2 = priceAfterDiscount1 - (priceAfterDiscount1 * discount_2 / 100);
+                        const priceAfterDiscount3 = priceAfterDiscount2 - (priceAfterDiscount2 * discount_3 / 100);
 
-                        // Harga setelah diskon 1 dan 2
-                        const price_after_discount_1 = row.amount ?? 0 * (1 - discount1 / 100);
-                        const price_after_discount_2 = price_after_discount_1 * (1 - discount2 / 100);
-
-                        // Harga setelah diskon 3
-                        const price_after_discount_3 = price_after_discount_2 * (1 - discount3 / 100);
-                        return formatRupiah(price_after_discount_3);
+                        // Mengembalikan harga setelah diskon 3
+                        return formatRupiah(priceAfterDiscount3 ?? 0);
                     }
                 },
                 {
-                    title: "FINAL PRICE",
-                    key: 'final_price',
-                    width: 250,
+                    title: "TOTAL HARGA",
+                    key: 'total',
+                    width: 200,
                     render(row) {
-                        const discount1 = row.discount_1 ?? 0;
-                        const discount2 = row.discount_2 ?? 0;
-                        const discount3 = row.discount_3 ?? 0;
-
-                        // Harga setelah diskon 1, 2, dan 3
-                        const price_after_discount_1 = row.amount ?? 0 * (1 - discount1 / 100);
-                        const price_after_discount_2 = price_after_discount_1 * (1 - discount2 / 100);
-                        const final_price = price_after_discount_2 * (1 - discount3 / 100);
-
-                        return formatRupiah(final_price);
+                        return formatRupiah(row.total_price ?? 0);
                     }
                 },
-                {
-                    title: "ACTION",
-                    key: 'action',
-                    width: 100,
-                    render(row, index) {
-                        return h(
-                            NButton,
-                            {
-                                type: 'info',
-                                size: 'small',
-                                onClick: () => {
-                                    selectedProduct.value = row;
-                                    openModal(row)
-                                }
-                            },
-                            { default: () => "Edit Quantity" }
-                        )
-                    }
-                }
+                // {
+                //     title: "ACTION",
+                //     key: 'action',
+                //     width: 100,
+                //     render(row, index) {
+                //         return h(
+                //             NButton,
+                //             {
+                //                 type: 'error',
+                //                 size: 'small',
+                //                 onClick: () => {
+                //                     Swal.fire({
+                //                         icon: 'question',
+                //                         text: `Delete ${row.product?.name}?`,
+                //                         showCancelButton: true,
+                //                     }).then((result) => {
+                //                         if (result.isConfirmed) {
+                //                             removeProduct(index);
+
+                //                             notification.success({
+                //                                 title: `${row.product?.name} has been deleted!`,
+                //                                 closable: true,
+                //                                 keepAliveOnHover: false,
+                //                                 duration: 2000,
+                //                             });
+                //                         }
+                //                     });
+                //                 }
+                //             },
+                //             { default: () => "Hapus" }
+                //         )
+                //     }
+                // }
             ]
         }
 
         function reStoreStockProduct() {
-            router.post(route('sales.restore-products', (selectedProduct.value as any).id), {
-                quantity: newQuantity.value,
-                amount: (selectedProduct.value as any).amount,
-                allocation: customer_order.transaction_details.find((data) => { return data.category === "Warehouse" })?.value, // Ganti dengan nama gudang yang sesuai
-            }, {
-                onSuccess: (page) => {
-                    showModal.value = false; // Tutup modal
-                    Swal.fire((page.props.flash as Flash).success,'','success');
-                },
-                onError: (errors) => {
-                    notification.error({
-                        title: 'Error',
-                        content: 'Gagal mengembalikan barang ke gudang'
-                    });
-                    console.error(errors);
-                }
-            });
+            // router.post(route('sales.restore-products', (selectedProduct.value as any).id), {
+            //     quantity: newQuantity.value,
+            //     amount: (selectedProduct.value as any).amount,
+            //     allocation: customer_order.transaction_details.find((data) => { return data.category === "Warehouse" })?.value, // Ganti dengan nama gudang yang sesuai
+            // }, {
+            //     onSuccess: (page) => {
+            //         showModal.value = false; // Tutup modal
+            //         Swal.fire((page.props.flash as Flash).success, '', 'success');
+            //     },
+            //     onError: (errors) => {
+            //         notification.error({
+            //             title: 'Error',
+            //             content: 'Gagal mengembalikan barang ke gudang'
+            //         });
+            //         console.error(errors);
+            //     }
+            // });
         }
 
         const form = useForm({

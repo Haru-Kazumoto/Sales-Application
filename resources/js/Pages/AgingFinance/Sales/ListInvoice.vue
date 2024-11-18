@@ -25,7 +25,6 @@ dayjs.locale('id'); // Set locale to Indonesian
 export default defineComponent({
     setup () {
         const page = usePage();
-        console.log((page.props.invoices as any).data);
 
         function createColumns(){
             return [

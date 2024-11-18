@@ -132,8 +132,6 @@ export default defineComponent({
     setup() {
         const page = usePage();
         const booking_request = page.props.booking_request_order as any[];
-        console.log(booking_request);
-
         return {
             columns: createColumns(),
         }

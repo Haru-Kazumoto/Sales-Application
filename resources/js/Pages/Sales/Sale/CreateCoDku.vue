@@ -24,7 +24,7 @@
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">NAMA CUSTOMER<span class="text-danger">*</span></label>
-                            <n-select filterable :loading="loading" :options="customerOptions" size="large"
+                            <n-select filterable :loading="loading" :options="customerOptions" size="large" placeholder=""
                                 v-model:value="transaction_details.customer" />
                         </div>
                     </div>
@@ -216,23 +216,31 @@
                     <span>Sub Total</span>
                     <span>{{ subtotal }}</span>
                 </div>
-                <div class="d-flex justify-content-between py-2">
-                    <span>PPN 11%</span>
-                    <span>{{ totalPPN }}</span>
+                <div class="d-flex justify-content-between py-2" v-if="totalDiscounts > 0">
+                    <span>Diskon</span>
+                    <span>{{ formatRupiah(totalDiscounts) }}</span>
                 </div>
                 <div class="d-flex justify-content-between py-2 fw-bold border-top border-bottom">
                     <span>Total harga</span>
-                    <span>{{ totalPrice }}</span>
+                    <span>{{ formatRupiah(totalPrice) }}</span>
+                </div>
+                <div class="d-flex justify-content-between py-2">
+                    <span>PPN 11%</span>
+                    <span>{{ formatRupiah(totalPPN) }}</span>
+                </div>
+                <div class="d-flex justify-content-between py-2 fw-bold border-top border-bottom">
+                    <span>Total Tagihan</span>
+                    <span>{{ formatRupiah(grandTotal) }}</span>
                 </div>
                 <div class="d-flex flex-column w-100 justify-content-between mt-2 gap-3">
                     <div class="d-flex justify-content-between">
                         <span>TERM OF PAYMENT</span>
-                        <span class="fw-bold">{{ `${form.term_of_payment} HARI` }}</span>
+                        <span class="fw-bold">{{ form.term_of_payment ? `${form.term_of_payment} HARI` : '' }}</span>
                     </div>
                     <div class="d-flex justify-content-between">
                         <span>JATUH TEMPO</span>
-                        <span class="fw-bold">{{ form.due_date ? dayjs(form.due_date).format('dddd, D MMMM YYYY') : ''
-                            }}</span>
+                        <span class="fw-bold">{{ form.due_date ? dayjs(form.due_date).format('dddd, D MMMM YYYY') :
+                            '' }}</span>
                     </div>
                 </div>
                 <n-button class="my-3 ms-auto" type="primary" @click="handleSubmitCo">SUBMIT CO</n-button>
@@ -317,7 +325,7 @@ export default defineComponent({
                     key: 'total_price_discount_1',
                     width: 250,
                     render(row) {
-                        return formatRupiah(transaction_details.value.total_discount_1 ?? 0);
+                        return formatRupiah(row.total_discount_1 ?? 0);
                     }
                 },
                 {
@@ -333,7 +341,7 @@ export default defineComponent({
                     key: 'total_price_discount_2',
                     width: 250,
                     render(row) {
-                        return formatRupiah(transaction_details.value.total_discount_2 ?? 0);
+                        return formatRupiah(row.total_discount_2 ?? 0);
                     }
                 },
                 {
@@ -349,7 +357,7 @@ export default defineComponent({
                     key: 'total_price_discount_3',
                     width: 250,
                     render(row) {
-                        return formatRupiah(transaction_details.value.total_discount_3 ?? 0);
+                        return formatRupiah(row.total_discount_3 ?? 0);
                     }
                 },
                 {
@@ -423,6 +431,7 @@ export default defineComponent({
             total_discount_2: null as any,
         });
 
+
         const products = ref({
             code: '',
             unit: '',
@@ -472,39 +481,41 @@ export default defineComponent({
             [
                 () => transaction_items.value.discount_1,
                 () => transaction_items.value.discount_2,
-                () => transaction_items.value.discount_3
+                () => transaction_items.value.discount_3,
             ],
             () => {
                 let originalPrice = transaction_items.value.amount || 0;
 
-                // Jika discount_1 diisi, hitung total_discount_1
+                // Reset diskon jika nilainya berubah
+                transaction_details.value.total_discount_1 = null;
+                transaction_details.value.total_discount_2 = null;
+                transaction_details.value.total_discount_3 = null;
+
+                // Cek apakah diskon 1 berubah dan belum dihitung
                 if (transaction_items.value.discount_1 !== null && transaction_items.value.discount_1 !== undefined && transaction_items.value.discount_1 > 0) {
                     let discount1 = originalPrice * transaction_items.value.discount_1 / 100;
                     transaction_details.value.total_discount_1 = originalPrice - discount1;
-                } else {
-                    transaction_details.value.total_discount_1 = null as unknown as number; // Kosongkan jika tidak ada discount_1
                 }
 
-                // Jika discount_2 diisi, hitung total_discount_2 menggunakan hasil dari total_discount_1
+                // Cek apakah diskon 2 berubah dan belum dihitung
                 if (transaction_items.value.discount_2 !== null && transaction_items.value.discount_2 !== undefined && transaction_items.value.discount_2 > 0 && transaction_details.value.total_discount_1 !== null) {
                     let discount2 = transaction_details.value.total_discount_1 * transaction_items.value.discount_2 / 100;
                     transaction_details.value.total_discount_2 = transaction_details.value.total_discount_1 - discount2;
-                } else {
-                    transaction_details.value.total_discount_2 = null as unknown as number; // Kosongkan jika tidak ada discount_2
                 }
 
-                // Jika discount_3 diisi, hitung total_discount_3 menggunakan hasil dari total_discount_2
+                // Cek apakah diskon 3 berubah dan belum dihitung
                 if (transaction_items.value.discount_3 !== null && transaction_items.value.discount_3 !== undefined && transaction_items.value.discount_3 > 0 && transaction_details.value.total_discount_2 !== null) {
                     let discount3 = transaction_details.value.total_discount_2 * transaction_items.value.discount_3 / 100;
                     transaction_details.value.total_discount_3 = transaction_details.value.total_discount_2 - discount3;
-                } else {
-                    transaction_details.value.total_discount_3 = null as unknown as number; // Kosongkan jika tidak ada discount_3
                 }
 
                 // Mengupdate total_price menjadi nilai terakhir yang dihitung dari diskon yang tersedia
                 transaction_items.value.total_price = transaction_details.value.total_discount_3 || transaction_details.value.total_discount_2 || transaction_details.value.total_discount_1 || originalPrice;
             }
         );
+
+
+
 
         watch(() => transaction_details.value.customer, (name) => {
             const selectedCustomer = customerOptions.find(data => data.label === name);
@@ -523,7 +534,6 @@ export default defineComponent({
 
         // Properti computed untuk promosi dan harga diskon
         const hasPromo = computed(() => {
-            console.log("Promo Value:", products.value.promo_value);
             return products.value.promo_value !== null;
         });
 
@@ -539,9 +549,6 @@ export default defineComponent({
 
         const promoPercentage = computed(() => {
             const promo = products.value.promo_value ?? 0;
-            // Pastikan promo dikonversi menjadi persentase desimal
-            // const percentage = promo / 100;
-            // console.log("Promo Percentage (decimal):", percentage);
             return promo;
         });
 
@@ -553,19 +560,16 @@ export default defineComponent({
             if (amount !== null && promo_value !== null) {
                 // Cek apakah quantity berada dalam range min dan max
                 if (quantity >= min && quantity <= max) {
-                    const discountAmount = amount * (promoPercentage.value / 100); // Menghitung diskon
-                    const discounted = (amount - discountAmount).toFixed(0); // Mengurangi harga dengan diskon
-                    console.log("Discounted Price:", discounted);
-                    return discounted; // Mengembalikan harga yang telah dikurangi diskon
+                    const discountAmount = amount * (promo_value / 100); // Menghitung diskon
+                    const discounted = amount - discountAmount; // Mengurangi harga dengan diskon
+                    return discounted.toFixed(0); // Mengembalikan harga yang telah dikurangi diskon
                 }
             }
-            return amount; // Kembalikan harga asli jika tidak memenuhi syarat
+            return amount.toFixed(0); // Kembalikan harga asli jika tidak memenuhi syarat
         });
-
 
         watch(() => products.value.name, (name) => {
             const selectedProduct = productOptions.find(data => data.value === name);
-            console.log(selectedProduct);
 
             if (selectedProduct) {
                 const today = new Date();
@@ -624,30 +628,6 @@ export default defineComponent({
             }
         });
 
-
-
-
-        const totalPPN = computed(() => {
-            // Menghitung subtotal dari semua produk tanpa mengalikan quantity
-            const subtotal = form.transaction_items.reduce((total, item) => {
-                return total + Number(item.total_price ?? 0); // Konversi amount ke number
-            }, 0);
-
-            // Menghitung PPN 11%
-            const ppn = subtotal * 0.11;
-
-            // Membulatkan PPN sesuai aturan yang kamu inginkan
-            const roundedPPN = Math.round(ppn);
-
-            // Menyimpan PPN yang sudah dibulatkan ke dalam form
-            form.tax_amount = roundedPPN;
-
-            // Mengembalikan nilai PPN yang diformat
-            // return roundedPPN;
-            return formatRupiah(roundedPPN);
-        });
-
-
         const subtotal = computed(() => {
             // Menghitung subtotal dari semua produk tanpa mengalikan quantity
             const total = form.transaction_items.reduce((total, item) => {
@@ -662,6 +642,20 @@ export default defineComponent({
             return formatRupiah(total);
         });
 
+        const totalDiscounts = computed(() => {
+            // Menghitung total diskon dari semua produk dalam transaction_items
+            const resultDiscounts = form.transaction_items.reduce((total, item) => {
+                const discount1 = item.total_discount_1 || 0;
+                const discount2 = item.total_discount_2 || 0;
+                const discount3 = item.total_discount_3 || 0;
+
+                // Menambahkan total diskon untuk setiap item
+                return total + discount1 + discount2 + discount3;
+            }, 0);
+
+            return resultDiscounts;
+        });
+
         const totalPrice = computed(() => {
             // Menghitung subtotal dari semua produk tanpa mengalikan quantity
             const subtotal = form.transaction_items.reduce((total, item) => {
@@ -669,16 +663,40 @@ export default defineComponent({
             }, 0);
 
             // Menghitung total harga termasuk PPN 11%
-            const totalWithPPN = subtotal + (subtotal * 0.11);
+            // const totalWithPPN = subtotal + (subtotal * 0.11);
+            const totalWithDiscounts = subtotal + totalDiscounts.value;
 
             // Menyimpan total ke dalam form
-            const roundedTotalWithPpn = Math.round(totalWithPPN);
+            const total = Math.round(totalWithDiscounts);
 
-            form.total = roundedTotalWithPpn;
+            // form.total = total;
 
             // Mengembalikan total harga yang diformat
-            // return roundedTotalWithPpn;
-            return formatRupiah(totalWithPPN);
+            // return total;
+            return totalWithDiscounts;
+        });
+
+        const totalPPN = computed(() => {
+            // Menghitung PPN 11%
+            const ppn = totalPrice.value * 0.11;
+
+            // Membulatkan PPN sesuai aturan yang kamu inginkan
+            const roundedPPN = Math.round(ppn);
+
+            // Menyimpan PPN yang sudah dibulatkan ke dalam form
+            form.tax_amount = roundedPPN;
+
+            // Mengembalikan nilai PPN yang diformat
+            // return roundedPPN;
+            return roundedPPN;
+        });
+
+        const grandTotal = computed(() => {
+            const grandTotal = totalPrice.value + totalPPN.value;
+
+            form.total = grandTotal;
+
+            return grandTotal;
         });
 
         const defaultProductJournal = {
@@ -716,17 +734,10 @@ export default defineComponent({
                 return; // Hentikan eksekusi jika quantity tidak valid
             }
 
-            // Tentukan harga barang (amount) berdasarkan prioritas diskon
-            let finalAmount = transaction_items.value.amount; // Default ke harga asli
-            if (transaction_items.value.discount_3) {
-                finalAmount = transaction_details.value.total_discount_3;
-            } else if (transaction_items.value.discount_2) {
-                finalAmount = transaction_details.value.total_discount_2;
-            } else if (transaction_items.value.discount_1) {
-                finalAmount = transaction_details.value.total_discount_1;
-            }
+            // Tentukan harga barang (amount) berdasarkan harga asli
+            const amount = Number(transaction_items.value.amount); // Harga asli
 
-            if (finalAmount === null || isNaN(finalAmount)) {
+            if (amount === null || isNaN(amount)) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Dimohon isi semua field produk',
@@ -734,81 +745,121 @@ export default defineComponent({
                 return;
             }
 
-            // Hitung total harga barang sebelum PPN (harga satuan * quantity)
-            const totalPriceBeforeTax = finalAmount * quantity;
+            // Hitung total harga barang sebelum diskon (harga satuan * quantity)
+            let totalPrice = amount * quantity;
 
-            // --------------- WITH PPN
-            const taxAmount = totalPriceBeforeTax * 0.11; // Pajak PPN 11%
-            const totalPriceWithTax = totalPriceBeforeTax + taxAmount;
+            // kurangi total price dari program promo yang dibuat (jika ada dan aktif)
+            if (isPromoActive.value) {
+                if (promoPercentage.value) {
+                    const convertedToPercentage = promoPercentage.value / 100;
+
+                    // Menghitung diskon berdasarkan persentase
+                    const discountAmount = totalPrice * convertedToPercentage;
+
+                    // Mengurangi harga total dengan diskon
+                    totalPrice -= discountAmount;
+                }
+            }
+
+            // Hitung total dari semua diskon yang diisi
+            const totalDiscount =
+                (transaction_details.value.total_discount_1 || 0) +
+                (transaction_details.value.total_discount_2 || 0) +
+                (transaction_details.value.total_discount_3 || 0);
+
+            // Kurangi total_price dengan total diskon
+            totalPrice -= totalDiscount;
+
+            // Pastikan total_price tidak negatif
+            totalPrice = Math.max(totalPrice, 0);
+
+            // Hitung PPN (11%)
+            const taxAmount = totalPrice * 0.11; // Pajak PPN 11%
+            const totalPriceWithTax = totalPrice + taxAmount;
 
             // Format angka pajak dan total harga
             const formattedTaxAmount = parseFloat(taxAmount.toFixed(2));
             const formattedTotalPriceWithTax = parseFloat(totalPriceWithTax.toFixed(2));
 
             // Salin data transaction_items untuk ditambahkan ke tabel
-            const newItem = {
-                unit: transaction_items.value.unit,
-                quantity: quantity,
-                product_id: transaction_items.value.product_id,
-                tax_amount: formattedTaxAmount,
-                amount: finalAmount,
-                tax_id: transaction_items.value.tax_id,
-                total_price: totalPriceBeforeTax,
-                discount_1: transaction_items.value.discount_1 || 0,
-                discount_2: transaction_items.value.discount_2 || 0,
-                discount_3: transaction_items.value.discount_3 || 0,
-                product_journals: [
-                    {
-                        quantity: quantity,
-                        amount: finalAmount,
-                        action: "OUT",
-                        batch_code: product_journals.value.batch_code,
-                        expiry_date: product_journals.value.expiry_date,
-                        product_id: product_journals.value.product_id,
-                    }
-                ],
-                product: {
-                    code: products.value.code,
+            try {
+                const newItem = {
                     unit: transaction_items.value.unit,
-                    name: products.value.name,
-                }
-            };
+                    quantity: quantity,
+                    product_id: transaction_items.value.product_id,
+                    tax_amount: formattedTaxAmount,
+                    amount: amount,
+                    tax_id: transaction_items.value.tax_id,
+                    total_price: totalPrice, // Total setelah semua diskon
+                    discount_1: transaction_items.value.discount_1 || 0,
+                    discount_2: transaction_items.value.discount_2 || 0,
+                    discount_3: transaction_items.value.discount_3 || 0,
+                    total_discount_1: transaction_details.value.total_discount_1,
+                    total_discount_2: transaction_details.value.total_discount_2,
+                    total_discount_3: transaction_details.value.total_discount_3,
+                    product_journals: [
+                        {
+                            quantity: quantity,
+                            amount: amount,
+                            action: "OUT",
+                            batch_code: product_journals.value.batch_code,
+                            expiry_date: product_journals.value.expiry_date,
+                            product_id: product_journals.value.product_id,
+                        }
+                    ],
+                    product: {
+                        code: products.value.code,
+                        unit: transaction_items.value.unit,
+                        name: products.value.name,
+                    }
+                };
 
-            // Tambahkan item ke array form.transaction_items
-            form.transaction_items.push(newItem);
+                // Tambahkan item ke array form.transaction_items
+                form.transaction_items.push(newItem);
 
-            // Notifikasi sukses
-            notification.success({
-                title: "Produk ditambahkan!",
-                duration: 1500,
-                closable: false,
-            });
+                // Notifikasi sukses
+                notification.success({
+                    title: "Produk ditambahkan!",
+                    duration: 1500,
+                    closable: false,
+                });
+            } catch (err) {
+                notification.error({
+                    title: "Produk gagal ditambahkan!",
+                    duration: 2500,
+                    closable: false,
+                });
+            } finally {
+                // RESET FORM YANG DIISI
+                transaction_items.value = {
+                    unit: "",
+                    quantity: null as unknown as number,
+                    product_id: null,
+                    tax_id: null,
+                    discount_1: null as unknown as number,
+                    discount_2: null as unknown as number,
+                    discount_3: null as unknown as number,
+                    amount: null as unknown as number,
+                };
 
-            // Reset field form secara manual
-            transaction_items.value = {
-                unit: '',
-                quantity: null as unknown as number,
-                product_id: null as unknown as number,
-                tax_id: null as unknown as number,
-                amount: null as unknown as number,
-                discount_1: null as unknown as number,
-                discount_2: null as unknown as number,
-                discount_3: null as unknown as number,
-            };
-            product_journals.value = {
-                batch_code: '',
-                expiry_date: '',
-                product_id: null as unknown as number,
-            };
-            products.value = {
-                code: '',
-                name: '',
-                last_stock: 0,
-                promo_name: '',
-                description: '',
-                min: null as unknown as number,
-                max: null as unknown as number,
-            };
+                transaction_details.value = {
+                    total_discount_1: null as unknown as number,
+                    total_discount_2: null as unknown as number,
+                    total_discount_3: null as unknown as number,
+                };
+
+                product_journals.value = {
+                    batch_code: "",
+                    expiry_date: null,
+                    product_id: null,
+                };
+
+                products.value = {
+                    code: "",
+                    name: "",
+                    last_stock: null as unknown as number,
+                };
+            }
         }
 
         function removeProduct(index: number) {
@@ -817,24 +868,24 @@ export default defineComponent({
 
         function handleSubmitCo() {
             form.transaction_details = [
-                {
-                    name: "Total Harga Diskon 1",
-                    category: "Total Discount 1",
-                    value: transaction_details.value.total_discount_1 ? '0' : '0',
-                    data_type: 'float',
-                },
-                {
-                    name: "Total Harga Diskon 2",
-                    category: "Total Discount 2",
-                    value: transaction_details.value.total_discount_2 ? '0' : '0',
-                    data_type: 'float',
-                },
-                {
-                    name: "Total Harga Diskon 3",
-                    category: "Total Discount 3",
-                    value: transaction_details.value.total_discount_3 ? '0' : '0',
-                    data_type: 'float',
-                },
+                // {
+                //     name: "Total Harga Diskon 1",
+                //     category: "Total Discount 1",
+                //     value: transaction_details.value.total_discount_1 ? '0' : '0',
+                //     data_type: 'float',
+                // },
+                // {
+                //     name: "Total Harga Diskon 2",
+                //     category: "Total Discount 2",
+                //     value: transaction_details.value.total_discount_2 ? '0' : '0',
+                //     data_type: 'float',
+                // },
+                // {
+                //     name: "Total Harga Diskon 3",
+                //     category: "Total Discount 3",
+                //     value: transaction_details.value.total_discount_3 ? '0' : '0',
+                //     data_type: 'float',
+                // },
                 {
                     name: "Tanggal CO",
                     category: 'CO Date',
@@ -1015,6 +1066,7 @@ export default defineComponent({
             handleAddProduct,
             removeProduct,
             handleSubmitCo,
+            formatRupiah,
             hasPromo,
             isPromoActive,
             promoPercentage,
@@ -1033,6 +1085,8 @@ export default defineComponent({
             totalPrice,
             stockStatusColor,
             stockMessage,
+            totalDiscounts,
+            grandTotal,
             handleSearchCustomer: (query: string) => {
                 if (!query.length) {
                     customerOptionsRef.value = []

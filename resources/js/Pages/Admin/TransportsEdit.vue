@@ -76,7 +76,6 @@ export default defineComponent({
         const notification = useNotification();
         const page = usePage();
         const transport = page.props.parties as Parties;
-        console.log(transport);
 
         const form = useForm({
             code: transport.code,

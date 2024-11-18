@@ -109,7 +109,6 @@ export default defineComponent({
                                 type: 'primary',
                                 size: 'small',
                                 onClick: () => {
-                                    console.log(row.id);
                                 }
                             },
                             { default: () => 'Detail' }

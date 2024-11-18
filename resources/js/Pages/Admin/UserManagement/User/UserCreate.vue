@@ -84,7 +84,6 @@ export default defineComponent({
         function handleSubmit() {
             form.post(route('admin.create-user.post'), {
                 onSuccess: () => {
-                    console.log(page.props);
                     notification.success({
                         title: "Success!",
                         duration: 1500
@@ -95,7 +94,6 @@ export default defineComponent({
                         title: "There is an error, please check log immediately",
                         duration: 1500,
                     });
-                    console.log(page.props.errors);
                 },
                 onFinish: () => {
                     form.reset();

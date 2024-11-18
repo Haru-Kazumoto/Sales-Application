@@ -204,8 +204,6 @@ export default defineComponent({
     setup() {
         const page = usePage();
         const travel_document = page.props.transactions as Transactions;
-        console.log(travel_document);
-
         const form = useForm({
             document_code: page.props.invoice_number as string,
             term_of_payment: travel_document.term_of_payment,

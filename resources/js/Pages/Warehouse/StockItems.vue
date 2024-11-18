@@ -299,8 +299,6 @@ export default defineComponent({
     setup() {
         const page = usePage();
 
-        // console.log(page.props.products_gap);
-
         // Pagination dummy data
         const pagination = reactive({
             page: 1,

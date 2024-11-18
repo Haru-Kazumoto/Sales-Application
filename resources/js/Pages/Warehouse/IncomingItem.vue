@@ -356,7 +356,6 @@ export default defineComponent({
             // const totalQuantityUsed = product_journals.value.reduce((total, journal) => {
             //     return total + (Number(journal.quantity) || 0); // Pastikan quantity adalah angka
             // }, 0);
-            // console.log(totalQuantityUsed);
 
             // // Kurangi row.quantity dengan totalQuantityUsed
             // current_quantity.value = row.quantity - totalQuantityUsed;
