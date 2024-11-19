@@ -113,7 +113,7 @@ class PartiesController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->all());
+        // dd($request->all());
         $request->validate([
             'code' => 'required|string',
             'name' => 'required|string',
