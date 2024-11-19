@@ -425,7 +425,7 @@ class ProductsController extends Controller
         $products_gap = ProductJournal::where('action', 'IN_GAP')
             ->with('product','warehouse')
             ->paginate(15);
-        dd($products_gap);
+        // dd($products_gap);
 
         return Inertia::render('Warehouse/StockItems', compact('products', 'products_batch', 'products_gap'));
     }
