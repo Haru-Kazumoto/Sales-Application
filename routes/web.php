@@ -72,7 +72,7 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
             Route::get('', [App\Http\Controllers\PartiesController::class, 'createCustomer'])->name('parties.customer');
             Route::post('/create-customer', [App\Http\Controllers\PartiesController::class, 'store'])->name('parties.customer.post');
             Route::get('/edit-customer/{parties}', [App\Http\Controllers\PartiesController::class, 'edit'])->name('parties.customer.edit');
-            Route::patch('/update-customer/{parties}', [App\Http\Controllers\PartiesController::class, 'update'])->name('parties.customer.update');
+            Route::put('/update-customer/{parties}', [App\Http\Controllers\PartiesController::class, 'update'])->name('parties.customer.update');
             Route::delete('/delete-customer/{parties}', [App\Http\Controllers\PartiesController::class, 'destroyCustomer'])->name('parties.customer.delete');
         });
 

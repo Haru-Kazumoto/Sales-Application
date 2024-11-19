@@ -138,8 +138,8 @@ export default defineComponent({
                 });
             } else {
                 Swal.fire({
-                    title: 'Are you sure you want to send reminders?',
-                    text: 'This action will send reminder text to customers',
+                    title: 'Kirim pesan pengingat?',
+                    text: 'Ini akan mengirimkan sebuah pesan pengingat ke customer dan salesman dengan format yang sudah di buat',
                     icon: 'question',
                 }).then((result) => {
                     if (result.isConfirmed) {
@@ -147,7 +147,7 @@ export default defineComponent({
                             onSuccess: (page) => {
                                 Swal.fire({
                                     icon: 'success',
-                                    title: 'Success send reminder',
+                                    title: 'Pesan pengingat berhasil di kirim!',
                                     text: (page.props.flash as Flash).success
                                 });
                             }

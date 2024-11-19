@@ -7,8 +7,7 @@
                     <!-- First row -->
                     <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
                         <label for="nama_customer" class="form-label">Kode Customer</label>
-                        <n-input placeholder="" size="large" v-model:value="form.code"
-                            :on-input="(value) => form.code = value.replace(/\D/g, '')" />
+                        <n-input placeholder="" size="large" v-model:value="form.code" />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
                         <label for="nama_customer" class="form-label">Nama Customer</label>
@@ -61,8 +60,22 @@
                         <n-input placeholder="" size="large" v-model:value="form.address" />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
-                        
+                        <label for="ktpImage" class="form-label">Upload Foto KTP</label>
+                        <input type="file" id="ktpImage" class="form-control" accept="image/*"
+                            @change="handleFileChange('ktp_image', $event)" />
+                        <div v-if="form.ktp_image">
+                            <n-image :src="form.npwp_image" alt="Preview NPWP" width="auto" height="200" />
+                        </div>
                     </div>
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <label for="npwpImage" class="form-label">Upload Foto NPWP</label>
+                        <input type="file" id="npwpImage" class="form-control" accept="image/*"
+                            @change="handleFileChange('npwp_image', $event)" />
+                        <div v-if="form.npwp_image">
+                            <n-image :src="form.ktp_image" alt="Preview NPWP" width="auto" height="200" />
+                        </div>
+                    </div>
+
 
                     <div class="d-flex">
                         <n-button type="primary" class="ms-auto" attr-type="submit">Tambah Data</n-button>
@@ -99,7 +112,8 @@
                     pagination-behavior-on-filter="first" />
                 <div class="d-flex mt-3">
                     <n-pagination class="ms-auto" v-model:page="pagination.current_page"
-                        :page-count="pagination.last_page" :page-size="pagination.per_page" @update:page="handlePageChange"
+                        :page-count="pagination.last_page" :page-size="pagination.per_page"
+                        @update:page="handlePageChange"
                         @update:page-count="pagination.last_page = $page.props.parties.last_page" />
                 </div>
             </div>
@@ -111,7 +125,7 @@
 import { defineComponent, ref, h, reactive } from 'vue'
 import { router, useForm, usePage } from '@inertiajs/vue3';
 import TitlePage from '../../Components/TitlePage.vue';
-import { DataTableColumns, NButton, useNotification } from 'naive-ui';
+import { DataTableColumns, NButton, NImage, useNotification } from 'naive-ui';
 import { Flash, Lookup, Parties, PartiesGroup } from '../../types/model';
 import Swal from 'sweetalert2';
 
@@ -122,7 +136,7 @@ export default defineComponent({
         const currentPage = ref(1);
         const notification = useNotification();
 
-        function createColumns(): DataTableColumns<Parties> {
+        function createColumns() {
             return [
                 {
                     title: "#",
@@ -189,6 +203,28 @@ export default defineComponent({
                     width: 150,
                 },
                 {
+                    title: "FOTO NPWP",
+                    key: "npwp_image_url",
+                    width: 250,
+                    render(row) {
+                        return h(NImage, {
+                            src: row.npwp_image_url,
+                            height: '70'
+                        })
+                    },
+                },
+                {
+                    title: "FOTO KTP",
+                    key: "ktp_image_url",
+                    width: 250,
+                    render(row) {
+                        return h(NImage, {
+                            src: row.ktp_image_url,
+                            height: '70'
+                        })
+                    },
+                },
+                {
                     title: "ACTION",
                     key: 'action',
                     width: 100,
@@ -246,6 +282,8 @@ export default defineComponent({
             term_payment: null as unknown as number,
             type_parties: '',
             parties_group_id: null as unknown as number,
+            npwp_image: null as unknown as string,
+            ktp_image: null as unknown as string,
         });
 
         // Filter data
@@ -264,6 +302,15 @@ export default defineComponent({
             });
         };
 
+        function handleFileChange(field, event) {
+            const file = event.target.files[0]; // Ambil file pertama yang dipilih
+            if (file) {
+                this.form[field] = file; // Simpan file ke field terkait di form
+            } else {
+                this.form[field] = null; // Hapus jika tidak ada file
+            }
+        }
+
         // Function to handle page change
         function handlePageChange(page: number) {
             // currentPage.value = page;
@@ -277,6 +324,7 @@ export default defineComponent({
         function handleSubmitCustomer() {
             form.post(route('admin.parties.customer.post'), {
                 preserveScroll: false,
+                forceFormData: true,
                 onSuccess: () => {
                     form.reset();
                     notification.success({
@@ -310,6 +358,7 @@ export default defineComponent({
             handleSubmitCustomer,
             handlePageChange,
             handleSearch,
+            handleFileChange,
             columns: createColumns(),
             currentPage,
             form,

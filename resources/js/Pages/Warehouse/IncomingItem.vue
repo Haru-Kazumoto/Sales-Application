@@ -299,6 +299,14 @@ export default defineComponent({
                     }
                 },
                 {
+                    title: "STATUS SELISIH",
+                    key: "gap_status",
+                    width: 150,
+                    render(row) {
+                        return row.gap_status;
+                    }
+                },
+                {
                     title: "KETERANGAN",
                     key: 'item_description',
                     width: 200,
@@ -307,7 +315,7 @@ export default defineComponent({
                     }
                 },
                 {
-                    title: "Jumlah barang dibagi",
+                    title: "JUMLAH BARANG DIBAGI",
                     key: 'shared_items',
                     width: 200,
                     render(row) {
@@ -376,16 +384,31 @@ export default defineComponent({
         function handleOpenModal(row: TransactionItems) {
             Swal.fire({
                 title: 'Informasi selisih',
-                html:
-                    `<input id="item_gap" class="swal2-input" type="number" placeholder="Selisih" value="${row.item_gap || ''}">` +
-                    `<input id="gap_description" class="swal2-input" type="text" placeholder="Keterangan" value="${row.gap_description || ''}">`,
+                html: `
+                    <div class="mb-3">
+                        <input id="item_gap" class="form-control" type="number" placeholder="Selisih" value="${row.item_gap || ''}">
+                    </div>
+                    <div class="mb-3">
+                        <input id="gap_description" class="form-control" type="text" placeholder="Keterangan" value="${row.gap_description || ''}">
+                    </div>
+                    <div class="mb-3">
+                        <select id="gap_status" class="form-select">
+                            <option value="RUSAK RINGAN" ${row.gap_status === 'RUSAK RINGAN' ? 'selected' : ''}>RUSAK RINGAN</option>
+                            <option value="RUSAK BERAT" ${row.gap_status === 'RUSAK BERAT' ? 'selected' : ''}>RUSAK BERAT</option>
+                            <option value="HILANG" ${row.gap_status === 'HILANG' ? 'selected' : ''}>HILANG</option>
+                            <option value="TIDAK SESUAI" ${row.gap_status === 'TIDAK SESUAI' ? 'selected' : ''}>TIDAK SESUAI</option>
+                            <option value="PENGIRIMAN BERTAHAP" ${row.gap_status === 'PENGIRIMAN BERTAHAP' ? 'selected' : ''}>PENGIRIMAN BERTAHAP</option>
+                        </select>
+                    </div>
+                `,
                 focusConfirm: false,
                 preConfirm: () => {
                     const item_gap = (document.getElementById('item_gap') as HTMLInputElement).value;
                     const number_item_gap = Number(item_gap);
                     const gap_description = (document.getElementById('gap_description') as HTMLInputElement).value;
+                    const gap_status = (document.getElementById('gap_status') as HTMLSelectElement).value;
 
-                    if (!item_gap || !gap_description) {
+                    if (!item_gap || !gap_description || !gap_status) {
                         Swal.showValidationMessage('Semua field harus diisi');
                         return null;
                     }
@@ -393,6 +416,7 @@ export default defineComponent({
                     return {
                         item_gap: number_item_gap,
                         gap_description: gap_description,
+                        gap_status: gap_status,
                     };
                 },
                 showCancelButton: true,
@@ -410,18 +434,16 @@ export default defineComponent({
                         // Update item pada index yang ditemukan dengan data baru
                         form.transaction_items[index].item_gap = result.value.item_gap;
                         form.transaction_items[index].gap_description = result.value.gap_description;
-
-                        // Jika item_gap lebih dari 0, kurangi quantity dengan item_gap
-                        // if (result.value.item_gap > 0) {
-                        //     form.transaction_items[index].quantity = (form.transaction_items[index].quantity ?? 0) - result.value.item_gap;
-                        // }
+                        form.transaction_items[index].gap_status = result.value.gap_status;
                     }
 
-                    // Optionally: Notify success
+                    // Notify success
                     Swal.fire('Berhasil!', 'Data telah diperbarui.', 'success');
                 }
             });
         }
+
+
 
         // Fungsi submit
         function handleAddProduct(index) {

@@ -32,6 +32,8 @@ class Parties extends Model
         'number_plate',
         'parties_group_id',
         'users_id',
+        'ktp_image',
+        'npwp_image',
     ];
 
     public function partiesGroup(): BelongsTo

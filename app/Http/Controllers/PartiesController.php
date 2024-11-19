@@ -7,7 +7,9 @@ use App\Models\Parties;
 use App\Models\PartiesGroup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Illuminate\Support\Str;
 
 class PartiesController extends Controller
 {
@@ -31,6 +33,12 @@ class PartiesController extends Controller
 
         // Pastikan total item sesuai dengan hasil yang difilter
         $parties->appends($request->only('filter_field', 'filter_query'));
+
+        $parties->getCollection()->transform(function ($party) {
+            $party->npwp_image_url = $party->npwp_image ? asset('storage/' . $party->npwp_image) : null;
+            $party->ktp_image_url = $party->ktp_image ? asset('storage/' . $party->ktp_image) : null;
+            return $party;
+        });
 
         // Ambil data groups dan customer_type
         $groups = PartiesGroup::all();
@@ -105,7 +113,7 @@ class PartiesController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
+        dd($request->all());
         $request->validate([
             'code' => 'required|string',
             'name' => 'required|string',
@@ -117,10 +125,28 @@ class PartiesController extends Controller
             'phone' => 'nullable|string',
             'city' => 'nullable|string',
             'address' => 'nullable|string',
+            'npwp_image' => 'nullable|image|max:2048', // Maks 2MB
+            'ktp_image' => 'nullable|image|max:2048', // Maks 2MB
         ]);
 
         DB::transaction(function() use ($request) {
             $parties_group = PartiesGroup::where('id', $request->input('parties_group_id'))->first();
+
+            $npwpImagePath = $request->hasFile('npwp_image')
+                ? $request->file('npwp_image')->storeAs(
+                    'images/npwp',
+                    'npwp_' . Str::random(6) . '_' . now()->format('Ymd') . '.' . $request->file('npwp_image')->getClientOriginalExtension(),
+                    'public'
+                )
+                : null;
+
+            $ktpImagePath = $request->hasFile('ktp_image')
+                ? $request->file('ktp_image')->storeAs(
+                    'images/ktp',
+                    'ktp_' . Str::random(6) . '_' . now()->format('Ymd') . '.' . $request->file('ktp_image')->getClientOriginalExtension(),
+                    'public'
+                )
+                : null;
 
             Parties::create([
                 'code' => $request->input('code'),
@@ -133,7 +159,9 @@ class PartiesController extends Controller
                 'phone' => $request->input('phone'),
                 'fax' => $request->input('fax'),
                 'city' => $request->input('city'),
-            'address' => $request->input('address'),
+                'address' => $request->input('address'),
+                'npwp_image' => $npwpImagePath,
+                'ktp_image' => $ktpImagePath,
             ]);
         });
 
@@ -145,13 +173,18 @@ class PartiesController extends Controller
         $groups = PartiesGroup::all();
         $customer_type = Lookup::where('category', 'TYPE_PARTIES')->get();
 
+        // Sertakan URL lengkap untuk gambar (jika ada)
+        $parties->npwp_image = $parties->npwp_image ? asset('storage/' . $parties->npwp_image) : null;
+        $parties->ktp_image = $parties->ktp_image ? asset('storage/' . $parties->ktp_image) : null;
+
         return Inertia::render('Admin/CustomerEdit', compact('groups', 'customer_type', 'parties'));
     }
 
-    public function update(Request $request, Parties $parties) // Menggunakan model binding
+    
+
+    public function update(Request $request, Parties $parties)
     {
         // dd($request->all());
-
         // Validasi input
         $request->validate([
             'code' => 'required|string',
@@ -164,6 +197,8 @@ class PartiesController extends Controller
             'phone' => 'nullable|string',
             'city' => 'nullable|string',
             'address' => 'nullable|string',
+            'npwp_image' => 'nullable|image|max:2048', // Maks 2MB
+            'ktp_image' => 'nullable|image|max:2048', // Maks 2MB
         ]);
 
         DB::transaction(function() use ($request, $parties) {
@@ -183,10 +218,44 @@ class PartiesController extends Controller
                 'city' => $request->input('city'),
                 'address' => $request->input('address'),
             ]);
+
+            // Update gambar jika ada yang diupload
+            if ($request->hasFile('npwp_image')) {
+                // Hapus gambar lama jika ada
+                if ($parties->npwp_image) {
+                    Storage::delete('public/' . $parties->npwp_image);
+                }
+                // Simpan gambar baru
+                $npwpImagePath = $request->file('npwp_image')->storeAs(
+                    'images/npwp',
+                    'npwp_' . Str::random(6) . '_' . now()->format('Ymd') . '.' . $request->file('npwp_image')->getClientOriginalExtension(),
+                    'public'
+                );
+                $parties->npwp_image = $npwpImagePath;
+            }
+
+            if ($request->hasFile('ktp_image')) {
+                // Hapus gambar lama jika ada
+                if ($parties->ktp_image) {
+                    Storage::delete('public/' . $parties->ktp_image);
+                }
+                // Simpan gambar baru
+                $ktpImagePath = $request->file('ktp_image')->storeAs(
+                    'images/ktp',
+                    'ktp_' . Str::random(6) . '_' . now()->format('Ymd') . '.' . $request->file('ktp_image')->getClientOriginalExtension(),
+                    'public'
+                );
+                $parties->ktp_image = $ktpImagePath;
+            }
+
+            // Simpan perubahan
+            $parties->save();
         });
 
         return redirect()->route('admin.parties.customer')->with('success', 'Customer berhasil diperbarui!');
     }
+
+
 
     public function destroyCustomer(Parties $parties) 
     {

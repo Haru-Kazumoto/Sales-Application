@@ -73,7 +73,7 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
+        dd($request->all());
         $request->validate([
             'code' => 'required|string',
             'name' => 'required|string',
@@ -85,10 +85,20 @@ class CustomerController extends Controller
             'phone' => 'nullable|string',
             'city' => 'nullable|string',
             'address' => 'nullable|string',
+            'npwp_image' => 'nullable|image|max:2048', // Maks 2MB
+            'ktp_image' => 'nullable|image|max:2048', // Maks 2MB
         ]);
 
         DB::transaction(function() use ($request) {
             $parties_group = PartiesGroup::where('id', $request->input('parties_group_id'))->first();
+
+            $npwpImagePath = $request->hasFile('npwp_image')
+                ? $request->file('npwp_image')->store('images/npwp', 'public')
+                : null;
+
+            $ktpImagePath = $request->hasFile('ktp_image')
+                ? $request->file('ktp_image')->store('images/ktp', 'public')
+                : null;
 
             Parties::create([
                 'code' => $request->input('code'),
@@ -101,7 +111,9 @@ class CustomerController extends Controller
                 'phone' => $request->input('phone'),
                 'fax' => $request->input('fax'),
                 'city' => $request->input('city'),
-            'address' => $request->input('address'),
+                'address' => $request->input('address'),
+                'npwp_image' => $npwpImagePath,
+                'ktp_image' => $ktpImagePath,
             ]);
         });
 

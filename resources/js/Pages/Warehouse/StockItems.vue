@@ -275,6 +275,11 @@ function createColumnGapProducts() {
             }
         },
         {
+            title: "STATUS SELISIH",
+            key: "gap_status",
+            width: 150,
+        },
+        {
             title: "DESKRIPSI SELISIH",
             key: "description",
             width: 250,

@@ -49,6 +49,8 @@ export interface Parties {
     email?: string;
     website?: string;
     npwp?: string;
+    npwp_image?: string;
+    ktp_image?: string;
     contact_person?: string;
     term_payment?: number;
     address?: string;
@@ -92,6 +94,7 @@ export interface TransactionItems {
     tax_amount?: number | null;
     amount?: number | null;
     item_gap?: number | null;
+    gap_status?: string | null;
     gap_description?: string | null;
     discount_1?: number | null;
     discount_2?: number | null;

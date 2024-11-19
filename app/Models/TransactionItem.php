@@ -29,6 +29,7 @@ class TransactionItem extends Model
         'status_booking',
         'reject_description',
         'has_claimed',
+        'gap_status',
     ];
 
     public function transaction(): BelongsTo

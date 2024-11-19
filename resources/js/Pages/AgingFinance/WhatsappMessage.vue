@@ -34,10 +34,9 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-6">
                     <div class="w-100">
-                        <h5 class="mb-3">Cara Membuat Template Pesan untuk Blast WhatsApp</h5>
                         <ol class="list-group list-group-flush">
-                            <li class="list-group-item">
-                                Format untuk pembuatan template pesan.
+                            <li class="list-group-item fw-bold fs-5">
+                                FORMAT UNTUK PEMBUATAN TEMPLATE PESAN.
                             </li>
                             <li class="list-group-item">
                                 Untuk membuat pesan yang dinamis seperti:
@@ -45,6 +44,15 @@
                                 <code>{}</code>.
                                 Contoh: <code>tagihan anda sisa Rp {tagihan}</code>. Variable <code>{tagihan}</code>
                                 akan di gantikan dengan data yang akan dikirim
+                            </li>
+                            <li class="list-group-item">
+                                VARIABLE YANG TERSEDIA :
+                                <ul>
+                                    <li><code>{nama_customer}</code> : Digunakan untuk mengambil atau mendisplay nama customer terkait</li>
+                                    <li><code>{salesman}</code> : Digunakan untuk mengambil atau mendisplay nama salesman terkait</li>
+                                    <li><code>{sisa_tagihan}</code> : Mengambil jumlah tagihan customer terkait dan sudah mempunyai format <code>Rp</code></li>
+                                    <li><code>{jatuh_tempo}</code> : Menampilkan data jatuh tempo dari tagihan customer</li>
+                                </ul>
                             </li>
                         </ol>
                     </div>

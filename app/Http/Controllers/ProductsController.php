@@ -238,7 +238,6 @@ class ProductsController extends Controller
      */
     public function storeProducts(Request $request)
     {
-        // dd($request->all());
         $request->validate([
             'document_code' => 'required|string',
             'transaction_details' => 'required|array',
@@ -251,6 +250,7 @@ class ProductsController extends Controller
             'transaction_items.*.quantity' => 'required|numeric',
             'transaction_items.*.item_gap' => 'nullable|numeric',
             'transaction_items.*.gap_description' => 'nullable|string',
+            'transaction_items.*.gap_status' => 'nullable|string',
             'transaction_items.*.product_id' => 'required|numeric',
             'transaction_items.*.product' => 'required_if:transaction_items.*.product_id,null|array',
             'transaction_items.*.product.code' => 'required_with:transaction_items.*.product|string',
@@ -362,6 +362,7 @@ class ProductsController extends Controller
                     'amount' => $txItem['amount'],
                     'item_gap' => $txItem['item_gap'],
                     'gap_description' => $txItem['gap_description'],
+                    'gap_status' => $txItem['gap_status'],
                     'transactions_id' => $transaction->id,
                     'product_id' => $product->id, // Menyimpan product_id hasil dari produk yang diambil atau baru
                 ]);
@@ -424,6 +425,7 @@ class ProductsController extends Controller
         $products_gap = ProductJournal::where('action', 'IN_GAP')
             ->with('product','warehouse')
             ->paginate(15);
+        dd($products_gap);
 
         return Inertia::render('Warehouse/StockItems', compact('products', 'products_batch', 'products_gap'));
     }
