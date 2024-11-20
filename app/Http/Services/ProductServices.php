@@ -246,7 +246,7 @@ class ProductServices {
         $query = ProductJournal::query()
             ->with('product')
             ->where("action", 'IN_GAP')
-            ->where('gap_status', 'PENGIRIMAN_BERTAHAP')
+            ->where('gap_status', 'PENGIRIMAN BERTAHAP')
             ->orderByDesc('created_at');
 
         if(!is_null($paginate)) 
