@@ -14,11 +14,11 @@
 import { defineComponent } from 'vue'
 import TitlePage from '../../../Components/TitlePage.vue';
 import { router, usePage } from '@inertiajs/vue3';
-import dayjs from "dayjs";
-import 'dayjs/locale/id'; // Import locale Indonesia
-import { formatRupiah } from '../../../Utils/options-input.utils';
 import { h } from 'vue';
 import { NButton, NTag } from 'naive-ui';
+import { formatRupiah } from '../../../Utils/options-input.utils';
+import dayjs from "dayjs";
+import 'dayjs/locale/id'; // Import locale Indonesia
 
 dayjs.locale('id'); // Set locale to Indonesian
 

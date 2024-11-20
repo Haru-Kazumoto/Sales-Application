@@ -9,7 +9,7 @@
                             <div class="card-title">TOTAL TRANSAKSI</div>
                             <div class="card-content d-flex flex-column gap-2">
                                 <span class="fs-2 fw-bold">{{ $page.props.count_invoice }}</span>
-                                <n-button type="primary">LIHAT DETAIL</n-button>
+                                <n-button type="primary" @click="router.visit(route('aging-finance.list-invoice'))">LIHAT DETAIL</n-button>
                             </div>
                         </div>
                     </div>
@@ -19,8 +19,8 @@
                         <div class="card-body">
                             <div class="card-title">TRANSAKSI INSTALMENT</div>
                             <div class="card-content d-flex flex-column gap-2">
-                                <span class="fs-2 fw-bold">10</span>
-                                <n-button type="warning">LIHAT DETAIL</n-button>
+                                <span class="fs-2 fw-bold">{{ $page.props.count_instalment }}</span>
+                                <n-button type="warning" @click="router.visit(route('aging-finance.list-invoice'))">LIHAT DETAIL</n-button>
                             </div>
                         </div>
                     </div>
@@ -30,8 +30,8 @@
                         <div class="card-body">
                             <div class="card-title">TAGIHAN BELUM BAYAR</div>
                             <div class="card-content d-flex flex-column gap-2">
-                                <span class="fs-2 fw-bold">200</span>
-                                <n-button type="error">LIHAT DETAIL</n-button>
+                                <span class="fs-2 fw-bold">{{ $page.props.count_unpaid }}</span>
+                                <n-button type="error" @click="router.visit(route('aging-finance.list-invoice'))">LIHAT DETAIL</n-button>
                             </div>
                         </div>
                     </div>
@@ -41,8 +41,8 @@
                         <div class="card-body">
                             <div class="card-title">TAGIHAN JATUH TEMPO</div>
                             <div class="card-content d-flex flex-column gap-2">
-                                <span class="fs-2 fw-bold">200</span>
-                                <n-button type="error">LIHAT DETAIL</n-button>
+                                <span class="fs-2 fw-bold">{{ $page.props.count_overdue}}</span>
+                                <n-button type="error" @click="router.visit(route('aging-finance.list-invoice'))">LIHAT DETAIL</n-button>
                             </div>
                         </div>
                     </div>
@@ -61,7 +61,7 @@
             </div>
             <div class="card shadow" style="border: none;">
                 <div class="card-body ">
-                    <n-data-table :columns="columns" :data="data" :pagination="pagination" :bordered="false"
+                    <n-data-table :columns="columns" :data="$page.props.invoices" :bordered="false"
                         size="small" pagination-behavior-on-filter="first" />
                 </div>
             </div>
@@ -74,143 +74,118 @@ import { defineComponent, reactive, h } from 'vue';
 import TitlePage from '../../Components/TitlePage.vue';
 import CountCard from '../../Components/CountCard.vue';
 import { DataTableColumns, NButton, NTag } from 'naive-ui';
+import { formatRupiah } from '../../Utils/options-input.utils';
+import { router } from '@inertiajs/vue3';
+import dayjs from "dayjs";
+import 'dayjs/locale/id'; // Import locale Indonesia
 
-interface RowData {
-    invoice_number: string;
-    salesman: string;
-    customer_name: string;
-    status: string;
-    term_of_payment: string;
-    due_date: string;
-    transaction_age: number;
-}
-
-function createColumns(): DataTableColumns<RowData> {
-    return [
-        {
-            title: '#',
-            key: 'index',
-            width: 50,
-            render(rowData, rowIndex) {
-                return rowIndex + 1;  // Menghitung nomor urut
-            },
-        },
-        {
-            title: 'NO INVOICE',
-            key: 'invoice_number',
-            width: 150,
-            render(rowData) {
-                return rowData.invoice_number;  // Menampilkan SKU
-            },
-        },
-        {
-            title: 'SALESMAN',
-            key: 'salesman',
-            width: 100,
-            render(rowData) {
-                return rowData.salesman;  // Menampilkan nama item
-            },
-        },
-        {
-            title: 'NAMA CUTOMER',
-            key: 'customer_name',
-            width: 100,
-            render(rowData) {
-                return rowData.customer_name;  // Menampilkan nama supplier
-            },
-        },
-        {
-            title: 'TERM OF PAYMENT',
-            key: 'term_of_payment',
-            width: 100,
-            render(rowData) {
-                return rowData.term_of_payment;
-            }
-        },
-        {
-            title: 'Status',
-            key: 'item_status',
-            width: 100,
-            render(rowData) {
-                // Tentukan warna dan tipe tag berdasarkan item_status pembayaran
-                let type: any;
-
-                switch (rowData.status) {
-                    case 'UNPAID':
-                        type = 'error';
-                        break;
-                    case 'INSTALMENT':
-                        type = 'warning';
-                        break;
-                    case 'PAID':
-                        type = 'success';
-                        break;
-                    default:
-                        type = '';
-                }
-
-                return h(
-                    NTag,
-                    {
-                        style: {
-                            marginRight: '6px',
-                        },
-                        type,
-                        bordered: false
-                    },
-                    { default: () => rowData.status }
-                );
-            },
-        },
-        {
-            title: 'DUE DATE',
-            key: 'due_date',
-            width: 100,
-            render(rowData) {
-                return rowData.due_date;
-            }
-        },
-        {
-            title: "UMUR TRANSAKSI",
-            key: 'transaction_age',
-            width: 100,
-            render(rowData) {
-                return `+${rowData.transaction_age} Hari`;
-            }
-        }
-    ];
-}
+dayjs.locale('id'); // Set locale to Indonesian
 
 export default defineComponent({
     setup() {
-        // Data dummy untuk tabel
-        const data: RowData[] = [
-            {invoice_number: '004/CO-DKU/VI/24', salesman: 'DIDIN', customer_name: 'KHASANAH SARI', status: 'PAID', term_of_payment: '14 HARI', due_date: '04-04-2006', transaction_age: 15},
-            {invoice_number: '004/CO-DKU/VI/24', salesman: 'DIDIN', customer_name: 'KHASANAH SARI', status: 'PAID', term_of_payment: '14 HARI', due_date: '04-04-2006', transaction_age: 15},
-            {invoice_number: '004/CO-DKU/VI/24', salesman: 'DIDIN', customer_name: 'KHASANAH SARI', status: 'PAID', term_of_payment: '14 HARI', due_date: '04-04-2006', transaction_age: 15},
-            {invoice_number: '004/CO-DKU/VI/24', salesman: 'DIDIN', customer_name: 'KHASANAH SARI', status: 'PAID', term_of_payment: '14 HARI', due_date: '04-04-2006', transaction_age: 15},
-            {invoice_number: '004/CO-DKU/VI/24', salesman: 'DIDIN', customer_name: 'KHASANAH SARI', status: 'PAID', term_of_payment: '14 HARI', due_date: '04-04-2006', transaction_age: 15},
-            {invoice_number: '004/CO-DKU/VI/24', salesman: 'DIDIN', customer_name: 'KHASANAH SARI', status: 'PAID', term_of_payment: '14 HARI', due_date: '04-04-2006', transaction_age: 15},
-            {invoice_number: '004/CO-DKU/VI/24', salesman: 'DIDIN', customer_name: 'KHASANAH SARI', status: 'PAID', term_of_payment: '14 HARI', due_date: '04-04-2006', transaction_age: 15},
-            {invoice_number: '004/CO-DKU/VI/24', salesman: 'DIDIN', customer_name: 'KHASANAH SARI', status: 'PAID', term_of_payment: '14 HARI', due_date: '04-04-2006', transaction_age: 15},
+        function createColumns(){
+            return [
+                {
+                    title: "#",
+                    key: "index",
+                    width: 60,
+                    render(row, index) {
+                        return index + 1;
+                    }
+                },
+                {
+                    title: "Nomor Faktur",
+                    key: "document_code",
+                    width: 200,
+                },
+                {
+                    title: "Salesman",
+                    key: "salesman",
+                    width: 200,
+                    render(row) {
+                        return row.transaction_details.find(data => data.category === "Salesman")?.value;
+                    }
+                },
+                {
+                    title: "Customer",
+                    key: 'customer',
+                    width: 200,
+                    render(row) {
+                        return row.transaction_details.find(data => data.category === "Customer")?.value;
+                    }
+                },
+                {
+                    title: "Termin",
+                    key: "term_of_payment",
+                    width: 200,
+                    render(row) {
+                        return `${row.term_of_payment} HARI`;
+                    }
+                },
+                {
+                    title: "Due Date",
+                    key: "due_date",
+                    width: 200,
+                    render(row) {
+                        return dayjs(row.due_date).format('dddd, D MMMMYYYY ');
+                    }
+                },
+                {
+                    title: "Total Tagihan",
+                    key: "total",
+                    width: 250,
+                    render(row) {
+                        return formatRupiah(row.total);
+                    }
+                },
+                {
+                    title: "Sisa Tagihan",
+                    key: "total_left",
+                    width: 250,
+                    render(row) {
+                        return formatRupiah(row.total_left);
+                    }
+                },
+                {
+                    title: "Status",
+                    key: "status_payment",
+                    width: 200,
+                    render(row) {
+                        let type;
 
-        ];
+                        switch(row.status_payment){
+                            case "INSTALMENT":
+                                type = "warning";
+                                break;
+                            case "PAID":
+                                type = "success";
+                                break;
+                            case "UNPAID":
+                                type = 'error';
+                                break;
+                            default:
+                                type = '';
+                                break;
+                        }
 
-        // Pagination dummy data
-        const pagination = reactive({
-            page: 1,
-            pageSize: 10,
-            pageCount: Math.ceil(data.length / 10),
-            itemCount: data.length,
-        });
-
+                        return h(
+                            NTag,
+                            {
+                                type,
+                                strong: true,
+                                size: 'large',
+                            }, { default: () => row.status_payment}
+                        )
+                    }
+                },
+            ]
+        }
         // Columns for DataTable
         const columns = createColumns();
 
         return {
-            data,
-            pagination,
             columns,
+            router
         };
     },
     components: {

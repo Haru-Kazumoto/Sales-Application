@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\TransactionServices;
 use App\Models\ProductJournal;
 use App\Models\PurchaseOrder;
 use App\Models\Transactions;
+use App\Models\TransactionType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -13,6 +15,14 @@ use Inertia\Response;
 
 class DashboardController extends Controller
 {
+
+    private $transactionServices;
+
+    public function __construct(TransactionServices $transactionServices)
+    {
+        $this->transactionServices = $transactionServices;
+    }
+
     public function indexProcurementDashboard(): Response
     {
         // Query dasar untuk transaksi yang memiliki tipe 'Purchase Order'
@@ -154,9 +164,40 @@ class DashboardController extends Controller
             $query->where('name', 'Penjualan');
         })->count();
 
-        return Inertia::render('AgingFinance/Dashboard',compact(
-            'count_invoice'
-        ));
+        $counts = DB::table('transactions')
+            ->selectRaw("
+                SUM(CASE 
+                    WHEN (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) = total THEN 1 
+                    ELSE 0 
+                END) AS count_unpaid,
+                SUM(CASE 
+                    WHEN due_date <= CURDATE() THEN 1 
+                    ELSE 0 
+                END) AS count_overdue,
+                SUM(CASE 
+                    WHEN (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) > 0 
+                        AND (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) < total THEN 1 
+                    ELSE 0 
+                END) AS count_instalment
+            ")
+            ->whereExists(function ($query) {
+                $query->select(DB::raw(1))
+                    ->from('transaction_type')
+                    ->whereColumn('transactions.transaction_type_id', 'transaction_type.id')
+                    ->where('transaction_type.name', 'Penjualan');
+            })
+            ->first();
+
+        $tx_type = TransactionType::where('name', 'Penjualan')->first();
+        $invoices = $this->transactionServices->getTransactions($tx_type->id, null,null,null, true);
+
+        return Inertia::render('AgingFinance/Dashboard',[
+            'count_invoice' => $count_invoice,
+            'count_unpaid' => $counts->count_unpaid,
+            'count_overdue' => $counts->count_overdue,
+            'count_instalment' => $counts->count_instalment,
+            'invoices' => $invoices,
+        ]);
     }
 
     public function indexSalesDashboard(): Response
