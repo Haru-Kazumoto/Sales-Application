@@ -63,17 +63,17 @@
                         <label for="ktpImage" class="form-label">Upload Foto KTP</label>
                         <input type="file" id="ktpImage" class="form-control" accept="image/*"
                             @change="handleFileChange('ktp_image', $event)" />
-                        <div v-if="form.ktp_image">
+                        <!-- <div v-if="form.ktp_image">
                             <n-image :src="form.npwp_image" alt="Preview NPWP" width="auto" height="200" />
-                        </div>
+                        </div> -->
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <label for="npwpImage" class="form-label">Upload Foto NPWP</label>
                         <input type="file" id="npwpImage" class="form-control" accept="image/*"
                             @change="handleFileChange('npwp_image', $event)" />
-                        <div v-if="form.npwp_image">
+                        <!-- <div v-if="form.npwp_image">
                             <n-image :src="form.ktp_image" alt="Preview NPWP" width="auto" height="200" />
-                        </div>
+                        </div> -->
                     </div>
 
 
@@ -327,6 +327,8 @@ export default defineComponent({
                 forceFormData: true,
                 onSuccess: () => {
                     form.reset();
+                    form.npwp_image = null as unknown as string;
+                    form.ktp_image = null as unknown as string;
                     notification.success({
                         title: (page.props.flash as Flash).success,
                         closable: false,

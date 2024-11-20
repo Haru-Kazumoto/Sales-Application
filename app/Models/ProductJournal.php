@@ -16,6 +16,7 @@ class ProductJournal extends Model
         'quantity',
         'amount',
         'action',
+        'gap_status',
         'description',
         'expiry_date',
         'warehouse_id',

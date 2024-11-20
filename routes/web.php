@@ -195,6 +195,8 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         Route::get('/incoming-item', [App\Http\Controllers\ProductsController::class, 'incomingProducts'])->name('incoming-item');
         Route::get('/incoming-item/{sso_number}', [App\Http\Controllers\SubSalesOrderController::class, 'getDataBySsoNumber'])->name('process-sso-data');
         Route::post('/store-products', [App\Http\Controllers\ProductsController::class,'storeProducts'])->name('store-products');
+        Route::get('/gradual-delivery', [App\Http\Controllers\ProductsController::class, 'indexGradualDeliveryProducts'])->name('gradual-delivery');
+        Route::post('/gradual-delivery/post',[App\Http\Controllers\ProductsController::class, 'storeGradualDeliveryProducts'])->name('gradual-delivery.post');
         
         // reStoreStockProduct
 

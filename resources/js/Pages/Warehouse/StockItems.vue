@@ -78,6 +78,11 @@ import TitlePage from '../../Components/TitlePage.vue';
 import CountCard from '../../Components/CountCard.vue';
 import { DataTableColumns, NButton, NTag } from 'naive-ui';
 import { usePage } from '@inertiajs/vue3';
+import dayjs from "dayjs";
+import 'dayjs/locale/id'; // Import locale Indonesia
+
+dayjs.locale('id'); // Set locale to Indonesian
+
 
 function createColumns() {
     return [
@@ -277,7 +282,33 @@ function createColumnGapProducts() {
         {
             title: "STATUS SELISIH",
             key: "gap_status",
-            width: 150,
+            width: 250,
+            render(row) {
+                const status = row.gap_status.replace("_"," ");
+                let type;
+
+                switch(status){
+                    case 'PENGIRIMAN BERTAHAP':
+                        type = 'info';
+                        break;
+                    case 'RUSAK':
+                        type = 'error';
+                        break;
+                    default:
+                        type = 'warning';
+                        break;
+                }
+
+                return h(
+                    NTag,
+                    {
+                        type,
+                        strong: true,
+                        bordered: true,
+                        size: 'large'
+                    }, {default: () => status}
+                )
+            }
         },
         {
             title: "DESKRIPSI SELISIH",
@@ -296,6 +327,14 @@ function createColumnGapProducts() {
             title: "NOMOR PO",
             key: "po_number",
             width: 200,
+        },
+        {
+            title: "DIBUAT PADA",
+            key: "created_at",
+            width: 250,
+            render(row) {
+                return dayjs(row.created_at).format('DD MMMM YYYY HH:mm')
+            }
         }
     ]
 }

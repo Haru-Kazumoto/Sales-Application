@@ -10,7 +10,7 @@
                             <div class="card-content d-flex flex-column gap-2">
                                 <span class="fs-3 fw-bold">{{ ($page.props.stock_summary as any).available }}</span>
                                 <span>PRODUK</span>
-                                <n-button type="primary">LIHAT DETAIL</n-button>
+                                
                             </div>
                         </div>
                     </div>
@@ -22,7 +22,7 @@
                             <div class="card-content d-flex flex-column gap-2">
                                 <span class="fs-3 fw-bold">{{ ($page.props.stock_summary as any).need_to_add }}</span>
                                 <span>PRODUK</span>
-                                <n-button type="warning">LIHAT DETAIL</n-button>
+                                
                             </div>
                         </div>
                     </div>
@@ -34,7 +34,7 @@
                             <div class="card-content d-flex flex-column gap-2">
                                 <span class="fs-3 fw-bold">{{ ($page.props.stock_summary as any).unavailable }}</span>
                                 <span>PRODUK</span>
-                                <n-button type="error">LIHAT DETAIL</n-button>
+                                
                             </div>
                         </div>
                     </div>
@@ -46,7 +46,7 @@
                             <div class="card-content d-flex flex-column gap-2">
                                 <span class="fs-3 fw-bold">{{ $page.props.expired_count }}</span>
                                 <span>PRODUK</span>
-                                <n-button type="error">LIHAT DETAIL</n-button>
+                                
                             </div>
                         </div>
                     </div>

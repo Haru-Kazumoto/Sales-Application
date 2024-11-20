@@ -373,6 +373,7 @@ class ProductsController extends Controller
                         'quantity' => $txItem['item_gap'],
                         'amount' => $txItem['amount'],
                         'action' => "IN_GAP",
+                        'gap_status' => $txItem['gap_status'],
                         'batch_code' => null,
                         'expiry_date' => null,
                         'description' => $txItem['gap_description'],
@@ -470,5 +471,77 @@ class ProductsController extends Controller
         $expiredProducts = $this->productServices->getExpiredProducts("DNP");
 
         return Inertia::render('Warehouse/DnpWarehouse/ExpiredStocks', compact('expiredProducts'));
+    }
+
+    public function indexGradualDeliveryProducts()
+    {
+        $gradual_products = $this->productServices->getGradualProducts(15);
+        // dd($gradual_products);
+
+        return Inertia::render('Warehouse/GradualDelivery', compact('gradual_products'));
+    }
+
+    public function storeGradualDeliveryProducts(Request $request)
+    {
+        $data = $request->validate([
+            'product_journals' => 'required|array',
+            'product_journals.*.journal_id' => 'required|numeric',
+            "product_journals.*.quantity" => 'required|numeric',
+            "product_journals.*.amount" => 'required|numeric',
+            "product_journals.*.action" => 'required|string',
+            "product_journals.*.batch_code" => 'required|string',
+            "product_journals.*.expiry_date" => 'required|string',
+            "product_journals.*.sso_number" => 'required|string',
+            "product_journals.*.po_number" => 'required|string',
+            "product_journals.*.product_id" => 'required|numeric',
+            "product_journals.*.warehouse_id" => 'required|numeric',
+            "product_journals.*.transactions_id" => 'required|numeric',
+        ]);
+
+        DB::transaction(function () use ($data) {
+            $product_journals = $data['product_journals'];
+
+            foreach ($product_journals as $journal) {
+                // Temukan existing journal
+                $existing_journal = ProductJournal::find($journal['journal_id']);
+
+                if (!$existing_journal) {
+                    return back()->with('failed', 'Gagal menyimpan barang, internal caused : data journal is not found');
+                }
+
+                // Kurangi quantity existing_journal
+                $remaining_quantity = $existing_journal->quantity;
+
+                // Pastikan quantity tidak negatif
+                if ($remaining_quantity >= $journal['quantity']) {
+                    $remaining_quantity -= $journal['quantity'];
+                    $existing_journal->quantity = $remaining_quantity;
+
+                    // Jika sudah habis, ubah status menjadi BALANCED
+                    if ($remaining_quantity === 0) {
+                        $existing_journal->gap_status = 'BALANCED';
+                    }
+
+                    $existing_journal->save();
+                } else {
+                    return back()->with('failed', 'Quantity tidak sesuai!');
+                }
+
+                ProductJournal::create([
+                    'quantity' => $journal['quantity'],
+                    'amount' => $journal['amount'],
+                    'action' => $journal['action'],
+                    'batch_code' => $journal['batch_code'],
+                    'expiry_date' => $journal['expiry_date'],
+                    'sso_number' => $journal['sso_number'],
+                    'po_number' => $journal['po_number'],
+                    'product_id' => $journal['product_id'],
+                    'warehouse_id' => $journal['warehouse_id'],
+                    'transactions_id' => $journal['transactions_id'],
+                ]);
+            }
+        });
+
+        return back()->with('success', 'Barang berhasil dimasukan!');
     }
 }

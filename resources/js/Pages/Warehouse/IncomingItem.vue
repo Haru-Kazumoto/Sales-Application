@@ -393,11 +393,10 @@ export default defineComponent({
                     </div>
                     <div class="mb-3">
                         <select id="gap_status" class="form-select">
-                            <option value="RUSAK RINGAN" ${row.gap_status === 'RUSAK RINGAN' ? 'selected' : ''}>RUSAK RINGAN</option>
-                            <option value="RUSAK BERAT" ${row.gap_status === 'RUSAK BERAT' ? 'selected' : ''}>RUSAK BERAT</option>
+                            <option value="RUSAK RINGAN" ${row.gap_status === 'RUSAK' ? 'selected' : ''}>RUSAK</option>
                             <option value="HILANG" ${row.gap_status === 'HILANG' ? 'selected' : ''}>HILANG</option>
-                            <option value="TIDAK SESUAI" ${row.gap_status === 'TIDAK SESUAI' ? 'selected' : ''}>TIDAK SESUAI</option>
-                            <option value="PENGIRIMAN BERTAHAP" ${row.gap_status === 'PENGIRIMAN BERTAHAP' ? 'selected' : ''}>PENGIRIMAN BERTAHAP</option>
+                            <option value="TIDAK SESUAI" ${row.gap_status === 'TIDAK_SESUAI' ? 'selected' : ''}>TIDAK SESUAI</option>
+                            <option value="PENGIRIMAN BERTAHAP" ${row.gap_status === 'PENGIRIMAN_BERTAHAP' ? 'selected' : ''}>PENGIRIMAN BERTAHAP</option>
                         </select>
                     </div>
                 `,

@@ -234,4 +234,26 @@ class ProductServices {
             ];
         });
     }
+
+    /**
+     * Get products journal with status PENGIRIMAN_BERTAHAP
+     * 
+     * @param mixed $paginate
+     * @return Collection
+     */
+    public function getGradualProducts(?int $paginate = null): Collection|LengthAwarePaginator
+    {
+        $query = ProductJournal::query()
+            ->with('product')
+            ->where("action", 'IN_GAP')
+            ->where('gap_status', 'PENGIRIMAN_BERTAHAP')
+            ->orderByDesc('created_at');
+
+        if(!is_null($paginate)) 
+        {
+            return $query->paginate($paginate);
+        }
+
+        return $query->get();
+    }
 }
