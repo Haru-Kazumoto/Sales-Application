@@ -15,7 +15,7 @@
                             :on-input="(value) => form.name = value.toUpperCase()" />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
-                        <label for="nama_customer" class="form-label">Legalitas</label>
+                        <label for="nama_customer" class="form-label">Badan Usaha</label>
                         <n-input placeholder="" size="large" v-model:value="form.legality"
                             :on-input="(value) => form.legality = value.toUpperCase()" />
                     </div>
@@ -157,7 +157,7 @@ export default defineComponent({
                     width: 200,
                 },
                 {
-                    title: "LEGALITAS",
+                    title: "BADAN USAHA",
                     key: 'legality',
                     width: 100,
                 },

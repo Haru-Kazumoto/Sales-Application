@@ -47,7 +47,7 @@
                         <n-input placeholder="" size="large" readonly v-model:value="form.customer_npwp"/>
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
-                        <label for="">LEGALITAS</label>
+                        <label for="">BADAN USAHA</label>
                         <n-input placeholder="" size="large" readonly v-model:value="form.customer_legality"/>
                     </div>
                 </div>
@@ -107,7 +107,7 @@ export default defineComponent({
                     width: 200,
                 },
                 {
-                    title: "LEGALITAS",
+                    title: "BADAN USAHA",
                     key: 'legality',
                     width: 200,
                 },

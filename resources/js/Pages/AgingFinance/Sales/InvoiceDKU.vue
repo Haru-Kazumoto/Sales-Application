@@ -59,7 +59,7 @@ function createColumns() {
             }
         },
         {
-            title: "LEGALITAS",
+            title: "BADAN USAHA",
             key: "legality",
             width: 100,
             render(row) {

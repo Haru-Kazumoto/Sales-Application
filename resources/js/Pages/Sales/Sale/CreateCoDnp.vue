@@ -30,7 +30,7 @@
                     </div>
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">LEGALITAS<span class="text-danger">*</span></label>
+                            <label for="">BADAN USAHA<span class="text-danger">*</span></label>
                             <n-input size="large" v-model:value="transaction_details.legality" placeholder="" />
                         </div>
                     </div>

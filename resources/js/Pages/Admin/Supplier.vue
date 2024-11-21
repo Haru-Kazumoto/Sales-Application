@@ -18,7 +18,7 @@
                         <n-input placeholder="" size="large" v-model:value="form.name" />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
-                        <label for="nama_customer" class="form-label">Legalitas
+                        <label for="nama_customer" class="form-label">Badan Usaha
                             <RequiredMark />
                         </label>
                         <n-input placeholder="" size="large" v-model:value="form.legality" />
@@ -136,7 +136,7 @@ export default defineComponent({
                     width: 250,
                 },
                 {
-                    title: "LEGALITAS",
+                    title: "BADAN USAHA",
                     key: 'legality',
                     width: 150,
                 },

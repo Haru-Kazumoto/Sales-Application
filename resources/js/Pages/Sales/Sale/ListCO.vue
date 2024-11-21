@@ -84,7 +84,7 @@ export default defineComponent({
                     },
                 },
                 {
-                    title: "LEGALITAS",
+                    title: "BADAN USAHA",
                     key: "legality",
                     width: 100,
                     render(rowData) {
