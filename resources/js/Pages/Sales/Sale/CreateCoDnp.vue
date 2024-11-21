@@ -462,6 +462,7 @@ export default defineComponent({
             product_journals: [] as any[],
             // total_price_discount: null as unknown as number,
         });
+        const customerGroup = ref(null);
 
         watch(() => form.term_of_payment, (term) => {
             if (term) {
@@ -515,10 +516,11 @@ export default defineComponent({
         );
 
 
-
-
         watch(() => transaction_details.value.customer, (name) => {
             const selectedCustomer = customerOptions.find(data => data.label === name);
+            
+            // set customer group
+            customerGroup.value = selectedCustomer?.partiesGroup?.name;
 
             if (selectedCustomer) {
                 transaction_details.value.customer_address = selectedCustomer.address as any;
@@ -569,6 +571,14 @@ export default defineComponent({
         });
 
         watch(() => products.value.name, (name) => {
+            if(customerGroup.value === null) {
+                notification.warning({
+                    title: "Dimohon untuk memilih customer terlebih dahulu",
+                    meta: "Agar pemilihan harga barang tepat!",
+                    duration: 2500,
+                    closable: false,
+                });
+            }
             const selectedProduct = productOptions.find(data => data.value === name);
 
             if (selectedProduct) {
@@ -580,6 +590,16 @@ export default defineComponent({
                 transaction_items.value.unit = selectedProduct.unit;
                 products.value.last_stock = selectedProduct.last_stock;
                 products.value.retail_price = selectedProduct.retail_price;
+
+                //todo : switch statement for handle the price of products
+                console.log(customerGroup.value);
+                if(customerGroup.value === "Bakery"){
+                    transaction_items.value.amount = selectedProduct.retail_price;
+                } else if (customerGroup.value === "Restaurant"){
+                    transaction_items.value.amount = selectedProduct.restaurant_price;
+                } else {
+                    transaction_items.value.amount = selectedProduct.redemp_price;
+                }
 
                 // Isi nilai promo_value hanya jika promosi masih berlaku
                 if (today <= endDate) {
@@ -1076,6 +1096,7 @@ export default defineComponent({
             address: data.address,
             npwp: data.npwp,
             term_payment: data.term_payment,
+            partiesGroup: data.parties_group
         }));
 
         const productOptions = (page.props.products as any[]).map((data) => ({
@@ -1088,7 +1109,6 @@ export default defineComponent({
             expiry_date: data.expiry_date,
             last_stock: data.last_stock,
             status: data.status,
-            retail_price: data.retail_price,
             id: data.id,
             promo_value: data.promo_value,
             description: data.description,
@@ -1097,6 +1117,9 @@ export default defineComponent({
             start_date: data.start_date,
             end_date: data.end_date,
             promo_name: data.promo_name,
+            retail_price: data.retail_price,
+            redemp_price: data.redemp_price,
+            restaurant_price: data.restaurant_price,
         }));
 
 

@@ -112,6 +112,8 @@ class ProductServices {
                 'products.name',
                 'products.unit',
                 'products.retail_price',
+                'products.restaurant_price',
+                'products.redemp_price',
                 'warehouse.name as warehouse',
                 'promo_products.description',
                 'promo_products.min',
@@ -154,6 +156,8 @@ class ProductServices {
                 'promo_products.start_date',
                 'promo_products.end_date',
                 'promo_products.name',
+                'products.restaurant_price',
+                'products.redemp_price',
             )
             ->orderByRaw("CASE 
                     WHEN (SUM(CASE WHEN product_journal.action = 'IN' THEN product_journal.quantity ELSE 0 END) - 

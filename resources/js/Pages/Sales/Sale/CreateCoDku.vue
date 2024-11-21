@@ -519,6 +519,7 @@ export default defineComponent({
 
         watch(() => transaction_details.value.customer, (name) => {
             const selectedCustomer = customerOptions.find(data => data.label === name);
+            console.log(selectedCustomer);
 
             if (selectedCustomer) {
                 transaction_details.value.customer_address = selectedCustomer.address as any;
