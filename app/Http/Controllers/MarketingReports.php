@@ -105,7 +105,7 @@ class MarketingReports extends Controller
         //     JOIN 
         //         product_type pt ON pt.id = p.product_type_id
         // ");
-        $data = DB::select("SELECT * FROM report_marketing");
+        $data = DB::select("SELECT * FROM report_marketing LIMIT 20");
 
         return Inertia::render('Marketing/Reports', [
             'data' => $data
