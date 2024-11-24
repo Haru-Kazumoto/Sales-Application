@@ -189,7 +189,7 @@ class DashboardController extends Controller
             ->first();
 
         $tx_type = TransactionType::where('name', 'Penjualan')->first();
-        $invoices = $this->transactionServices->getTransactions($tx_type->id, null,null,null, true);
+        $invoices = $this->transactionServices->getTransactions($tx_type->id, null,null,30, true);
 
         return Inertia::render('AgingFinance/Dashboard',[
             'count_invoice' => $count_invoice,
