@@ -34,6 +34,8 @@ class AuthenticatedController extends Controller
                 'PROCUREMENT' => redirect()->intended(route('dashboard.procurement')),
                 'AGING_FINANCE' => redirect()->intended(route('dashboard.aging-finance')),
                 'SALES' => redirect()->intended(route('dashboard.sales')),
+                'INVOICEIST' => redirect()->intended(route('dashboard.invoiceist')),
+                'CASHIER' => redirect()->intended(route('dashboard.cashier')),
                 default => back()->with('failed', 'Unknown Dashboard'), // Halaman default jika role tidak dikenali
             };
         }

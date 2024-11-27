@@ -25,6 +25,8 @@ Route::middleware(['auth', 'verified', 'secure.path'])->group(function() {
     Route::get('/dashboard-aging_finance',[App\Http\Controllers\DashboardController::class, 'indexAgingFinanceDashboard'])->name('dashboard.aging-finance');
     Route::get('/dashboard-sales', [App\Http\Controllers\DashboardController::class, 'indexSalesDashboard'])->name('dashboard.sales');
     Route::get('/dashboard-marketing', [App\Http\Controllers\DashboardController::class, 'indexMarketingDashboard'])->name('dashboard.marketing');
+    Route::get('/dashboard-cashier', [App\Http\Controllers\DashboardController::class, 'indexCashierDashboard'])->name('dashboard.cashier');
+    Route::get('/dashboard-invoiceist', [App\Http\Controllers\DashboardController::class, 'indexInvoiceistDashboard'])->name('dashboard.invoiceist');
 });
 
 Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
@@ -89,7 +91,7 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
             Route::post('/create-product', [App\Http\Controllers\ProductsController::class, 'store'])->name('products.post');
             Route::get('/edit-product/{product}', [App\Http\Controllers\ProductsController::class, 'edit'])->name('products.edit');
             Route::patch('/update-product/{product}', [App\Http\Controllers\ProductsController::class, 'update'])->name('products.update');
-            Route::delete('/delet-product/{product}', [App\Http\Controllers\ProductsController::class, 'destroy'])->name('products.delete');
+            Route::delete('/delete-product/{product}', [App\Http\Controllers\ProductsController::class, 'destroy'])->name('products.delete');
         });
 
         Route::prefix('transport-management')->group(function() {

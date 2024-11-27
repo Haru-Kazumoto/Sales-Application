@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex flex-column gap-4">
-        <TitlePage title="Dashboard A/R Control" />
+        <TitlePage title="Dashboard Kasir" />
         <div class="d-flex flex-column gap-2">
             <div class="row g-3">
                 <div class="col-12 col-md-6 col-lg-3">
@@ -30,7 +30,7 @@
                         <div class="card-body">
                             <div class="card-title">TAGIHAN JATUH TEMPO</div>
                             <div class="card-content d-flex flex-column gap-2">
-                                <span class="fs-2 fw-bold">{{ $page.props.count_due_date }}</span>
+                                <span class="fs-2 fw-bold">{{ $page.props.count_due_date}}</span>
                                 <!-- <n-button type="error" @click="router.visit(route('aging-finance.list-invoice'))">LIHAT DETAIL</n-button> -->
                             </div>
                         </div>
@@ -41,7 +41,7 @@
                         <div class="card-body">
                             <div class="card-title">TAGIHAN OVERDUE</div>
                             <div class="card-content d-flex flex-column gap-2">
-                                <span class="fs-2 fw-bold">{{ $page.props.count_overdue }}</span>
+                                <span class="fs-2 fw-bold">{{ $page.props.count_overdue}}</span>
                                 <!-- <n-button type="error" @click="router.visit(route('aging-finance.list-invoice'))">LIHAT DETAIL</n-button> -->
                             </div>
                         </div>
@@ -61,8 +61,8 @@
             </div>
             <div class="card shadow" style="border: none;">
                 <div class="card-body ">
-                    <n-data-table :columns="columns" :data="$page.props.invoices.data" :bordered="false" size="small"
-                        pagination-behavior-on-filter="first" />
+                    <n-data-table :columns="columns" :data="$page.props.invoices.data" :bordered="false"
+                        size="small" pagination-behavior-on-filter="first" />
                 </div>
             </div>
         </div>
@@ -83,7 +83,7 @@ dayjs.locale('id'); // Set locale to Indonesian
 
 export default defineComponent({
     setup() {
-        function createColumns() {
+        function createColumns(){
             return [
                 {
                     title: "#",
@@ -153,7 +153,7 @@ export default defineComponent({
                     render(row) {
                         let type;
 
-                        switch (row.status_payment) {
+                        switch(row.status_payment){
                             case "INSTALMENT":
                                 type = "warning";
                                 break;
@@ -174,7 +174,7 @@ export default defineComponent({
                                 type,
                                 strong: true,
                                 size: 'large',
-                            }, { default: () => row.status_payment }
+                            }, { default: () => row.status_payment}
                         )
                     }
                 },

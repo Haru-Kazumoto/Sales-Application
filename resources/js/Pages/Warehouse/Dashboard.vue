@@ -1,4 +1,5 @@
 <template>
+    <Head title="Dashboard" />
     <div class="d-flex flex-column gap-4">
         <TitlePage title="Dashboard Warehouse" />
         <div class="d-flex flex-column gap-5">
@@ -111,6 +112,7 @@ import { defineComponent, reactive, h } from 'vue';
 import TitlePage from '../../Components/TitlePage.vue';
 import CountCard from '../../Components/CountCard.vue';
 import { NTag } from 'naive-ui';
+import { Head } from '@inertiajs/vue3';
 import dayjs from "dayjs";
 import 'dayjs/locale/id';
 
@@ -263,7 +265,8 @@ export default defineComponent({
     },
     components: {
         TitlePage,
-        CountCard
+        CountCard,
+        Head
     }
 });
 </script>

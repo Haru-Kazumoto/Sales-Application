@@ -75,12 +75,12 @@
                         </label>
                         <n-input placeholder="" v-model:value="transaction_details.driver" size="large" />
                     </div>
-                    <div class="col-12 col-lg-4">
+                    <!-- <div class="col-12 col-lg-4">
                         <label for="">Keterangan
                             <RequiredMark />
                         </label>
                         <n-input placeholder="" v-model:value="form.description" size="large" type="textarea" />
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>

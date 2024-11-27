@@ -102,7 +102,13 @@ class ProductServices {
      * @param int|null $pagination
      * @return Collection|LengthAwarePaginator
      */
-    public function getStockProductsWithBatchCode(?string $warehouse = null,?string $name = null, ?string $status = null, ?int $pagination = null): Collection|LengthAwarePaginator
+    public function getStockProductsWithBatchCode(
+        ?string $warehouse = null,
+        ?string $name = null, 
+        ?string $status = null, 
+        ?int $pagination = null,
+        ?bool $stagnation_date = false,
+    ): Collection|LengthAwarePaginator
     {
         $query = Products::query()
             ->select(
@@ -170,6 +176,14 @@ class ProductServices {
                 END")
             ->orderBy('last_stock', 'asc');
 
+        // apply stagnation date products
+        if($stagnation_date === true)
+        {
+            // BUG : SHOULD GET THE DATA MORE THAN OR TODAY
+            $query->whereDate('product_journal.stagnation_limit_date', now());
+        }
+
+        // apply filter warehouse
         if($warehouse)
         {
             $query->where('warehouse.name', $warehouse);

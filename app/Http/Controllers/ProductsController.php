@@ -336,8 +336,12 @@ class ProductsController extends Controller
 
             // Simpan transaction items
             foreach ($request->input('transaction_items') as $txItem) {
+                $stagnation_date = null;
                 $product = Products::where('id', $txItem['product_id'])->first();
                 $warehouse = Warehouse::where('name', $allocation)->first();
+
+                //set stagnation date if T or TEPUNG then 1 else 3
+                $stagnation_date = $product->category === 'T' ? 1 : 3;
 
                 // store to product journal
                 foreach ($txItem['product_journals'] as $journal) {
@@ -351,7 +355,8 @@ class ProductsController extends Controller
                         'warehouse_id' => $warehouse->id,
                         'product_id' => $product->id,
                         'po_number' => $po_number,
-                        'sso_number' => $request->document_code
+                        'sso_number' => $request->document_code,
+                        'stagnation_limit_date' => Carbon::now()->addMonths($stagnation_date)
                     ]);
                 }
 
@@ -360,9 +365,9 @@ class ProductsController extends Controller
                     'unit' => $txItem['unit'],
                     'quantity' => $txItem['quantity'],
                     'amount' => $txItem['amount'],
-                    'item_gap' => $txItem['item_gap'],
-                    'gap_description' => $txItem['gap_description'],
-                    'gap_status' => $txItem['gap_status'],
+                    'item_gap' => $txItem['item_gap'] ,
+                    'gap_description' => $txItem['gap_description'] ,
+                    'gap_status' => $txItem['gap_status'] ? $txItem['gap_status'] : null,
                     'transactions_id' => $transaction->id,
                     'product_id' => $product->id, // Menyimpan product_id hasil dari produk yang diambil atau baru
                 ]);
@@ -425,10 +430,19 @@ class ProductsController extends Controller
         $products_batch = $this->productServices->getStockProductsWithBatchCode(null,null,null,100);
         $products_gap = ProductJournal::where('action', 'IN_GAP')
             ->with('product','warehouse')
+            // order by gap_status
+            ->orderByRaw("
+                CASE gap_status
+                    WHEN 'PENGIRIMAN BERTAHAP' THEN 1
+                    WHEN 'RUSAK' THEN 2
+                    WHEN 'BALANCED' THEN 3
+                END
+            ")
+            // ->orderByDesc('created_at')
             ->paginate(15);
-        // dd($products_gap);
+        $product_stagnations = $this->productServices->getStockProductsWithBatchCode(null, null, null, 20, true);
 
-        return Inertia::render('Warehouse/StockItems', compact('products', 'products_batch', 'products_gap'));
+        return Inertia::render('Warehouse/StockItems', compact('products', 'products_batch', 'products_gap', 'product_stagnations'));
     }
 
     /**
@@ -538,6 +552,7 @@ class ProductsController extends Controller
                     'product_id' => $journal['product_id'],
                     'warehouse_id' => $journal['warehouse_id'],
                     'transactions_id' => $journal['transactions_id'],
+                    'stagnation_limit_date' => Carbon::now()->addMonths(3)
                 ]);
             }
         });

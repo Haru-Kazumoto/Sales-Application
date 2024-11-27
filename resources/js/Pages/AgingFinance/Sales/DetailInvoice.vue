@@ -71,7 +71,7 @@
             </div>
         </div>
 
-        <div class="card shadow-sm border-0 ">
+        <div class="card shadow-sm border-0 mb-2">
             <div class="card-body d-flex flex-column">
                 <div class="d-flex justify-content-between py-2">
                     <span>Sub Total</span>
@@ -112,7 +112,7 @@
             </div>
         </div>
 
-        <div class="card shadow-sm border-0 mb-5">
+        <div class="card shadow-sm border-0 mb-5" v-if="$page.props.auth.user.division === 'CASHIER'">
             <div class="card-body">
                 <div class="d-flex align-items-center">
                     <span class="fs-5 fw-semibold">Log Pembayaran</span>

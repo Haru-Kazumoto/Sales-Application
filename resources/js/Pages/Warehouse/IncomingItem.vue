@@ -315,7 +315,7 @@ export default defineComponent({
                     }
                 },
                 {
-                    title: "JUMLAH BARANG DIBAGI",
+                    title: "JUMLAH KODE",
                     key: 'shared_items',
                     width: 200,
                     render(row) {
@@ -397,6 +397,7 @@ export default defineComponent({
                             <option value="HILANG" ${row.gap_status === 'HILANG' ? 'selected' : ''}>HILANG</option>
                             <option value="TIDAK SESUAI" ${row.gap_status === 'TIDAK_SESUAI' ? 'selected' : ''}>TIDAK SESUAI</option>
                             <option value="PENGIRIMAN BERTAHAP" ${row.gap_status === 'PENGIRIMAN_BERTAHAP' ? 'selected' : ''}>PENGIRIMAN BERTAHAP</option>
+                            <option value="LAINYA" ${row.gap_status === 'LAINNYA' ? 'selected' : ''}>LAINNYA (mencakup dibawa sales, dll)</option>
                         </select>
                     </div>
                 `,
@@ -423,6 +424,14 @@ export default defineComponent({
             }).then((result) => {
                 if (result.isConfirmed && result.value) {
                     // Jika item_gap lebih dari 0, kurangi quantity pada row yang sesuai
+                    if(result.value.item_gap > row.quantity) {
+                        notification.error({
+                            title: "Quantity melebihi dari yang ada!",
+                            duration: 3000,
+                            closable: true,
+                        });
+                        return;
+                    }
                     if (result.value.item_gap > 0) {
                         row.quantity = (row.quantity ?? 0) - result.value.item_gap;
                     }
@@ -646,6 +655,7 @@ export default defineComponent({
                                 tax_value: null as unknown as number,
                                 gap_description: item.gap_description,
                                 product_journals: [] as any[],
+                                gap_status: null,
                                 product: {
                                     code: item.product?.code || '',
                                     unit: item.product?.unit || '',

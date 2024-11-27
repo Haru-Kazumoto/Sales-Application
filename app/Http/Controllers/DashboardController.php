@@ -173,12 +173,17 @@ class DashboardController extends Controller
                 SUM(CASE 
                     WHEN due_date <= CURDATE() THEN 1 
                     ELSE 0 
-                END) AS count_overdue,
+                END) AS count_due_date,
                 SUM(CASE 
                     WHEN (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) > 0 
                         AND (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) < total THEN 1 
                     ELSE 0 
-                END) AS count_instalment
+                END) AS count_instalment,
+                SUM(CASE 
+                    WHEN due_date < CURDATE() 
+                        AND (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) > 0 THEN 1 
+                    ELSE 0 
+                END) AS count_overdue
             ")
             ->whereExists(function ($query) {
                 $query->select(DB::raw(1))
@@ -196,6 +201,7 @@ class DashboardController extends Controller
             'count_unpaid' => $counts->count_unpaid,
             'count_overdue' => $counts->count_overdue,
             'count_instalment' => $counts->count_instalment,
+            'count_due_date' => $counts->count_due_date,
             'invoices' => $invoices,
         ]);
     }
@@ -208,5 +214,101 @@ class DashboardController extends Controller
     public function indexMarketingDashboard(): Response
     {
         return Inertia::render('Marketing/Dashboard');
+    }
+
+    public function indexCashierDashboard(): Response
+    {
+        $count_invoice = Transactions::whereHas('transactionType', function($query){
+            $query->where('name', 'Penjualan');
+        })->count();
+
+        $counts = DB::table('transactions')
+            ->selectRaw("
+                SUM(CASE 
+                    WHEN (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) = total THEN 1 
+                    ELSE 0 
+                END) AS count_unpaid,
+                SUM(CASE 
+                    WHEN due_date <= CURDATE() THEN 1 
+                    ELSE 0 
+                END) AS count_due_date,
+                SUM(CASE 
+                    WHEN (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) > 0 
+                        AND (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) < total THEN 1 
+                    ELSE 0 
+                END) AS count_instalment,
+                SUM(CASE 
+                    WHEN due_date < CURDATE() 
+                        AND (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) > 0 THEN 1 
+                    ELSE 0 
+                END) AS count_overdue
+            ")
+            ->whereExists(function ($query) {
+                $query->select(DB::raw(1))
+                    ->from('transaction_type')
+                    ->whereColumn('transactions.transaction_type_id', 'transaction_type.id')
+                    ->where('transaction_type.name', 'Penjualan');
+            })
+            ->first();
+
+        $tx_type = TransactionType::where('name', 'Penjualan')->first();
+        $invoices = $this->transactionServices->getTransactions($tx_type->id, null,null,30, true);
+
+        return Inertia::render('Cashier/Dashboard',[
+            'count_invoice' => $count_invoice,
+            'count_unpaid' => $counts->count_unpaid,
+            'count_overdue' => $counts->count_overdue,
+            'count_instalment' => $counts->count_instalment,
+            'count_due_date' => $counts->count_due_date,
+            'invoices' => $invoices,
+        ]);
+    }
+
+    public function indexInvoiceistDashboard(): Response
+    {
+        $count_invoice = Transactions::whereHas('transactionType', function($query){
+            $query->where('name', 'Penjualan');
+        })->count();
+
+        $counts = DB::table('transactions')
+            ->selectRaw("
+                SUM(CASE 
+                    WHEN (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) = total THEN 1 
+                    ELSE 0 
+                END) AS count_unpaid,
+                SUM(CASE 
+                    WHEN due_date <= CURDATE() THEN 1 
+                    ELSE 0 
+                END) AS count_due_date,
+                SUM(CASE 
+                    WHEN (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) > 0 
+                        AND (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) < total THEN 1 
+                    ELSE 0 
+                END) AS count_instalment,
+                SUM(CASE 
+                    WHEN due_date < CURDATE() 
+                        AND (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) > 0 THEN 1 
+                    ELSE 0 
+                END) AS count_overdue
+            ")
+            ->whereExists(function ($query) {
+                $query->select(DB::raw(1))
+                    ->from('transaction_type')
+                    ->whereColumn('transactions.transaction_type_id', 'transaction_type.id')
+                    ->where('transaction_type.name', 'Penjualan');
+            })
+            ->first();
+
+        $tx_type = TransactionType::where('name', 'Penjualan')->first();
+        $invoices = $this->transactionServices->getTransactions($tx_type->id, null,null,30, true);
+
+        return Inertia::render('Invoiceist/Dashboard',[
+            'count_invoice' => $count_invoice,
+            'count_unpaid' => $counts->count_unpaid,
+            'count_due_date' => $counts->count_due_date,
+            'count_instalment' => $counts->count_instalment,
+            'count_overdue' => $counts->count_overdue,
+            'invoices' => $invoices,
+        ]);
     }
 }

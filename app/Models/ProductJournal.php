@@ -25,6 +25,7 @@ class ProductJournal extends Model
         'batch_code',
         'po_number',
         'sso_number',
+        'stagnation_limit_date'
     ];
 
     public function warehouse(): BelongsTo

@@ -119,7 +119,7 @@ export const roleMenus = {
             ]
         },
     ],
-    AGING_FINANCE: [
+    INVOICEIST: [
         {
             label: "Penjualan",
             key: "sales",
@@ -145,6 +145,16 @@ export const roleMenus = {
                 },
             ],
         },
+    ],
+    CASHIER: [
+        {
+            label: "List Faktur",
+            key: "list-invoice",
+            href: '/list-invoices',
+            icon: renderIcon(ReceiptCube24Regular),
+        },
+    ],
+    AGING_FINANCE: [
         {
             label: 'Transaksi',
             key: 'transaction',
@@ -230,12 +240,12 @@ export const roleMenus = {
             key: 'stock-goods',
             href: '/stock-goods'
         },
-        {
-            label: "Pengiriman Bertahap",
-            icon: VehicleTruckCube24Regular,
-            key: "gradual-delivery",
-            href: "/gradual-delivery",
-        },
+        // {
+        //     label: "Pengiriman Bertahap",
+        //     icon: VehicleTruckCube24Regular,
+        //     key: "gradual-delivery",
+        //     href: "/gradual-delivery",
+        // },
         // {
         //     label: 'Booking Barang',
         //     icon: BoxEdit20Regular  ,
@@ -317,7 +327,7 @@ export const roleMenus = {
         //         }
         //     ],
         // },\
-        
+
     ],
     SALES: [
         {
