@@ -123,6 +123,14 @@ export default defineComponent({
                     }
                 },
                 {
+                    title: "Umur Transaksi",
+                    key: "transaction_age",
+                    width: 150,
+                    render(row) {
+                        return `${row.transaction_age} HARI`;
+                    }
+                },
+                {
                     title: "Due Date",
                     key: "due_date",
                     width: 200,

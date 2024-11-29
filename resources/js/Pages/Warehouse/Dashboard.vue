@@ -5,7 +5,7 @@
         <div class="d-flex flex-column gap-5">
             <div class="row g-3">
                 <div class="col-12 col-md-6 col-lg-3">
-                    <div class="card" style="border-color: green;">
+                    <div class="card border-3" style="border-color: green;">
                         <div class="card-body">
                             <div class="card-title">STOK TERSEDIA</div>
                             <div class="card-content d-flex flex-column gap-2">
@@ -17,7 +17,7 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-6 col-lg-3">
-                    <div class="card" style="border-color: orange;">
+                    <div class="card border-3" style="border-color: orange;">
                         <div class="card-body">
                             <div class="card-title">STOK HARUS DITAMBAH</div>
                             <div class="card-content d-flex flex-column gap-2">
@@ -29,7 +29,7 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-6 col-lg-3">
-                    <div class="card" style="border-color: red;">
+                    <div class="card border-3" style="border-color: red;">
                         <div class="card-body">
                             <div class="card-title">STOK HABIS</div>
                             <div class="card-content d-flex flex-column gap-2">
@@ -41,7 +41,7 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-6 col-lg-3">
-                    <div class="card" style="border-color: red;">
+                    <div class="card border-3" style="border-color: red;">
                         <div class="card-body">
                             <div class="card-title">BARANG EXPIRED</div>
                             <div class="card-content d-flex flex-column gap-2">
@@ -70,7 +70,7 @@
                                 <n-input placeholder="Cari Produk" />
                             </div>
                         </div>
-                        <div class="card shadow" style="border: none;">
+                        <div class="card border-3 shadow" style="border: none;">
                             <div class="card-body">
                                 <n-data-table :columns="columns" :data="($page.props.products as any).data" :pagination="pagination" :bordered="false"
                                     size="small" pagination-behavior-on-filter="first" />
@@ -94,7 +94,7 @@
                                 <n-input placeholder="Cari Produk" />
                             </div>
                         </div>
-                        <div class="card shadow" style="border: none;">
+                        <div class="card border-3 shadow" style="border: none;">
                             <div class="card-body">
                                 <n-data-table :columns="expiredProductColumns" :data="$page.props.product_expireds" :pagination="pagination" :bordered="false"
                                     size="small" pagination-behavior-on-filter="first" />
@@ -182,7 +182,8 @@ function createColumns() {
                             marginRight: '6px',
                         },
                         type,
-                        bordered: false
+                        bordered: true,
+                        strong: true,
                     },
                     { default: () => rowData.status }
                 );

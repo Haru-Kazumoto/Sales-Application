@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ProductJournalExport;
 use App\Http\Services\ProductServices;
 use App\JournalAction;
 use App\Models\Lookup;
@@ -19,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductsController extends Controller
 {
@@ -558,5 +560,10 @@ class ProductsController extends Controller
         });
 
         return back()->with('success', 'Barang berhasil dimasukan!');
+    }
+
+    public function exportProducts()
+    {
+        return Excel::download(new ProductJournalExport(), 'product_stocks_' . date('d_F_Y') . '.xlsx');
     }
 }

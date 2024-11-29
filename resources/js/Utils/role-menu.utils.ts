@@ -118,6 +118,12 @@ export const roleMenus = {
                 }
             ]
         },
+        {
+            label: "List Faktur",
+            key: "list-invoice",
+            href: '/list-invoices',
+            icon: renderIcon(ReceiptCube24Regular),
+        },
     ],
     INVOICEIST: [
         {

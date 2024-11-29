@@ -65,8 +65,14 @@ export default defineComponent({
         function handleLogout() {
             form.post(route('logout'), {
                 onSuccess: () => {
-                    notification.success({
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-start',
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        timer: 2500,
                         title: "Sukses logout",
+                        icon: "success",
                     });
                 },
                 onError: (err) => {

@@ -4,7 +4,7 @@
 
         <div class="card shadow-sm border-0">
             <div class="card-body">
-                <n-data-table :bordered="false" :columns="columns" :data="($page.props.invoices as any).data" />
+                <n-data-table :bordered="false" :columns="columns" :data="($page.props.invoices as any).data" :row-class-name="rowClassName" />
             </div>
         </div>
     </div>
@@ -42,6 +42,41 @@ export default defineComponent({
                     width: 200,
                 },
                 {
+                    title: "Status",
+                    key: "status_payment",
+                    width: 200,
+                    render(row) {
+                        let type;
+
+                        switch(row.status_payment){
+                            case "INSTALMENT":
+                                type = "warning";
+                                break;
+                            case "FULLY PAID":
+                                type = "success";
+                                break;
+                            case "PAID":
+                                type = "success";
+                                break;
+                            case "UNPAID":
+                                type = 'error';
+                                break;
+                            default:
+                                type = '';
+                                break;
+                        }
+
+                        return h(
+                            NTag,
+                            {
+                                type,
+                                strong: true,
+                                size: 'large',
+                            }, { default: () => row.status_payment}
+                        )
+                    }
+                },
+                {
                     title: "Salesman",
                     key: "salesman",
                     width: 200,
@@ -63,6 +98,14 @@ export default defineComponent({
                     width: 200,
                     render(row) {
                         return `${row.term_of_payment} HARI`;
+                    }
+                },
+                {
+                    title: "Umur Transaksi",
+                    key: "transaction_age",
+                    width: 150,
+                    render(row) {
+                        return `${row.transaction_age} HARI`;
                     }
                 },
                 {
@@ -89,38 +132,7 @@ export default defineComponent({
                         return formatRupiah(row.total_left);
                     }
                 },
-                {
-                    title: "Status",
-                    key: "status_payment",
-                    width: 200,
-                    render(row) {
-                        let type;
-
-                        switch(row.status_payment){
-                            case "INSTALMENT":
-                                type = "warning";
-                                break;
-                            case "PAID":
-                                type = "success";
-                                break;
-                            case "UNPAID":
-                                type = 'error';
-                                break;
-                            default:
-                                type = '';
-                                break;
-                        }
-
-                        return h(
-                            NTag,
-                            {
-                                type,
-                                strong: true,
-                                size: 'large',
-                            }, { default: () => row.status_payment}
-                        )
-                    }
-                },
+                
                 {
                     title: "Aksi",
                     key: "action",
@@ -143,7 +155,12 @@ export default defineComponent({
         }
 
         return {
-            columns: createColumns()
+            columns: createColumns(),
+            rowClassName(row) {
+                if(row.status_payment === "OVERDUE"){
+                    return 'overdue'
+                }
+            }
         }
     },
     components: {
@@ -153,5 +170,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-
+:deep(.overdue td) {
+  color: rgba(255, 0, 0, 0.75) !important;
+}
 </style>

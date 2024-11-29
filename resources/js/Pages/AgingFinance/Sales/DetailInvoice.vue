@@ -111,8 +111,7 @@
                 </div>
             </div>
         </div>
-
-        <div class="card shadow-sm border-0 mb-5" v-if="$page.props.auth.user.division === 'CASHIER'">
+        <div class="card shadow-sm border-0 mb-5" v-if="$page.props.auth.user.division.division_name === 'FINANCE'">
             <div class="card-body">
                 <div class="d-flex align-items-center">
                     <span class="fs-5 fw-semibold">Log Pembayaran</span>
@@ -171,7 +170,10 @@
                                 <div class="d-flex flex-column">
                                     <span class="fw-reguler fs-5">Pembayaran hari {{
                                         dayjs(payment.invoice_date).format('dddd, D MMMM YYYY HH:mm') }}</span>
-                                    <span class="fw-bold fs-4">{{ formatRupiah(payment.total_paid) }}</span>
+                                    <div class="d-flex align-items-center gap-4">
+                                        <span class="fw-bold fs-4">{{ formatRupiah(payment.total_paid) }}</span>
+                                        <n-tag type="info" :strong="true" :bordered="true">{{ payment.payment_method }}</n-tag>
+                                    </div>
                                 </div>
                                 <div class="ms-auto">
                                     <n-tag strong size="large"
@@ -189,17 +191,17 @@
                 title="Pembayaran" :bordered="false" size="huge" :segmented="segmented">
 
                 <div class="d-flex flex-column gap-3">
-                    <!-- <div class="d-flex flex-column gap-1">
-                        <label for="">STATUS PEMBAYARAN</label>
-                        <n-select placeholder="" size="large" :options="statusPayment"
-                            v-model:value="payForm.status_pay" />
-                    </div> -->
                     <div class="d-flex flex-column gap-1">
                         <label for="">NOMINAL PEMBAYARAN</label>
                         <n-input placeholder="" size="large" v-model:value="payForm.total_paid"
                             @input="(value) => payForm.total_paid = value.replace(/\D/g, '')">
                             <template #prefix>Rp </template>
                         </n-input>
+                    </div>
+                    <div class="d-flex flex-column gap-1">
+                        <label for="">METODE PEMBAYARAN</label>
+                        <n-select placeholder="" size="large" v-model:value="payForm.payment_method" 
+                            :options="paymentMethod" />
                     </div>
                 </div>
 
@@ -227,7 +229,7 @@ import dayjs from 'dayjs';
 import Swal from "sweetalert2";
 import 'dayjs/locale/id'; // Import locale Indonesia
 import { Flash } from '../../../types/model';
-import { NTag } from 'naive-ui';
+import { NTag, useNotification } from 'naive-ui';
 
 dayjs.locale('id'); // Set locale to Indonesian
 
@@ -341,6 +343,7 @@ export default defineComponent({
         const data = page.props.data as any;
         const dataDetails = data.transaction_details as any[];
         const showModal = ref(false);
+        const notification = useNotification();
 
         const dataInvoice = ref({
             customer_order_number: dataDetails.find(data => data.category === "CO Number")?.value,
@@ -360,6 +363,7 @@ export default defineComponent({
         const payForm = useForm({
             invoice_date: dataDetails.find(data => data.category === "Invoice Date")?.value,
             total_paid: null as unknown as number,
+            payment_method: "CASH",
         });
 
         function handleSetStatus() {
@@ -378,9 +382,14 @@ export default defineComponent({
         watch(() => payForm.total_paid, (data) => {
             const total_left = page.props.totalLeft as number;
             if (data > total_left) {
-                showModal.value = false;
+                // showModal.value = false;
                 payForm.reset();
-                Swal.fire('Pembayaran lebih dari sisa tagihan!', '', 'error');
+                notification.error({
+                    title: "Pembayaran lebih dari sisa tagihan!",
+                    meta: "Silakan cek kembali tagihan Anda",
+                    duration: 2500,
+                    closable: true,
+                });
             }
         });
 
@@ -389,7 +398,13 @@ export default defineComponent({
                 onSuccess: (page) => {
                     payForm.reset();
                     showModal.value = false;
-                    Swal.fire((page.props.flash as Flash).success, '', 'success');
+                    Swal.fire({
+                        title:(page.props.flash as Flash).success,
+                        icon: 'success',
+                        timer: 2500,
+                        timerProgressBar: true,
+                        showConfirmButton: false,
+                    });
                 },
                 onError: () => {
                     Swal.fire((page.props.flash as Flash).failed, '', 'error');
@@ -397,9 +412,10 @@ export default defineComponent({
             });
         }
 
-        const statusPayment = [
-            { label: "INSTALMENT", value: "INSTALMENT" },
-            { label: "PAID", value: "PAID" }
+        const paymentMethod = [
+            { label: "CASH", value: "CASH" },
+            { label: "TRANSFER", value: "TRANSFER" },
+            { label: "GYRO", value: "GYRO" }
         ]
 
         return {
@@ -416,7 +432,7 @@ export default defineComponent({
             payForm,
             ArrowBack,
             ReceiptMoney24Filled,
-            statusPayment,
+            paymentMethod,
             bodyStyle: {
                 width: '600px'
             },

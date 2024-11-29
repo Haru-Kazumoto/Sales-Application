@@ -1,139 +1,146 @@
 <template>
     <div class="d-flex flex-column gap-4">
         <TitlePage title="STOK BARANG GUDANG " />
-        <n-tabs type="line" animated>
-            <n-tab-pane name="all" tab="Semua Produk">
-                <div class="d-flex flex-column gap-2">
-                    <div class="row g-3 ">
-                        <div class="col-12 col-lg-6 ">
-                            <span class="fs-4">Daftar Semua Produk</span>
-                        </div>
-                        <div class="col-12 col-lg-2 d-flex gap-3 ">
-                            <n-select size="large" placeholder="Status" />
-                        </div>
-                        <div class="col-12 col-lg-2 d-flex gap-3 ">
-                            <n-input placeholder="Cari Produk" />
-                        </div>
-                        <div class="col-12 col-lg-2 d-flex gap-3 ">
-                            <n-input placeholder="Cari Produk" />
-                        </div>
-                    </div>
-                    <div class="card shadow" style="border: none;">
-                        <div class="card-body">
-                            <n-data-table :columns="columns" :data="($page.props.products as any).data"
-                                :bordered="false" size="small" pagination-behavior-on-filter="first" />
-                        </div>
-                    </div>
-                </div>
-            </n-tab-pane>
-            <n-tab-pane name="by-batch" tab="Produk dengan batch code">
-                <div class="d-flex flex-column gap-2">
-                    <div class="row g-3 ">
-                        <div class="col-12 col-lg-6 ">
-                            <span class="fs-4">Daftar Produk Dengan Batch</span>
-                        </div>
-                        <div class="col-12 col-lg-2 d-flex gap-3 ">
-                            <n-select size="large" placeholder="Status" />
-                        </div>
-                        <div class="col-12 col-lg-2 d-flex gap-3 ">
-                            <n-input placeholder="Cari Produk" />
-                        </div>
-                        <div class="col-12 col-lg-2 d-flex gap-3 ">
-                            <n-input placeholder="Cari Produk" />
-                        </div>
-                    </div>
-                    <div class="card shadow" style="border: none;">
-                        <div class="card-body">
-                            <n-data-table :columns="batchColumns" :data="($page.props.products_batch as any).data"
-                                :bordered="false" size="small" pagination-behavior-on-filter="first" />
-                        </div>
-                    </div>
-                </div>
-            </n-tab-pane>
-            <n-tab-pane name="gap-products" tab="Selisih produk">
-                <div class="d-flex flex-column gap-2">
-                    <div class="row g-3 ">
-                        <div class="col-12 col-lg-8">
-                            <span class="fs-4">Daftar Selisih Produk</span>
-                        </div>
-                        <div class="col-12 col-lg-4 d-flex gap-3 ">
-                            <n-input placeholder="Cari Nama Produk" size="large" />
-                        </div>
-                    </div>
-                    <div class="card shadow" style="border: none;">
-                        <div class="card-body">
-                            <n-data-table :columns="gapColumns" :data="($page.props.products_gap as any).data"
-                                :bordered="false" size="small" pagination-behavior-on-filter="first" />
-                        </div>
-                    </div>
-                </div>
-
-                <!-- MODAL -->
-                <n-modal v-model:show="modalOpen" :mask-closable="false" class="d-flex" preset="card" :style="bodyStyle"
-                    title="Tambah Barang" :bordered="false" size="huge" :segmented="segmented">
-                    <span class="fs-5 fw-semibold">{{ dataChoosen.product_name }} | {{ dataChoosen.quantity }}</span>
-                    <!-- Buatkan saya dinamic input jadi form nya bisa bertambah tambah sesuai kebutuhan -->
-                    <div v-for="(product, index) in product_journals" :key="index" class="d-flex flex-column gap-3">
-
-                        <n-divider>FORM {{ index + 1 }}</n-divider>
-                        <div class="d-flex flex-column gap-1">
-                            <label for="" style="font-size: 16px;">KODE PEMBUATAN BARANG</label>
-                            <n-input size="large" placeholder="" v-model:value="product.batch_code"
-                                @input="(value) => product.batch_code = value.toUpperCase()" />
-                        </div>
-                        <div class="d-flex flex-column gap-1">
-                            <label for="" style="font-size: 16px;">TANGGAL EXPIRED</label>
-                            <n-date-picker placeholder="" type="datetime" v-model:formatted-value="product.expiry_date"
-                                value-format="yyyy-MM-dd HH:mm:ss" size="large" />
-                        </div>
-                        <div class="d-flex flex-column gap-1">
-                            <label for="" style="font-size: 16px;">QUANTITY</label>
-                            <n-input size="large" placeholder="" v-model:value="product.quantity"
-                                @input="(value) => product.quantity = value.replace(/\D/g, '')" />
-                        </div>
-                        <n-button type="error" ghost size="large" @click="removeFormProductJournal(index)">
-                            Hapus Form Kode Batch
-                        </n-button>
-                    </div>
-                    <n-button type="primary" size="large" @click="addFormProductJournal" class="my-4 w-100">
-                        Tambah Form Kode Batch
-                    </n-button>
-
-                    <template #footer>
-                        <div class="d-flex">
-                            <div class="d-flex gap-2 ms-auto">
-                                <n-button type="error" size="large" @click="handleCloseModal">Batal</n-button>
-                                <n-button type="info" size="large" @click="handleSubmitProduct">Tambah Produk</n-button>
+        <div class="d-flex flex-column gap-2">
+            <n-button class="w-25" type="primary" @click="handleExport">Export data barang</n-button>
+            <n-tabs type="line" animated>
+                <n-tab-pane name="all" tab="Semua Produk">
+                    <div class="d-flex flex-column gap-2">
+                        <div class="row g-3 ">
+                            <div class="col-12 col-lg-6 ">
+                                <span class="fs-4">Daftar Semua Produk</span>
+                            </div>
+                            <div class="col-12 col-lg-2 d-flex gap-3 ">
+                                <n-select size="large" placeholder="Status" />
+                            </div>
+                            <div class="col-12 col-lg-2 d-flex gap-3 ">
+                                <n-input placeholder="Cari Produk" />
+                            </div>
+                            <div class="col-12 col-lg-2 d-flex gap-3 ">
+                                <n-input placeholder="Cari Produk" />
                             </div>
                         </div>
-                    </template>
-                </n-modal>
-            </n-tab-pane>
-            <n-tab-pane name="stagnation_date" tab="Produk stagnasi">
-                <div class="d-flex flex-column gap-2">
-                    <div class="row g-3 ">
-                        <div class="col-12 col-lg-6 ">
-                            <span class="fs-4">Daftar Produk stagnasi di gudang</span>
-                        </div>
-                        <div class="col-12 col-lg-2 d-flex gap-3 ">
-                            <n-select size="large" placeholder="Status" />
-                        </div>
-                        <div class="col-12 col-lg-2 d-flex gap-3 ">
-                            <n-input placeholder="Cari Produk" />
-                        </div>
-                        <div class="col-12 col-lg-2 d-flex gap-3 ">
-                            <n-input placeholder="Cari Produk" />
+                        <div class="card shadow" style="border: none;">
+                            <div class="card-body">
+                                <n-data-table :columns="columns" :data="($page.props.products as any).data"
+                                    :bordered="false" size="small" pagination-behavior-on-filter="first" />
+                            </div>
                         </div>
                     </div>
-                    <div class="card shadow" style="border: none;">
-                        <div class="card-body">
-                            <n-data-table :columns="batchColumns" :data="($page.props.product_stagnations as any).data"
-                                :bordered="false" size="small" pagination-behavior-on-filter="first" />
+                </n-tab-pane>
+                <n-tab-pane name="by-batch" tab="Produk dengan batch code">
+                    <div class="d-flex flex-column gap-2">
+                        <div class="row g-3 ">
+                            <div class="col-12 col-lg-6 ">
+                                <span class="fs-4">Daftar Produk Dengan Batch</span>
+                            </div>
+                            <div class="col-12 col-lg-2 d-flex gap-3 ">
+                                <n-select size="large" placeholder="Status" />
+                            </div>
+                            <div class="col-12 col-lg-2 d-flex gap-3 ">
+                                <n-input placeholder="Cari Produk" />
+                            </div>
+                            <div class="col-12 col-lg-2 d-flex gap-3 ">
+                                <n-input placeholder="Cari Produk" />
+                            </div>
+                        </div>
+                        <div class="card shadow" style="border: none;">
+                            <div class="card-body">
+                                <n-data-table :columns="batchColumns" :data="($page.props.products_batch as any).data"
+                                    :bordered="false" size="small" pagination-behavior-on-filter="first" />
+                            </div>
                         </div>
                     </div>
-                </div>
-            </n-tab-pane>
-        </n-tabs>
+                </n-tab-pane>
+                <n-tab-pane name="gap-products" tab="Selisih produk">
+                    <div class="d-flex flex-column gap-2">
+                        <div class="row g-3 ">
+                            <div class="col-12 col-lg-8">
+                                <span class="fs-4">Daftar Selisih Produk</span>
+                            </div>
+                            <div class="col-12 col-lg-4 d-flex gap-3 ">
+                                <n-input placeholder="Cari Nama Produk" size="large" />
+                            </div>
+                        </div>
+                        <div class="card shadow" style="border: none;">
+                            <div class="card-body">
+                                <n-data-table :columns="gapColumns" :data="($page.props.products_gap as any).data"
+                                    :bordered="false" size="small" pagination-behavior-on-filter="first" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MODAL -->
+                    <n-modal v-model:show="modalOpen" :mask-closable="false" class="d-flex" preset="card"
+                        :style="bodyStyle" title="Tambah Barang" :bordered="false" size="huge" :segmented="segmented">
+                        <span class="fs-5 fw-semibold">{{ dataChoosen.product_name }} | {{ dataChoosen.quantity
+                            }}</span>
+                        <!-- Buatkan saya dinamic input jadi form nya bisa bertambah tambah sesuai kebutuhan -->
+                        <div v-for="(product, index) in product_journals" :key="index" class="d-flex flex-column gap-3">
+
+                            <n-divider>FORM {{ index + 1 }}</n-divider>
+                            <div class="d-flex flex-column gap-1">
+                                <label for="" style="font-size: 16px;">KODE PEMBUATAN BARANG</label>
+                                <n-input size="large" placeholder="" v-model:value="product.batch_code"
+                                    @input="(value) => product.batch_code = value.toUpperCase()" />
+                            </div>
+                            <div class="d-flex flex-column gap-1">
+                                <label for="" style="font-size: 16px;">TANGGAL EXPIRED</label>
+                                <n-date-picker placeholder="" type="datetime"
+                                    v-model:formatted-value="product.expiry_date" value-format="yyyy-MM-dd HH:mm:ss"
+                                    size="large" />
+                            </div>
+                            <div class="d-flex flex-column gap-1">
+                                <label for="" style="font-size: 16px;">QUANTITY</label>
+                                <n-input size="large" placeholder="" v-model:value="product.quantity"
+                                    @input="(value) => product.quantity = value.replace(/\D/g, '')" />
+                            </div>
+                            <n-button type="error" ghost size="large" @click="removeFormProductJournal(index)">
+                                Hapus Form Kode Batch
+                            </n-button>
+                        </div>
+                        <n-button type="primary" size="large" @click="addFormProductJournal" class="my-4 w-100">
+                            Tambah Form Kode Batch
+                        </n-button>
+
+                        <template #footer>
+                            <div class="d-flex">
+                                <div class="d-flex gap-2 ms-auto">
+                                    <n-button type="error" size="large" @click="handleCloseModal">Batal</n-button>
+                                    <n-button type="info" size="large" @click="handleSubmitProduct">Tambah
+                                        Produk</n-button>
+                                </div>
+                            </div>
+                        </template>
+                    </n-modal>
+                </n-tab-pane>
+                <n-tab-pane name="stagnation_date" tab="Produk stagnasi">
+                    <div class="d-flex flex-column gap-2">
+                        <div class="row g-3 ">
+                            <div class="col-12 col-lg-6 ">
+                                <span class="fs-4">Daftar Produk stagnasi di gudang</span>
+                            </div>
+                            <div class="col-12 col-lg-2 d-flex gap-3 ">
+                                <n-select size="large" placeholder="Status" />
+                            </div>
+                            <div class="col-12 col-lg-2 d-flex gap-3 ">
+                                <n-input placeholder="Cari Produk" />
+                            </div>
+                            <div class="col-12 col-lg-2 d-flex gap-3 ">
+                                <n-input placeholder="Cari Produk" />
+                            </div>
+                        </div>
+                        <div class="card shadow" style="border: none;">
+                            <div class="card-body">
+                                <n-data-table :columns="batchColumns"
+                                    :data="($page.props.product_stagnations as any).data" :bordered="false" size="small"
+                                    pagination-behavior-on-filter="first" />
+                            </div>
+                        </div>
+                    </div>
+                </n-tab-pane>
+            </n-tabs>
+        </div>
     </div>
 </template>
 
@@ -539,6 +546,12 @@ export default defineComponent({
             });
         }
 
+        function handleExport(){
+            const url = route('warehouse.product.export');
+
+            window.location.href = url;
+        }
+
         return {
             pagination,
             columns: createColumns(),
@@ -548,6 +561,8 @@ export default defineComponent({
             addFormProductJournal,
             handleCloseModal,
             removeFormProductJournal,
+            handleSubmitProduct,
+            handleExport,
             bodyStyle: {
                 width: '600px'
             },
@@ -558,7 +573,6 @@ export default defineComponent({
             modalOpen,
             dataChoosen,
             product_journals,
-            handleSubmitProduct
         };
     },
     components: {

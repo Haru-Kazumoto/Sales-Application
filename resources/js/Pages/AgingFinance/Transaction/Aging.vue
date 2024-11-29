@@ -1,14 +1,22 @@
 <template>
     <div class="d-flex flex-column gap-4">
         <TitlePage title="Aging Dashboard" />
-        <div class="d-flex flex-column">
-            <span v-if="checkedRowKeys.length > 0" role="alert" class="alert alert-success">
-                Select {{ checkedRowKeys.length }} row{{ checkedRowKeys.length < 2 ? '' : 's' }} </span>
-                    <n-data-table :columns="columns" :data="($page.props.invoices as any).data" :pagination="pagination"
-                        @update:checked-row-keys="handleCheck" size="small" :row-key="rowKey" />
-                    <n-button type="primary" class="ms-auto my-3" style="width: 15rem;" @click="handleSendReminder">
-                        Send Reminder
-                    </n-button>
+        <div class="d-flex flex-column gap-3">
+            <div class="d-flex gap-3 ">
+                <n-select placeholder="Status Faktur" size="large" class="w-25" :options="statusInvoice"></n-select>
+                <n-button type="primary" size="large" @click="handleExportInvoice">Export faktur hari ini</n-button>
+            </div>
+            <div class="card shadow-sm border-0">
+                <div class="card-body d-flex flex-column">
+                    <span v-if="checkedRowKeys.length > 0" role="alert" class="alert alert-success">
+                        Select {{ checkedRowKeys.length }} row{{ checkedRowKeys.length < 2 ? '' : 's' }} </span>
+                            <n-data-table :bordered="false" :columns="columns" :data="($page.props.invoices as any).data" :pagination="pagination"
+                                @update:checked-row-keys="handleCheck" size="small" :row-key="rowKey" />
+                            <n-button type="primary" class="ms-auto my-3" style="width: 15rem;" @click="handleSendReminder">
+                                Send Reminder
+                            </n-button>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -154,15 +162,29 @@ export default defineComponent({
                         });
                     }
                 });
-
             }
-
         }
+
+        function handleExportInvoice() {
+            const url = route('aging-finance.invoice.export');
+            
+            window.location.href = url;
+        }
+
+        const statusInvoice = [
+            {label: "PAID", value: "PAID"},
+            {label: "UNPAID", value: "UNPAID"},
+            {label: "OVERDUE", value: "OVERDUE"},
+            {label: "FULLY PAID", value: "FULLY PAID"},
+            {label: "INSTALMENT", value: "INSTALMENT"},
+        ]
 
         return {
             columns: createColumns(),
+            handleExportInvoice,
             handleSendReminder,
             checkedRowKeys: checkedRowKeysRef,
+            statusInvoice,
             pagination: {
                 pageSize: 10
             },

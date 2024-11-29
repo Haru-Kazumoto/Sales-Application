@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\InvoiceExport;
 use App\Http\Services\CustomerOrderServices;
 use App\Http\Services\TransactionServices;
 use App\Models\InvoicePayment;
@@ -12,12 +13,14 @@ use App\Models\TransactionDetail;
 use App\Models\TransactionItem;
 use App\Models\Transactions;
 use App\Models\TransactionType;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
+use Maatwebsite\Excel\Facades\Excel;
 
 class InvoiceController extends Controller
 {
@@ -168,22 +171,40 @@ class InvoiceController extends Controller
             'transactionDetails',
             'transactionItems.product',
             'transactionItems.tax',
-            'invoicePayments' => function ($query) {
+            'invoicePayments' => function ($query) use ($transactions) {
                 $query->select(
                     'id',
                     'transaction_id',
                     'total_paid',
                     'invoice_date',
-                    DB::raw('(SELECT total FROM transactions WHERE id = invoice_payment.transaction_id) - SUM(total_paid) AS sisa_pembayaran'),
-                    DB::raw("(CASE WHEN (SELECT total FROM transactions WHERE id = invoice_payment.transaction_id) - SUM(total_paid) > 0 THEN 'INSTALMENT' ELSE 'PAID' END) AS status_payment")
+                    'payment_method',
+                    DB::raw("({$transactions->total} - SUM(total_paid)) AS sisa_pembayaran"),
+                    DB::raw("
+                        (CASE 
+                            WHEN (SELECT COUNT(*) FROM invoice_payment WHERE transaction_id = {$transactions->id}) = 1 
+                                AND ({$transactions->total} - SUM(total_paid)) = 0 THEN 'FULLY PAID'
+                            WHEN ({$transactions->total} - SUM(total_paid)) > 0 THEN 'INSTALMENT'
+                            ELSE 'PAID' 
+                        END) AS status_payment
+                    ")
                 )->groupBy('id', 'transaction_id', 'total_paid', 'invoice_date');
             }
-        ]);
+        ]); 
 
         $totalTagihan = $transactions->total;
         $totalPaid = $transactions->invoicePayments->sum('total_paid');
         $totalLeft = $totalTagihan - $totalPaid;
-        $statusPayment = $totalLeft > 0 ? 'INSTALMENT' : 'PAID';
+        
+        // Cek jumlah pembayaran yang dilakukan
+        $paymentCount = $transactions->invoicePayments->count();
+
+        if ($paymentCount === 1 && $totalLeft === 0) {
+            $statusPayment = 'FULLY PAID';
+        } elseif ($totalLeft > 0) {
+            $statusPayment = 'INSTALMENT';
+        } else {
+            $statusPayment = 'PAID';
+        }
 
         return Inertia::render('AgingFinance/Sales/DetailInvoice', compact(
             'data',
@@ -205,6 +226,7 @@ class InvoiceController extends Controller
                 'total_bill' => $transactions->total,
                 'action' => "IN",
                 'transaction_id' => $transactions->id,
+                'payment_method' => $request->payment_method,
             ]);
         });
 
@@ -215,8 +237,12 @@ class InvoiceController extends Controller
     {
         $tx_type = TransactionType::where('name', 'Penjualan')->first();
         $invoices = $this->transactionServices->getTransactions($tx_type->id, null,null,10, true);
-        // dd($data);
 
         return Inertia::render('AgingFinance/Transaction/Aging', compact('invoices'));
+    }
+
+    public function exportInvoice()
+    {
+        return Excel::download(new InvoiceExport(), 'invoice_data_'.date('d_F_Y').'.xlsx');
     }
 }

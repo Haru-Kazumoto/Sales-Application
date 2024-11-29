@@ -215,6 +215,9 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         Route::patch('/booking-requests/reject-description/{transactions}', [App\Http\Controllers\BookingOrderController::class, 'setRejectDescription'])->name('set-reject-description');
         Route::patch('/booking-requests/approve/{transactionItem}', [App\Http\Controllers\BookingOrderController::class, 'setApprovedStatus'])->name('set-approved');
         Route::patch('/booking-requests/approve-request/{transaction}',[App\Http\Controllers\BookingOrderController::class, 'approveBookingRequest'] )->name('approve-request');
+
+        // EXPORT PRODUCTS
+        Route::get('/export-products', [App\Http\Controllers\ProductsController::class, 'exportProducts'])->name('product.export');
     });
 
     //Aging Finance Routes
@@ -237,6 +240,7 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         Route::post('/save-message', [App\Http\Controllers\MessageTemplateController::class, 'saveMessage'])->name('save-message');
 
         Route::post('/send-message', [App\Http\Controllers\BlastWhatsappController::class, 'sendWhatsapp'])->name('send.message');
+        Route::get('/export-invoices', [App\Http\Controllers\InvoiceController::class, 'exportInvoice'])->name('invoice.export');
     });
 
     Route::name('sales.')->group(function() {

@@ -204,6 +204,7 @@ export default defineComponent({
     setup() {
         const page = usePage();
         const travel_document = page.props.transactions as Transactions;
+        console.log(travel_document);
         const form = useForm({
             document_code: page.props.invoice_number as string,
             term_of_payment: travel_document.term_of_payment,
@@ -233,6 +234,7 @@ export default defineComponent({
             customer: travel_document.transaction_details.find((data) => data.category === "Customer")?.value,
             npwp: travel_document.transaction_details.find((data) => data.category === "NPWP")?.value,
             customer_address: travel_document.transaction_details.find((data) => data.category === "Customer Address")?.value,
+            warehouse: travel_document.transaction_details.find((data) => data.category === "Warehouse")?.value,
         });
 
         const tax = ref({
@@ -288,6 +290,12 @@ export default defineComponent({
                     name: "Nomor Surat Jalan",
                     category: "Travel Document Number",
                     value: transaction_details.value.travel_document_number,
+                    data_type: "string"
+                },
+                {
+                    name: "Gudang",
+                    category: "Warehouse",
+                    value: transaction_details.value.warehouse,
                     data_type: "string"
                 },
                 {

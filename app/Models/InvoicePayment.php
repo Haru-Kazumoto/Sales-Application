@@ -19,6 +19,7 @@ class InvoicePayment extends Model
         'total_paid',
         'action',
         'transaction_id',
+        'payment_method',
     ];
 
     public function transaction(): BelongsTo

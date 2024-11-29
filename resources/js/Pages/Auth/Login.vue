@@ -61,6 +61,7 @@ import { defineComponent, h, ref, onMounted } from 'vue'
 import { NIcon, useNotification } from 'naive-ui'
 import { PersonOutline, LockClosedOutline, LogInOutline } from "@vicons/ionicons5"
 import { RequestLoginDto } from '../../types/dto';
+import Swal from 'sweetalert2';
 
 export default defineComponent({
     setup() {
@@ -75,11 +76,21 @@ export default defineComponent({
         }
 
         function handleSubmit() {
-            //create post login logic here...
             form.post(route('login'), {
                 preserveScroll: false,
                 onFinish: () => {
                     form.reset();
+                },
+                onSuccess: (page) => {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top',
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        timer: 2500,
+                        title: `Selamat datang, ${page.props.auth.user.fullname}!`,
+                        icon: "success",
+                    });  
                 }
             });
         }

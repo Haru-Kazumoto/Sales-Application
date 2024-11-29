@@ -1,0 +1,66 @@
+PROCUREMENT:
+
+revision
+- nomor polisi ekspedisi bisa berganti ganti (tidak tetap)
+
+bug major
+- data sso setelah di create tidak masuk list
+
+WAREHOUSE:
+
+revision
+- ubah nama jumlah barang dibagi menjadi jumlah kode [OK]
+- pengiriman bertahap jangan pakai page baru, langsung di strok barang Bekasi [OK]
+- barang per batch di list di urutkan sesuai dengan barang yang sama [OK]
+- tambah pilihan select LAINYA untuk nama ekspedisi (lainnya mencakup dibawa sales atau diambil sendiri) [OK]
+- keterangan saat pembuatan surat jalan di hapus [OK]
+- untuk barang, berikan peringatan akan ekspire dalam 3 bulan [OK]
+- khusus barang tipe T atau tepung jika dari awal tanggal masuk Gudang jika sudah lewat sebulan dari awal masuk Gudang diberikan peringatan akan ekspire atau sudah 1 bulan di Gudang [OK]
+- seluruh stok barang di Gudang di cetak menjadi laporan (excel) [OK]
+- kekurangan barang seperti pengiriman bertahap dikirimkan ke supplier lewat WA
+
+
+AGING:
+
+revision
+- tambahkan 1 card di dashboard yaitu untuk transaksi OVERDUE [OK]
+- di aging dipecah lagi menjadi 3 divisi [OK]
+ + FAKTURIS untuk menghandle pembuatan faktur
+ + KASIR untuk menghandle pembayaran faktur
+ + A/R CONTROL untuk menghandle transaksi berjalan 
+- tambahkan umur transaksi (umur transaksi dimulai dari hari ini akan terus bertambah 1 setiap harinya lalu umur transaksi akan berhenti Ketika status transaksi sudah PAID) [OK]
+- jika 1 transaksi sekali bayar langsung lunas berikan status FULLY PAID [OK]
+- nomor faktur diubah menjadi 2411-0001 (2411 adalah tahun dan bulan, 0001 adalah angka berjalan atau increment yang mana Ketika sudah berganti bulan akan di reset menjadi 0001 lagi atau dari awal Kembali)
+- di filter list data blast WhatsApp berikan filtering by status transaksi
+- transaksi tambahkan status pembayaran (CASH/GYRO/TRANSFER) [OK]
+- ambil semua data faktur (per hari ini) berupa excel [OK]
+
+FINANCE:
+
+- buat halaman untuk menghandle pembayaran program promo dari supplier
+
+----------------------------------------------------------
+surat jalan direct,do pak katimin yang buat
+kalo direct depo pak 
+
+--procurement
+di table list po tambahin data pengiriman
+tambahkan fitur di procurement pembuatan surat jalan, dan pengupload an surat jalan
+
+--sales
+tambah 1 field di CO pengiriman (isi select nya ada di PO yang direct,do dll)
+Ketika field pengiriman tersebut itu direct,dan beli do maka ambil data barangnya bukan dari Gudang tetapi seluruh data barang master dan data CO tersebut masuk ke menu pak katimin (procurement) selain itu tetep warehouse yang buat
+
+--admin (data master customer)
+di badan usaha (legalitas) buat menu select [PT, CV, UD, PERORANGAN]
+
+--finance (program promo)
+tambahkan 2 field nomor program promo dan upload attachment (pdf & image)
+
+--admin (data customer)
+tambahkan 1 field select dengan label wajib pajak dengan value (PKP & NON-PKP)
+--Pembelian dan penjualan bisa ppn dan non ppn, jika ada ppn maka perhitungan disertakan PPN 11%, jika memilih non ppn maka perhitungan tagihan tanpa PPN 11%
+--Kemasan dalam detail produk ada 2 field, mohon dihilangkan satu dan Kemasan itu nanti akan di input manual contoh: 25kg/pak bukan pcs, bag, sak seperti sekarang.
+
+
+
