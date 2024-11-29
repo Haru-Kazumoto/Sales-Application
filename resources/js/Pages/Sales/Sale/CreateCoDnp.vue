@@ -57,11 +57,19 @@
                     </div>
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
+                            <label for="">PENGIRIMAN<span class="text-danger">*</span></label>
+                            <n-select size="large" v-model:value="transaction_details.delivery" :options="sendType"
+                                placeholder="" />
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-4">
+                        <div class="d-flex flex-column gap-1">
                             <label for="">SALESMAN<span class="text-danger">*</span></label>
                             <n-input size="large" v-model:value="transaction_details.salesman" readonly
                                 placeholder="" />
                         </div>
                     </div>
+
                     <!-- <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">BIAYA ANGKUTAN<span class="text-danger">*</span></label>
@@ -102,7 +110,7 @@
                     <!-- INPUT PRODUCTS FORM -->
                     <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">NAMA PRODUK</label>
-                        <n-select filterable :options="productOptions" placeholder="" size="large"
+                        <n-select filterable :options="availableProducts" placeholder="" size="large"
                             v-model:value="products.name" />
                         <!-- Warning quantity atau status quantity -->
                         <span :style="{ color: stockStatusColor }">
@@ -149,7 +157,7 @@
                     </div>
 
                     <!-- INPUT DISCOUNT FORM -->
-                    <div class="col-6 d-flex flex-column gap-1">
+                    <!-- <div class="col-6 d-flex flex-column gap-1">
                         <label for="">DISCOUNT 1</label>
                         <n-input size="large" placeholder="" v-model:value="transaction_items.discount_1"
                             @input="(value) => transaction_items.discount_1 = value.replace(/\D/g, '')">
@@ -196,7 +204,7 @@
                             v-model:value="transaction_details.total_discount_3">
                             <template #prefix>Rp</template>
                         </n-input>
-                    </div>
+                    </div> -->
                 </div>
                 <n-button type="primary" class="ms-auto" @click="handleAddProduct">Tambah Produk</n-button>
             </div>
@@ -425,6 +433,7 @@ export default defineComponent({
             salesman: (page.props.auth as any).user.fullname,
             transportation_cost: null as unknown as number,
             cashback: null as unknown as number,
+            delivery: null as unknown as string,
             unloading_cost: null as unknown as number,
             total_discount_1: null as any,
             total_discount_3: null as any,
@@ -462,7 +471,59 @@ export default defineComponent({
             product_journals: [] as any[],
             // total_price_discount: null as unknown as number,
         });
+
         const customerGroup = ref(null);
+        const availableProducts = ref<any>([]);
+
+        const productOptions = (page.props.products as any[]).map((data) => ({
+            label: `${data.name} - ${data.batch_code}`,
+            value: `${data.name} - ${data.batch_code}`,
+            unit: data.unit,
+            code: data.code,
+            warehouse: data.warehouse,
+            batch_code: data.batch_code,
+            expiry_date: data.expiry_date,
+            last_stock: data.last_stock,
+            status: data.status,
+            id: data.id,
+            promo_value: data.promo_value,
+            description: data.description,
+            min: data.min,
+            max: data.max,
+            start_date: data.start_date,
+            end_date: data.end_date,
+            promo_name: data.promo_name,
+            retail_price: data.retail_price,
+            redemp_price: data.redemp_price,
+            restaurant_price: data.restaurant_price
+        }));
+
+        const productMasters = (page.props.all_products as any[]).map((data) => ({
+            label: data.name,
+            value: data.name,
+            category: data.category,
+            unit: data.unit,
+            code: data.code,
+            id: data.id
+        }));
+
+        /**
+         *  watch the sendType if send type is direct, direct depo, and beli do then list all products from data master,
+         *  elese list all products from warehouse (batch)
+         */
+        watch(
+            () => transaction_details.value.delivery, // Perhatikan perubahan di `delivery`
+            (delivery) => {
+                if (['DIRECT', 'DIRECT_DEPO', 'DO'].includes(delivery)) {
+                    // Jika delivery adalah salah satu dari jenis pengiriman tersebut, gunakan data master
+                    availableProducts.value = productMasters;
+                } else {
+                    // Selain itu, gunakan data dari gudang
+                    availableProducts.value = productOptions;
+                }
+            },
+            { immediate: true } // Jalankan watch segera saat di-mount
+        );
 
         watch(() => form.term_of_payment, (term) => {
             if (term) {
@@ -518,7 +579,7 @@ export default defineComponent({
 
         watch(() => transaction_details.value.customer, (name) => {
             const selectedCustomer = customerOptions.find(data => data.label === name);
-            
+
             // set customer group
             customerGroup.value = selectedCustomer?.partiesGroup?.name;
 
@@ -571,7 +632,7 @@ export default defineComponent({
         });
 
         watch(() => products.value.name, (name) => {
-            if(customerGroup.value === null) {
+            if (customerGroup.value === null) {
                 notification.warning({
                     title: "Dimohon untuk memilih customer terlebih dahulu",
                     meta: "Agar pemilihan harga barang tepat!",
@@ -579,7 +640,16 @@ export default defineComponent({
                     closable: false,
                 });
             }
-            const selectedProduct = productOptions.find(data => data.value === name);
+
+            let selectedProduct = null;
+
+            if (['DIRECT', 'DIRECT_DEPO', 'DO'].includes(transaction_details.value.delivery)) {
+                // Gunakan produk dari master
+                selectedProduct = productMasters.find(product => product.value === products.value.name);
+            } else {
+                // Gunakan produk dari batch
+                selectedProduct = productOptions.find(product => product.value === products.value.name);
+            }
 
             if (selectedProduct) {
                 const today = new Date();
@@ -593,9 +663,9 @@ export default defineComponent({
 
                 //todo : switch statement for handle the price of products
                 console.log(customerGroup.value);
-                if(customerGroup.value === "Bakery"){
+                if (customerGroup.value === "Bakery") {
                     transaction_items.value.amount = selectedProduct.retail_price;
-                } else if (customerGroup.value === "Restaurant"){
+                } else if (customerGroup.value === "Restaurant") {
                     transaction_items.value.amount = selectedProduct.restaurant_price;
                 } else {
                     transaction_items.value.amount = selectedProduct.redemp_price;
@@ -625,12 +695,16 @@ export default defineComponent({
                 }
 
                 // Tentukan pesan dan warna status berdasarkan last_stock
-                if (products.value.last_stock < 10) {
-                    stockMessage.value = `Stok saat ini : (${products.value.last_stock})`;
-                    stockStatusColor.value = 'red';
+                if(!['DIRECT', 'DIRECT_DEPO', 'DO'].includes(transaction_details.value.delivery)){
+                    if (products.value.last_stock < 10) {
+                        stockMessage.value = `Stok saat ini : (${products.value.last_stock})`;
+                        stockStatusColor.value = 'red';
+                    } else {
+                        stockMessage.value = `Stok saat ini : (${products.value.last_stock})`;
+                        stockStatusColor.value = 'black';
+                    }
                 } else {
-                    stockMessage.value = `Stok saat ini : (${products.value.last_stock})`;
-                    stockStatusColor.value = 'black';
+                    stockMessage.value = null as unknown as string;
                 }
             } else {
                 // Reset data jika tidak ada produk yang dipilih
@@ -976,6 +1050,12 @@ export default defineComponent({
                 //     data_type: 'float',
                 // },
                 {
+                    name: "Pengiriman",
+                    category: "Delivery",
+                    value: transaction_details.value.delivery,
+                    data_type: 'string',
+                },
+                {
                     name: 'Cashback',
                     category: 'Cashback',
                     value: transaction_details.value.cashback as any ?? '0',
@@ -1084,6 +1164,14 @@ export default defineComponent({
             })
         }
 
+
+        const sendType = [
+            { label: "DEPO BEKASI", value: "DEPO BEKASI" },
+            { label: "Direct", value: "DIRECT" },
+            { label: "Direct Depo", value: "DIRECT_DEPO" },
+            { label: "Beli DO", value: "DO" },
+        ];
+
         const termPaymentOptions = (page.props.payment_terms as Lookup[]).map((data) => ({
             label: data.label,
             value: data.value
@@ -1099,28 +1187,6 @@ export default defineComponent({
             partiesGroup: data.parties_group
         }));
 
-        const productOptions = (page.props.products as any[]).map((data) => ({
-            label: `${data.name} - ${data.batch_code}`,
-            value: `${data.name} - ${data.batch_code}`,
-            unit: data.unit,
-            code: data.code,
-            warehouse: data.warehouse,
-            batch_code: data.batch_code,
-            expiry_date: data.expiry_date,
-            last_stock: data.last_stock,
-            status: data.status,
-            id: data.id,
-            promo_value: data.promo_value,
-            description: data.description,
-            min: data.min,
-            max: data.max,
-            start_date: data.start_date,
-            end_date: data.end_date,
-            promo_name: data.promo_name,
-            retail_price: data.retail_price,
-            redemp_price: data.redemp_price,
-            restaurant_price: data.restaurant_price,
-        }));
 
 
         return {
@@ -1149,6 +1215,9 @@ export default defineComponent({
             stockMessage,
             totalDiscounts,
             grandTotal,
+            sendType,
+            productMasters,
+            availableProducts,
             handleSearchCustomer: (query: string) => {
                 if (!query.length) {
                     customerOptionsRef.value = []

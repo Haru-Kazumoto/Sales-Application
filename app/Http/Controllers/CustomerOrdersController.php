@@ -66,6 +66,7 @@ class CustomerOrdersController extends Controller
             ->get();
         $payment_terms = Lookup::where('category', 'PAYMENT_TERM')->get();
         $products = $this->productServices->getStockProductsWithBatchCode("DNP");
+        $all_products = Products::query()->get();
 
         return Inertia::render('Sales/Sale/CreateCoDnp', [
             'coNumber' => $coNumber, 
@@ -73,6 +74,7 @@ class CustomerOrdersController extends Controller
             'customers' => $customers, 
             'payment_terms' => $payment_terms,
             'products' => $products,
+            'all_products' => $all_products,
         ]);
     }
 
@@ -88,6 +90,7 @@ class CustomerOrdersController extends Controller
             ->get();
         $payment_terms = Lookup::where('category', 'PAYMENT_TERM')->get();
         $products = $this->productServices->getStockProductsWithBatchCode("DKU");
+        $all_products = Products::query()->get();
 
         return Inertia::render('Sales/Sale/CreateCoDku', [
             'coNumber' => $coNumber, 
@@ -95,6 +98,7 @@ class CustomerOrdersController extends Controller
             'customers' => $customers, 
             'payment_terms' => $payment_terms,
             'products' => $products,
+            'all_products' => $all_products,
         ]);
     }
 
@@ -137,6 +141,7 @@ class CustomerOrdersController extends Controller
         // Gunakan transaksi database
         DB::transaction(function () use ($request) {
             $tx_type = TransactionType::where('name', 'Sales Order')->first();
+            $delivery = $request->transaction_details[4]['value'];
 
             // Simpan customer order
             $transaction = Transactions::create([
@@ -184,18 +189,20 @@ class CustomerOrdersController extends Controller
                     'product_id' => $product->id, // Menyimpan product_id dari produk yang ditemukan atau baru
                 ]);
 
-                //decrease quantity at warehouse
-                foreach ($txItem['product_journals'] as $journal) {
-                    ProductJournal::create([
-                        'quantity' => $journal['quantity'],
-                        'amount' => $txItem['amount'],
-                        'action' => $journal['action'],
-                        'batch_code' => $journal['batch_code'], 
-                        // 'expiry_date' => $journal['expiry_date'],
-                        'transactions_id' => $transaction->id,
-                        'warehouse_id' => $warehouse->id,
-                        'product_id' => $product->id,
-                    ]);
+                // decrease quantity at warehouse if the delivery is not 'DIRECT', 'DIRECT_DEPO', 'DO'
+                if($delivery && !in_array($delivery, ['DIRECT', 'DIRECT_DEPO', 'DO'])){
+                    foreach ($txItem['product_journals'] as $journal) {
+                        ProductJournal::create([
+                            'quantity' => $journal['quantity'],
+                            'amount' => $txItem['amount'],
+                            'action' => $journal['action'],
+                            'batch_code' => $journal['batch_code'], 
+                            // 'expiry_date' => $journal['expiry_date'],
+                            'transactions_id' => $transaction->id,
+                            'warehouse_id' => $warehouse->id,
+                            'product_id' => $product->id,
+                        ]);
+                    }
                 }
             }
         });

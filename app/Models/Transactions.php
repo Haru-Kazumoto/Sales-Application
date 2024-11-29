@@ -23,7 +23,8 @@ class Transactions extends Model
         'sub_total',
         'total',
         'tax_amount',
-        'transaction_type_id'
+        'transaction_type_id',
+        'file_attachment'
     ];
 
     public function transactionType(): BelongsTo

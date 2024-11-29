@@ -161,6 +161,12 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         Route::get('/sub-sales-order/{po_number}', [App\Http\Controllers\PurchaseOrderController::class, 'getDataByPoNumber'])->name('get-data-po');
         Route::get('/generate-sso-document/{transactions}', [App\Http\Controllers\SubSalesOrderController::class, 'generateSubSalesOrderDocument'])->name('generate-sso-document');
 
+        //DO Travel Document
+        Route::get('/do-travel-document', [App\Http\Controllers\DoTravelDocument::class, 'create'])->name('do.create');
+        Route::get('/do-travel-document/detail/{transactions}', [App\Http\Controllers\DoTravelDocument::class, 'detailTravelDocument'])->name('do.detail');
+        Route::post('/do-travel-document/post', [App\Http\Controllers\DoTravelDocument::class, 'store'])->name('do.store');
+        Route::get('/index-do-travel-document', [App\Http\Controllers\DoTravelDocument::class,'index'])->name('do.index');
+        Route::get('/do-travel-document/show/{transactions}', [App\Http\Controllers\DoTravelDocument::class, 'show'])->name('do.show');
 
         Route::get('/aging', fn() => Inertia::render('Procurement/Transaction/Aging'))->name('aging');
         Route::get('/transaction-list', fn() => Inertia::render('Procurement/Transaction/TransactionList'))->name('transaction-list');

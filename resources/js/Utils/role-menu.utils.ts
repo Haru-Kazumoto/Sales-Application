@@ -232,6 +232,25 @@ export const roleMenus = {
                 }
             ]
         },
+        {
+            label: "Surat Jalan",
+            key: 'travel-document',
+            icon: DocumentTextOutline,
+            children: [
+                {
+                    label: "Buat Surat Jalan",
+                    key: 'travel-document',
+                    icon: renderIcon(DocumentAdd20Regular),
+                    href: '/do-travel-document',
+                },
+                {
+                    label: "List Surat Jalan",
+                    key: 'list-travel-document',
+                    icon: renderIcon(DocumentBulletListMultiple20Regular),
+                    href: '/index-do-travel-document',
+                },
+            ]
+        },
     ],
     WAREHOUSE: [
         {
