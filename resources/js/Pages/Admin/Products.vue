@@ -3,6 +3,20 @@
         <TitlePage title="Daftar Produk" />
         <div class="card shadow-sm border-0">
             <div class="card-body">
+                <div class="row g-2">
+                    <div class="col-4 d-flex flex-column">
+                        <label for="file-upload" class="form-label">Upload File Excel</label>
+                        <input type="file" id="file-upload" accept=".xlsx" class="form-control" @change="handleChangeFile"/>
+                        <small class="text-muted">
+                            Hanya file Excel (.xlsx) yang diperbolehkan.
+                        </small>
+                        <n-button type="primary" class="mt-3 w-25" @click="handleImportProducts">Import</n-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
                 <form class="row g-3" @submit.prevent="handleSubmitProduct">
                     <!-- FIRST ROW -->
                     <div class="col-12 col-lg-4 d-flex flex-column">
@@ -38,13 +52,6 @@
                             <RequiredMark />
                         </label>
                         <n-select size="large" placeholder="" :options="unitOptions" v-model:value="form.unit" />
-                    </div>
-                    <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Kemasan
-                            <RequiredMark />
-                        </label>
-                        <n-input size="large" placeholder="" v-model:value="form.package"
-                            @input="(value) => form.package = value.toUpperCase()" />
                     </div>
                     <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">Harga Tebus
@@ -220,6 +227,7 @@ import { router, useForm, usePage } from '@inertiajs/vue3';
 import { Flash, Lookup, Products } from '../../types/model';
 import { formatRupiah } from '../../Utils/options-input.utils';
 import Swal from 'sweetalert2';
+import axios from 'axios';
 
 export default defineComponent({
     setup() {
@@ -467,6 +475,18 @@ export default defineComponent({
             });
         }
 
+        const file = useForm({
+            attachment: null as unknown as any,
+        });
+
+        function handleChangeFile(event) {
+            file.attachment = event.target.files[0];
+        }
+
+        function handleImportProducts() {
+            file.post(route('admin.products.import'));
+        }
+
         const pagination = reactive({
             current_page: (page.props.products as any).current_page,
             per_page: (page.props.products as any).per_page,
@@ -496,6 +516,8 @@ export default defineComponent({
 
         return {
             columns: createColumns(),
+            handleImportProducts,
+            handleChangeFile,
             handlePageChange,
             handleSubmitProduct,
             handleSearchQuery,

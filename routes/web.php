@@ -92,6 +92,9 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
             Route::get('/edit-product/{product}', [App\Http\Controllers\ProductsController::class, 'edit'])->name('products.edit');
             Route::patch('/update-product/{product}', [App\Http\Controllers\ProductsController::class, 'update'])->name('products.update');
             Route::delete('/delete-product/{product}', [App\Http\Controllers\ProductsController::class, 'destroy'])->name('products.delete');
+
+            //IMPORT
+            Route::post('/import-products', [App\Http\Controllers\ImportProductMaster::class, 'importProducts'])->name('products.import');
         });
 
         Route::prefix('transport-management')->group(function() {

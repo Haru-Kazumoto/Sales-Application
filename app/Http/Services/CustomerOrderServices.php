@@ -18,7 +18,11 @@ class CustomerOrderServices {
     )
     {
         // Build the base query
-        $query = Transactions::with('transactionType', 'transactionDetails', 'transactionItems');
+        $query = Transactions::with('transactionType', 'transactionDetails', 'transactionItems')
+            ->whereHas('transactionDetails', function($query) {
+                $query->where('category', 'Shipping Warehouse')
+                    ->whereNotIn('value', ['DIRECT', 'DIRECT_DEPO', 'DO']);
+            });
 
         if(!is_null($generated)) {
             $query->whereHas('transactionDetails', function($query) use ($generated) {
