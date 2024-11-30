@@ -105,7 +105,7 @@ class PurchaseOrderController extends Controller
         $tax = Tax::all();
 
         return Inertia::render('Procurement/Purchase/CreatePurchaseOrder', [
-            'po_number' => $this->generatePONumber(),
+            'po_number' => rand(100000,2000000),
             'storehouses' => StoreHouse::all(),
             'payment_terms' => $payment_terms,
             'store_locations' => $store_locations,
