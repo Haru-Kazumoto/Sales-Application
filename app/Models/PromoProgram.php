@@ -17,7 +17,10 @@ class PromoProgram extends Model
         'description',
         'min',
         'max',
-        'promo_value',
+        'promo_value_1',
+        'promo_value_2',
+        'promo_value_3',
+        'file_attachment',
         'start_date',
         'end_date',
     ];

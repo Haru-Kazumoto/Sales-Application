@@ -16,6 +16,7 @@ use App\Models\TransactionDetail;
 use App\Models\TransactionItem;
 use App\Models\Transactions;
 use App\Models\TransactionType;
+use App\Utils\DocumentNumberGenerator;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -103,9 +104,15 @@ class PurchaseOrderController extends Controller
         $units = $this->lookupService->getAllLookupBy('category', 'UNIT');
         $transports = $this->partiesService->getPartiesByGroupAndType('VENDOR', 'Angkutan');
         $tax = Tax::all();
+        $po_number = DocumentNumberGenerator::generate(
+            'PO-',
+            'transactions',
+            'document_code',
+            4
+        );
 
         return Inertia::render('Procurement/Purchase/CreatePurchaseOrder', [
-            'po_number' => rand(100000,2000000),
+            'po_number' => $po_number,
             'storehouses' => StoreHouse::all(),
             'payment_terms' => $payment_terms,
             'store_locations' => $store_locations,

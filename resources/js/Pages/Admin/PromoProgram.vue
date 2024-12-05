@@ -17,31 +17,41 @@
                         </label>
                         <n-input size="large" placeholder="" v-model:value="form.name" />
                     </div>
-                    <div class="col-12 col-md-6 col-lg-2">
+                    <div class="col-12 col-md-6 col-lg-4">
                         <label for="">Minimal Pembelian
                             <RequiredMark />
                         </label>
                         <n-input size="large" v-model:value="form.min" placeholder="" @input="(value) => form.min = value.replace(/\D/g,'')"/>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-2">
+                    <div class="col-12 col-md-6 col-lg-4">
                         <label for="">Maksimal Pembelian
                             <RequiredMark />
                         </label>
                         <n-input size="large" v-model:value="form.max" placeholder="" @input="(value) => form.max = value.replace(/\D/g,'')"/>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
-                        <label for="">Persentase Promo
+                        <label for="">Persentase Promo 1
                             <RequiredMark />
                         </label>
-                        <n-input size="large" placeholder="" v-model:value="form.promo_value">
+                        <n-input size="large" placeholder="" v-model:value="form.promo_value_1" @input="(value) => form.promo_value_1 = value.replace(/\D/g, '')">
                             <template #suffix>%</template>
                         </n-input>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
-                        <label for="">Deskripsi promo
+                        <label for="">Persentase Promo 2 
                             <RequiredMark />
                         </label>
-                        <n-input size="large" placeholder="" type="textarea" v-model:value="form.description"/>
+                        <n-input size="large" placeholder="" v-model:value="form.promo_value_2" @input="(value) => form.promo_value_2 = value.replace(/\D/g, '')">
+                            <template #suffix>%</template>
+                        </n-input>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <label for="">Persentase Promo 3
+                            <RequiredMark />
+                        </label>
+                        <n-input size="large" placeholder="" v-model:value="form.promo_value_3" @input="(value) => form.promo_value_3 = value.replace(/\D/g, '')">
+                            <template #suffix>%</template>
+                        </n-input>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <label for="">Tanggal Aktif
@@ -56,6 +66,18 @@
                         </label>
                         <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" id="field8" size="large"
                                 v-model:formatted-value="form.end_date" placeholder="" />
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <label for="">Deskripsi promo
+                            <RequiredMark />
+                        </label>
+                        <n-input size="large" placeholder="" type="textarea" v-model:value="form.description"/>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <label for="">Bukti promo
+                            <RequiredMark />
+                        </label>
+                        <input type="file" id="npwpImage" class="form-control" accept="image/*, application/pdf" @change="handleFileChange('file_attachment',$event)"/>
                     </div>
                 </div>
             </div>
@@ -77,7 +99,7 @@
             </div>
         </div>
 
-        <n-button size="large" type="primary" class="w-25" @click="handleSubmit">Buat promo</n-button>
+        <n-button size="large" type="primary" class="w-25 mb-3" @click="handleSubmit">Buat promo</n-button>
     </div>
 </template>
 
@@ -147,7 +169,10 @@ export default defineComponent({
             description: "",
             min: null as unknown as number,
             max: null as unknown as number,
-            promo_value: null as unknown as number,
+            promo_value_1: null as unknown as number,
+            promo_value_2: null as unknown as number,
+            promo_value_3: null as unknown as number,
+            file_attachment: null as unknown as string,
             start_date: null as unknown as string,
             end_date: null as unknown as string,
             products: [] as any[],
@@ -207,6 +232,7 @@ export default defineComponent({
             form.post(route('admin.store-promo'), {
                 onSuccess: (page) => {
                     form.reset();
+                    form.file_attachment = null as unknown as string;
 
                     Swal.fire((page.props.flash as Flash).success,'','success');
                 }, 
@@ -214,6 +240,15 @@ export default defineComponent({
                     Swal.fire('Gagal membuat promo','','error');
                 }
             });
+        }
+
+        function handleFileChange(field,event) {
+            const file = event.target.files[0]; // Ambil file pertama yang dipilih
+            if (file) {
+                this.form[field] = file; // Simpan file ke field terkait di form
+            } else {
+                this.form[field] = null as any; // Hapus jika tidak ada file1
+            }
         }
 
         const productOptions = (page.props.products as Products[]).map((data) => ({
@@ -235,6 +270,7 @@ export default defineComponent({
             products,
             router,
             ArrowBack,
+            handleFileChange,
             handleSearchProducts: (query: string) => {
                 if (!query.length) {
                     productsRef.value = []

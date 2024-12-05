@@ -1,0 +1,43 @@
+----------------------DONE
++ [INVOICE:REV] :
++ [PO:REV] :
+    - nomor dokumen diubah menjadi 2411-0001 
+    (2411 adalah tahun dan bulan, 0001 adalah angka berjalan atau increment yang mana Ketika sudah berganti bulan
+    akan di reset menjadi 0001 lagi atau dari awal Kembali)
+AR CONTROL : [OK]
++ [BLAST-WA:REV] :
+    - di filter list data blast WhatsApp berikan filtering by status transaksi
++ [PO:REV] : 
+    - label pemasok PO ganti ke principal [OK]
+    - hapus field select Gudang,letak field jenis pengiriman naikin ke tempat GUDANG [OK]
+    - hilangkan DEPO BANDUNG di select [OK]
+    - label alokasi ganti ke perusahaan [OK]
+    - kembalikan input Harga angkutan [OK]
+ADMIN : [OK]
++ [PROGRAM-PROMO:NEW] : 
+    -tambahkan 2 field nomor program promo dan upload file attachment (PDF & Image)
+    -tambahkan persentase jadi 3, replace logic persentase yang ada di CO jadi otomatis Ketika dapet program promo langsung ada disitu
+    -buat halaman untuk menghandle pembayaran program promo dari supplier
++ [PRODUCT:REV] :
+    - mengganti dan menambahkan label :
+      ~ harga jual hotel & restaurant => Harga Retail
+      ~ harga jual bakery => harga end user
+      ~ harga jual all segment
+
+----------------------DEV
+PROCUREMENT :
++ [PO:REV] : 
+    - Harga barang saat penginputan itu dapet otmatis dari Harga Tebus di admin
+PROCUREMENT AND ADMIN :
++ [TRADEPROMO(PROGRAM-BELI):NEW] : 
+    - trade promo ini mempunyai konsep kuota pembelian, jadi di procurement dan di admin mempunyai sebuah page untuk meng assign 
+    sebuah alokasi atau grosir account. 
+    di TRADE PROMO itu juga mengisi sebuah harga setelah diskon nya. 
+    Jadi Ketika nanti procurement mengisi sebuah barang Harga normalnya itu mengambil Harga normal dari admin lalu tambahkan 1 field yaitu alokasi,
+    ketika di alokasi memilih salah satu grosir account maka nanti Harga normal barang berubah menjadi Harga setelah diskon atau Harga di trade promo.
+
+
+
+----------------------BUG
+PROCUREMENT:
++ [SSO:BUG] : SSO tidak masuk setelah di create padahal message success ada

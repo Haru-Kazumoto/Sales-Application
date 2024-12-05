@@ -329,7 +329,6 @@ class CustomerOrdersController extends Controller
     {
         $customer_orders_dnp = $this->customerOrderServices->getTransactions("Sales Order","false",15,'Warehouse','DNP');
         $customer_orders_dku = $this->customerOrderServices->getTransactions("Sales Order","false",15,'Warehouse','DKU');
-        // dd($customer_orders_dku);
         
         return Inertia::render('Warehouse/ListTravelDocument', compact('customer_orders_dnp','customer_orders_dku'));
     }
@@ -341,7 +340,7 @@ class CustomerOrdersController extends Controller
     {
         $travel_documents_dnp = $this->customerOrderServices->getTransactions("Surat Jalan",null,15,"Warehouse","DNP");
         $travel_documents_dku = $this->customerOrderServices->getTransactions("Surat Jalan",null,15,"Warehouse","DKU");
-
+        
         return Inertia::render('Warehouse/IndexTravelDocument', compact('travel_documents_dnp', 'travel_documents_dku'));
     }
 

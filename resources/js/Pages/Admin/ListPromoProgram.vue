@@ -47,10 +47,26 @@ export default defineComponent({
                 },
                 {
                     title: "Persentase Promo",
-                    key: "promo_value",
+                    key: "promo_value_1",
                     width: 150,
                     render(row) {
-                        return `${row.promo_value} %`
+                        return `${row.promo_value_1} %`
+                    }
+                },
+                {
+                    title: "Persentase Promo",
+                    key: "promo_value_2",
+                    width: 150,
+                    render(row) {
+                        return `${row.promo_value_2} %`
+                    }
+                },
+                {
+                    title: "Persentase Promo",
+                    key: "promo_value_3",
+                    width: 150,
+                    render(row) {
+                        return `${row.promo_value_3} %`
                     }
                 },
                 {

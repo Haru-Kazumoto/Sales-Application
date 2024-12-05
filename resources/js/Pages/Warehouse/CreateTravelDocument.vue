@@ -45,15 +45,15 @@
                         <label for="">Gudang Pengiriman
                             <RequiredMark />
                         </label>
-                        <n-select placeholder="" v-model:value="transaction_details.shipping_warehouse"
-                            :options="sendType" size="large" />
+                        <n-input placeholder="" v-model:value="transaction_details.shipping_warehouse" readonly
+                            size="large" />
                     </div>
                     <div class="col-6 col-lg-3">
                         <label for="">Nama Ekspedisi
                             <RequiredMark />
                         </label>
-                        <n-select placeholder="" v-model:value="transaction_details.delivery" filterable :options="transportOptions"
-                            size="large" />
+                        <n-select placeholder="" v-model:value="transaction_details.delivery" filterable
+                            :options="transportOptions" size="large" />
                     </div>
                     <div class="col-6 col-lg-3">
                         <label for="">Salesman
@@ -150,7 +150,7 @@ function createColumns(): DataTableColumns<TransactionItems> {
             key: "amount",
             width: 200,
             render(row) {
-                return formatRupiah(row.amount??0);
+                return formatRupiah(row.amount ?? 0);
             }
         },
         {
@@ -158,7 +158,7 @@ function createColumns(): DataTableColumns<TransactionItems> {
             key: 'total_price',
             width: 200,
             render(row) {
-                return formatRupiah(row.total_price??0);
+                return formatRupiah(row.total_price ?? 0);
             }
         }
     ];
@@ -187,7 +187,7 @@ export default defineComponent({
             customer: customer_order.transaction_details.find((data) => data.category === "Customer")?.value,
             customer_address: customer_order.transaction_details.find(data => data.category === "Customer Address")?.value,
             npwp: customer_order.transaction_details.find(data => data.category === "NPWP")?.value,
-            shipping_warehouse: '',
+            shipping_warehouse: customer_order.transaction_details.find(data => data.category === "Delivery")?.value,
             warehouse: customer_order.transaction_details.find((data) => data.category === "Warehouse")?.value,
             delivery: '',
             legality: customer_order.transaction_details.find((data) => data.category === "Legality")?.value,
@@ -196,7 +196,7 @@ export default defineComponent({
             salesman: customer_order.transaction_details.find((data) => data.category === "Salesman")?.value,
         });
 
-        function  submitForm() {
+        function submitForm() {
             customer_order.transaction_items?.forEach((item) => {
                 form.transaction_items.push({
                     unit: item.unit,       // Asumsikan item memiliki properti 'unit'
@@ -223,7 +223,7 @@ export default defineComponent({
                     name: "Nomor CO",
                     category: "CO Number",
                     value: transaction_details.value.customer_order_number,
-                    data_type: 'float',
+                    data_type: 'string',
                 },
                 {
                     name: "Tanggal Surat Jalan",

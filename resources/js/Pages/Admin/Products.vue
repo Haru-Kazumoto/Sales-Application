@@ -5,6 +5,7 @@
             <div class="card-body">
                 <div class="row g-2">
                     <div class="col-4 d-flex flex-column">
+                        <h4>Tambah data dari excel</h4>
                         <label for="file-upload" class="form-label">Upload File Excel</label>
                         <input type="file" id="file-upload" accept=".xlsx" class="form-control" @change="handleChangeFile"/>
                         <small class="text-muted">
@@ -142,7 +143,7 @@
                         </n-input>
                     </div>
                     <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Harga Jual Hotel & Resto
+                        <label for="">Harga Retail
                             <RequiredMark />
                         </label>
                         <n-input size="large" placeholder="" v-model:value="form.restaurant_price"
@@ -153,11 +154,22 @@
                         </n-input>
                     </div>
                     <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Harga Jual Bakery
+                        <label for="">Harga End User
                             <RequiredMark />
                         </label>
                         <n-input size="large" placeholder="" v-model:value="form.price_3"
                             @input="(value) => form.price_3 = value.replace(/\D/g, '')">
+                            <template #prefix>
+                                Rp
+                            </template>
+                        </n-input>
+                    </div>
+                    <div class="col-12 col-lg-4 d-flex flex-column">
+                        <label for="">Harga All Segment
+                            <RequiredMark />
+                        </label>
+                        <n-input size="large" placeholder="" v-model:value="form.all_segment_price"
+                            @input="(value) => form.all_segment_price = value.replace(/\D/g, '')">
                             <template #prefix>
                                 Rp
                             </template>
@@ -248,6 +260,7 @@ export default defineComponent({
             restaurant_price: null as unknown as number,
             price_3: null as unknown as number,
             dd_price: null as unknown as number,
+            all_segment_price: null as unknown as number,
             normal_margin: null as unknown as number,
             oh_depo: null as unknown as number,
             saving: null as unknown as number,
@@ -326,7 +339,7 @@ export default defineComponent({
                     }
                 },
                 {
-                    title: "HARGA JUAL HOTEL & RESTO",
+                    title: "HARGA RETAIL",
                     key: "selling_price",
                     width: 200,
                     render(row) {
@@ -334,7 +347,15 @@ export default defineComponent({
                     }
                 },
                 {
-                    title: "HARGA 3",
+                    title: "HARGA ALL SEGMENT",
+                    key: "all_segment_price",
+                    width: 200,
+                    render(row) {
+                        return formatRupiah(row.all_segment_price);
+                    }
+                },
+                {
+                    title: "HARGA END USER",
                     key: "price_3",
                     width: 200,
                     render(row) {

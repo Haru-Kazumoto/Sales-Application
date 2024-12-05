@@ -14,21 +14,24 @@ class CustomerOrderServices {
         ?string $generated = "false",
         ?int $perPage = null, 
         ?string $category = null, 
-        ?string $value = null
+        ?string $value = null,
+        ?bool $location = false,
     )
     {
         // Build the base query
-        $query = Transactions::with('transactionType', 'transactionDetails', 'transactionItems')
-            ->whereHas('transactionDetails', function($query) {
-                $query->where('category', 'Shipping Warehouse')
+        $query = Transactions::with('transactionType', 'transactionDetails', 'transactionItems');
+
+        if($location === true)
+        {
+            $query->whereHas('transactionDetails', function($q) {
+                $q->where('category', 'Shipping Warehouse')
                     ->whereNotIn('value', ['DIRECT', 'DIRECT_DEPO', 'DO']);
             });
-
-        if(!is_null($generated)) {
-            $query->whereHas('transactionDetails', function($query) use ($generated) {
-                $query->where('category', 'Generating')->where('value', $generated);
-            });
         }
+
+        $query->whereHas('transactionDetails', function($q) use ($generated) {
+            $q->where('category', 'Generating')->where('value', $generated);
+        });
 
         // Apply filters using helper functions
         $query = $this->applyTransactionTypeFilter($query, $transactionType);

@@ -283,6 +283,8 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
 
         Route::prefix('marketing-reports')->group(function() {
             Route::get('', [App\Http\Controllers\MarketingReports::class, 'index'])->name('index-reports');
+            // marketing.marketing-reports.export-report
+            Route::get('/export', [App\Http\Controllers\MarketingReports::class, 'exportReport'])->name('export-report');
         });
     });
 });

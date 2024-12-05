@@ -13,6 +13,7 @@ use App\Models\TransactionDetail;
 use App\Models\TransactionItem;
 use App\Models\Transactions;
 use App\Models\TransactionType;
+use App\Utils\DocumentNumberGenerator;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -67,13 +68,24 @@ class InvoiceController extends Controller
      */
     public function createInvoice(Transactions $transactions): Response
     {
+        // Load relasi yang diperlukan
         $transactions->load('transactionType', 'transactionDetails', 'transactionItems.product');
-        $invoice_number = rand(1000,9999).'-'.rand(1000,9999);
+
+        $invoice_number = DocumentNumberGenerator::generate(
+            '',
+            'transactions',
+            'document_code',
+            6
+        );
+
+        // Data tambahan
         $payment_terms = Lookup::where('category', 'PAYMENT_TERM')->get();
         $taxes = Tax::all();
 
-        return Inertia::render('AgingFinance/Sales/CreateInvoiceDNP', compact('transactions', 'invoice_number','payment_terms', 'taxes'));
+        // Render Inertia dengan data
+        return Inertia::render('AgingFinance/Sales/CreateInvoiceDNP', compact('transactions', 'invoice_number', 'payment_terms', 'taxes'));
     }
+
 
     /**
      * Store  a newly created resource in storage.
@@ -236,10 +248,48 @@ class InvoiceController extends Controller
     public function indexAging()
     {
         $tx_type = TransactionType::where('name', 'Penjualan')->first();
-        $invoices = $this->transactionServices->getTransactions($tx_type->id, null,null,10, true);
+
+        // Ambil parameter filter `status` dari request
+        $statusFilter = request('status');
+
+        $invoices = Transactions::with([
+            'transactionDetails',
+            'transactionItems.product',
+        ])
+        ->where('transaction_type_id', $tx_type->id)
+        ->selectRaw('transactions.*, 
+                (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) as total_left, 
+                CASE 
+                    WHEN (SELECT COUNT(*) FROM invoice_payment WHERE transaction_id = transactions.id) = 1 
+                        AND (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) = 0 THEN "FULLY PAID"
+                    WHEN (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) = total THEN "UNPAID"
+                    WHEN due_date <= CURDATE() THEN "OVERDUE"
+                    WHEN (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) > 0 THEN "INSTALMENT" 
+                    ELSE "PAID" 
+                END as status_payment'
+            )
+        // Tambahkan filter by status jika parameter `status` ada
+        ->when($statusFilter, function ($query) use ($statusFilter) {
+            $query->having('status_payment', $statusFilter); // Filter berdasarkan status
+        })
+        ->orderByRaw("
+                CASE 
+                    WHEN EXISTS (
+                        SELECT 1 
+                        FROM transaction_details 
+                        WHERE transaction_details.transactions_id = transactions.id 
+                        AND transaction_details.category = 'Transportation' 
+                        AND transaction_details.value = '-'
+                    ) THEN 0 
+                    ELSE 1 
+                END
+        ")
+        ->orderByDesc('created_at')
+        ->paginate(10);
 
         return Inertia::render('AgingFinance/Transaction/Aging', compact('invoices'));
     }
+
 
     public function exportInvoice()
     {

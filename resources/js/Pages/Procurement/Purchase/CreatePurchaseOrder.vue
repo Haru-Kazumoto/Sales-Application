@@ -19,23 +19,23 @@
                         </div>
                         <div class="col-12 col-md-3 col-lg-4">
                             <label for="field2">
-                                Pemasok
+                                Principal
                                 <RequiredMark />
                             </label>
                             <n-select placeholder="" v-model:value="transaction_details.supplier" filterable
                                 size="large" :options="pemasokOptions" />
                         </div>
                         <div class="col-12 col-md-3 col-lg-4">
-                            <label for="field3">
-                                Gudang
+                            <label for="field7">
+                                Jenis Pengiriman
                                 <RequiredMark />
                             </label>
-                            <n-select placeholder="" id="field3" size="large" :options="storehouseOptions"
-                                v-model:value="transaction_details.storehouse" />
+                            <n-select placeholder="" id="field7" size="large" :options="sendType"
+                                v-model:value="transaction_details.delivery_type" />
                         </div>
                         <div class="col-12 col-md-3 col-lg-4">
                             <label for="field4">
-                                Alokasi
+                                Perusahaan
                                 <RequiredMark />
                             </label>
                             <n-select placeholder="" id="field4" size="large" :options="storeLocationOptions"
@@ -100,14 +100,7 @@
                             <n-select placeholder="" filterable id="field6" size="large"
                                 v-model:value="transaction_details.sender" :options="transportOptions" />
                         </div>
-                        <div class="col-12 col-md-3 col-lg-4">
-                            <label for="field7">
-                                Jenis Pengiriman
-                                <RequiredMark />
-                            </label>
-                            <n-select placeholder="" id="field7" size="large" :options="sendType"
-                                v-model:value="transaction_details.delivery_type" />
-                        </div>
+                        
                         <div class="col-12 col-md-3 col-lg-4">
                             <label for="field8">
                                 PIC
@@ -117,8 +110,15 @@
                                 v-model:value="transaction_details.employee_name" readonly />
                         </div>
                         <div class="col-12 col-md-3 col-lg-4">
+                            <label for="catatan">Harga angkutan</label>
+                            <n-input id="catatan" placeholder="" size="large" 
+                                v-model:value="transaction_details.transportation_cost" >
+                                <template #prefix>Rp</template>
+                            </n-input>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-4">
                             <label for="catatan">Catatan</label>
-                            <n-input id="catatan" type="textarea" placeholder="" style="width: 30rem;"
+                            <n-input id="catatan" type="textarea" placeholder="" 
                                 v-model:value="form.description" />
                         </div>
                     </form>
@@ -268,6 +268,7 @@ export default defineComponent({
             sender: '',
             delivery_type: '',
             employee_name: (page.props.auth.user as User).fullname,
+            transportation_cost: null as unknown as string,
         });
 
         const products = ref({
@@ -601,6 +602,12 @@ export default defineComponent({
                     value: transaction_details.value.employee_name,
                     data_type: 'string',
                 },
+                {
+                    name: "Harga Angkutan",
+                    category: "Transportation Cost",
+                    value: transaction_details.value.transportation_cost,
+                    data_type: "float",
+                }
             ];
 
             form.post(route('procurement.create-po'), {

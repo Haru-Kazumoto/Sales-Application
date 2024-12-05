@@ -5,7 +5,7 @@
         <div class="d-flex flex-column gap-3">
             <div class="d-flex gap-3">
                 <n-date-picker type="daterange" clearable size="large" />
-                <n-button class="ms-auto" type="primary" size="large">Export Excel</n-button>
+                <n-button class="ms-auto" type="primary" size="large" @click="handleExportReport">Export Excel</n-button>
             </div>
 
             <div class="card shadow-sm border-0">
@@ -221,10 +221,16 @@ export default defineComponent({
             ];
         }
 
+        function handleExportReport() {
+            const url = route('marketing.export-report');
+
+            window.location.href = url;
+        }
 
 
         return {
             columns: createColumns(),
+            handleExportReport,
         }
     },
     components: {

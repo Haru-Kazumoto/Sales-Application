@@ -95,6 +95,7 @@ class ProductsController extends Controller
             'redemp_price' => 'nullable|numeric',
             'retail_price' => 'nullable|numeric',
             'restaurant_price' => 'nullable|numeric',
+            'all_segment_price' => 'nullable|numeric',
             'price_3' => 'nullable|numeric',
             'dd_price' => 'nullable|numeric',
             'normal_margin' => 'nullable|numeric',
@@ -129,6 +130,7 @@ class ProductsController extends Controller
             $product->supplier_id = $supplier->id;
             $product->bad_debt_dd = $request->input('bad_debt_dd');
             $product->saving_marketing = $request->input('saving_marketing');
+            $product->all_segment_price = $request->all_segment_price;
             $product->product_type_id = $product_type->id;
 
             // Simpan produk

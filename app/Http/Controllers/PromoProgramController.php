@@ -39,10 +39,23 @@ class PromoProgramController extends Controller
             'max' => 'required|numeric',
             'start_date' => 'required|string',
             'end_date' => "required|string",
-            'promo_value' => 'required|numeric',
+            'promo_value_1' => 'required|numeric',
+            'promo_value_2' => 'required|numeric',
+            'promo_value_3' => 'required|numeric',
             'products' => 'required|array',
             'products.*.product_id' => 'required|numeric',
         ]);
+
+        $filePath = null;
+        if($request->hasFile('file_attachment'))
+        {
+            $file = $request->file('file_attachment');
+
+            $customFileName = 'promo_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+
+            //store file
+            $filePath = $file->storeAs('promo_attachments', $customFileName, 'public');
+        }
 
         // Cek promo aktif untuk produk yang dipilih
         $activePromoProducts = Products::whereIn('id', collect($dataValidated['products'])
@@ -59,7 +72,7 @@ class PromoProgramController extends Controller
         }
  
         // Melakukan transaksi jika tidak ada promo aktif
-        DB::transaction(function() use ($dataValidated) {
+        DB::transaction(function() use ($dataValidated, $filePath) {
             $dataPromo = PromoProgram::create([
                 'name' => $dataValidated['name'],
                 'description' => $dataValidated['description'],
@@ -67,7 +80,10 @@ class PromoProgramController extends Controller
                 'max' => $dataValidated['max'],
                 'start_date' => $dataValidated['start_date'],
                 'end_date' => $dataValidated['end_date'],
-                'promo_value' => $dataValidated['promo_value'],
+                'promo_value_1' => $dataValidated['promo_value_1'],
+                'promo_value_2' => $dataValidated['promo_value_2'],
+                'promo_value_3' => $dataValidated['promo_value_3'],
+                'file_attachment' => $filePath,
             ]);
 
             foreach ($dataValidated['products'] as $product) {
@@ -84,8 +100,11 @@ class PromoProgramController extends Controller
     public function show(PromoProgram $promoProgram)
     {
         $promoProgram->load('products');
+        
+        $filePath = asset('storage/' . $promoProgram->file_attachment);
+        $fileType = strtoupper(pathinfo($promoProgram->file_attachment, PATHINFO_EXTENSION));
     
-        return Inertia::render('Admin/DetailPromoProgram', compact('promoProgram'));
+        return Inertia::render('Admin/DetailPromoProgram', compact('promoProgram','filePath','fileType'));
     }
 
 }

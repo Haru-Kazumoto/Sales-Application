@@ -15,26 +15,39 @@
                         <label for="">Nama Promo</label>
                         <n-input size="large" placeholder="" v-model:value="form.name" readonly />
                     </div>
-                    <div class="col-12 col-md-6 col-lg-2">
+                    <div class="col-12 col-md-6 col-lg-4">
                         <label for="">Minimal Pembelian</label>
                         <n-input size="large" v-model:value="form.min" placeholder=""
                             @input="(value) => form.min = value.replace(/\D/g, '')" readonly />
                     </div>
-                    <div class="col-12 col-md-6 col-lg-2">
+                    <div class="col-12 col-md-6 col-lg-4">
                         <label for="">Maksimal Pembelian</label>
                         <n-input size="large" v-model:value="form.max" placeholder=""
                             @input="(value) => form.max = value.replace(/\D/g, '')" readonly />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
-                        <label for="">Persentase Promo</label>
-                        <n-input size="large" placeholder="" v-model:value="form.promo_value" readonly>
+                        <label for="">Persentase Promo 1
+                            <RequiredMark />
+                        </label>
+                        <n-input size="large" placeholder="" v-model:value="form.promo_value_1" @input="(value) => form.promo_value_1 = value.replace(/\D/g, '')">
                             <template #suffix>%</template>
                         </n-input>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
-                        <label for="">Deskripsi promo</label>
-                        <n-input size="large" placeholder="" type="textarea" v-model:value="form.description"
-                            readonly />
+                        <label for="">Persentase Promo 2 
+                            <RequiredMark />
+                        </label>
+                        <n-input size="large" placeholder="" v-model:value="form.promo_value_2" @input="(value) => form.promo_value_2 = value.replace(/\D/g, '')">
+                            <template #suffix>%</template>
+                        </n-input>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <label for="">Persentase Promo 3
+                            <RequiredMark />
+                        </label>
+                        <n-input size="large" placeholder="" v-model:value="form.promo_value_3" @input="(value) => form.promo_value_3 = value.replace(/\D/g, '')">
+                            <template #suffix>%</template>
+                        </n-input>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <label for="">Tanggal Aktif</label>
@@ -46,6 +59,33 @@
                         <n-input size="large" v-model:value="form.end_date" placeholder=""
                             readonly />
                     </div>
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <label for="">Deskripsi promo</label>
+                        <n-input size="large" placeholder="" type="textarea" v-model:value="form.description"
+                            readonly />
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <label for="">Lampiran</label>
+                        <div v-if="$page.props.filePath">
+                            <n-button
+                                tag="a"
+                                :href="$page.props.filePath"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                type="primary"
+                                size="large"
+                            >
+                                Klik untuk melihat lampiran
+                            </n-button>
+                            <span v-if="$page.props.fileType" style="margin-left: 10px; font-weight: bold; color: gray;">
+                                ({{ $page.props.fileType }})
+                            </span>
+                        </div>
+                        <div v-else>
+                            <span>Tidak ada file yang diunggah.</span>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -134,6 +174,10 @@ export default defineComponent({
             promo_value: promo.promo_value,
             start_date: dayjs(promo.start_date).format('DD MMMM YYYY HH:mm:ss'),
             end_date: dayjs(promo.end_date).format('DD MMMM YYYY HH:mm:ss'),
+            promo_value_1: promo.promo_value_1,
+            promo_value_2: promo.promo_value_2,
+            promo_value_3: promo.promo_value_3,
+            file_attachment: null as unknown as string,
             products: promo.products,
         });
 

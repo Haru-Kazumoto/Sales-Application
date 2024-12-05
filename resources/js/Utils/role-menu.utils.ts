@@ -127,29 +127,22 @@ export const roleMenus = {
     ],
     INVOICEIST: [
         {
-            label: "Penjualan",
-            key: "sales",
-            icon: renderIcon(PieChartOutline),
-            children: [
-                {
-                    label: "Faktur DNP",
-                    key: "invoice-dnp",
-                    href: '/invoice-dnp',
-                    icon: renderIcon(ReceiptOutline),
-                },
-                {
-                    label: "Faktur DKU",
-                    key: "invoice-dku",
-                    href: '/invoice-dku',
-                    icon: renderIcon(ReceiptOutline),
-                },
-                {
-                    label: "List Faktur",
-                    key: "list-invoice",
-                    href: '/list-invoices',
-                    icon: renderIcon(ReceiptCube24Regular),
-                },
-            ],
+            label: "Faktur DNP",
+            key: "invoice-dnp",
+            href: '/invoice-dnp',
+            icon: renderIcon(ReceiptOutline),
+        },
+        {
+            label: "Faktur DKU",
+            key: "invoice-dku",
+            href: '/invoice-dku',
+            icon: renderIcon(ReceiptOutline),
+        },
+        {
+            label: "List Faktur",
+            key: "list-invoice",
+            href: '/list-invoices',
+            icon: renderIcon(ReceiptCube24Regular),
         },
     ],
     CASHIER: [
