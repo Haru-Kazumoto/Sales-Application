@@ -218,28 +218,4 @@ class SubSalesOrderController extends Controller
         // Mengembalikan view dengan data transaksi
         return Inertia::render('Warehouse/IncomingItem', compact('transaction'));
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(SubSalesOrder $subSalesOrder)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, SubSalesOrder $subSalesOrder)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(SubSalesOrder $subSalesOrder)
-    {
-        //
-    }
 }

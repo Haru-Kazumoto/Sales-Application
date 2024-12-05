@@ -30,6 +30,7 @@ class TransactionItem extends Model
         'reject_description',
         'has_claimed',
         'gap_status',
+        'trade_promo_id',
     ];
 
     public function transaction(): BelongsTo
@@ -45,5 +46,10 @@ class TransactionItem extends Model
     public function tax(): BelongsTo
     {
         return $this->belongsTo(Tax::class, 'tax_id');
+    }
+
+    public function tradePromo(): BelongsTo
+    {
+        return $this->belongsTo(TradePromo::class, 'trade_promo_id');
     }
 }

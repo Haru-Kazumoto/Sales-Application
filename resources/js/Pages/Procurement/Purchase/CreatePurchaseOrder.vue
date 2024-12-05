@@ -132,7 +132,7 @@
                     <span class="fs-4 fw-semibold ">Penginputan Barang</span>
                     <form @submit.prevent="addProduct" class="row g-3 mt-2">
                         <!-- Baris Pertama -->
-                        <div class="col-md-6">
+                        <div class="col-12 col-md-6 col-lg-4">
                             <label for="product_name">
                                 Nama Barang
                                 <RequiredMark />
@@ -140,7 +140,11 @@
                             <n-select size="large" placeholder="" v-model:value="products.name" filterable
                                 :options="productOptions" :loading="loading" />
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <label for="grosir_account">Akun Grosir</label>
+                            <n-select size="large" placeholder="" filterable :options="tradePromoOptions" v-model:value="transaction_items.trade_promo_id"/>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-4">
                             <label for="amount">
                                 Jumlah
                                 <RequiredMark />
@@ -153,12 +157,9 @@
                         <div class="col-md-6">
                             <label for="product_price">
                                 Harga Barang
-                                <RequiredMark />
                             </label>
-                            <!-- <n-input size="large" id="product_price" placeholder="" v-model:value="transaction_items.amount"
-                                @input="(value) => transaction_items.amount = value.replace(/\D/g, '')"> -->
                             <n-input size="large" id="product_price" placeholder=""
-                                v-model:value="transaction_items.amount">
+                                v-model:value="transaction_items.amount" readonly>
                                 <template #prefix>Rp </template>
                             </n-input>
                         </div>
@@ -169,6 +170,16 @@
                             </label>
                             <n-select size="large" id="ppn" :options="ppnOptions" placeholder=""
                                 v-model:value="transaction_items.tax_id" />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="ppn">
+                                Harga Setelah Diskon
+                                <RequiredMark />
+                            </label>
+                            <n-input size="large" id="product_price" placeholder=""
+                                v-model:value="transaction_items.amount_discount" readonly>
+                                <template #prefix>Rp </template>
+                            </n-input>
                         </div>
                         <div class="d-flex justify-content-end">
                             <n-button color="green" attr-type="submit">Tambah Produk</n-button>
@@ -283,21 +294,43 @@ export default defineComponent({
             quantity: null as unknown as number,
             tax_amount: 0,
             amount: null as unknown as number,
+            amount_discount: null as unknown as number,
             product_id: null as unknown as number,
             tax_id: null as unknown as number,
-            tax_value: null as unknown as number
+            tax_value: null as unknown as number,
+            trade_promo_id: null as unknown as number,
         });
+
+        const tradePromoOptions = (page.props.trade_promos as any[]).map((data) => ({
+            label: data.grosir_account,
+            value: data.id,
+            id: data.id,
+            price: data.discount_price,
+            quota: data.quota
+        }));
+
+        //watcher untuk akun grosir
+        watch(() => transaction_items.value.trade_promo_id, (id) => {
+            const selectedTradePromo = tradePromoOptions.find(data => data.id === id);
+
+            if(selectedTradePromo) {
+                transaction_items.value.amount_discount = selectedTradePromo.price;
+            } else {
+                transaction_items.value.amount_discount = null as unknown as number;
+            }
+        }, {deep: true, immediate: true});
 
         // Watcher untuk memantau perubahan pada 'products.name'
         watch(() => products.value.name, (newName) => {
             // Cari produk yang cocok berdasarkan nama produk yang dipilih
-            const selectedProduct = productOptions.find(product => product.label === newName)
+            const selectedProduct = productOptions.find(product => product.label === newName);
 
             // Jika produk ditemukan, isi 'products.code' dan 'transaction_items.product_id' secara otomatis
             if (selectedProduct) {
                 products.value.code = selectedProduct.code; // Set 'code' produk
                 transaction_items.value.product_id = selectedProduct.id ?? 0; // Set 'product_id' dari produk yang dipilih
                 transaction_items.value.unit = selectedProduct.unit;
+                transaction_items.value.amount = selectedProduct.redemp_price;
             } else {
                 products.value.code = ''; // Reset 'code' jika produk tidak ditemukan
                 transaction_items.value.product_id = null as unknown as number; // Reset 'product_id' jika produk tidak ditemukan
@@ -333,10 +366,13 @@ export default defineComponent({
             const selectedTax = ppnOptions.find(tax => tax.value === transaction_items.value.tax_id);
             const selectedPpnValue = selectedTax ? selectedTax.percentage : 0;
 
+            // Periksa apakah ada diskon
+            const useDiscount = transaction_items.value.amount_discount !== null && transaction_items.value.amount_discount !== undefined;
+
             // Format nilai `amount` untuk menangani separator ribuan/desimal
-            const formattedAmount = transaction_items.value.amount
-                .replace(/\./g, '')  // Hapus semua titik sebagai pemisah ribuan
-                .replace(',', '.');   // Ganti koma menjadi titik untuk desimal
+            const formattedAmount = useDiscount 
+                ? transaction_items.value.amount_discount // Gunakan amount_discount jika tersedia
+                : transaction_items.value.amount.replace(/\./g, '').replace(',', '.'); // Atau gunakan input amount
 
             // Parsing amount yang sudah diformat ke angka desimal
             const productPrice = parseFloat(formattedAmount);
@@ -547,17 +583,12 @@ export default defineComponent({
         }
 
         function handleSubmit() {
+            console.log(form.transaction_details);
             form.transaction_details = [
                 {
                     name: 'Pemasok',
                     category: 'Supplier',
                     value: transaction_details.value.supplier,
-                    data_type: 'string',
-                },
-                {
-                    name: 'Gudang',
-                    category: 'Storehouse',
-                    value: transaction_details.value.storehouse,
                     data_type: 'string',
                 },
                 {
@@ -692,12 +723,16 @@ export default defineComponent({
             value: data.value
         }));
 
-        const productOptions = (page.props.products as Products[]).map((data) => ({
+        const productOptions = (page.props.products as any[]).map((data) => ({
             id: data.id,
             label: data.name,
             value: data.name,
             code: data.code,
             unit: data.unit,
+            redemp_price: data.redemp_price,
+            retail_price: data.retail_price,
+            restaurant_price: data.restaurant_price,
+            all_segment_price: data.all_segment_price,
         }));
 
         const pemasokOptions = (page.props.suppliers as Parties[]).map((data) => ({
@@ -709,6 +744,8 @@ export default defineComponent({
             label: data.name,
             value: data.name
         }));
+
+        
 
         const sendType = [
             { label: "DEPO BEKASI", value: "DEPO BEKASI" },
@@ -756,6 +793,7 @@ export default defineComponent({
             loading: loadingRef,
             productOptions,
             pemasokOptions,
+            tradePromoOptions,
             handleSearch: (query: string) => {
                 if (!query.length) {
                     optionsRef.value = []

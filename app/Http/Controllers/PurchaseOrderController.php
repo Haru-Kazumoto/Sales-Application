@@ -9,9 +9,9 @@ use App\Http\Services\TransactionServices;
 use App\Models\Lookup;
 use App\Models\Parties;
 use App\Models\Products;
-use App\Models\PurchaseOrder;
 use App\Models\StoreHouse;
 use App\Models\Tax;
+use App\Models\TradePromo;
 use App\Models\TransactionDetail;
 use App\Models\TransactionItem;
 use App\Models\Transactions;
@@ -110,6 +110,7 @@ class PurchaseOrderController extends Controller
             'document_code',
             4
         );
+        $trade_promos = TradePromo::where('is_active', true)->get();
 
         return Inertia::render('Procurement/Purchase/CreatePurchaseOrder', [
             'po_number' => $po_number,
@@ -120,7 +121,8 @@ class PurchaseOrderController extends Controller
             'products' => $products,
             'units' => $units,
             'suppliers' => $suppliers,
-            'transports' => $transports
+            'transports' => $transports,
+            'trade_promos' => $trade_promos,
         ]);
     }
 
@@ -313,30 +315,6 @@ class PurchaseOrderController extends Controller
         });
 
         return back()->with('success', 'Nomor polisi berhasil di tambahkan!');
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(PurchaseOrder $purchaseOrder)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, PurchaseOrder $purchaseOrder)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(PurchaseOrder $purchaseOrder)
-    {
-        //
     }
 }
 

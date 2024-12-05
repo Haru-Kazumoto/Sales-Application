@@ -76,18 +76,6 @@ export default defineComponent({
                     },
                 },
                 {
-                    title: 'Gudang',
-                    key: 'storehouse',
-                    width: 200,
-                    render(rowData) {
-                        const storehouseData = rowData.transaction_details.find((data) => {
-                            return data.category === "Storehouse";
-                        })
-
-                        return storehouseData?.value;
-                    },
-                },
-                {
                     title: 'Harga',
                     key: 'total_price',
                     width: 200,

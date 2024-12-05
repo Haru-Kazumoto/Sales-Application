@@ -10,7 +10,7 @@
                         <!-- Baris Pertama -->
                         <div class="col-lg-2 col-6">
                             <label for="field1">
-                                No PO<span class="text-danger">*</span>
+                                No PO <RequiredMark />
                             </label>
                             <n-input id="field1" size="large" placeholder=""
                                 v-model:value="transaction_details.po_number" />
@@ -21,59 +21,54 @@
                                 Proses</n-button>
                         </div>
                         <div class="col-lg-4 col-6">
-                            <label for="field2">No Bukti<span class="text-danger">*</span></label>
+                            <label for="field2">No Bukti <RequiredMark /></label>
                             <n-input id="field2" size="large" placeholder=""
                                 v-model:value="transaction_details.proof_number" @input="(value) => transaction_details.proof_number = value.toUpperCase()"/>
                         </div>
                         <div class="col-lg-4 col-6">
-                            <label for="field3">No SO<span class="text-danger">*</span></label>
+                            <label for="field3">No SO <RequiredMark /></label>
                             <n-input id="field3" size="large" placeholder="" v-model:value="form.document_code" @input="(value) => form.document_code = value.toUpperCase()"/>
                         </div>
 
                         <!-- Baris Kedua -->
                         <div class="col-lg-4 col-6">
-                            <label for="field4">Tanggal PO<span class="text-danger">*</span></label>
+                            <label for="field4">Tanggal PO </label>
                             <n-input size="large" v-model:value="transaction_details.purchase_order_date" placeholder="" />
                         </div>
                         <div class="col-lg-4 col-6">
-                            <label for="field5">Alokasi<span class="text-danger">*</span></label>
+                            <label for="field5">Alokasi </label>
                             <n-input id="field5" size="large" readonly placeholder=""
                                 v-model:value="transaction_details.located" />
                         </div>
                         <div class="col-lg-4 col-6">
-                            <label for="field6">Pemasok<span class="text-danger">*</span></label>
+                            <label for="field6">Pemasok </label>
                             <n-input id="field6" size="large" readonly placeholder=""
                                 v-model:value="transaction_details.supplier" />
                         </div>
                         <div class="col-lg-4 col-6">
-                            <label for="field7">Gudang<span class="text-danger">*</span></label>
-                            <n-input id="field7" size="large" readonly placeholder=""
-                                v-model:value="transaction_details.storehouse" />    
-                        </div>
-                        <div class="col-lg-4 col-6">
-                            <label for="field8">Tanggal Kirim<span class="text-danger">*</span></label>
+                            <label for="field8">Tanggal Kirim <RequiredMark /></label>
                             <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" id="field8" size="large"
                                 v-model:formatted-value="transaction_details.send_date" placeholder="" />
                         </div>
                         <div class="col-lg-4 col-6">
-                            <label for="field9">Nomor Polisi Ekspedisi<span class="text-danger">*</span></label>
+                            <label for="field9">Nomor Polisi Ekspedisi </label>
                             <n-input id="field9" size="large" placeholder=""
                                 v-model:value="transaction_details.transportation" />
                         </div>
 
                         <!-- Baris Ketiga -->
                         <div class="col-lg-4 col-6">
-                            <label for="field10">Nama Ekspedisi<span class="text-danger">*</span></label>
+                            <label for="field10">Nama Ekspedisi </label>
                             <n-select id="field10" size="large" placeholder="" filterable :options="angkutanOptions"
                                 v-model:value="transaction_details.sender" />
                         </div>
                         <div class="col-lg-4 col-6">
-                            <label for="field11">Jenis Pengiriman<span class="text-danger">*</span></label>
+                            <label for="field11">Jenis Pengiriman </label>
                             <n-select id="field11" size="large" placeholder="" :options="sendType"
                                 v-model:value="transaction_details.delivery_type" />
                         </div>
                         <div class="col-lg-4 col-6">
-                            <label for="field12">PIC<span class="text-danger">*</span></label>
+                            <label for="field12">PIC </label>
                             <n-input id="field12" size="large" readonly placeholder=""
                                 v-model:value="transaction_details.employee_name" />
                         </div>
@@ -140,6 +135,7 @@ import { DataTableColumns, NButton, useNotification } from 'naive-ui';
 import Swal from 'sweetalert2';
 import TitlePage from '../../../Components/TitlePage.vue';
 import ErrorInput from '../../../Components/ErrorInput.vue';
+import RequiredMark from '../../../Components/RequiredMark.vue';
 import { Head, router, useForm, usePage } from '@inertiajs/vue3';
 import { formatRupiah } from '../../../Utils/options-input.utils';
 import { Flash, Parties, PurchaseOrder, SubSalesOrder, SubSalesOrderProducts, TransactionDetail, TransactionItems, Transactions, User } from '../../../types/model';
@@ -326,12 +322,6 @@ export default defineComponent({
                     name: 'Pemasok',
                     category: 'Supplier',
                     value: transaction_details.value.supplier,
-                    data_type: 'string',
-                },
-                {
-                    name: 'Gudang',
-                    category: 'Storehouse',
-                    value: transaction_details.value.storehouse,
                     data_type: 'string',
                 },
                 {
@@ -598,7 +588,8 @@ export default defineComponent({
     components: {
         TitlePage,
         ErrorInput,
-        Head
+        Head,
+        RequiredMark
     }
 })
 </script>

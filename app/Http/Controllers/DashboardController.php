@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Services\TransactionServices;
 use App\Models\ProductJournal;
-use App\Models\PurchaseOrder;
 use App\Models\Transactions;
 use App\Models\TransactionType;
 use Carbon\Carbon;

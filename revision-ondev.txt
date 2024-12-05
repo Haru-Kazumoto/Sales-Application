@@ -27,7 +27,7 @@ ADMIN : [OK]
 ----------------------DEV
 PROCUREMENT :
 + [PO:REV] : 
-    - Harga barang saat penginputan itu dapet otmatis dari Harga Tebus di admin
+    - Harga berubah saat program beli di terapkan (AKUN GROSIR)
 PROCUREMENT AND ADMIN :
 + [TRADEPROMO(PROGRAM-BELI):NEW] : 
     - trade promo ini mempunyai konsep kuota pembelian, jadi di procurement dan di admin mempunyai sebuah page untuk meng assign 

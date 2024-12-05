@@ -143,6 +143,18 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
             Route::patch('/unassign/{customer}', [App\Http\Controllers\CustomerController::class, 'unAssignCustomerSales'])->name('unassign-customer-from-sales');
         });
 
+        Route::prefix('trade-promo')->group(function() {
+            Route::get('', [App\Http\Controllers\TradePromoController::class, 'create'])->name('trade-promo.create');
+            Route::post('/post', [App\Http\Controllers\TradePromoController::class, 'store'])->name('trade-promo.store');
+            Route::get('/edit/{tradePromo}', [App\Http\Controllers\TradePromoController::class, 'edit'])->name('trade-promo.edit');
+            Route::put('/update/{tradePromo}', [App\Http\Controllers\TradePromoController::class, 'update'])->name('trade-promo.update');
+
+            //not implemented yet
+            Route::delete('/delete/{tradePromo}', [App\Http\Controllers\TradePromoController::class, 'deletePromo'])->name('trade-promo.delete');
+
+            Route::patch('/shutdown-promo/{tradePromo}', [App\Http\Controllers\TradePromoController::class, 'shutdownPromo'])->name('trade-promo.shutdown');
+            Route::patch('/add-quota', [App\Http\Controllers\TradePromoController::class, 'addQuotaPromo'])->name('trade-promo.add-quota');
+        });
     });
 
     // Procurement Routes
