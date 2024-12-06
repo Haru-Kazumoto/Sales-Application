@@ -10,18 +10,19 @@
         </div>
         <div class="card shadow-sm border-0">
             <div class="card-body">
-                <div class="row g-2">   
+                <div class="row g-2">
                     <div class="col-12 col-md-6 col-lg-4 d-flex flex-column gap-1">
                         <label for="">USER UID</label>
-                        <n-input readonly size="large" v-model:value="($page.props.user as any).user_uid"/>
+                        <n-input disabled size="large" v-model:value="($page.props.user as any).user_uid" />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4 d-flex flex-column gap-1">
                         <label for="">SALESMAN</label>
-                        <n-input readonly size="large" v-model:value="($page.props.user as any).fullname"/>
+                        <n-input disabled size="large" v-model:value="($page.props.user as any).fullname" />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4 d-flex flex-column gap-1">
                         <label for="">DIVISI</label>
-                        <n-input readonly size="large" v-model:value="($page.props.user as any).division.division_name"/>
+                        <n-input disabled size="large"
+                            v-model:value="($page.props.user as any).division.division_name" />
                     </div>
                 </div>
             </div>
@@ -32,27 +33,29 @@
                 <div class="card-title">
                     <span class="fs-5 fw-semibold">Tambahkan customer</span>
                 </div>
-                <div style="border: 1px solid grey;" class="my-3"/>
+                <div style="border: 1px solid grey;" class="my-3" />
                 <div class="row g-3">
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">NAMA CUSTOMER</label>
-                        <n-select placeholder="" size="large" :options="customerOptions" filterable  v-model:value="form.customer_name"/>
+                        <n-select placeholder="" size="large" :options="customerOptions" filterable
+                            v-model:value="form.customer_name" />
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">ALAMAT CUSTOMER</label>
-                        <n-input placeholder="" size="large" readonly v-model:value="form.customer_address"/>
+                        <n-input placeholder="" size="large" disabled v-model:value="form.customer_address" />
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">NPWP</label>
-                        <n-input placeholder="" size="large" readonly v-model:value="form.customer_npwp"/>
+                        <n-input placeholder="" size="large" disabled v-model:value="form.customer_npwp" />
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">BADAN USAHA</label>
-                        <n-input placeholder="" size="large" readonly v-model:value="form.customer_legality"/>
+                        <n-input placeholder="" size="large" disabled v-model:value="form.customer_legality" />
                     </div>
                 </div>
                 <div class="d-flex mt-3">
-                    <n-button size="medium" type="primary" class="ms-auto" @click="handleAssignCustomer">Tambah Customer</n-button>
+                    <n-button size="medium" type="primary" class="ms-auto" @click="handleAssignCustomer">Tambah
+                        Customer</n-button>
                 </div>
             </div>
         </div>
@@ -70,12 +73,12 @@
 import { defineComponent, h, watch } from 'vue';
 import TitlePage from '../../Components/TitlePage.vue';
 import { ArrowBack } from '@vicons/ionicons5';
-import {router, useForm, usePage} from "@inertiajs/vue3";
+import { router, useForm, usePage } from "@inertiajs/vue3";
 import { NButton } from 'naive-ui';
 import Swal from 'sweetalert2';
 
 export default defineComponent({
-    setup () {
+    setup() {
         function createColumns() {
             return [
                 {
@@ -124,7 +127,7 @@ export default defineComponent({
                                     handleUnAssignCustomer(row.id)
                                 }
                             },
-                            { default: () => "HAPUS"}
+                            { default: () => "HAPUS" }
                         )
                     }
                 }
@@ -148,7 +151,7 @@ export default defineComponent({
             label: data.name,
             value: data.name,
             address: data.address,
-            npwp: data.npwp, 
+            npwp: data.npwp,
             legality: data.legality,
         }));
 
@@ -161,8 +164,8 @@ export default defineComponent({
             form.customer_legality = selectedCustomer?.legality;
         });
 
-        function handleAssignCustomer(){
-            if(!form.customer_name){
+        function handleAssignCustomer() {
+            if (!form.customer_name) {
                 Swal.fire('Harap mengisi nama customer', '', 'error');
             } else {
                 Swal.fire({
@@ -171,7 +174,7 @@ export default defineComponent({
                     showCancelButton: true,
                     icon: "question"
                 }).then((result) => {
-                    if(result.isConfirmed) {
+                    if (result.isConfirmed) {
                         form.patch(route('admin.assign-customer-to-sales', { customer: form.customer_id, sales: form.sales_id }), {
                             onSuccess: (page) => {
                                 form.customer_id = null as unknown as number;
@@ -180,7 +183,7 @@ export default defineComponent({
                                 form.customer_legality = '';
                                 form.customer_name = '';
 
-                                Swal.fire((page.props.flash as any).success,'','success');
+                                Swal.fire((page.props.flash as any).success, '', 'success');
                             },
                             onError: () => {
                                 Swal.fire('Gagal menambahkan customer', '', 'error');
@@ -198,11 +201,11 @@ export default defineComponent({
                 icon: "warning",
                 showCancelButton: true,
             }).then(result => {
-                if(result.isConfirmed){
-                    router.patch(route('admin.unassign-customer-from-sales', customer_id),{},{
+                if (result.isConfirmed) {
+                    router.patch(route('admin.unassign-customer-from-sales', customer_id), {}, {
                         onSuccess: (page) => {
                             Swal.fire((page.props.flash as any).success, '', 'success');
-                        }, 
+                        },
                         onError: () => {
                             Swal.fire('Gagal menghapus customer', '', 'error');
                         }
@@ -227,6 +230,4 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

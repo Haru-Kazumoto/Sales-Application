@@ -10,7 +10,8 @@
                         <!-- Baris Pertama -->
                         <div class="col-lg-2 col-6">
                             <label for="field1">
-                                No PO <RequiredMark />
+                                No PO
+                                <RequiredMark />
                             </label>
                             <n-input id="field1" size="large" placeholder=""
                                 v-model:value="transaction_details.po_number" />
@@ -21,32 +22,41 @@
                                 Proses</n-button>
                         </div>
                         <div class="col-lg-4 col-6">
-                            <label for="field2">No Bukti <RequiredMark /></label>
+                            <label for="field2">No Bukti
+                                <RequiredMark />
+                            </label>
                             <n-input id="field2" size="large" placeholder=""
-                                v-model:value="transaction_details.proof_number" @input="(value) => transaction_details.proof_number = value.toUpperCase()"/>
+                                v-model:value="transaction_details.proof_number"
+                                @input="(value) => transaction_details.proof_number = value.toUpperCase()" />
                         </div>
                         <div class="col-lg-4 col-6">
-                            <label for="field3">No SO <RequiredMark /></label>
-                            <n-input id="field3" size="large" placeholder="" v-model:value="form.document_code" @input="(value) => form.document_code = value.toUpperCase()"/>
+                            <label for="field3">No SO
+                                <RequiredMark />
+                            </label>
+                            <n-input id="field3" size="large" placeholder="" v-model:value="form.document_code"
+                                @input="(value) => form.document_code = value.toUpperCase()" />
                         </div>
 
                         <!-- Baris Kedua -->
                         <div class="col-lg-4 col-6">
                             <label for="field4">Tanggal PO </label>
-                            <n-input size="large" v-model:value="transaction_details.purchase_order_date" placeholder="" />
+                            <n-input size="large" v-model:value="transaction_details.purchase_order_date"
+                                placeholder="" />
                         </div>
                         <div class="col-lg-4 col-6">
                             <label for="field5">Alokasi </label>
-                            <n-input id="field5" size="large" readonly placeholder=""
+                            <n-input id="field5" size="large" disabled placeholder=""
                                 v-model:value="transaction_details.located" />
                         </div>
                         <div class="col-lg-4 col-6">
                             <label for="field6">Pemasok </label>
-                            <n-input id="field6" size="large" readonly placeholder=""
+                            <n-input id="field6" size="large" disabled placeholder=""
                                 v-model:value="transaction_details.supplier" />
                         </div>
                         <div class="col-lg-4 col-6">
-                            <label for="field8">Tanggal Kirim <RequiredMark /></label>
+                            <label for="field8">Tanggal Kirim
+                                <RequiredMark />
+                            </label>
                             <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" id="field8" size="large"
                                 v-model:formatted-value="transaction_details.send_date" placeholder="" />
                         </div>
@@ -69,7 +79,7 @@
                         </div>
                         <div class="col-lg-4 col-6">
                             <label for="field12">PIC </label>
-                            <n-input id="field12" size="large" readonly placeholder=""
+                            <n-input id="field12" size="large" disabled placeholder=""
                                 v-model:value="transaction_details.employee_name" />
                         </div>
                         <div class="col-lg-4 col-6">
@@ -562,9 +572,9 @@ export default defineComponent({
 
         const sendType = [
             { label: "DEPO BEKASI", value: "DEPO BEKASI" },
-            { label: "Direct", value: "DIRECT" },
-            { label: "Direct Depo", value: "DIRECT_DEPO" },
-            { label: "Beli DO", value: "DO" },
+            { label: "DIRECT", value: "DIRECT" },
+            { label: "DIRECT DEPO", value: "DIRECT_DEPO" },
+            { label: "BELI DO", value: "DO" },
         ];
 
         return {

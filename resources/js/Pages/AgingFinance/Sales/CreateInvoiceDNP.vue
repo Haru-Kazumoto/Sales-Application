@@ -15,21 +15,21 @@
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">NO CO</label>
                         <n-input size="large" placeholder="" v-model:value="transaction_details.customer_order_number"
-                            readonly />
+                            disabled />
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">Nomor Surat Jalan</label>
                         <n-input size="large" placeholder="" v-model:value="transaction_details.travel_document_number"
-                            readonly />
+                            disabled />
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">Nomor Faktur</label>
-                        <n-input size="large" placeholder="" v-model:value="form.document_code" readonly />
+                        <n-input size="large" placeholder="" v-model:value="form.document_code" disabled />
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">Tanggal Faktur</label>
                         <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="" size="large"
-                            v-model:value="transaction_details.invoice_date" readonly />
+                            v-model:value="transaction_details.invoice_date" disabled />
                     </div>
 
                     <!-- row 2 -->
@@ -47,26 +47,26 @@
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">Nomor Polisi</label>
                         <n-input size="large" placeholder="" v-model:value="transaction_details.number_plate"
-                            readonly />
+                            disabled />
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">Salesman</label>
-                        <n-input size="large" placeholder="" v-model:value="transaction_details.salesman" readonly />
+                        <n-input size="large" placeholder="" v-model:value="transaction_details.salesman" disabled />
                     </div>
 
                     <!-- row 3 -->
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">Nama Customer</label>
-                        <n-input size="large" placeholder="" v-model:value="transaction_details.customer" readonly />
+                        <n-input size="large" placeholder="" v-model:value="transaction_details.customer" disabled />
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">NPWP</label>
-                        <n-input size="large" placeholder="" v-model:value="transaction_details.npwp" readonly />
+                        <n-input size="large" placeholder="" v-model:value="transaction_details.npwp" disabled />
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">Alamat Customer</label>
                         <n-input size="large" placeholder="" v-model:value="transaction_details.customer_address"
-                            readonly />
+                            disabled />
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">PPN</label>
@@ -265,9 +265,9 @@ export default defineComponent({
             ([newPurchaseOrderDate, newTermOfPayment]) => {
                 if (newPurchaseOrderDate) {
                     // Jika purchase_order_date sudah ada, set due_date berdasarkan term_of_payment
-                    const termDays = newTermOfPayment ; // Gunakan term_of_payment atau default 45
+                    const termDays = newTermOfPayment; // Gunakan term_of_payment atau default 45
                     form.due_date = handleSetFutureDateTo(termDays, newPurchaseOrderDate);
-                } 
+                }
             }
         );
 

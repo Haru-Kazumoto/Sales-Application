@@ -15,7 +15,7 @@
                                 <RequiredMark />
                             </label>
                             <n-input placeholder="" id="field1" size="large" v-model:value="form.document_code"
-                                readonly />
+                                disabled />
                         </div>
                         <div class="col-12 col-md-3 col-lg-4">
                             <label for="field2">
@@ -100,26 +100,25 @@
                             <n-select placeholder="" filterable id="field6" size="large"
                                 v-model:value="transaction_details.sender" :options="transportOptions" />
                         </div>
-                        
+
                         <div class="col-12 col-md-3 col-lg-4">
                             <label for="field8">
                                 PIC
                                 <RequiredMark />
                             </label>
                             <n-input placeholder="" id="field8" size="large"
-                                v-model:value="transaction_details.employee_name" readonly />
+                                v-model:value="transaction_details.employee_name" disabled />
                         </div>
                         <div class="col-12 col-md-3 col-lg-4">
                             <label for="catatan">Harga angkutan</label>
-                            <n-input id="catatan" placeholder="" size="large" 
-                                v-model:value="transaction_details.transportation_cost" >
+                            <n-input id="catatan" placeholder="" size="large"
+                                v-model:value="transaction_details.transportation_cost">
                                 <template #prefix>Rp</template>
                             </n-input>
                         </div>
                         <div class="col-12 col-md-3 col-lg-4">
                             <label for="catatan">Catatan</label>
-                            <n-input id="catatan" type="textarea" placeholder="" 
-                                v-model:value="form.description" />
+                            <n-input id="catatan" type="textarea" placeholder="" v-model:value="form.description" />
                         </div>
                     </form>
 
@@ -142,7 +141,8 @@
                         </div>
                         <div class="col-12 col-md-6 col-lg-4">
                             <label for="grosir_account">Akun Grosir</label>
-                            <n-select size="large" placeholder="" filterable :options="tradePromoOptions" v-model:value="transaction_items.trade_promo_id"/>
+                            <n-select size="large" placeholder="" filterable :options="tradePromoOptions"
+                                v-model:value="transaction_items.trade_promo_id" />
                         </div>
                         <div class="col-12 col-md-6 col-lg-4">
                             <label for="amount">
@@ -159,7 +159,7 @@
                                 Harga Barang
                             </label>
                             <n-input size="large" id="product_price" placeholder=""
-                                v-model:value="transaction_items.amount" readonly>
+                                v-model:value="transaction_items.amount" disabled>
                                 <template #prefix>Rp </template>
                             </n-input>
                         </div>
@@ -177,7 +177,7 @@
                                 <RequiredMark />
                             </label>
                             <n-input size="large" id="product_price" placeholder=""
-                                v-model:value="transaction_items.amount_discount" readonly>
+                                v-model:value="transaction_items.amount_discount" disabled>
                                 <template #prefix>Rp </template>
                             </n-input>
                         </div>
@@ -313,12 +313,12 @@ export default defineComponent({
         watch(() => transaction_items.value.trade_promo_id, (id) => {
             const selectedTradePromo = tradePromoOptions.find(data => data.id === id);
 
-            if(selectedTradePromo) {
+            if (selectedTradePromo) {
                 transaction_items.value.amount_discount = selectedTradePromo.price;
             } else {
                 transaction_items.value.amount_discount = null as unknown as number;
             }
-        }, {deep: true, immediate: true});
+        }, { deep: true, immediate: true });
 
         // Watcher untuk memantau perubahan pada 'products.name'
         watch(() => products.value.name, (newName) => {
@@ -370,7 +370,7 @@ export default defineComponent({
             const useDiscount = transaction_items.value.amount_discount !== null && transaction_items.value.amount_discount !== undefined;
 
             // Format nilai `amount` untuk menangani separator ribuan/desimal
-            const formattedAmount = useDiscount 
+            const formattedAmount = useDiscount
                 ? transaction_items.value.amount_discount // Gunakan amount_discount jika tersedia
                 : transaction_items.value.amount.replace(/\./g, '').replace(',', '.'); // Atau gunakan input amount
 
@@ -745,13 +745,13 @@ export default defineComponent({
             value: data.name
         }));
 
-        
+
 
         const sendType = [
             { label: "DEPO BEKASI", value: "DEPO BEKASI" },
-            { label: "Direct", value: "DIRECT" },
-            { label: "Direct Depo", value: "DIRECT_DEPO" },
-            { label: "Beli DO", value: "DO" },
+            { label: "DIRECT", value: "DIRECT" },
+            { label: "DIRECT DEPO", value: "DIRECT_DEPO" },
+            { label: "BELI DO", value: "DO" },
         ];
 
         const ppnOptions = (page.props.tax as Tax[]).map((data) => ({

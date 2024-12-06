@@ -8,41 +8,60 @@
             <!-- INPUT CO -->
             <div class="card-body">
                 <div class="row g-3">
-                    <div class="col-12 col-lg-6">
+                    <div class="col-12 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">NOMOR CO <span class="text-danger">*</span></label>
-                            <n-input size="large" readonly v-model:value="form.document_code" placeholder="" />
+                            <label for="">NOMOR CO
+                                <RequiredMark />
+                            </label>
+                            <n-input size="large" disabled v-model:value="form.document_code" placeholder="" />
                         </div>
                     </div>
-                    <div class="col-12 col-lg-6">
+                    <div class="col-12 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">TANGGAL DIBUAT CO<span class="text-danger">*</span></label>
-                            <n-input size="large" readonly v-model:value="transaction_details.customer_order_date"
+                            <label for="">NOMOR PO CUSTOMER (OPTIONAL)</label>
+                            <n-input size="large" disabled v-model:value="transaction_details.po_customer"
+                                placeholder="" />
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-4">
+                        <div class="d-flex flex-column gap-1">
+                            <label for="">TANGGAL DIBUAT CO
+                                <RequiredMark />
+                            </label>
+                            <n-input size="large" disabled v-model:value="transaction_details.customer_order_date"
                                 placeholder="" />
                         </div>
                     </div>
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">NAMA CUSTOMER<span class="text-danger">*</span></label>
+                            <label for="">NAMA CUSTOMER
+                                <RequiredMark />
+                            </label>
                             <n-select filterable :loading="loading" :options="customerOptions" size="large"
                                 placeholder="" v-model:value="transaction_details.customer" />
                         </div>
                     </div>
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">BADAN USAHA<span class="text-danger">*</span></label>
+                            <label for="">BADAN USAHA
+                                <RequiredMark />
+                            </label>
                             <n-input size="large" v-model:value="transaction_details.legality" placeholder="" />
                         </div>
                     </div>
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">ALAMAT CUSTOMER<span class="text-danger">*</span></label>
+                            <label for="">ALAMAT CUSTOMER
+                                <RequiredMark />
+                            </label>
                             <n-input size="large" v-model:value="transaction_details.customer_address" placeholder="" />
                         </div>
                     </div>
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">TERMIN<span class="text-danger">*</span></label>
+                            <label for="">TERMIN
+                                <RequiredMark />
+                            </label>
                             <n-input size="large" v-model:value="form.term_of_payment" placeholder="">
                                 <template #suffix>HARI</template>
                             </n-input>
@@ -50,29 +69,35 @@
                     </div>
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">TANGGAL JATUH TEMPO<span class="text-danger">*</span></label>
+                            <label for="">TANGGAL JATUH TEMPO
+                                <RequiredMark />
+                            </label>
                             <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="" id="field8"
                                 size="large" v-model:formatted-value="form.due_date" />
                         </div>
                     </div>
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">PENGIRIMAN<span class="text-danger">*</span></label>
+                            <label for="">PENGIRIMAN
+                                <RequiredMark />
+                            </label>
                             <n-select size="large" v-model:value="transaction_details.delivery" :options="sendType"
                                 placeholder="" />
                         </div>
                     </div>
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">SALESMAN<span class="text-danger">*</span></label>
-                            <n-input size="large" v-model:value="transaction_details.salesman" readonly
+                            <label for="">SALESMAN
+                                <RequiredMark />
+                            </label>
+                            <n-input size="large" v-model:value="transaction_details.salesman" disabled
                                 placeholder="" />
                         </div>
                     </div>
 
                     <!-- <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">BIAYA ANGKUTAN<span class="text-danger">*</span></label>
+                            <label for="">BIAYA ANGKUTAN<RequiredMark /></label>
                             <n-input size="large" placeholder="" v-model:value="transaction_details.transportation_cost"
                                 @input="(value) => transaction_details.transportation_cost = value.replace(/\D/g, '')">
                                 <template #prefix>
@@ -99,6 +124,10 @@
                             </n-input>
                         </div>
                     </div>
+                    <div class="col-6 col-sm-6 col-md-6 col-lg-4">
+                        <label for="ppn">PPN</label>
+                        <n-select size="large" placeholder="" :options="ppnOptions"/>
+                    </div>
                 </div>
             </div>
         </div>
@@ -124,7 +153,7 @@
                     </div>
                     <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">KEMASAN</label>
-                        <n-input size="large" v-model:value="transaction_items.unit" readonly placeholder="" />
+                        <n-input size="large" v-model:value="transaction_items.unit" disabled placeholder="" />
                     </div>
                     <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">HARGA PRODUK</label>
@@ -139,19 +168,19 @@
                             <span>PRODUK INI MENDAPATKAN PROMO {{ products.promo_name }}</span>
                             <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                                 <label for="">PROMO </label>
-                                <n-input size="large" :value="promoPercentage + '%'" readonly />
+                                <n-input size="large" :value="promoPercentage + '%'" disabled />
                             </div>
                             <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                                 <label for="">DESKRIPSI</label>
-                                <n-input size="large" :value="products.description" readonly />
+                                <n-input size="large" :value="products.description" disabled />
                             </div>
                             <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                                 <label for="">MINIMAL</label>
-                                <n-input size="large" :value="products.min" readonly />
+                                <n-input size="large" :value="products.min" disabled />
                             </div>
                             <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                                 <label for="">MAKSIMAL</label>
-                                <n-input size="large" :value="products.max" readonly />
+                                <n-input size="large" :value="products.max" disabled />
                             </div>
                         </div>
                     </div>
@@ -168,7 +197,7 @@
                     </div>
                     <div class="col-6 d-flex flex-column gap-1">
                         <label for="">HARGA</label>
-                        <n-input size="large" readonly placeholder=""
+                        <n-input size="large" disabled placeholder=""
                             v-model:value="transaction_details.total_discount_1">
                             <template #prefix>Rp</template>
                         </n-input>
@@ -184,7 +213,7 @@
                     </div>
                     <div class="col-6 d-flex flex-column gap-1">
                         <label for="">HARGA</label>
-                        <n-input size="large" readonly placeholder=""
+                        <n-input size="large" disabled placeholder=""
                             v-model:value="transaction_details.total_discount_2">
                             <template #prefix>Rp</template>
                         </n-input>
@@ -200,7 +229,7 @@
                     </div>
                     <div class="col-6 d-flex flex-column gap-1">
                         <label for="">HARGA</label>
-                        <n-input size="large" readonly placeholder=""
+                        <n-input size="large" disabled placeholder=""
                             v-model:value="transaction_details.total_discount_3">
                             <template #prefix>Rp</template>
                         </n-input>
@@ -263,7 +292,7 @@ import { computed, defineComponent, h, ref, watch } from 'vue'
 import TitlePage from '../../../Components/TitlePage.vue';
 import { DataTableColumns, NButton, SelectOption, useNotification } from 'naive-ui';
 import { useForm, usePage, Head } from '@inertiajs/vue3';
-import { ProductCustomerOrder } from '../../../types/dto';
+import RequiredMark from "../../../Components/RequiredMark.vue";
 import Swal from 'sweetalert2';
 import { Lookup, Parties, Products, TransactionDetail, TransactionItems, User } from '../../../types/model';
 import { formatRupiah } from '../../../Utils/options-input.utils';
@@ -435,6 +464,7 @@ export default defineComponent({
             cashback: null as unknown as number,
             delivery: null as unknown as string,
             unloading_cost: null as unknown as number,
+            po_customer: null as unknown as string,
             total_discount_1: null as any,
             total_discount_3: null as any,
             total_discount_2: null as any,
@@ -641,7 +671,7 @@ export default defineComponent({
                 });
             }
 
-            let selectedProduct = null;
+            let selectedProduct = null as unknown as any;
 
             if (['DIRECT', 'DIRECT_DEPO', 'DO'].includes(transaction_details.value.delivery)) {
                 // Gunakan produk dari master
@@ -695,7 +725,7 @@ export default defineComponent({
                 }
 
                 // Tentukan pesan dan warna status berdasarkan last_stock
-                if(!['DIRECT', 'DIRECT_DEPO', 'DO'].includes(transaction_details.value.delivery)){
+                if (!['DIRECT', 'DIRECT_DEPO', 'DO'].includes(transaction_details.value.delivery)) {
                     if (products.value.last_stock < 10) {
                         stockMessage.value = `Stok saat ini : (${products.value.last_stock})`;
                         stockStatusColor.value = 'red';
@@ -1164,11 +1194,15 @@ export default defineComponent({
             })
         }
 
+        const ppnOptions = [
+            { label: "PPN", value: "PPN"},
+            { label: "NON-PPN", value: "NON-PPN"},
+        ]
 
         const sendType = [
             { label: "DEPO BEKASI", value: "DEPO BEKASI" },
-            { label: "Direct", value: "DIRECT" },
-            { label: "Direct Depo", value: "DIRECT_DEPO" },
+            { label: "DIRECT", value: "DIRECT" },
+            { label: "DIRECT DEPO", value: "DIRECT_DEPO" },
             { label: "Beli DO", value: "DO" },
         ];
 
@@ -1205,6 +1239,7 @@ export default defineComponent({
             transaction_details,
             products,
             transaction_items,
+            ppnOptions,
             customerOptions,
             productOptions,
             loading,
@@ -1248,7 +1283,8 @@ export default defineComponent({
     },
     components: {
         TitlePage,
-        Head
+        Head,
+        RequiredMark
     }
 })
 </script>

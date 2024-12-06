@@ -11,13 +11,13 @@
                     <div class="col-12 col-lg-6">
                         <div class="d-flex flex-column gap-1">
                             <label for="">NOMOR CO <span class="text-danger">*</span></label>
-                            <n-input size="large" readonly v-model:value="form.document_code" placeholder="" />
+                            <n-input size="large" disabled v-model:value="form.document_code" placeholder="" />
                         </div>
                     </div>
                     <div class="col-12 col-lg-6">
                         <div class="d-flex flex-column gap-1">
                             <label for="">TANGGAL DIBUAT CO<span class="text-danger">*</span></label>
-                            <n-input size="large" readonly v-model:value="transaction_details.customer_order_date"
+                            <n-input size="large" disabled v-model:value="transaction_details.customer_order_date"
                                 placeholder="" />
                         </div>
                     </div>
@@ -65,7 +65,7 @@
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">SALESMAN<span class="text-danger">*</span></label>
-                            <n-input size="large" v-model:value="transaction_details.salesman" readonly
+                            <n-input size="large" v-model:value="transaction_details.salesman" disabled
                                 placeholder="" />
                         </div>
                     </div>
@@ -99,6 +99,7 @@
                             </n-input>
                         </div>
                     </div>
+                    
                 </div>
             </div>
         </div>
@@ -124,7 +125,7 @@
                     </div>
                     <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">KEMASAN</label>
-                        <n-input size="large" v-model:value="transaction_items.unit" readonly placeholder="" />
+                        <n-input size="large" v-model:value="transaction_items.unit" disabled placeholder="" />
                     </div>
                     <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">HARGA PRODUK</label>
@@ -139,19 +140,19 @@
                             <span>PRODUK INI MENDAPATKAN PROMO {{ products.promo_name }}</span>
                             <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                                 <label for="">PROMO </label>
-                                <n-input size="large" :value="promoPercentage + '%'" readonly />
+                                <n-input size="large" :value="promoPercentage + '%'" disabled />
                             </div>
                             <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                                 <label for="">DESKRIPSI</label>
-                                <n-input size="large" :value="products.description" readonly />
+                                <n-input size="large" :value="products.description" disabled />
                             </div>
                             <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                                 <label for="">MINIMAL</label>
-                                <n-input size="large" :value="products.min" readonly />
+                                <n-input size="large" :value="products.min" disabled />
                             </div>
                             <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                                 <label for="">MAKSIMAL</label>
-                                <n-input size="large" :value="products.max" readonly />
+                                <n-input size="large" :value="products.max" disabled />
                             </div>
                         </div>
                     </div>
@@ -168,7 +169,7 @@
                     </div>
                     <div class="col-6 d-flex flex-column gap-1">
                         <label for="">HARGA</label>
-                        <n-input size="large" readonly placeholder=""
+                        <n-input size="large" disabled placeholder=""
                             v-model:value="transaction_details.total_discount_1">
                             <template #prefix>Rp</template>
                         </n-input>
@@ -184,7 +185,7 @@
                     </div>
                     <div class="col-6 d-flex flex-column gap-1">
                         <label for="">HARGA</label>
-                        <n-input size="large" readonly placeholder=""
+                        <n-input size="large" disabled placeholder=""
                             v-model:value="transaction_details.total_discount_2">
                             <template #prefix>Rp</template>
                         </n-input>
@@ -200,7 +201,7 @@
                     </div>
                     <div class="col-6 d-flex flex-column gap-1">
                         <label for="">HARGA</label>
-                        <n-input size="large" readonly placeholder=""
+                        <n-input size="large" disabled placeholder=""
                             v-model:value="transaction_details.total_discount_3">
                             <template #prefix>Rp</template>
                         </n-input>
@@ -641,7 +642,7 @@ export default defineComponent({
                 });
             }
 
-            let selectedProduct = null;
+            let selectedProduct = null as unknown as any;
 
             if (['DIRECT', 'DIRECT_DEPO', 'DO'].includes(transaction_details.value.delivery)) {
                 // Gunakan produk dari master
@@ -682,8 +683,8 @@ export default defineComponent({
                     products.value.promo_name = selectedProduct.promo_name;
                 } else {
                     // Reset promo-related values if the promotion has expired
-                    products.value.promo_value = null;
-                    products.value.promo_name = null;
+                    products.value.promo_value = null as unknown as number;
+                    products.value.promo_name = null as unknown as number;
                 }
 
                 // Reset product_journals dan tambahkan item baru
@@ -695,7 +696,7 @@ export default defineComponent({
                 }
 
                 // Tentukan pesan dan warna status berdasarkan last_stock
-                if(!['DIRECT', 'DIRECT_DEPO', 'DO'].includes(transaction_details.value.delivery)){
+                if (!['DIRECT', 'DIRECT_DEPO', 'DO'].includes(transaction_details.value.delivery)) {
                     if (products.value.last_stock < 10) {
                         stockMessage.value = `Stok saat ini : (${products.value.last_stock})`;
                         stockStatusColor.value = 'red';
@@ -1167,9 +1168,9 @@ export default defineComponent({
 
         const sendType = [
             { label: "DEPO BEKASI", value: "DEPO BEKASI" },
-            { label: "Direct", value: "DIRECT" },
-            { label: "Direct Depo", value: "DIRECT_DEPO" },
-            { label: "Beli DO", value: "DO" },
+            { label: "DIRECT", value: "DIRECT" },
+            { label: "DIRECT DEPO", value: "DIRECT_DEPO" },
+            { label: "BELI DO", value: "DO" },
         ];
 
         const termPaymentOptions = (page.props.payment_terms as Lookup[]).map((data) => ({

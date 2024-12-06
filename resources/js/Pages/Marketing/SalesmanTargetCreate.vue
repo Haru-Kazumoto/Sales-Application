@@ -27,15 +27,15 @@
                     <div class="row g-2">
                         <div class="col-12 d-flex flex-column gap-1">
                             <label for="">Salesman</label>
-                            <n-input placeholder="" size="large" v-model:value="model.fullname" readonly />
+                            <n-input placeholder="" size="large" v-model:value="model.fullname" disabled />
                         </div>
                         <div class="col-12 d-flex flex-column gap-1">
                             <label for="">Salesman UID</label>
-                            <n-input placeholder="" size="large" v-model:value="model.saleman_uid" readonly />
+                            <n-input placeholder="" size="large" v-model:value="model.saleman_uid" disabled />
                         </div>
                         <div class="col-12 d-flex flex-column gap-1">
                             <label for="">Divisi</label>
-                            <n-input placeholder="" size="large" v-model:value="model.division" readonly />
+                            <n-input placeholder="" size="large" v-model:value="model.division" disabled />
                         </div>
 
                         <n-divider>Informasi Target</n-divider>

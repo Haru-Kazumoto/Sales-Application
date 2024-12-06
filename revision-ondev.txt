@@ -23,8 +23,6 @@ ADMIN : [OK]
       ~ harga jual hotel & restaurant => Harga Retail
       ~ harga jual bakery => harga end user
       ~ harga jual all segment
-
-----------------------DEV
 PROCUREMENT :
 + [PO:REV] : 
     - Harga berubah saat program beli di terapkan (AKUN GROSIR)
@@ -36,6 +34,21 @@ PROCUREMENT AND ADMIN :
     Jadi Ketika nanti procurement mengisi sebuah barang Harga normalnya itu mengambil Harga normal dari admin lalu tambahkan 1 field yaitu alokasi,
     ketika di alokasi memilih salah satu grosir account maka nanti Harga normal barang berubah menjadi Harga setelah diskon atau Harga di trade promo.
 
+----------------------DEV
+SALES :
++ [CO:NEW] :
+    - tambahkan 1 field yaitu PO Customer, digunakan untuk report marketing jika PO Customer 
+    ini ada berarti di list PO/CO itu disandingin 2 nomor dokumen yang menandakan Bahwa customer tersebut menerbitkan PO sendiri.
+    - tambahkan 1 field di form produk "Segment Customer" (GROSIR, RETAIL, END USER, ALL SEGMENT) buat dropdown dan Harga akan mengikuti sesuai segment, 
+    dan Harga editable jika sales akan menaikan Harga *Harga tidak turun.
++ [CO:REV] :
+    - Harga produk itu gabisa di kurangin dari Harga otomatis, tapi bisa di tambah. Jika dipaksa dikurangi buatkan sebuah notifikasi
+    - diskon 1,2,3 itu sekarang di dapetin dari program promo, integrasi
++ [CO:NEW-FLOW] : 
+    - CO tambah 1 field yaitu "Pengajauan Diskon" isinya adalah Pengajuan dan Tidak Pengajuan. 
+    Jika pengajuan maka CO ini masuk ke marketing (Draf CO). Ketika approve CO bisa di proses lagi isi diskon nya
+    - CO itu ada validasi, si customer ini ada invoice tunggakan gak jadi nanti masuk ke AR dulu untuk approvan, 
+    ada 3 status yang diberikan AR yaitu (HOLD, APPROVE, REJECT) kalau statusnya masih HOLD CO nya gabisa di proses, kalau reject hapus CO nya
 
 
 ----------------------BUG

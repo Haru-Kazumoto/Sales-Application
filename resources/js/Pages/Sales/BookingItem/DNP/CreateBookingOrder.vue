@@ -14,7 +14,7 @@
                 <div class="row g-3">
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column">
                         <label for="">Nomor Booking</label>
-                        <n-input size="large" placeholder="" v-model:value="form.document_code" readonly />
+                        <n-input size="large" placeholder="" v-model:value="form.document_code" disabled />
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column">
                         <label for="">Nama Produk</label>
@@ -30,7 +30,7 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column">
                         <label for="">Kemasan</label>
-                        <n-input size="large" placeholder="" v-model:value="form.unit" readonly />
+                        <n-input size="large" placeholder="" v-model:value="form.unit" disabled />
                     </div>
                 </div>
                 <div class="d-flex w-100 my-2">
@@ -157,7 +157,7 @@ export default defineComponent({
             product_name: '',
             quantity: null as unknown as number,
             unit: '',
-            last_stock: null as unknown as number,  
+            last_stock: null as unknown as number,
             price: null as unknown as number,
             total: null as unknown as number,
             product_id: null as unknown as number,

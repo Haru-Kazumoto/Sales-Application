@@ -1,17 +1,5 @@
 PROCUREMENT:
 + [SSO:BUG] : SSO tidak masuk setelah di create padahal message success ada
-+ [PO:REV] : 
-    - Harga barang saat penginputan itu dapet otmatis dari Harga Tebus di admin
-    - Inputan barang di PO itu default harganya dari Harga tebus, Ketika di pilih alokasi pada barangnya akan berubah harganya sesuai lokasi (wilayah data admin [master])
-
-PROCUREMENT AND ADMIN :
-+ [TRADEPROMO(PROGRAM-BELI):NEW] : 
-    - trade promo ini mempunyai konsep kuota pembelian, jadi di procurement dan di admin mempunyai sebuah page untuk meng assign 
-    sebuah alokasi atau grosir account. 
-    di TRADE PROMO itu juga mengisi sebuah harga setelah diskon nya. 
-    Jadi Ketika nanti procurement mengisi sebuah barang Harga normalnya itu mengambil Harga normal dari admin lalu tambahkan 1 field yaitu alokasi,
-    ketika di alokasi memilih salah satu grosir account maka nanti Harga normal barang berubah menjadi Harga setelah diskon atau Harga di trade promo.
-
 WAREHOUSE :
 + [REPORT-PRODUCTS:NEW] : 
     - kekurangan barang seperti pengiriman bertahap dikirimkan ke supplier lewat WA

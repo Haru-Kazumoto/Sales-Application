@@ -14,19 +14,19 @@
                 <div class="row g-2">
                     <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">NOMOR BOOKING</label>
-                        <n-input v-model:value="detail.booking_number" readonly size="large" />
+                        <n-input v-model:value="detail.booking_number" disabled size="large" />
                     </div>
                     <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">TANGGAL BOOKING</label>
-                        <n-input v-model:value="detail.booking_date" readonly size="large" />
+                        <n-input v-model:value="detail.booking_date" disabled size="large" />
                     </div>
                     <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">SALESMAN</label>
-                        <n-input v-model:value="detail.salesman" readonly size="large" />
+                        <n-input v-model:value="detail.salesman" disabled size="large" />
                     </div>
                     <div class="col-6 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">STATUS</label>
-                        <n-input v-model:value="detail.status" size="large" :status="statusBorder" readonly />
+                        <n-input v-model:value="detail.status" size="large" :status="statusBorder" disabled />
                     </div>
                 </div>
             </div>
@@ -39,7 +39,7 @@
             </div>
         </div>
 
-        <div class="d-flex" >
+        <div class="d-flex">
             <n-button type="primary" size="large" class="ms-auto" v-if="detail.status === 'PENDING'"
                 @click="handleSubmit">APPROVE</n-button>
         </div>
@@ -169,7 +169,7 @@ export default defineComponent({
                                 {
                                     type: "primary",
                                     disabled: status !== "PENDING",
-                                    onClick(){
+                                    onClick() {
                                         approveItem(row.id);
                                     }
                                 },

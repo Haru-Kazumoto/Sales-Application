@@ -24,21 +24,21 @@
                             <label for="no_po">
                                 No PO<span class="text-danger">*</span>
                             </label>
-                            <n-input placeholder="" readonly size="large"
+                            <n-input placeholder="" disabled size="large"
                                 v-model:value="transaction_details.purchase_order_number" />
                         </div>
                         <div class="col-md-4 col-6">
                             <label for="tanggal_po">
                                 Tanggal PO<span class="text-danger">*</span>
                             </label>
-                            <n-input readonly placeholder="" class="w-100" size="large"
+                            <n-input disabled placeholder="" class="w-100" size="large"
                                 v-model:value="transaction_details.purchase_order_date" />
                         </div>
                         <div class="col-md-3 col-6">
                             <label for="alokasi">
                                 Alokasi<span class="text-danger">*</span>
                             </label>
-                            <n-input placeholder="" readonly id="alokasi" v-model:value="transaction_details.alocated"
+                            <n-input placeholder="" disabled id="alokasi" v-model:value="transaction_details.alocated"
                                 size="large" />
                         </div>
                         <div class="col-md-3 col-6">
@@ -46,20 +46,20 @@
                                 Pemasok<span class="text-danger">*</span>
                             </label>
                             <n-input placeholder="" id="pemasok" v-model:value="transaction_details.supplier"
-                                :options="gudangOptions" size="large" readonly />
+                                :options="gudangOptions" size="large" disabled />
                         </div>
                         <div class="col-md-3 col-6">
                             <label for="gudang_pengirim">
                                 Gudang Pengirim<span class="text-danger">*</span>
                             </label>
                             <n-input placeholder="" id="gudang_pengirim"
-                                v-model:value="transaction_details.shipping_warehouse" size="large" readonly />
+                                v-model:value="transaction_details.shipping_warehouse" size="large" disabled />
                         </div>
                         <div class="col-md-3 col-6">
                             <label for="tanggal_kirim">
                                 Tanggal Kirim Barang<span class="text-danger">*</span>
                             </label>
-                            <n-date-picker readonly value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder=""
+                            <n-date-picker disabled value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder=""
                                 class="w-100" id="field8" size="large"
                                 v-model:value="transaction_details.delivery_date" />
                         </div>
@@ -85,14 +85,14 @@
                             <label for="pengirim">
                                 Nama Ekspedisi<span class="text-danger">*</span>
                             </label>
-                            <n-input placeholder="" readonly id="pengirim" v-model:value="transaction_details.sender"
+                            <n-input placeholder="" disabled id="pengirim" v-model:value="transaction_details.sender"
                                 size="large" />
                         </div>
                         <div class="col-md-3">
                             <label for="transportasi">
                                 Nomor Polisi Ekspedisi<span class="text-danger">*</span>
                             </label>
-                            <n-input placeholder="" readonly id="transportasi"
+                            <n-input placeholder="" disabled id="transportasi"
                                 v-model:value="transaction_details.transportation" size="large" />
                         </div>
                     </div>
@@ -424,7 +424,7 @@ export default defineComponent({
             }).then((result) => {
                 if (result.isConfirmed && result.value) {
                     // Jika item_gap lebih dari 0, kurangi quantity pada row yang sesuai
-                    if(result.value.item_gap > row.quantity) {
+                    if (result.value.item_gap > row.quantity) {
                         notification.error({
                             title: "Quantity melebihi dari yang ada!",
                             duration: 3000,

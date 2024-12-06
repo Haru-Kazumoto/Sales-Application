@@ -14,6 +14,7 @@ use App\Models\TransactionItem;
 use App\Models\Transactions;
 use App\Models\TransactionType;
 use App\Models\Warehouse;
+use App\Utils\DocumentNumberGenerator;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -55,7 +56,12 @@ class CustomerOrdersController extends Controller
      */
     public function createDnp(): Response
     {
-        $coNumber = 'CO-'.rand(100000,999999);
+        $coNumber = DocumentNumberGenerator::generate(
+            'CO-',
+            'transactions',
+            'document_code',
+            8
+        );
         $dateNow = Carbon::now()->format('Y-m-d H:i:s');
         $customers = Parties::where('type_parties', 'CUSTOMER')
             ->where('users_id', Auth::user()->id)
@@ -80,7 +86,12 @@ class CustomerOrdersController extends Controller
      */
     public function createDku(): Response
     {
-        $coNumber = 'CO-'.rand(100000,999999);
+        $coNumber = DocumentNumberGenerator::generate(
+            'CO-',
+            'transactions',
+            'document_code',
+            8
+        );
         $dateNow = Carbon::now()->format('Y-m-d H:i:s');
         $customers = Parties::where('type_parties', 'CUSTOMER')
             ->where('users_id', Auth::user()->id)
@@ -137,7 +148,7 @@ class CustomerOrdersController extends Controller
 
         // Gunakan transaksi database
         DB::transaction(function () use ($request) {
-            $tx_type = TransactionType::where('name', 'Sales Order')->first();
+            $tx_type = TransactionType::where('name', 'Sales Order')->first(); //8
             $delivery = $request->transaction_details[4]['value'];
 
             // Simpan customer order

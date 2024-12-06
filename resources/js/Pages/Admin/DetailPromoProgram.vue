@@ -13,31 +13,33 @@
                 <div class="row g-3">
                     <div class="col-12 col-md-6 col-lg-4">
                         <label for="">Nama Promo</label>
-                        <n-input size="large" placeholder="" v-model:value="form.name" readonly />
+                        <n-input size="large" placeholder="" v-model:value="form.name" disabled />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <label for="">Minimal Pembelian</label>
                         <n-input size="large" v-model:value="form.min" placeholder=""
-                            @input="(value) => form.min = value.replace(/\D/g, '')" readonly />
+                            @input="(value) => form.min = value.replace(/\D/g, '')" disabled />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <label for="">Maksimal Pembelian</label>
                         <n-input size="large" v-model:value="form.max" placeholder=""
-                            @input="(value) => form.max = value.replace(/\D/g, '')" readonly />
+                            @input="(value) => form.max = value.replace(/\D/g, '')" disabled />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <label for="">Persentase Promo 1
                             <RequiredMark />
                         </label>
-                        <n-input size="large" placeholder="" v-model:value="form.promo_value_1" @input="(value) => form.promo_value_1 = value.replace(/\D/g, '')">
+                        <n-input size="large" placeholder="" v-model:value="form.promo_value_1"
+                            @input="(value) => form.promo_value_1 = value.replace(/\D/g, '')">
                             <template #suffix>%</template>
                         </n-input>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
-                        <label for="">Persentase Promo 2 
+                        <label for="">Persentase Promo 2
                             <RequiredMark />
                         </label>
-                        <n-input size="large" placeholder="" v-model:value="form.promo_value_2" @input="(value) => form.promo_value_2 = value.replace(/\D/g, '')">
+                        <n-input size="large" placeholder="" v-model:value="form.promo_value_2"
+                            @input="(value) => form.promo_value_2 = value.replace(/\D/g, '')">
                             <template #suffix>%</template>
                         </n-input>
                     </div>
@@ -45,39 +47,33 @@
                         <label for="">Persentase Promo 3
                             <RequiredMark />
                         </label>
-                        <n-input size="large" placeholder="" v-model:value="form.promo_value_3" @input="(value) => form.promo_value_3 = value.replace(/\D/g, '')">
+                        <n-input size="large" placeholder="" v-model:value="form.promo_value_3"
+                            @input="(value) => form.promo_value_3 = value.replace(/\D/g, '')">
                             <template #suffix>%</template>
                         </n-input>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <label for="">Tanggal Aktif</label>
-                        <n-input size="large" v-model:value="form.start_date" placeholder=""
-                            readonly />
+                        <n-input size="large" v-model:value="form.start_date" placeholder="" disabled />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <label for="">Tanggal Non Aktif</label>
-                        <n-input size="large" v-model:value="form.end_date" placeholder=""
-                            readonly />
+                        <n-input size="large" v-model:value="form.end_date" placeholder="" disabled />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <label for="">Deskripsi promo</label>
                         <n-input size="large" placeholder="" type="textarea" v-model:value="form.description"
-                            readonly />
+                            disabled />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <label for="">Lampiran</label>
                         <div v-if="$page.props.filePath">
-                            <n-button
-                                tag="a"
-                                :href="$page.props.filePath"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                type="primary"
-                                size="large"
-                            >
+                            <n-button tag="a" :href="$page.props.filePath" target="_blank" rel="noopener noreferrer"
+                                type="primary" size="large">
                                 Klik untuk melihat lampiran
                             </n-button>
-                            <span v-if="$page.props.fileType" style="margin-left: 10px; font-weight: bold; color: gray;">
+                            <span v-if="$page.props.fileType"
+                                style="margin-left: 10px; font-weight: bold; color: gray;">
                                 ({{ $page.props.fileType }})
                             </span>
                         </div>

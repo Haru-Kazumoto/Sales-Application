@@ -420,6 +420,12 @@ export const roleMenus = {
             icon: PeopleAudience24Regular,
             href: "/salesman-target",
         },
+        {
+            label: "Draf CO",
+            key: "draf-co",
+            icon: DocumentBulletListMultiple20Regular,
+            href: "/draf-co",
+        },
         //Aging Sales
         { key: 'role-label', label: "AGING SALES", disabled: true },
         {

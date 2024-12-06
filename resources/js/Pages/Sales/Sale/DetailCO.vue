@@ -11,53 +11,53 @@
                     <div class="col-12 col-lg-6">
                         <div class="d-flex flex-column gap-1">
                             <label for="">NOMOR CO <span class="text-danger">*</span></label>
-                            <n-input readonly size="large" v-model:value="form.document_code" placeholder="" />
+                            <n-input disabled size="large" v-model:value="form.document_code" placeholder="" />
                         </div>
                     </div>
                     <div class="col-12 col-lg-6">
                         <div class="d-flex flex-column gap-1">
                             <label for="">TANGGAL DIBUAT CO<span class="text-danger">*</span></label>
-                            <n-input readonly size="large" v-model:value="transaction_details.customer_order_date"
+                            <n-input disabled size="large" v-model:value="transaction_details.customer_order_date"
                                 placeholder="" />
                         </div>
                     </div>
                     <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">NAMA CUSTOMER<span class="text-danger">*</span></label>
-                            <n-input readonly size="large" v-model:value="transaction_details.customer" />
+                            <n-input disabled size="large" v-model:value="transaction_details.customer" />
                         </div>
                     </div>
                     <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">BADAN USAHA<span class="text-danger">*</span></label>
-                            <n-input readonly size="large" v-model:value="transaction_details.legality"
+                            <n-input disabled size="large" v-model:value="transaction_details.legality"
                                 placeholder="" />
                         </div>
                     </div>
                     <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">ALAMAT CUSTOMER<span class="text-danger">*</span></label>
-                            <n-input readonly size="large" v-model:value="transaction_details.customer_address"
+                            <n-input disabled size="large" v-model:value="transaction_details.customer_address"
                                 placeholder="" />
                         </div>
                     </div>
                     <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">TERMIN<span class="text-danger">*</span></label>
-                            <n-input readonly size="large" v-model:value="form.term_of_payment" placeholder="" />
+                            <n-input disabled size="large" v-model:value="form.term_of_payment" placeholder="" />
                         </div>
                     </div>
                     <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">TANGGAL JATUH TEMPO<span class="text-danger">*</span></label>
                             <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="" id="field8"
-                                size="large" v-model:formatted-value="form.due_date" readonly />
+                                size="large" v-model:formatted-value="form.due_date" disabled />
                         </div>
                     </div>
                     <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">SALESMAN<span class="text-danger">*</span></label>
-                            <n-input readonly size="large" v-model:value="transaction_details.salesman"
+                            <n-input disabled size="large" v-model:value="transaction_details.salesman"
                                 placeholder="" />
                         </div>
                     </div>
@@ -65,7 +65,7 @@
                         v-if="$page.props.auth.user.division.division_name === 'MARKETING'">
                         <div class="d-flex flex-column gap-1">
                             <label for="">BIAYA ANGKUTAN<span class="text-danger">*</span></label>
-                            <n-input readonly size="large" placeholder=""
+                            <n-input disabled size="large" placeholder=""
                                 v-model:value="transaction_details.transportation_cost"
                                 @input="(value) => transaction_details.transportation_cost = value.replace(/\D/g, '')">
                                 <template #prefix>
@@ -77,7 +77,7 @@
                     <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">CASHBACK<span class="text-danger">*</span></label>
-                            <n-input size="large" readonly v-model:value="transaction_details.cashback" placeholder=""
+                            <n-input size="large" disabled v-model:value="transaction_details.cashback" placeholder=""
                                 @input="(value) => transaction_details.cashback = value.replace(/\D/g, '')">
                                 <template #prefix>Rp </template>
                             </n-input>
@@ -86,7 +86,7 @@
                     <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">BIAYA BONGKAR<span class="text-danger">*</span></label>
-                            <n-input size="large" readonly v-model:value="transaction_details.unloading_cost"
+                            <n-input size="large" disabled v-model:value="transaction_details.unloading_cost"
                                 placeholder=""
                                 @input="(value) => transaction_details.unloading_cost = value.replace(/\D/g, '')">
                                 <template #prefix>Rp </template>

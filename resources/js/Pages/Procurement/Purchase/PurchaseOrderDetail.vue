@@ -18,71 +18,64 @@
                         <!-- Baris Pertama -->
                         <div class="col-md-3">
                             <label for="field1">No PO</label>
-                            <n-input readonly id="field1" size="large" v-model:value="form.document_code" />
+                            <n-input disabled id="field1" size="large" v-model:value="form.document_code" />
                         </div>
                         <div class="col-md-3">
                             <label for="field2">Pemasok</label>
-                            <n-input readonly id="field2" size="large"
-                                v-model:value="transaction_details.supplier" />
+                            <n-input disabled id="field2" size="large" v-model:value="transaction_details.supplier" />
                         </div>
                         <div class="col-md-3">
                             <label for="field3">Gudang</label>
-                            <n-select readonly id="field3" size="large"
+                            <n-select disabled id="field3" size="large"
                                 v-model:value="transaction_details.storehouse" />
                         </div>
                         <div class="col-md-3">
                             <label for="field4">Alokasi</label>
-                            <n-select readonly id="field4" size="large"
-                                v-model:value="transaction_details.located" />
+                            <n-select disabled id="field4" size="large" v-model:value="transaction_details.located" />
                         </div>
 
                         <!-- Baris Kedua -->
                         <div class="col-md-3">
                             <label for="field5">Tanggal PO</label>
-                            <n-input  readonly
-                                size="large"
-                                v-model:value="transaction_details.purchase_order_date" />
+                            <n-input disabled size="large" v-model:value="transaction_details.purchase_order_date" />
                         </div>
                         <div class="col-md-3">
                             <label for="field6">Tanggal Kirim</label>
-                            <n-input  readonly
-                                size="large" v-model:value="transaction_details.send_date" />
+                            <n-input disabled size="large" v-model:value="transaction_details.send_date" />
                         </div>
                         <div class="col-md-3">
                             <label for="field7">Term Pembayaran</label>
-                            <n-select readonly id="field7" size="large" v-model:value="form.term_of_payment" />
+                            <n-select disabled id="field7" size="large" v-model:value="form.term_of_payment" />
                         </div>
                         <div class="col-md-3">
                             <label for="field8">Tanggal Jatuh Tempo</label>
-                            <n-input  readonly
-                                size="large" v-model:value="form.due_date" />
+                            <n-input disabled size="large" v-model:value="form.due_date" />
                         </div>
 
                         <!-- Baris Ketiga -->
                         <div class="col-md-3">
                             <label for="field5">Nomor Polisi Ekspedisi</label>
-                            <n-input readonly id="field5" size="large"
+                            <n-input disabled id="field5" size="large"
                                 v-model:value="transaction_details.transportation" />
                         </div>
                         <div class="col-md-3">
                             <label for="field6">Pengirim</label>
-                            <n-input readonly id="field6" size="large"
-                                v-model:value="transaction_details.sender" />
+                            <n-input disabled id="field6" size="large" v-model:value="transaction_details.sender" />
                         </div>
                         <div class="col-md-3">
                             <label for="field7">Jenis Pengiriman</label>
-                            <n-select readonly id="field7" size="large"
+                            <n-select disabled id="field7" size="large"
                                 v-model:value="transaction_details.delivery_type" />
                         </div>
                         <div class="col-md-3">
                             <label for="field8">Karyawan</label>
-                            <n-input readonly id="field8" size="large"
+                            <n-input disabled id="field8" size="large"
                                 v-model:value="transaction_details.employee_name" />
                         </div>
                         <div class="col-md-3">
                             <label for="catatan">Catatan</label>
                             <n-input id="catatan" type="textarea" placeholder="Basic Textarea" style="width: 30rem;"
-                                v-model:value="form.description" readonly />
+                                v-model:value="form.description" disabled />
                         </div>
                     </form>
                 </div>
@@ -120,7 +113,7 @@
                             <div class="d-flex justify-content-between">
                                 <span>JATUH TEMPO</span>
                                 <span class="fw-bold">
-                                    {{ form.due_date  }}
+                                    {{ form.due_date }}
                                 </span>
 
                             </div>
