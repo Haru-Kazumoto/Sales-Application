@@ -74,7 +74,8 @@
                     </div>
                     <div class="col-6 col-md-6 col-lg-4 d-flex flex-column gap-1">
                         <label for="">SEGMEN CUSTOMER</label>
-                        <n-select size="large" v-model:value="transaction_details.segment_customer" placeholder="" :options="segmentCustomer"/>
+                        <n-select size="large" v-model:value="transaction_details.segment_customer" placeholder=""
+                            :options="segmentCustomer" />
                     </div>
 
                     <!-- <div class="col-6 col-sm-6 col-md-6 col-lg-4">
@@ -118,7 +119,8 @@
                     <div class="col-6 col-sm-6 col-md-6 col-lg-3">
                         <div class="d-flex flex-column gap-1">
                             <label for="ppn">PPN</label>
-                            <n-select size="large" placeholder="" :options="ppnOptions" v-model:value="transaction_details.use_tax"/>
+                            <n-select size="large" placeholder="" :options="ppnOptions"
+                                v-model:value="transaction_details.use_tax" />
                         </div>
                     </div>
                 </div>
@@ -669,6 +671,42 @@ export default defineComponent({
             return amount.toFixed(0); // Kembalikan harga asli jika tidak memenuhi syarat
         });
 
+        watch(() => transaction_items.value.amount, (newAmount, oldAmount) => {
+            // Ambil harga default berdasarkan segmen pelanggan
+            let defaultPrice = null as unknown as number;
+
+            switch (transaction_details.value.segment_customer) {
+                case "GROSIR":
+                    defaultPrice = products.value.retail_price;
+                    break;
+                case "RETAIL":
+                    defaultPrice = products.value.restaurant_price;
+                    break;
+                case "END_USER":
+                    defaultPrice = products.value.price_3;
+                    break;
+                case "ALL_SEGMENT":
+                    defaultPrice = products.value.all_segment_price;
+                    break;
+                default:
+                    defaultPrice = null;
+            }
+
+            // Validasi harga baru
+            if (newAmount !== null && defaultPrice !== null && newAmount < defaultPrice) {
+                // Jika harga baru lebih rendah dari harga default
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Harga Tidak Valid',
+                    text: 'Harga tidak boleh lebih rendah dari harga default.',
+                }).then(() => {
+                    // Reset harga ke harga sebelumnya jika tidak valid
+                    transaction_items.value.amount = oldAmount;
+                });
+            }
+        });
+
+
         watch(() => products.value.name, (name) => {
             if (customerGroup.value === null) {
                 notification.warning({
@@ -701,7 +739,7 @@ export default defineComponent({
                 products.value.retail_price = selectedProduct.retail_price;
 
                 //todo : switch statement for handle the price of products
-                switch(transaction_details.value.segment_customer) {
+                switch (transaction_details.value.segment_customer) {
                     case "GROSIR":
                         transaction_items.value.amount = selectedProduct.retail_price;
                         break;
@@ -714,7 +752,7 @@ export default defineComponent({
                     case "ALL_SEGMENT":
                         transaction_items.value.amount = selectedProduct.all_segment_price;
                         break;
-                    default: 
+                    default:
                         transaction_items.value.amount = null as unknown as number;
                         break;
                 }
@@ -859,7 +897,7 @@ export default defineComponent({
         const grandTotal = computed(() => {
             let grandTotal = null as unknown as number;
 
-            if(transaction_details.value.use_tax) {
+            if (transaction_details.value.use_tax) {
                 grandTotal = totalPrice.value + totalPPN.value
             } else {
                 grandTotal = totalPrice.value;
@@ -1239,10 +1277,10 @@ export default defineComponent({
         ];
 
         const segmentCustomer = [
-            { label: "GROSIR", value: "GROSIR"},
-            { label: "RETAIL", value: "RETAIL"},
-            { label: "END USER", value: "END_USER"},
-            { label: "ALL SEGMENT", value: "ALL_SEGMENT"}
+            { label: "GROSIR", value: "GROSIR" },
+            { label: "RETAIL", value: "RETAIL" },
+            { label: "END USER", value: "END_USER" },
+            { label: "ALL SEGMENT", value: "ALL_SEGMENT" }
         ];
 
         const termPaymentOptions = (page.props.payment_terms as Lookup[]).map((data) => ({
