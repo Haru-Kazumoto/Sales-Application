@@ -12,20 +12,25 @@
             <div class="card-body">
                 <form class="row g-3" @submit.prevent="handleSubmitCustomer">
                     <!-- First row -->
-                    <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
+                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column">
                         <label for="nama_customer" class="form-label">Kode Customer</label>
                         <n-input placeholder="" size="large" v-model:value="form.code"
                             :on-input="(value) => form.code = value.toUpperCase()" />
                     </div>
-                    <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
+                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column">
                         <label for="nama_customer" class="form-label">Nama Customer</label>
                         <n-input placeholder="" size="large" v-model:value="form.name"
                             :on-input="(value) => form.name = value.toUpperCase()" />
                     </div>
-                    <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
+                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column">
                         <label for="nama_customer" class="form-label">Badan Usaha</label>
                         <n-input placeholder="" size="large" v-model:value="form.legality"
                             :on-input="(value) => form.legality = value.toUpperCase()" />
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column">
+                        <label for="nama_customer" class="form-label">Segmen Customer</label>
+                        <n-select placeholder="" size="large" v-model:value="form.segment_customer"
+                            :on-input="(value) => form.segment_customer = value.toUpperCase()" :options="segmentCustomer"/>
                     </div>
 
                     <!-- Second row -->
@@ -68,10 +73,6 @@
                         <label for="npwp_image" class="form-label">Upload NPWP</label>
                         <input type="file" class="form-control" id="npwp_image"
                             @change="handleImageUpload($event, 'npwp_image')" />
-                        <!-- Preview NPWP Image -->
-                        <div v-if="form.npwp_image" class="mt-3">
-                            <n-image :src="npwp_img_preview" alt="Preview NPWP" width="auto" height="200" />
-                        </div>
                     </div>
 
                     <!-- Input KTP Image -->
@@ -79,10 +80,6 @@
                         <label for="ktp_image" class="form-label">Upload KTP</label>
                         <input type="file" class="form-control" id="ktp_image"
                             @change="handleImageUpload($event, 'ktp_image')" />
-                        <!-- Preview KTP Image -->
-                        <div v-if="form.ktp_image" class="mt-3">
-                            <n-image :src="ktp_img_preview" alt="Preview KTP" width="auto" height="200" />
-                        </div>
                     </div>
                     <div class="d-flex">
                         <n-button type="primary" class="ms-auto" attr-type="submit">Update Customer</n-button>
@@ -123,35 +120,20 @@ export default defineComponent({
             parties_group_id: customerSelected.parties_group_id || null as unknown as number,
             npwp_image: null as unknown as string, // Previous image data
             ktp_image: null as unknown as string, // Previous image data
+            segment_customer: customerSelected.segment_customer || null as unknown as string,
         });
         const npwp_img_preview = ref(customerSelected.npwp_image);
         const ktp_img_preview = ref(customerSelected.ktp_image);
 
 
-        function handleImageUpload(event: Event, type: 'npwp_image' | 'ktp_image') {
-            const file = (event.target as HTMLInputElement).files?.[0];
+        function handleImageUpload(event, field: 'npwp_image' | 'ktp_image') {
+            const file = event.target.files[0]; // Ambil file pertama yang dipilih
             if (file) {
-                // Save the file object directly for submission (no base64)
-                form[type] = file;
-
-                // Set preview URL for the corresponding image
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    if (type === 'npwp_image') {
-                        npwp_img_preview.value = e.target?.result as string;
-                    } else if (type === 'ktp_image') {
-                        ktp_img_preview.value = e.target?.result as string;
-                    }
-                };
-                reader.readAsDataURL(file);
+                this.form[field] = file; // Simpan file ke field terkait di form
+                console.log(form.npwp_image);
+                console.log(form);
             } else {
-                // Reset the image URL and file in form if no file is selected
-                form[type] = null;
-                if (type === 'npwp_image') {
-                    npwp_img_preview.value = '';
-                } else if (type === 'ktp_image') {
-                    ktp_img_preview.value = '';
-                }
+                this.form[field] = null; // Hapus jika tidak ada file
             }
         }
 
@@ -190,12 +172,20 @@ export default defineComponent({
             value: data.value,
         }));
 
+        const segmentCustomer = [
+            { label: "GROSIR", value: "GROSIR"},
+            { label: "RETAIL", value: "RETAIL"},
+            { label: "END USER", value: "END_USER"},
+            { label: "ALL SEGMENT", value: "ALL_SEGMENT"}
+        ];
+
         return {
             handleSubmitCustomer,
             handleImageUpload,
             form,
             groups,
             customer_type,
+            segmentCustomer,
             npwp_img_preview,
             ktp_img_preview,
             router,

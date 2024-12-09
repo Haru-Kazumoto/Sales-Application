@@ -5,19 +5,24 @@
             <div class="card-body">
                 <form class="row g-3" @submit.prevent="handleSubmitCustomer">
                     <!-- First row -->
-                    <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
+                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column">
                         <label for="nama_customer" class="form-label">Kode Customer</label>
                         <n-input placeholder="" size="large" v-model:value="form.code" />
                     </div>
-                    <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
+                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column">
                         <label for="nama_customer" class="form-label">Nama Customer</label>
                         <n-input placeholder="" size="large" v-model:value="form.name"
                             :on-input="(value) => form.name = value.toUpperCase()" />
                     </div>
-                    <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
+                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column">
                         <label for="nama_customer" class="form-label">Badan Usaha</label>
                         <n-input placeholder="" size="large" v-model:value="form.legality"
                             :on-input="(value) => form.legality = value.toUpperCase()" />
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column">
+                        <label for="nama_customer" class="form-label">Segmen Customer</label>
+                        <n-select placeholder="" size="large" v-model:value="form.segment_customer"
+                            :on-input="(value) => form.segment_customer = value.toUpperCase()" :options="segmentCustomer"/>
                     </div>
 
                     <!-- Second row -->
@@ -27,7 +32,7 @@
                             :options="customer_type" />
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column">
-                        <label for="nama_customer" class="form-label">Kelompok</label>
+                        <label for="nama_customer" class="form-label">Channel Customer</label>
                         <n-select placeholder="" size="large" v-model:value="form.parties_group_id" :options="groups" />
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column">
@@ -167,11 +172,19 @@ export default defineComponent({
                     width: 150,
                 },
                 {
-                    title: "KELOMPOK",
+                    title: "CHANNEL CUSTOMER",
                     key: "parties_group",
                     width: 150,
                     render(row) {
                         return row.parties_group?.name;
+                    }
+                },
+                {
+                    title: "SEGMENT CUSTOMER",
+                    key: "segment_customer",
+                    width: 150,
+                    render(row) {
+                        return row.segment_customer;
                     }
                 },
                 {
@@ -271,7 +284,7 @@ export default defineComponent({
             ]
         }
 
-        const form = useForm<Parties>({
+        const form = useForm({
             code: '',
             legality: '',
             name: '',
@@ -284,6 +297,7 @@ export default defineComponent({
             parties_group_id: null as unknown as number,
             npwp_image: null as unknown as string,
             ktp_image: null as unknown as string,
+            segment_customer: null as unknown as string,
         });
 
         // Filter data
@@ -356,11 +370,19 @@ export default defineComponent({
             value: data.value,
         }));
 
+        const segmentCustomer = [
+            { label: "GROSIR", value: "GROSIR"},
+            { label: "RETAIL", value: "RETAIL"},
+            { label: "END USER", value: "END_USER"},
+            { label: "ALL SEGMENT", value: "ALL_SEGMENT"}
+        ];
+
         return {
             handleSubmitCustomer,
             handlePageChange,
             handleSearch,
             handleFileChange,
+            segmentCustomer,
             columns: createColumns(),
             currentPage,
             form,

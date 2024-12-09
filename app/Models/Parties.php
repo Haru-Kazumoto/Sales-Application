@@ -34,6 +34,7 @@ class Parties extends Model
         'users_id',
         'ktp_image',
         'npwp_image',
+        'segment_customer',
     ];
 
     public function partiesGroup(): BelongsTo

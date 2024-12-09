@@ -4,6 +4,7 @@
         <div class="card shadow-sm border-0">
             <div class="card-body">
                 <form class="row g-3" @submit.prevent="handleSubmitProduct">
+                    
                     <!-- FIRST ROW -->
                     <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">Kode Barang<span class="text-danger">*</span></label>

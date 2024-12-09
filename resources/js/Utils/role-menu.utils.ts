@@ -361,30 +361,23 @@ export const roleMenus = {
     ],
     SALES: [
         {
-            label: "Penjualan",
-            key: 'sales',
-            icon: CartOutline,
-            children: [
-                {
-                    label: 'Buat CO DNP',
-                    icon: renderIcon(DocumentOutline),
-                    key: 'create-co',
-                    href: '/create-co-dnp',
-                },
-                {
-                    label: 'Buat CO DKU',
-                    icon: renderIcon(DocumentOutline),
-                    key: 'create-co-dku',
-                    href: '/create-co-dku'
-                },
-                {
-                    label: 'List CO',
-                    icon: renderIcon(DocumentsOutline),
-                    key: 'list-co',
-                    href: '/list-co',
-                }
-            ]
+            label: 'Buat Customer Order DNP',
+            icon: renderIcon(DocumentOutline),
+            key: 'create-co',
+            href: '/create-co-dnp',
         },
+        {
+            label: 'Buat Customer Order DKU',
+            icon: renderIcon(DocumentOutline),
+            key: 'create-co-dku',
+            href: '/create-co-dku'
+        },
+        {
+            label: 'Daftar Customer Order',
+            icon: renderIcon(DocumentsOutline),
+            key: 'list-co',
+            href: '/list-co',
+        }
         // {
         //     label: "Booking Barang",
         //     key: "booking-item",

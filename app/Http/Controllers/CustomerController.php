@@ -87,6 +87,7 @@ class CustomerController extends Controller
             'address' => 'nullable|string',
             'npwp_image' => 'nullable|image|max:2048', // Maks 2MB
             'ktp_image' => 'nullable|image|max:2048', // Maks 2MB
+            'segment_customer' => 'required|string'
         ]);
 
         DB::transaction(function() use ($request) {
@@ -114,6 +115,7 @@ class CustomerController extends Controller
                 'address' => $request->input('address'),
                 'npwp_image' => $npwpImagePath,
                 'ktp_image' => $ktpImagePath,
+                'segment_customer' => $request->segment_customer,
             ]);
         });
 
@@ -187,6 +189,7 @@ class CustomerController extends Controller
             'phone' => 'nullable|string',
             'city' => 'nullable|string',
             'address' => 'nullable|string',
+            'segment_customer' => 'string|required',
         ]);
 
         DB::transaction(function() use ($request, $parties) {
@@ -205,6 +208,7 @@ class CustomerController extends Controller
                 'phone' => $request->input('phone'),
                 'city' => $request->input('city'),
                 'address' => $request->input('address'),
+                'segment_customer' => $request->segment_customer,
             ]);
         });
 
