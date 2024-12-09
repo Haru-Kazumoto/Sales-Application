@@ -157,11 +157,13 @@ class ProductsController extends Controller
     {
         $product_type = ProductType::all();
         $units = Lookup::where('category', 'UNIT')->get();
+        $suppliers = Parties::with('partiesGroup')->where('type_parties', "VENDOR")->get();
 
         return Inertia::render('Admin/ProductsEdit', compact(
             'product_type',
             'units',
-            'product'
+            'product',
+            'suppliers'
         ));
     }
 
@@ -212,6 +214,7 @@ class ProductsController extends Controller
                 'bad_debt_dd' => $request->input('bad_debt_dd'),
                 'saving_marketing' => $request->input('saving_marketing'),
                 'product_type_id' => $product_type->id,
+                'all_segment_price' => $request->all_segment_price
             ]);
         });
 

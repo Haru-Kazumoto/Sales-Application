@@ -43,8 +43,8 @@
                         <label for="">Pemasok
                             <RequiredMark />
                         </label>
-                        <n-select placeholder="" v-model:value="form.supplier_id" filterable size="large"
-                            :options="supplierOptions" :loading="loading" clearable remote @search="handleSearch" />
+                        <n-select placeholder="" v-model:value="form.supplier_id" size="large"
+                            :options="supplierOptions" filterable/>
                     </div>
 
                     <!-- SECOND ROW -->
@@ -551,20 +551,7 @@ export default defineComponent({
             filterQuery,
             pagination,
             loading,
-            supplierOptions: supplierOptionsRef,
-            handleSearch: (query: string) => {
-                if (!query.length) {
-                    supplierOptionsRef.value = []
-                    return
-                }
-                loading.value = true;
-                window.setTimeout(() => {
-                    supplierOptionsRef.value = supplierOptions.filter(
-                        item => ~item.label.indexOf(query),
-                    );
-                    loading.value = false
-                }, 1000);
-            },
+            supplierOptions,
         }
     },
     components: {

@@ -1,32 +1,56 @@
 <template>
     <div class="d-flex flex-column gap-4">
-        <TitlePage title="Daftar Produk" />
+        <div class="d-flex flex-column gap-3">
+            <TitlePage title="Edit Customer" />
+            <n-button text class="justify-content-start w-25 " size="large"
+                @click="router.visit(route('admin.products'), { method: 'get' })">
+                <n-icon :component="ArrowBack" style="margin-right: 5px;" />
+                Kembali
+            </n-button>
+        </div>
         <div class="card shadow-sm border-0">
             <div class="card-body">
                 <form class="row g-3" @submit.prevent="handleSubmitProduct">
                     
                     <!-- FIRST ROW -->
                     <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Kode Barang<span class="text-danger">*</span></label>
+                        <label for="">Kode Barang
+                            <RequiredMark />
+                        </label>
                         <n-input size="large" placeholder="" v-model:value="form.code" />
                     </div>
                     <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Nama Produk<span class="text-danger">*</span></label>
+                        <label for="">Nama Produk
+                            <RequiredMark />
+                        </label>
                         <n-input size="large" placeholder="" v-model:value="form.name" />
                     </div>
                     <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Kelompok<span class="text-danger">*</span></label>
+                        <label for="">Kelompok
+                            <RequiredMark />
+                        </label>
                         <n-select size="large" placeholder="" :options="productTypeOptions"
                             v-model:value="form.product_type_id" />
                     </div>
+                    <div class="col-12 col-lg-4 d-flex flex-column">
+                        <label for="">Pemasok
+                            <RequiredMark />
+                        </label>
+                        <n-select placeholder="" v-model:value="form.supplier_id" size="large"
+                            :options="supplierOptions" filterable/>
+                    </div>
 
                     <!-- SECOND ROW -->
-                    <div class="col-12 col-lg-3 d-flex flex-column">
-                        <label for="">Kemasan<span class="text-danger">*</span></label>
+                    <div class="col-12 col-lg-4 d-flex flex-column">
+                        <label for="">Kemasan
+                            <RequiredMark />
+                        </label>
                         <n-select size="large" placeholder="" :options="unitOptions" v-model:value="form.unit" />
                     </div>
-                    <div class="col-12 col-lg-3 d-flex flex-column">
-                        <label for="">Harga Tebus<span class="text-danger">*</span></label>
+                    <div class="col-12 col-lg-4 d-flex flex-column">
+                        <label for="">Harga Tebus
+                            <RequiredMark />
+                        </label>
                         <n-input size="large" placeholder="" v-model:value="form.redemp_price"
                             @input="(value) => form.redemp_price = value.replace(/\D/g, '')">
                             <template #prefix>
@@ -34,8 +58,10 @@
                             </template>
                         </n-input>
                     </div>
-                    <div class="col-12 col-lg-3 d-flex flex-column">
-                        <label for="">Margin Normal<span class="text-danger">*</span></label>
+                    <div class="col-12 col-lg-4 d-flex flex-column">
+                        <label for="">Margin Normal
+                            <RequiredMark />
+                        </label>
                         <n-input size="large" placeholder="" v-model:value="form.normal_margin"
                             @input="(value) => form.normal_margin = value.replace(/\D/g, '')">
                             <template #prefix>
@@ -43,15 +69,19 @@
                             </template>
                         </n-input>
                     </div>
-                    <div class="col-12 col-lg-3 d-flex flex-column">
-                        <label for="">Kategori Produk<span class="text-danger">*</span></label>
+                    <div class="col-12 col-lg-4 d-flex flex-column">
+                        <label for="">Kategori Produk
+                            <RequiredMark />
+                        </label>
                         <n-select size="large" placeholder="" v-model:value="form.category"
                             :options="categoryProductOptions" />
                     </div>
 
                     <!-- THIRD ROW -->
-                    <div class="col-12 col-lg-3 d-flex flex-column">
-                        <label for="">OH Depo<span class="text-danger">*</span></label>
+                    <div class="col-12 col-lg-4 d-flex flex-column">
+                        <label for="">OH Depo
+                            <RequiredMark />
+                        </label>
                         <n-input size="large" placeholder="" v-model:value="form.oh_depo"
                             @input="(value) => form.oh_depo = value.replace(/\D/g, '')">
                             <template #prefix>
@@ -59,8 +89,10 @@
                             </template>
                         </n-input>
                     </div>
-                    <div class="col-12 col-lg-3 d-flex flex-column">
-                        <label for="">Saving<span class="text-danger">*</span></label>
+                    <div class="col-12 col-lg-4 d-flex flex-column">
+                        <label for="">Saving
+                            <RequiredMark />
+                        </label>
                         <n-input size="large" placeholder="" v-model:value="form.saving"
                             @input="(value) => form.saving = value.replace(/\D/g, '')">
                             <template #prefix>
@@ -68,8 +100,10 @@
                             </template>
                         </n-input>
                     </div>
-                    <div class="col-12 col-lg-3 d-flex flex-column">
-                        <label for="">Bad Debt<span class="text-danger">*</span></label>
+                    <div class="col-12 col-lg-4 d-flex flex-column">
+                        <label for="">Bad Debt
+                            <RequiredMark />
+                        </label>
                         <n-input size="large" placeholder="" v-model:value="form.bad_debt_dd"
                             @input="(value) => form.bad_debt_dd = value.replace(/\D/g, '')">
                             <template #prefix>
@@ -77,8 +111,10 @@
                             </template>
                         </n-input>
                     </div>
-                    <div class="col-12 col-lg-3 d-flex flex-column">
-                        <label for="">Saving Marketing<span class="text-danger">*</span></label>
+                    <div class="col-12 col-lg-4 d-flex flex-column">
+                        <label for="">Saving Marketing
+                            <RequiredMark />
+                        </label>
                         <n-input size="large" placeholder="" v-model:value="form.saving_marketing"
                             @input="(value) => form.saving_marketing = value.replace(/\D/g, '')">
                             <template #prefix>
@@ -88,8 +124,10 @@
                     </div>
 
                     <!-- FOURTH ROW -->
-                    <div class="col-12 col-lg-3 d-flex flex-column">
-                        <label for="">Harga Jual Grosir<span class="text-danger">*</span></label>
+                    <div class="col-12 col-lg-4 d-flex flex-column">
+                        <label for="">Harga Jual Grosir
+                            <RequiredMark />
+                        </label>
                         <n-input size="large" placeholder="" v-model:value="form.retail_price"
                             @input="(value) => form.retail_price = value.replace(/\D/g, '')">
                             <template #prefix>
@@ -97,8 +135,10 @@
                             </template>
                         </n-input>
                     </div>
-                    <div class="col-12 col-lg-3 d-flex flex-column">
-                        <label for="">Harga Jual Hotel & Resto<span class="text-danger">*</span></label>
+                    <div class="col-12 col-lg-4 d-flex flex-column">
+                        <label for="">Harga Retail
+                            <RequiredMark />
+                        </label>
                         <n-input size="large" placeholder="" v-model:value="form.restaurant_price"
                             @input="(value) => form.restaurant_price = value.replace(/\D/g, '')">
                             <template #prefix>
@@ -106,8 +146,10 @@
                             </template>
                         </n-input>
                     </div>
-                    <div class="col-12 col-lg-3 d-flex flex-column">
-                        <label for="">Harga Jual Bakery<span class="text-danger">*</span></label>
+                    <div class="col-12 col-lg-4 d-flex flex-column">
+                        <label for="">Harga End User
+                            <RequiredMark />
+                        </label>
                         <n-input size="large" placeholder="" v-model:value="form.price_3"
                             @input="(value) => form.price_3 = value.replace(/\D/g, '')">
                             <template #prefix>
@@ -115,8 +157,21 @@
                             </template>
                         </n-input>
                     </div>
-                    <div class="col-12 col-lg-3 d-flex flex-column">
-                        <label for="">Harga Jual DD<span class="text-danger">*</span></label>
+                    <div class="col-12 col-lg-4 d-flex flex-column">
+                        <label for="">Harga All Segment
+                            <RequiredMark />
+                        </label>
+                        <n-input size="large" placeholder="" v-model:value="form.all_segment_price"
+                            @input="(value) => form.all_segment_price = value.replace(/\D/g, '')">
+                            <template #prefix>
+                                Rp
+                            </template>
+                        </n-input>
+                    </div>
+                    <div class="col-12 col-lg-4 d-flex flex-column">
+                        <label for="">Harga Jual DD
+                            <RequiredMark />
+                        </label>
                         <n-input size="large" placeholder="" v-model:value="form.dd_price"
                             @input="(value) => form.dd_price = value.replace(/\D/g, '')">
                             <template #prefix>
@@ -140,6 +195,7 @@ import TitlePage from '../../Components/TitlePage.vue';
 import { NButton, useNotification } from 'naive-ui';
 import { router, useForm, usePage } from '@inertiajs/vue3';
 import { Lookup, Products } from '../../types/model';
+import { ArrowBack } from '@vicons/ionicons5';
 import Swal from 'sweetalert2';
 
 export default defineComponent({
@@ -167,6 +223,8 @@ export default defineComponent({
             bad_debt_dd: product.bad_debt_dd || null as unknown as number,
             saving_marketing: product.saving_marketing || null as unknown as number,
             product_type_id: product.product_type_id || null as unknown as number,
+            all_segment_price: product.all_segment_price || null as unknown as number,
+            supplier_id: product.supplier_id || null as unknown as number,
         });
 
         function handleSubmitProduct() {
@@ -202,6 +260,11 @@ export default defineComponent({
             { label: "NT", value: "NT" },
             { label: "T", value: "T" },
         ]
+        
+        const supplierOptions = (page.props.suppliers as any[]).map((data) => ({
+            label: data.name,
+            value: data.id,
+        }));
 
         return {
             handleSubmitProduct,
@@ -209,7 +272,10 @@ export default defineComponent({
             unitOptions,
             productTypeOptions,
             categoryProductOptions,
-            form
+            form,
+            ArrowBack,
+            supplierOptions,
+            router
         }
     },
     components: {
