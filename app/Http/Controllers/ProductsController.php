@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Exports\ProductJournalExport;
 use App\Http\Services\ProductServices;
-use App\JournalAction;
 use App\Models\Lookup;
 use App\Models\Parties;
 use App\Models\ProductJournal;
@@ -112,6 +111,7 @@ class ProductsController extends Controller
         DB::transaction(function() use ($request) {
             $product_type = ProductType::where('id', $request->input('product_type_id'))->first();
             $supplier = Parties::where('id', $request->input('supplier_id'))->first();
+            
 
             $product = new Products();
             $product->code = $request->input('code');
