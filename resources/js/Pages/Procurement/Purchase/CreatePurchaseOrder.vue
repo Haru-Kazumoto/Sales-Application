@@ -116,6 +116,13 @@
                                 <template #prefix>Rp</template>
                             </n-input>
                         </div>
+                        <div class="col-12 col-md-3 col-md-4">
+                            <label for="ppn">
+                                PPN
+                            </label>
+                            <n-select size="large" id="ppn" :options="ppnOptions" placeholder=""
+                                v-model:value="transaction_details.use_tax" />
+                        </div>
                         <div class="col-12 col-md-3 col-lg-4">
                             <label for="catatan">Catatan</label>
                             <n-input id="catatan" type="textarea" placeholder="" v-model:value="form.description" />
@@ -141,7 +148,7 @@
                         </div>
                         <div class="col-12 col-md-6 col-lg-4">
                             <label for="grosir_account">Akun Grosir</label>
-                            <n-select size="large" placeholder="" filterable :options="tradePromoOptions"
+                            <n-select size="large" placeholder="" filterable clearable :options="tradePromoOptions"
                                 v-model:value="transaction_items.trade_promo_id" />
                         </div>
                         <div class="col-12 col-md-6 col-lg-4">
@@ -163,18 +170,10 @@
                                 <template #prefix>Rp </template>
                             </n-input>
                         </div>
-                        <div class="col-md-6">
-                            <label for="ppn">
-                                PPN
-                                <RequiredMark />
-                            </label>
-                            <n-select size="large" id="ppn" :options="ppnOptions" placeholder=""
-                                v-model:value="transaction_items.tax_id" />
-                        </div>
-                        <div class="col-md-6">
+
+                        <div class="col-md-6" v-if="transaction_items.trade_promo_id !== null">
                             <label for="ppn">
                                 Harga Setelah Diskon
-                                <RequiredMark />
                             </label>
                             <n-input size="large" id="product_price" placeholder=""
                                 v-model:value="transaction_items.amount_discount" disabled>
@@ -204,7 +203,7 @@
                         <span>Sub Total</span>
                         <span>{{ subTotal }}</span>
                     </div>
-                    <div class="d-flex justify-content-between py-2">
+                    <div class="d-flex justify-content-between py-2" v-if="transaction_details.use_tax === true">
                         <span>PPN 11%</span>
                         <span>{{ resultPpn }}</span>
                     </div>
@@ -280,6 +279,7 @@ export default defineComponent({
             delivery_type: '',
             employee_name: (page.props.auth.user as User).fullname,
             transportation_cost: null as unknown as string,
+            use_tax: false,
         });
 
         const products = ref({
@@ -308,17 +308,32 @@ export default defineComponent({
             price: data.discount_price,
             quota: data.quota
         }));
+        const quotaTradePromo = ref(null as unknown as number);
 
-        //watcher untuk akun grosir
+        // Watcher untuk akun grosir
         watch(() => transaction_items.value.trade_promo_id, (id) => {
             const selectedTradePromo = tradePromoOptions.find(data => data.id === id);
 
             if (selectedTradePromo) {
+                quotaTradePromo.value = selectedTradePromo.quota;
                 transaction_items.value.amount_discount = selectedTradePromo.price;
             } else {
                 transaction_items.value.amount_discount = null as unknown as number;
             }
         }, { deep: true, immediate: true });
+
+        watch(() => transaction_items.value.quantity, (quantity) => {
+            if(quotaTradePromo.value !== null && quotaTradePromo.value < quantity){
+                Swal.fire({
+                    icon: "error",
+                    title: "Kuota tidak cukup!",
+                    text: `Kuota hanya tersedia ${quotaTradePromo.value}`
+                }).then(() => {
+                    transaction_items.value.quantity = null as unknown as number;
+                });
+                return;
+            }
+        })
 
         // Watcher untuk memantau perubahan pada 'products.name'
         watch(() => products.value.name, (newName) => {
@@ -352,7 +367,7 @@ export default defineComponent({
 
         function addProduct() {
             // Validasi input
-            if (!products.value.name || !transaction_items.value.quantity || !transaction_items.value.amount || !transaction_items.value.tax_id) {
+            if (!products.value.name || !transaction_items.value.quantity || !transaction_items.value.amount) {
                 notification.error({
                     title: 'Form barang harus diisi',
                     closable: true,
@@ -371,8 +386,8 @@ export default defineComponent({
 
             // Format nilai `amount` untuk menangani separator ribuan/desimal
             const formattedAmount = useDiscount
-                ? transaction_items.value.amount_discount // Gunakan amount_discount jika tersedia
-                : transaction_items.value.amount.replace(/\./g, '').replace(',', '.'); // Atau gunakan input amount
+                ? String(transaction_items.value.amount_discount) // Gunakan amount_discount jika tersedia
+                : String(transaction_items.value.amount).replace(/\./g, '').replace(',', '.'); // Atau gunakan input amount
 
             // Parsing amount yang sudah diformat ke angka desimal
             const productPrice = parseFloat(formattedAmount);
@@ -396,10 +411,12 @@ export default defineComponent({
                 unit: transaction_items.value.unit,
                 quantity: transaction_items.value.quantity,
                 product_id: transaction_items.value.product_id,
-                tax_amount: selectedTax?.value_tax,
+                // tax_amount: selectedTax?.value_tax,
                 amount: productPrice,
                 tax_id: transaction_items.value.tax_id,
-                tax_value: selectedTax?.value_tax ?? 0,
+                // tax_value: selectedTax?.value_tax ?? 0,
+                use_tax: transaction_details.value.use_tax,
+                trade_promo_id: transaction_items.value.trade_promo_id,
                 total_price: formattedTotalPrice,
                 product: {
                     code: products.value.code,
@@ -413,6 +430,7 @@ export default defineComponent({
             transaction_items.value.quantity = null as unknown as number;
             transaction_items.value.amount = null as unknown as number;
             transaction_items.value.tax_id = null as unknown as number;
+            transaction_items.value.trade_promo_id = null as unknown as number;
 
             notification.success({
                 title: 'Berhasil',
@@ -467,16 +485,23 @@ export default defineComponent({
             }, 0);
 
             // Menghitung total harga termasuk PPN 11%
-            const totalWithPPN = subtotal + (subtotal * 0.11);
+            // subtotal + (subtotal * 0.11)
+            let grandTotal = null as unknown as number;
+
+            if (transaction_details.value.use_tax) {
+                grandTotal = subtotal + (subtotal * 0.11);
+            } else {
+                grandTotal = subtotal;
+            }
 
             // Menyimpan total ke dalam form
-            const roundedTotalWithPpn = Math.round(totalWithPPN);
+            const roundedTotalWithPpn = Math.round(grandTotal);
 
             form.total = roundedTotalWithPpn;
 
             // Mengembalikan total harga yang diformat
             // return roundedTotalWithPpn;
-            return formatRupiah(totalWithPPN);
+            return formatRupiah(grandTotal);
         });
 
         // Fungsi untuk menghapus produk dari array
@@ -534,14 +559,6 @@ export default defineComponent({
                     width: 200,
                     render(row) {
                         return formatRupiah((row.total_price ?? 0));
-                    }
-                },
-                {
-                    title: 'PPN',
-                    key: 'tax_amount',
-                    width: 100,
-                    render(row) {
-                        return row.tax_value;
                     }
                 },
                 {
@@ -636,20 +653,27 @@ export default defineComponent({
                 {
                     name: "Harga Angkutan",
                     category: "Transportation Cost",
-                    value: transaction_details.value.transportation_cost,
+                    value: transaction_details.value.transportation_cost || "0",
                     data_type: "float",
                 }
             ];
 
             form.post(route('procurement.create-po'), {
-                onError: (err) => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Cek kembali form',
-                        text: 'Isi form yang terdapat tanda *',
-                    });
+                onError: (error) => {
+                    if (error !== null) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Cek kembali form',
+                            text: 'Isi form yang terdapat tanda *',
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: page.props.flash.failed,
+                        })
+                    }
                 },
-                onSuccess: () => {
+                onSuccess: (page) => {
                     // Reset form dengan nilai awal
                     form.document_code = (page.props.po_number as string);
                     form.due_date = null as unknown as string;
@@ -692,7 +716,7 @@ export default defineComponent({
 
                     Swal.fire({
                         icon: 'success',
-                        title: 'Success submit PO!'
+                        title: page.props.flash.success
                     });
 
                 },
@@ -754,12 +778,10 @@ export default defineComponent({
             { label: "BELI DO", value: "DO" },
         ];
 
-        const ppnOptions = (page.props.tax as Tax[]).map((data) => ({
-            label: data.name,
-            value: data.id,
-            value_tax: data.value,
-            percentage: data.value / 100 // Tambahkan persentase PPN
-        }));
+        const ppnOptions = [
+            { label: "PPN", value: true },
+            { label: "NON-PPN", value: false },
+        ]
 
         const units = (page.props.units as Lookup[]).map((data) => ({
             label: data.label,

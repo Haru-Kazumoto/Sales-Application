@@ -133,9 +133,9 @@ class PurchaseOrderController extends Controller
             'term_of_payment' => 'required|numeric',
             'due_date' => 'required',
             'description' => 'nullable|string',
-            'sub_total' => 'required|numeric', //required
-            'total' => 'required|numeric', //required
-            'tax_amount' => 'required|numeric', //required
+            'sub_total' => 'required|numeric', 
+            'total' => 'required|numeric', 
+            'tax_amount' => 'nullable|numeric', 
             'transaction_details' => 'required|array',
             'transaction_details.*.name' => 'required|string',
             'transaction_details.*.category' => 'required|string',
@@ -146,7 +146,7 @@ class PurchaseOrderController extends Controller
             'transaction_items.*.quantity' => 'required|numeric',
             'transaction_items.*.tax_amount' => 'nullable|numeric',
             'transaction_items.*.amount' => 'required|numeric',
-            'transaction_items.*.tax_id' => 'required|numeric',
+            'transaction_items.*.tax_id' => 'nullable|numeric', // not used
             'transaction_items.*.product_id' => 'required|numeric',
             'transaction_items.*.total_price' => 'required|numeric',
             'transaction_items.*.product' => 'required_if:transaction_items.*.product_id,null|array',
@@ -167,9 +167,9 @@ class PurchaseOrderController extends Controller
                 'term_of_payment' => $request->input('term_of_payment'),
                 'due_date' => $request->input('due_date'),
                 'description' => $request->input('description'),
-                'sub_total' => $request->input('sub_total'), //required
-                'total' => $request->input('total'), //required
-                'tax_amount' => $request->input('tax_amount'), //required
+                'sub_total' => $request->input('sub_total'), 
+                'total' => $request->input('total'), 
+                'tax_amount' => $request->input('tax_amount'), 
                 'transaction_type_id' => $tx_type->id,
             ]);
 
@@ -185,21 +185,51 @@ class PurchaseOrderController extends Controller
             }
 
              // Simpan transaction items
-            foreach ($request->input('transaction_items') as $txItem) {
+             foreach ($request->input('transaction_items') as $txItem) {
+                // // Pastikan data memiliki field yang diperlukan
+                // if (isset($txItem['trade_promo_id']) && !is_null($txItem['trade_promo_id'])) {
+                //     $tradePromoId = $txItem['trade_promo_id'];
+                //     $tradePromo = TradePromo::find($tradePromoId);
+            
+                //     // Pastikan promo ditemukan
+                //     if (!$tradePromo) {
+                //         return back()->with('failed', 'Promo tidak ditemukan');
+                //     }
+            
+                //     // Cek kuota promo
+                //     // disini kondisinya masuk dan sudah di dd kan hasilnya true, harusnya berhenti dan mengembalikan flash namun masih jalan
+                //     if ($tradePromo->quota < $txItem['quantity']) {
+                //         return back()->with('failed', 'Kuota promo tidak cukup');
+                //     }
+            
+                //     // Kurangi kuota promo
+                //     $tradePromo->quota -= $txItem['quantity'];
+                //     $tradePromo->save();
+                // }
+            
+                // Validasi produk
+                if (!isset($txItem['product_id'])) {
+                    return back()->with('failed', 'Produk tidak valid');
+                }
+            
                 $product = Products::find($txItem['product_id']);
-
+                if (!$product) {
+                    return back()->with('failed', 'Produk tidak ditemukan');
+                }
+            
                 // Simpan transaction item
                 TransactionItem::create([
-                    'total_price' => $txItem['total_price'],
-                    'unit' => $txItem['unit'],
-                    'quantity' => $txItem['quantity'],
-                    'tax_amount' => $txItem['tax_amount'],
-                    'amount' => $txItem['amount'],
-                    'tax_id' => $txItem['tax_id'],
+                    'total_price' => $txItem['total_price'] ,
+                    'unit' => $txItem['unit'] ,
+                    'quantity' => $txItem['quantity'] ,
+                    'tax_amount' => $txItem['tax_amount'] ?? 0,
+                    'amount' => $txItem['amount'] ,
+                    'tax_id' => $txItem['tax_id'] ?? null,
                     'transactions_id' => $transaction->id,
-                    'product_id' => $product->id, // Menyimpan product_id hasil dari produk yang diambil atau baru
+                    'product_id' => $product->id,
                 ]);
             }
+            
         });
         
         return redirect()->route('procurement.purchase-order')->with('success', 'Purchase Order Berhasil Tersubmit!');

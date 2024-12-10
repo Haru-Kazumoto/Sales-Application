@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TradePromo;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -89,4 +90,5 @@ class TradePromoController extends Controller
 
         return back()->with('success', 'Kuota promo berhasil ditambah!');
     }
+
 }

@@ -111,6 +111,8 @@ export interface TransactionItems {
     product?: Products;
     tax?: Tax;
     product_journals?: any[];
+    use_tax?: boolean;
+    trade_promo_id?: number;
 }
 
 export interface Tax {

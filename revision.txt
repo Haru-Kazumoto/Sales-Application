@@ -1,16 +1,14 @@
-PROCUREMENT:
-+ [SSO:BUG] : SSO tidak masuk setelah di create padahal message success ada
 WAREHOUSE :
-+ [REPORT-PRODUCTS:NEW] : 
++ [REPORT-PRODUCTS:NEW] : [1 hari]
     - kekurangan barang seperti pengiriman bertahap dikirimkan ke supplier lewat WA
-+ [PRODUCTS:REV] :
++ [PRODUCTS:REV] : [2 hari]
     - barang yang dibeli (CO) dari sales akan dibuatkan page khusus untuk barang yang keluar (FIFO).
     misal barang TEPUNG HIME dan TEPUNG ZERO dibeli masing masing 40, tepung hime 25 15, tepung zero 20 20
     nanti di logika tersebut mengambil data barang yang masuk gudang duluan, dan pastinya tersedia. Pengambilan barang tersebut
     harus First In First Out jadi random aja barang dengan kode batch batch nya.
 
 ADMIN :
-+ [CUSTOMER:REV] :
++ [CUSTOMER:REV] : []
     - pilihan badan usaha (legalitas) diganti hanya menjadi [PT,UD,CV,PERORANGAN]
     - tambahkan 1 field select dengan label wajib pajak dengan value (PKP & NON-PKP)
     - Pembelian dan penjualan bisa ppn dan non ppn, jika ada ppn maka perhitungan disertakan PPN 11%, jika memilih non ppn maka perhitungan tagihan tanpa PPN 11%
