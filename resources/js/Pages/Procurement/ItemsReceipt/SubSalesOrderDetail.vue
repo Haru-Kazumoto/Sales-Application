@@ -43,10 +43,6 @@
                             <n-input id="field6" size="large" disabled v-model:value="transaction_details.supplier" />
                         </div>
                         <div class="col-lg-3 col-6">
-                            <label for="field7">Gudang</label>
-                            <n-input id="field7" size="large" disabled v-model:value="transaction_details.storehouse" />
-                        </div>
-                        <div class="col-lg-3 col-6">
                             <label for="field8">Tanggal Kirim</label>
                             <n-input size="large" v-model:value="transaction_details.send_date" disabled />
                         </div>
@@ -102,7 +98,7 @@
                     <div class="d-flex py-2">
                         <div class="d-flex flex-column pe-3">
                             <label for="catatan">Catatan</label>
-                            <n-input id="catatan" type="textarea" placeholder="Basic Textarea" style="width: 30rem;"
+                            <n-input id="catatan" type="textarea" placeholder="" style="width: 30rem;"
                                 v-model:value="form.description" disabled />
                         </div>
                         <div class="d-flex flex-column w-100 justify-content-between">
@@ -207,15 +203,6 @@ function createColumns(): DataTableColumns<TransactionItems> {
                 return formatRupiah((row.total_price ?? 0));
             }
         },
-        {
-            title: 'PPN',
-            key: 'tax_amount',
-            width: 100,
-            render(row) {
-                return row.tax_amount;
-            }
-        },
-
     ];
 }
 

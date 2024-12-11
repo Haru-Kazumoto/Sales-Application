@@ -135,7 +135,7 @@
                     <div class="col-6 col-md-6 col-lg-6 d-flex flex-column gap-1">
                         <label for="">NAMA PRODUK</label>
                         <n-select filterable :options="availableProducts" placeholder="" size="large"
-                            v-model:value="products.name" />
+                            v-model:value="products.name" clearable />
                         <!-- Warning quantity atau status quantity -->
                         <span :style="{ color: stockStatusColor }">
                             {{ stockMessage }}
@@ -146,7 +146,7 @@
                         <label for="">QUANTITY</label>
                         <n-input size="large" v-model:value="transaction_items.quantity" placeholder="" />
                     </div>
-                    <div class="col-6 col-md-6 col-lg-4 d-flex flex-column gap-1">
+                    <div class="col-6 col-md-6 col-lg-2 d-flex flex-column gap-1">
                         <label for="">KEMASAN</label>
                         <n-input size="large" v-model:value="transaction_items.unit" disabled placeholder="" />
                     </div>
@@ -482,6 +482,9 @@ export default defineComponent({
             end_date: null as unknown as string,
             promo_name: null as unknown as string,
             transaction_items: [] as TransactionItems[],
+            restaurant_price: null as unknown as number,
+            price_3: null as unknown as number,
+            all_segment_price: null as unknown as number,
         });
 
         const transaction_items = ref({
@@ -689,7 +692,8 @@ export default defineComponent({
                     defaultPrice = products.value.all_segment_price;
                     break;
                 default:
-                    defaultPrice = null;
+                    defaultPrice = products.value.all_segment_price;
+                    break;
             }
 
             // Validasi harga baru
@@ -701,9 +705,12 @@ export default defineComponent({
                     text: 'Harga tidak boleh lebih rendah dari harga default.',
                 }).then(() => {
                     // Reset harga ke harga sebelumnya jika tidak valid
-                    transaction_items.value.amount = oldAmount;
+                    transaction_items.value.amount = oldAmount as number;
                 });
             }
+        }, {
+            immediate: true,
+            deep: true,
         });
 
 
@@ -753,7 +760,7 @@ export default defineComponent({
                         transaction_items.value.amount = selectedProduct.all_segment_price;
                         break;
                     default:
-                        transaction_items.value.amount = null as unknown as number;
+                        transaction_items.value.amount = products.value.all_segment_price;
                         break;
                 }
 
@@ -768,8 +775,8 @@ export default defineComponent({
                     products.value.promo_name = selectedProduct.promo_name;
                 } else {
                     // Reset promo-related values if the promotion has expired
-                    products.value.promo_value = null;
-                    products.value.promo_name = null;
+                    products.value.promo_value = null as unknown as number;
+                    products.value.promo_name = null as unknown as string;
                 }
 
                 // Reset product_journals dan tambahkan item baru
@@ -798,10 +805,11 @@ export default defineComponent({
                 transaction_items.value.unit = '';
                 stockMessage.value = '';
                 stockStatusColor.value = 'black';
-                products.value.last_stock = null;
-                products.value.retail_price = null;
-                products.value.promo_value = null;
-                products.value.promo_name = null;
+                products.value.last_stock = null as unknown as number;
+                products.value.retail_price = null as unknown as number;
+                products.value.promo_value = null as unknown as number;
+                products.value.promo_name = null as unknown as string;
+                transaction_items.value.amount = null as unknown as number;
 
                 // Reset product_journals
                 transaction_items.value.product_journals = [];

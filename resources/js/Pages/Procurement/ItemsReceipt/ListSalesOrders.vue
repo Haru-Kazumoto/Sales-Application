@@ -6,8 +6,6 @@
         <div class="d-flex gap-2 align-items-center">
             <n-input size="large" class="w-25" placeholder="Cari Nomor SSO" v-model:value="filterQuery"
                 @input="handleSearch" />
-            <n-select :options="dateOptions" class="w-25" size="large" placeholder="Filter data per waktu"
-                v-model:value="dateRange" @update:value="handleSearch" />
         </div>
         <div class="card shadow mb-5" style="border: none;">
             <div class="card-body">

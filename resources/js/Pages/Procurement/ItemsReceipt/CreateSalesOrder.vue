@@ -40,7 +40,7 @@
                         <!-- Baris Kedua -->
                         <div class="col-lg-4 col-6">
                             <label for="field4">Tanggal PO </label>
-                            <n-input size="large" v-model:value="transaction_details.purchase_order_date"
+                            <n-input size="large" v-model:value="transaction_details.purchase_order_date" disabled
                                 placeholder="" />
                         </div>
                         <div class="col-lg-4 col-6">
@@ -69,12 +69,12 @@
                         <!-- Baris Ketiga -->
                         <div class="col-lg-4 col-6">
                             <label for="field10">Nama Ekspedisi </label>
-                            <n-select id="field10" size="large" placeholder="" filterable :options="angkutanOptions"
+                            <n-input id="field10" size="large" placeholder="" filterable :options="angkutanOptions" disabled
                                 v-model:value="transaction_details.sender" />
                         </div>
                         <div class="col-lg-4 col-6">
                             <label for="field11">Jenis Pengiriman </label>
-                            <n-select id="field11" size="large" placeholder="" :options="sendType"
+                            <n-input id="field11" size="large" placeholder="" :options="sendType" disabled
                                 v-model:value="transaction_details.delivery_type" />
                         </div>
                         <div class="col-lg-4 col-6">
@@ -475,7 +475,7 @@ export default defineComponent({
                     transaction_details.value.supplier = supplier;
                     transaction_details.value.storehouse = storehouse;
                     transaction_details.value.located = located;
-                    transaction_details.value.purchase_order_date = dayjs(purchase_order_date).format('dddd, D MMMM YYYY HH:mm');
+                    transaction_details.value.purchase_order_date = purchase_order_date;
                     transaction_details.value.sender = sender.replace("_", ' ');
                     transaction_details.value.delivery_type = delivery_type.replace("_", " ");
                     transaction_details.value.transportation = number_plate;

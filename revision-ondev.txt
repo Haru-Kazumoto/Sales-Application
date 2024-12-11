@@ -35,23 +35,20 @@ PROCUREMENT AND ADMIN :
     ketika di alokasi memilih salah satu grosir account maka nanti Harga normal barang berubah menjadi Harga setelah diskon atau Harga di trade promo.
 + [CO:NEW] :
     - tambahkan 1 field yaitu PO Customer, digunakan untuk report marketing jika PO Customer 
+    - tambahkan 1 field di form produk "Segment Customer" (GROSIR, RETAIL, END USER, ALL SEGMENT) buat dropdown dan Harga akan mengikuti sesuai segment, 
+    dan Harga editable jika sales akan menaikan Harga *Harga tidak turun.
++ [CO:REV] :
+    - Harga produk itu gabisa di kurangin dari Harga otomatis, tapi bisa di tambah. Jika dipaksa dikurangi buatkan sebuah notifikasi
     
 ----------------------DEV
 SALES :
 + [CO:NEW] :
     - di list PO/CO itu disandingin 2 nomor dokumen yang menandakan Bahwa customer tersebut menerbitkan PO sendiri. [ONDEV]
-    - tambahkan 1 field di form produk "Segment Customer" (GROSIR, RETAIL, END USER, ALL SEGMENT) buat dropdown dan Harga akan mengikuti sesuai segment, 
-    dan Harga editable jika sales akan menaikan Harga *Harga tidak turun.
+    
 + [CO:REV] :
-    - Harga produk itu gabisa di kurangin dari Harga otomatis, tapi bisa di tambah. Jika dipaksa dikurangi buatkan sebuah notifikasi
     - diskon 1,2,3 itu sekarang di dapetin dari program promo, integrasi
 + [CO:NEW-FLOW] : 
     - CO tambah 1 field yaitu "Pengajauan Diskon" isinya adalah Pengajuan dan Tidak Pengajuan. 
     Jika pengajuan maka CO ini masuk ke marketing (Draf CO). Ketika approve CO bisa di proses lagi isi diskon nya
     - CO itu ada validasi, si customer ini ada invoice tunggakan gak jadi nanti masuk ke AR dulu untuk approvan, 
     ada 3 status yang diberikan AR yaitu (HOLD, APPROVE, REJECT) kalau statusnya masih HOLD CO nya gabisa di proses, kalau reject hapus CO nya
-
-
-----------------------BUG
-PROCUREMENT:
-+ [SSO:BUG] : SSO tidak masuk setelah di create padahal message success ada

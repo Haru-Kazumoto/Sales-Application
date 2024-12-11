@@ -39,7 +39,6 @@ class SubSalesOrderController extends Controller
             $request->filter_field,
             $request->filter_query,
             10,
-            $request->dateRange
         );
 
         return Inertia::render('Procurement/ItemsReceipt/ListSalesOrders', compact('transactions'));

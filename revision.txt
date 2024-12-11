@@ -8,26 +8,24 @@ WAREHOUSE :
     harus First In First Out jadi random aja barang dengan kode batch batch nya.
 
 ADMIN :
-+ [CUSTOMER:REV] : []
++ [CUSTOMER:REV] : [1 hari]
     - pilihan badan usaha (legalitas) diganti hanya menjadi [PT,UD,CV,PERORANGAN]
     - tambahkan 1 field select dengan label wajib pajak dengan value (PKP & NON-PKP)
     - Pembelian dan penjualan bisa ppn dan non ppn, jika ada ppn maka perhitungan disertakan PPN 11%, jika memilih non ppn maka perhitungan tagihan tanpa PPN 11%
     - Kemasan dalam detail produk ada 2 field, mohon dihilangkan satu dan Kemasan itu nanti akan di input manual contoh: 25kg/pak bukan pcs, bag, sak seperti sekarang.
     - label Kelompok di customer ganti ke Channel Customer
     - buatkan service import untuk mengimport data customer dari excel
-+ [CUSTOMER-REGION:NEW] :
++ [CUSTOMER-REGION:NEW] : [1 hari]
     - mapping customer untuk membuat wilayah wilayahnya [contoh mapping ada di mapping customer ke sales] 
 
 SALES :
-+ [CO:NEW] :
++ [CO:NEW] : [1 hari]
     - tambahkan 1 field yaitu PO Customer, digunakan untuk report marketing jika PO Customer 
     ini ada berarti di list PO/CO itu disandingin 2 nomor dokumen yang menandakan Bahwa customer tersebut menerbitkan PO sendiri.
-    - tambahkan 1 field di form produk "Segment Customer" (GROSIR, RETAIL, END USER, ALL SEGMENT) buat dropdown dan Harga akan mengikuti sesuai segment, 
-    dan Harga editable jika sales akan menaikan Harga *Harga tidak turun.
-+ [CO:REV] :
++ [CO:REV] : [1 hari]
     - Harga produk itu gabisa di kurangin dari Harga otomatis, tapi bisa di tambah. Jika dipaksa dikurangi buatkan sebuah notifikasi
     - diskon 1,2,3 itu sekarang di dapetin dari program promo, integrasi
-+ [CO:NEW-FLOW] : 
++ [CO:NEW-FLOW] : [1 hari]
     - CO tambah 1 field yaitu "Pengajauan Diskon" isinya adalah Pengajuan dan Tidak Pengajuan. 
     Jika pengajuan maka CO ini masuk ke marketing (Draf CO). Ketika approve CO bisa di proses lagi isi diskon nya
     - CO itu ada validasi, si customer ini ada invoice tunggakan gak jadi nanti masuk ke AR dulu untuk approvan, 
