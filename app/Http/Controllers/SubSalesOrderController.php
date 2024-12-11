@@ -71,7 +71,7 @@ class SubSalesOrderController extends Controller
             'description' => 'nullable|string',
             'sub_total' => 'required|numeric', //required
             'total' => 'required|numeric', //required
-            'tax_amount' => 'required|numeric', //required
+            'tax_amount' => 'nullable|numeric', //required
             'transaction_details' => 'required|array',
             'transaction_details.*.name' => 'required|string',
             'transaction_details.*.category' => 'required|string',
@@ -81,8 +81,8 @@ class SubSalesOrderController extends Controller
             'transaction_items.*.unit' => 'required|string',
             'transaction_items.*.quantity' => 'required|numeric',
             'transaction_items.*.tax_amount' => 'nullable|numeric',
+            'transaction_items.*.tax_id' => 'nullable|numeric',
             'transaction_items.*.amount' => 'required|numeric',
-            'transaction_items.*.tax_id' => 'required|numeric',
             'transaction_items.*.product_id' => 'required|numeric',
             'transaction_items.*.total_price' => 'required|numeric',
             'transaction_items.*.product' => 'required_if:transaction_items.*.product_id,null|array',
