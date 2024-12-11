@@ -48,22 +48,23 @@ class TransactionServices
                     WHEN (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) > 0 THEN "INSTALMENT" 
                     ELSE "PAID" 
                 END as status_payment'
-            );
+            )
+            ->orderByDesc('created_at');
         }
     
-        // Pengurutan berdasarkan kondisi tertentu
-        $query->orderByRaw("
-            CASE 
-                WHEN EXISTS (
-                    SELECT 1 
-                    FROM transaction_details 
-                    WHERE transaction_details.transactions_id = transactions.id 
-                    AND transaction_details.category = 'Transportation' 
-                    AND transaction_details.value = '-'
-                ) THEN 0 
-                ELSE 1 
-            END
-        ")->orderByDesc('created_at');
+        // // Pengurutan berdasarkan kondisi tertentu
+        // $query->orderByRaw("
+        //     CASE 
+        //         WHEN EXISTS (
+        //             SELECT 1 
+        //             FROM transaction_details 
+        //             WHERE transaction_details.transactions_id = transactions.id 
+        //             AND transaction_details.category = 'Transportation' 
+        //             AND transaction_details.value = '-'
+        //         ) THEN 0 
+        //         ELSE 1 
+        //     END
+        // ")
     
         // Tambahkan pengecekan untuk date range
         if (!is_null($dateRange)) {
