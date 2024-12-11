@@ -184,28 +184,17 @@ class PurchaseOrderController extends Controller
                 ]);
             }
 
-             // Simpan transaction items
-             foreach ($request->input('transaction_items') as $txItem) {
-                // // Pastikan data memiliki field yang diperlukan
-                // if (isset($txItem['trade_promo_id']) && !is_null($txItem['trade_promo_id'])) {
-                //     $tradePromoId = $txItem['trade_promo_id'];
-                //     $tradePromo = TradePromo::find($tradePromoId);
+            // Simpan transaction items
+            foreach ($request->input('transaction_items') as $txItem) {
+                // Pastikan data memiliki field yang diperlukan
+                if (isset($txItem['trade_promo_id']) && !is_null($txItem['trade_promo_id'])) {
+                    $tradePromoId = $txItem['trade_promo_id'];
+                    $tradePromo = TradePromo::find($tradePromoId);
             
-                //     // Pastikan promo ditemukan
-                //     if (!$tradePromo) {
-                //         return back()->with('failed', 'Promo tidak ditemukan');
-                //     }
-            
-                //     // Cek kuota promo
-                //     // disini kondisinya masuk dan sudah di dd kan hasilnya true, harusnya berhenti dan mengembalikan flash namun masih jalan
-                //     if ($tradePromo->quota < $txItem['quantity']) {
-                //         return back()->with('failed', 'Kuota promo tidak cukup');
-                //     }
-            
-                //     // Kurangi kuota promo
-                //     $tradePromo->quota -= $txItem['quantity'];
-                //     $tradePromo->save();
-                // }
+                    // Kurangi kuota promo
+                    $tradePromo->quota -= $txItem['quantity'];
+                    $tradePromo->save();
+                }
             
                 // Validasi produk
                 if (!isset($txItem['product_id'])) {
@@ -229,7 +218,6 @@ class PurchaseOrderController extends Controller
                     'product_id' => $product->id,
                 ]);
             }
-            
         });
         
         return redirect()->route('procurement.purchase-order')->with('success', 'Purchase Order Berhasil Tersubmit!');
