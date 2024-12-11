@@ -65,7 +65,7 @@ class TradePromoController extends Controller
             ]);
         });
 
-        return redirect()->route('')->with('success', 'Promo beli berhasil diupdate!');
+        return back()->with('success', 'Promo beli berhasil diupdate!');
     }
 
     public function deletePromo()
