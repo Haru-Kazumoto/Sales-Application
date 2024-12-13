@@ -8,89 +8,127 @@
             <!-- INPUT CO -->
             <div class="card-body">
                 <div class="row g-3">
-                    <div class="col-12 col-lg-6">
+                    <div class="col-12 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">NOMOR CO <span class="text-danger">*</span></label>
+                            <label for="">NOMOR CO</label>
                             <n-input disabled size="large" v-model:value="form.document_code" placeholder="" />
                         </div>
                     </div>
-                    <div class="col-12 col-lg-6">
+
+                    <div class="col-12 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">TANGGAL DIBUAT CO<span class="text-danger">*</span></label>
+                            <label for="">TANGGAL DIBUAT CO</label>
                             <n-input disabled size="large" v-model:value="transaction_details.customer_order_date"
                                 placeholder="" />
                         </div>
                     </div>
-                    <div class="col-6 col-sm-6 col-md-6 col-lg-4">
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">NAMA CUSTOMER<span class="text-danger">*</span></label>
-                            <n-input disabled size="large" v-model:value="transaction_details.customer" />
+                            <label for="">NAMA CUSTOMER</label>
+                            <n-input disabled filterable size="large" placeholder=""
+                                v-model:value="transaction_details.customer" />
                         </div>
                     </div>
-                    <div class="col-6 col-sm-6 col-md-6 col-lg-4">
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">BADAN USAHA<span class="text-danger">*</span></label>
+                            <label for="">BADAN USAHA</label>
                             <n-input disabled size="large" v-model:value="transaction_details.legality"
                                 placeholder="" />
                         </div>
                     </div>
-                    <div class="col-6 col-sm-6 col-md-6 col-lg-4">
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">ALAMAT CUSTOMER<span class="text-danger">*</span></label>
+                            <label for="">ALAMAT CUSTOMER</label>
                             <n-input disabled size="large" v-model:value="transaction_details.customer_address"
                                 placeholder="" />
                         </div>
                     </div>
-                    <div class="col-6 col-sm-6 col-md-6 col-lg-4">
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">TERMIN<span class="text-danger">*</span></label>
-                            <n-input disabled size="large" v-model:value="form.term_of_payment" placeholder="" />
+                            <label for="">TERMIN</label>
+                            <n-input disabled size="large" v-model:value="form.term_of_payment" placeholder="">
+                                <template #suffix>HARI</template>
+                            </n-input disabled>
                         </div>
                     </div>
-                    <div class="col-6 col-sm-6 col-md-6 col-lg-4">
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">TANGGAL JATUH TEMPO<span class="text-danger">*</span></label>
+                            <label for="">TANGGAL JATUH TEMPO</label>
                             <n-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="" id="field8"
                                 size="large" v-model:formatted-value="form.due_date" disabled />
                         </div>
                     </div>
-                    <div class="col-6 col-sm-6 col-md-6 col-lg-4">
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">SALESMAN<span class="text-danger">*</span></label>
+                            <label for="">PENGIRIMAN
+                                <RequiredMark />
+                            </label>
+                            <n-input disabled size="large" v-model:value="transaction_details.delivery"
+                                placeholder="" />
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-4">
+                        <div class="d-flex flex-column gap-1">
+                            <label for="">SALESMAN</label>
                             <n-input disabled size="large" v-model:value="transaction_details.salesman"
                                 placeholder="" />
                         </div>
                     </div>
-                    <div class="col-6 col-sm-6 col-md-6 col-lg-4"
-                        v-if="$page.props.auth.user.division.division_name === 'MARKETING'">
+                    <div class="col-6 col-md-6 col-lg-4 d-flex flex-column gap-1">
+                        <label for="">SEGMEN CUSTOMER</label>
+                        <n-input disabled size="large" v-model:value="transaction_details.segment_customer"
+                            placeholder="" />
+                    </div>
+
+                    <!-- <div class="col-6 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">BIAYA ANGKUTAN<span class="text-danger">*</span></label>
-                            <n-input disabled size="large" placeholder=""
-                                v-model:value="transaction_details.transportation_cost"
+                            <label for="">BIAYA ANGKUTAN<RequiredMark /></label>
+                            <n-input disabled size="large" placeholder="" v-model:value="transaction_details.transportation_cost"
                                 @input="(value) => transaction_details.transportation_cost = value.replace(/\D/g, '')">
                                 <template #prefix>
                                     Rp
                                 </template>
-                            </n-input>
+                            </n-input disabled>
+                        </div>
+                    </div> -->
+                    <n-divider title-placement="left">OPSIONAL</n-divider>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="d-flex flex-column gap-1">
+                            <label for="">NOMOR PO CUSTOMER </label>
+                            <n-input disabled size="large" v-model:value="transaction_details.po_customer"
+                                placeholder="" />
                         </div>
                     </div>
-                    <div class="col-6 col-sm-6 col-md-6 col-lg-4">
+                    <div class="col-6 col-sm-6 col-md-6 col-lg-3">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">CASHBACK<span class="text-danger">*</span></label>
-                            <n-input size="large" disabled v-model:value="transaction_details.cashback" placeholder=""
+                            <label for="">CASHBACK + PPH 4%</label>
+                            <n-input disabled size="large" v-model:value="transaction_details.cashback" placeholder=""
                                 @input="(value) => transaction_details.cashback = value.replace(/\D/g, '')">
                                 <template #prefix>Rp </template>
-                            </n-input>
+                            </n-input disabled>
                         </div>
                     </div>
-                    <div class="col-6 col-sm-6 col-md-6 col-lg-4">
+                    <div class="col-6 col-sm-6 col-md-6 col-lg-3">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">BIAYA BONGKAR<span class="text-danger">*</span></label>
-                            <n-input size="large" disabled v-model:value="transaction_details.unloading_cost"
+                            <label for="">BIAYA BONGKAR</label>
+                            <n-input disabled size="large" v-model:value="transaction_details.unloading_cost"
                                 placeholder=""
                                 @input="(value) => transaction_details.unloading_cost = value.replace(/\D/g, '')">
                                 <template #prefix>Rp </template>
-                            </n-input>
+                            </n-input disabled>
+                        </div>
+                    </div>
+                    <div class="col-6 col-sm-6 col-md-6 col-lg-3">
+                        <div class="d-flex flex-column gap-1">
+                            <label for="ppn">PPN</label>
+                            <n-input disabled size="large" placeholder="" v-model:value="transaction_details.use_tax" />
+                        </div>
+                    </div>
+                    <div class="col-6 col-sm-6 col-md-6 col-lg-3">
+                        <div class="d-flex flex-column gap-1">
+                            <label for="ppn">Pengajuan Diskon</label>
+                            <n-input disabled size="large" placeholder=""
+                                v-model:value="transaction_details.submission_discount" />
                         </div>
                     </div>
                 </div>
@@ -100,18 +138,54 @@
         <!-- PRODUCT CHOOSEN LIST -->
         <div class="card shadow" style="border: none;">
             <div class="card-body">
-                <n-data-table :bordered="false" :columns="columns" :data="enhancedTransactionItems" />
+                <n-data-table :bordered="false" :columns="columns" :data="transaction_items" />
             </div>
         </div>
 
+        <n-modal v-model:show="showModal" :mask-closable="false" class="d-flex" preset="card" :style="bodyStyle"
+            title="HARGA DISKON BARANG" :bordered="false" size="huge" :segmented="segmented">
+            
+            <div class="row g-3">
+                <div class="col-12 d-flex flex-column gap-1">
+                    <label for="newDiscount">QUANTITY BARANG</label>
+                    <n-input size="large" placeholder="" v-model:value="setDiscounts.quantity" disabled/>
+                </div>
+                <div class="col-12 d-flex flex-column gap-1">
+                    <label for="newDiscount">HARGA DISKON</label>
+                    <n-input size="large" placeholder="" v-model:value="setDiscounts.newAmount" @input="(value) => setDiscounts.newAmount = value.replace(/\D/g, '')">
+                        <template #prefix>
+                            Rp
+                        </template>
+                    </n-input>
+                </div>
+                <div class="col-12 d-flex flex-column gap-1">
+                    <label for="newDiscount">HARGA DISKON</label>
+                    <n-input size="large" placeholder="" v-model:value="setDiscounts.newTotalPrice" disabled>
+                        <template #prefix>
+                            Rp
+                        </template>
+                    </n-input>
+                </div>
+            </div>
+
+            <template #footer>
+                <div class="d-flex">
+                    <div class="d-flex gap-2 ms-auto">
+                        <n-button type="error" size="large" @click="showModal = false">Batal</n-button>
+                        <n-button type="info" size="large" @click="handleSubmitDiscount(setDiscounts.customer_order_id)">Simpan</n-button>
+                    </div>
+                </div>
+            </template>
+        </n-modal>
+
         <!-- CALCULATION RESULT -->
-        <div class="card shadow border-0 mb-4">
+        <div class="card shadow border-0 mb-3">
             <div class="card-body d-flex flex-column">
                 <div class="d-flex justify-content-between py-2">
                     <span>Sub Total</span>
                     <span>{{ formatRupiah(($page.props.customer_order as Transactions).sub_total ?? 0) }}</span>
                 </div>
-                <div class="d-flex justify-content-between py-2">
+                <div class="d-flex justify-content-between py-2" v-if="transaction_details.use_tax === 'PPN'">
                     <span>PPN 11%</span>
                     <span>{{ formatRupiah(($page.props.customer_order as Transactions).tax_amount ?? 0) }}</span>
                 </div>
@@ -129,31 +203,27 @@
                         <span class="fw-bold">{{ form.due_date ? dayjs(form.due_date).format('dddd, D MMMM YYYY') : ''
                             }}</span>
                     </div>
+                    <div class="d-flex justify-content-between">
+                        <span>STATUS PENGAJUAN DISKON</span>
+                        <div v-if="transaction_details.submission_status === 'true'">
+                            <n-tag type="success" size="large" bordered="true" strong="true">DIAPPROVE</n-tag>
+                        </div>
+                        <div v-else-if="transaction_details.submission_status === 'false'">
+                            <n-tag type="error" size="large" bordered="true" strong="true">DITOLAK</n-tag>
+                        </div>
+                        <div v-else>
+                            <n-tag type="warning" size="large" bordered="true" strong="true">BELUM DIPROSES</n-tag>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <n-modal v-model:show="showModal">
-            <n-card style="width: 500px" title="Edit Quantity" :bordered="false" size="huge">
-                <div class="d-flex flex-column gap-1">
-                    <label for="quantity" class="fs-5">Quantity ({{ (selectedItem as any).quantity }})
-                        <RequiredMark />
-                    </label>
-                    <n-input v-model:value="newQuantity" placeholder="Enter new quantity" size="large" />
-                    <strong>Product Name: {{ (selectedItem as any).product.name }}</strong>
 
-                    <!-- Menampilkan nama produk sebagai contoh -->
-                    <!-- <div v-if="selectedItem">
-                    </div> -->
-                </div>
-                <template #footer>
-                    <div class="d-flex gap-2 justify-content-center">
-                        <n-button type="error" size="large" @click="showModal = false">Cancel</n-button>
-                        <n-button type="info" size="large" @click="reStoreStockProduct">Submit</n-button>
-                    </div>
-                </template>
-            </n-card>
-        </n-modal>
-
+        <div class="d-flex gap-3 ms-auto mb-4"
+            v-if="($page.props.auth as any).user.division.division_name === 'MARKETING'">
+            <n-button type="error" size="large" @click="handleProcessCO('false')">REJECT</n-button>
+            <n-button type="primary" size="large" @click="handleProcessCO('true')">APPROVE</n-button>
+        </div>
     </div>
 </template>
 
@@ -223,80 +293,80 @@ export default defineComponent({
                     }
                 },
 
-                {
-                    title: "DISCOUNT 1",
-                    key: 'discount_1',
-                    width: 200,
-                    render(row) {
-                        return `${row.discount_1} %`
-                    }
-                },
-                {
-                    title: "HARGA DISCOUNT 1",
-                    key: 'total_price_discount_1',
-                    width: 250,
-                    render(row) {
-                        // Menghitung harga setelah diskon 1
-                        const amount = row.amount ?? 0;
-                        const discount_1 = row.discount_1 ?? 0;
-                        const priceAfterDiscount1 = amount - (amount * discount_1 / 100);
+                // {
+                //     title: "DISCOUNT 1",
+                //     key: 'discount_1',
+                //     width: 200,
+                //     render(row) {
+                //         return `${row.discount_1} %`
+                //     }
+                // },
+                // {
+                //     title: "HARGA DISCOUNT 1",
+                //     key: 'total_price_discount_1',
+                //     width: 250,
+                //     render(row) {
+                //         // Menghitung harga setelah diskon 1
+                //         const amount = row.amount ?? 0;
+                //         const discount_1 = row.discount_1 ?? 0;
+                //         const priceAfterDiscount1 = amount - (amount * discount_1 / 100);
 
-                        // Mengembalikan harga setelah diskon 1
-                        return formatRupiah(priceAfterDiscount1 ?? 0);
-                    }
-                },
+                //         // Mengembalikan harga setelah diskon 1
+                //         return formatRupiah(priceAfterDiscount1 ?? 0);
+                //     }
+                // },
 
-                {
-                    title: "DISCOUNT 2",
-                    key: 'discount_2',
-                    width: 200,
-                    render(row) {
-                        return `${row.discount_2} %`
-                    }
-                },
-                {
-                    title: "HARGA DISCOUNT 2",
-                    key: 'total_price_discount_2',
-                    width: 250,
-                    render(row) {
-                        // Menghitung harga setelah diskon 2
-                        const amount = row.amount ?? 0;
-                        const discount_1 = row.discount_1 ?? 0;
-                        const discount_2 = row.discount_2 ?? 0;
-                        const priceAfterDiscount1 = amount - (amount * discount_1 / 100);
-                        const priceAfterDiscount2 = priceAfterDiscount1 - (priceAfterDiscount1 * discount_2 / 100);
+                // {
+                //     title: "DISCOUNT 2",
+                //     key: 'discount_2',
+                //     width: 200,
+                //     render(row) {
+                //         return `${row.discount_2} %`
+                //     }
+                // },
+                // {
+                //     title: "HARGA DISCOUNT 2",
+                //     key: 'total_price_discount_2',
+                //     width: 250,
+                //     render(row) {
+                //         // Menghitung harga setelah diskon 2
+                //         const amount = row.amount ?? 0;
+                //         const discount_1 = row.discount_1 ?? 0;
+                //         const discount_2 = row.discount_2 ?? 0;
+                //         const priceAfterDiscount1 = amount - (amount * discount_1 / 100);
+                //         const priceAfterDiscount2 = priceAfterDiscount1 - (priceAfterDiscount1 * discount_2 / 100);
 
-                        // Mengembalikan harga setelah diskon 2
-                        return formatRupiah(priceAfterDiscount2 ?? 0);
-                    }
-                },
-                {
-                    title: "DISCOUNT 3",
-                    key: 'discount_3',
-                    width: 200,
-                    render(row) {
-                        return `${row.discount_3} %`
-                    }
-                },
+                //         // Mengembalikan harga setelah diskon 2
+                //         return formatRupiah(priceAfterDiscount2 ?? 0);
+                //     }
+                // },
+                // {
+                //     title: "DISCOUNT 3",
+                //     key: 'discount_3',
+                //     width: 200,
+                //     render(row) {
+                //         return `${row.discount_3} %`
+                //     }
+                // },
 
-                {
-                    title: "HARGA DISCOUNT 3",
-                    key: 'total_price_discount_3',
-                    width: 250,
-                    render(row) {
-                        // Menghitung harga setelah diskon 3
-                        const amount = row.amount ?? 0;
-                        const discount_1 = row.discount_1 ?? 0;
-                        const discount_2 = row.discount_2 ?? 0;
-                        const discount_3 = row.discount_3 ?? 0;
-                        const priceAfterDiscount1 = amount - (amount * discount_1 / 100);
-                        const priceAfterDiscount2 = priceAfterDiscount1 - (priceAfterDiscount1 * discount_2 / 100);
-                        const priceAfterDiscount3 = priceAfterDiscount2 - (priceAfterDiscount2 * discount_3 / 100);
+                // {
+                //     title: "HARGA DISCOUNT 3",
+                //     key: 'total_price_discount_3',
+                //     width: 250,
+                //     render(row) {
+                //         // Menghitung harga setelah diskon 3
+                //         const amount = row.amount ?? 0;
+                //         const discount_1 = row.discount_1 ?? 0;
+                //         const discount_2 = row.discount_2 ?? 0;
+                //         const discount_3 = row.discount_3 ?? 0;
+                //         const priceAfterDiscount1 = amount - (amount * discount_1 / 100);
+                //         const priceAfterDiscount2 = priceAfterDiscount1 - (priceAfterDiscount1 * discount_2 / 100);
+                //         const priceAfterDiscount3 = priceAfterDiscount2 - (priceAfterDiscount2 * discount_3 / 100);
 
-                        // Mengembalikan harga setelah diskon 3
-                        return formatRupiah(priceAfterDiscount3 ?? 0);
-                    }
-                },
+                //         // Mengembalikan harga setelah diskon 3
+                //         return formatRupiah(priceAfterDiscount3 ?? 0);
+                //     }
+                // },
                 {
                     title: "TOTAL HARGA",
                     key: 'total',
@@ -305,41 +375,32 @@ export default defineComponent({
                         return formatRupiah(row.total_price ?? 0);
                     }
                 },
-                // {
-                //     title: "ACTION",
-                //     key: 'action',
-                //     width: 100,
-                //     render(row, index) {
-                //         return h(
-                //             NButton,
-                //             {
-                //                 type: 'error',
-                //                 size: 'small',
-                //                 onClick: () => {
-                //                     Swal.fire({
-                //                         icon: 'question',
-                //                         text: `Delete ${row.product?.name}?`,
-                //                         showCancelButton: true,
-                //                     }).then((result) => {
-                //                         if (result.isConfirmed) {
-                //                             removeProduct(index);
-
-                //                             notification.success({
-                //                                 title: `${row.product?.name} has been deleted!`,
-                //                                 closable: true,
-                //                                 keepAliveOnHover: false,
-                //                                 duration: 2000,
-                //                             });
-                //                         }
-                //                     });
-                //                 }
-                //             },
-                //             { default: () => "Hapus" }
-                //         )
-                //     }
-                // }
+                {
+                    title: "ACTION",
+                    key: 'action',
+                    width: 100,
+                    render(row, index) {
+                        if (transaction_details.value.submission_status !== 'true') {
+                            return null;
+                        } else {
+                            return h(
+                                NButton,
+                                {
+                                    type: 'info',
+                                    size: 'small',
+                                    onClick: () => {
+                                        handleOpenDiscountModal(row);
+                                    }
+                                },
+                                { default: () => "ISI HARGA DISKON" }
+                            )
+                        }
+                    }
+                }
             ]
         }
+
+
 
         function reStoreStockProduct() {
             // router.post(route('sales.restore-products', (selectedProduct.value as any).id), {
@@ -381,6 +442,14 @@ export default defineComponent({
             transportation_cost: customer_order.transaction_details.find((data) => { return data.category === "Transportation Cost" })?.value,
             cashback: customer_order.transaction_details.find((data) => { return data.category === "Cashback" })?.value,
             unloading_cost: customer_order.transaction_details.find((data) => { return data.category === "Unloading Cost" })?.value,
+            use_tax: customer_order.transaction_details.find((data) => { return data.category === "Taxes" })?.value === "true"
+                ? "PPN"
+                : "NON-PPN",
+            segment_customer: customer_order.transaction_details.find((data) => { return data.category === "SEGMENT" })?.value,
+            submission_discount: customer_order.transaction_details.find((data) => { return data.category === "Discount Submission" })?.value,
+            submission_status: customer_order.transaction_details.find((data) => { return data.category === "Submission Status" })?.value,
+            delivery: customer_order.transaction_details.find((data) => { return data.category === "Delivery" })?.value,
+            po_customer: customer_order.transaction_details.find((data) => { return data.category === "PO Customer" })?.value
         });
 
         const discounts = ref({
@@ -389,43 +458,88 @@ export default defineComponent({
             total_discount_3: 0,
         });
 
+        const setDiscounts = useForm({
+            customer_order_id: null as unknown as number,
+            newAmount: null as unknown as number,
+            newTotalPrice: null as unknown as number,
+            quantity: null as unknown as number,
+        });
+
         // Reactive reference untuk item transaksi
         const transaction_items = ref(customer_order.transaction_items);
 
-        // Menghitung harga setelah diskon untuk setiap item
-        const calculateDiscounts = (item) => {
-            let originalPrice = item.amount || 0;
-            let total_discount_1 = 0;
-            let total_discount_2 = 0;
-            let total_discount_3 = 0;
+        // // Menghitung harga setelah diskon untuk setiap item
+        // const calculateDiscounts = (item) => {
+        //     let originalPrice = item.amount || 0;
+        //     let total_discount_1 = 0;
+        //     let total_discount_2 = 0;
+        //     let total_discount_3 = 0;
 
-            // Diskon 1
-            if (item.discount_1) {
-                total_discount_1 = originalPrice * item.discount_1 / 100;
-                originalPrice -= total_discount_1; // Kurangi dengan diskon 1
-            }
+        //     // Diskon 1
+        //     if (item.discount_1) {
+        //         total_discount_1 = originalPrice * item.discount_1 / 100;
+        //         originalPrice -= total_discount_1; // Kurangi dengan diskon 1
+        //     }
 
-            // Diskon 2
-            if (item.discount_2) {
-                total_discount_2 = originalPrice * item.discount_2 / 100;
-                originalPrice -= total_discount_2; // Kurangi dengan diskon 2
-            }
+        //     // Diskon 2
+        //     if (item.discount_2) {
+        //         total_discount_2 = originalPrice * item.discount_2 / 100;
+        //         originalPrice -= total_discount_2; // Kurangi dengan diskon 2
+        //     }
 
-            // Diskon 3
-            if (item.discount_3) {
-                total_discount_3 = originalPrice * item.discount_3 / 100;
-            }
+        //     // Diskon 3
+        //     if (item.discount_3) {
+        //         total_discount_3 = originalPrice * item.discount_3 / 100;
+        //     }
 
-            return originalPrice - total_discount_3; // Harga akhir setelah semua diskon
-        };
+        //     return originalPrice - total_discount_3; // Harga akhir setelah semua diskon
+        // };
 
-        // Menggunakan computed untuk mendapatkan data transaksi yang ditambahkan diskon
-        const enhancedTransactionItems = computed(() => {
-            return transaction_items.value?.map(item => ({
-                ...item,
-                total_price_discount: calculateDiscounts(item) // Menyimpan total harga setelah diskon
-            }));
-        });
+        // // Menggunakan computed untuk mendapatkan data transaksi yang ditambahkan diskon
+        // const enhancedTransactionItems = computed(() => {
+        //     return transaction_items.value?.map(item => ({
+        //         ...item,
+        //         total_price_discount: calculateDiscounts(item) // Menyimpan total harga setelah diskon
+        //     }));
+        // });
+
+        function handleOpenDiscountModal(row: any) {
+            showModal.value = true;
+
+            setDiscounts.customer_order_id = row.id;
+            setDiscounts.newAmount = row.amount;
+            setDiscounts.newTotalPrice = row.total_price;
+            setDiscounts.quantity = row.quantity;
+        }
+
+        //create watch for new discounts
+        watch(() => setDiscounts.newAmount, (amount) => {
+            setDiscounts.newTotalPrice = amount * setDiscounts.quantity;
+        }, {deep: true});
+
+        function handleSubmitDiscount(co_id: number) {
+            setDiscounts.patch(route('sales.new-discount', co_id), {
+                onSuccess: (page) => {
+                    router.reload();
+                    showModal.value = false;
+                    Swal.fire({
+                        icon: "success",
+                        title: page.props.flash.success,
+                        timer: 2000,
+                    });
+                    setDiscounts.reset();
+                },
+                onError: () => {
+                    showModal.value = false;
+                    Swal.fire({
+                        icon: 'error',
+                        title: "Oops, server sedang sibuk :(",
+                        text: "Silahkan realod page atau hubungi developer segera",
+                        timer: 3000,
+                    });
+                }
+            });
+        }
 
         const totalPPN = computed(() => {
             // Menghitung subtotal dari semua produk tanpa mengalikan quantity
@@ -440,7 +554,7 @@ export default defineComponent({
             form.tax_amount = ppn;
 
             // Mengembalikan nilai PPN yang diformat
-            return formatRupiah(ppn);
+            return ppn;
         });
 
         const subtotal = computed(() => {
@@ -453,7 +567,7 @@ export default defineComponent({
             form.sub_total = total;
 
             // Mengembalikan subtotal yang diformat
-            return formatRupiah(total);
+            return total;
         });
         const totalPrice = computed(() => {
             // Menghitung subtotal dari semua produk tanpa mengalikan quantity
@@ -462,25 +576,61 @@ export default defineComponent({
             }, 0);
 
             // Menghitung total harga termasuk PPN 11%
-            const totalWithPPN = subtotal + (subtotal * 0.11);
+            let total = null as unknown as number;
+
+            if (transaction_details.value.use_tax === "PPN") {
+                total = subtotal + (subtotal * 0.11);
+            } else {
+                total = subtotal;
+            }
 
             // Menyimpan total ke dalam form
-            form.total = totalWithPPN;
+            form.total = total;
 
             // Mengembalikan total harga yang diformat
-            return formatRupiah(totalWithPPN);
+            return total;
         });
 
         function removeProduct(index: number) {
             form.transaction_items.splice(index, 1);
         }
 
+        //for marketing processing draf co
+        function handleProcessCO(valueRequest: string) {
+            Swal.fire({
+                icon: "question",
+                title: "Approve pengajuan diskon di CO ini?",
+                showCancelButton: true,
+                cancelButtonColor: "red",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    router.patch(route('marketing.draf-co.process', customer_order.id), {
+                        valueRequest
+                    }, {
+                        onSuccess: (page) => {
+                            Swal.fire(page.props.flash.success, '', 'success');
+                        },
+                        onError: () => {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Oops, server sibuk :(",
+                                text: "Silahkan lapor admin atau developer",
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
         return {
             columns: createColumns(),
+            handleOpenDiscountModal,
+            handleSubmitDiscount,
+            handleProcessCO,
             removeProduct,
             formatRupiah,
             reStoreStockProduct,
-            enhancedTransactionItems,
+            transaction_items,
             dayjs,
             form,
             transaction_details,
@@ -492,7 +642,15 @@ export default defineComponent({
             selectedItem,
             customer_order,
             selectedProduct,
-            newQuantity
+            setDiscounts,
+            newQuantity,
+            bodyStyle: {
+                width: '600px'
+            },
+            segmented: {
+                content: 'soft',
+                footer: 'soft'
+            } as const,
         }
     },
     components: {

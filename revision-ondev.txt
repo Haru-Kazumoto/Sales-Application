@@ -45,10 +45,10 @@ SALES :
 + [CO:NEW] :
     - di list PO/CO itu disandingin 2 nomor dokumen yang menandakan Bahwa customer tersebut menerbitkan PO sendiri. [ONDEV]
     
-+ [CO:REV] :
++ [CO:REV] : 
     - diskon 1,2,3 itu sekarang di dapetin dari program promo, integrasi
 + [CO:NEW-FLOW] : 
-    - CO tambah 1 field yaitu "Pengajauan Diskon" isinya adalah Pengajuan dan Tidak Pengajuan. 
+    - CO tambah 1 field yaitu "Pengajauan Diskon" isinya adalah Pengajuan dan Tidak Pengajuan.
     Jika pengajuan maka CO ini masuk ke marketing (Draf CO). Ketika approve CO bisa di proses lagi isi diskon nya
     - CO itu ada validasi, si customer ini ada invoice tunggakan gak jadi nanti masuk ke AR dulu untuk approvan, 
     ada 3 status yang diberikan AR yaitu (HOLD, APPROVE, REJECT) kalau statusnya masih HOLD CO nya gabisa di proses, kalau reject hapus CO nya

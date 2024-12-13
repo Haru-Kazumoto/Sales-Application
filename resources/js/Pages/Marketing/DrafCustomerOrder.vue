@@ -1,42 +1,29 @@
 <template>
     <div class="d-flex flex-column gap-4">
-        <TitlePage title="List CO" />
+        <TitlePage title="Draf Customer Order" />
 
         <div class="row g-2">
             <div class="col-5 col-lg-2">
-                <n-select size="large" placeholder="PERUSAHAAN" clearable />
+                <n-select size="large" placeholder="" />
             </div>
             <div class="col-6 col-lg-4">
                 <n-input size="large" placeholder="CARI NOMOR CO" />
             </div>
         </div>
-        <n-tabs type="line" animated>
-            <n-tab-pane name="non-submission" tab="CO NON PENGAJUAN DISKON">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body">
-                        <n-data-table :columns="columns" :bordered="false"
-                            :data="($page.props.customer_orders as any).data" size="small" />
-                    </div>
-                </div>
-            </n-tab-pane>
-            <n-tab-pane name="submission" tab="CO PENGAJUAN DISKON">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body">
-                        <n-data-table :columns="columns" :bordered="false"
-                            :data="($page.props.draf_customer_orders as any).data" size="small" />
-                    </div>
-                </div>
-            </n-tab-pane>
-        </n-tabs>
-
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <n-data-table :columns="columns" :bordered="false" :data="($page.props.customer_orders as any).data"
+                    size="small" />
+            </div>
+        </div>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, h } from 'vue'
-import TitlePage from '../../../Components/TitlePage.vue';
+import TitlePage from '../../Components/TitlePage.vue';
 import { DataTableColumns, NButton, NTag } from 'naive-ui';
-import { Transactions } from '../../../types/model.ts';
+import { Transactions } from '../../types/model.ts';
 import { router, usePage } from '@inertiajs/vue3';
 import dayjs from 'dayjs';
 import 'dayjs/locale/id'; // Import locale Indonesia

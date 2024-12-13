@@ -3,7 +3,7 @@
     <Head title="Dashboard" />
     <div class="d-flex flex-column gap-4">
         <div class="d-flex flex-column my-2 ">
-            <span class="fs-3 fs-md-4 fw-semibold">Welcome back {{ ($page.props.auth as any).user.fullname }}</span>
+            <span class="fs-3 fs-md-4 fw-semibold">Dashboard Procurement</span>
         </div>
         <!-- Row untuk card info -->
         <div class="">

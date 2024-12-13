@@ -272,6 +272,7 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         Route::get('/list-co', [App\Http\Controllers\CustomerOrdersController::class, 'index'])->name('list-co');
         Route::get('/customer-order/detail/{transactions}', [App\Http\Controllers\CustomerOrdersController::class, 'show'])->name('detail-co');
         Route::post('/re-store-products/{transactionItem}', [App\Http\Controllers\ProductsController::class,'reStoreStockProduct'])->name('restore-products');
+        Route::patch('/submit-discounts/{transactionItem}', [App\Http\Controllers\CustomerOrdersController::class,'setDiscount'])->name('new-discount');
 
         // Booking Item
         Route::name('booking-item.')->prefix('booking-item/dnp')->group(function() {
@@ -291,6 +292,11 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
             Route::get('', [App\Http\Controllers\UserTargetController::class, 'index'])->name('index-target');
             Route::get('/create-target/{user}', [App\Http\Controllers\UserTargetController::class, 'create'])->name('create-target');
             Route::patch('/update-target/{user}', [App\Http\Controllers\UserTargetController::class, 'update'])->name('update-target');
+        });
+
+        Route::prefix('draf-co')->group(function() {
+            Route::get('', [App\Http\Controllers\CustomerOrdersController::class, 'indexDrafCustomerOrder'])->name('draf-co');
+            Route::patch('/process-co/{transactions}',[App\Http\Controllers\CustomerOrdersController::class, 'processDrafCustomerOrder'])->name('draf-co.process');
         });
 
         Route::prefix('marketing-reports')->group(function() {

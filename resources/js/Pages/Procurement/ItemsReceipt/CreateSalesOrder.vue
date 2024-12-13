@@ -39,7 +39,7 @@
 
                         <!-- Baris Kedua -->
                         <div class="col-lg-4 col-6">
-                            <label for="field4">Tanggal PO </label>
+                            <label for="field4">Tanggal PO </label> 
                             <n-input size="large" v-model:value="transaction_details.purchase_order_date" disabled
                                 placeholder="" />
                         </div>

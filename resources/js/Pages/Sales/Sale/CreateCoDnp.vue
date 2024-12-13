@@ -123,6 +123,13 @@
                                 v-model:value="transaction_details.use_tax" />
                         </div>
                     </div>
+                    <div class="col-6 col-sm-6 col-md-6 col-lg-3">
+                        <div class="d-flex flex-column gap-1">
+                            <label for="ppn">Pengajuan Diskon</label>
+                            <n-select size="large" placeholder="" :options="discountSubmission"
+                                v-model:value="transaction_details.submission_discount" />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -462,9 +469,10 @@ export default defineComponent({
             po_customer: null as unknown as string,
             total_discount_1: null as any,
             total_discount_3: null as any,
-            total_discount_2: null as any,
-            use_tax: false,
+            total_discount_2: "false",
             segment_customer: null as any,
+            use_tax: false,
+            submission_discount: "NOT SUBMIT",
         });
 
 
@@ -935,6 +943,14 @@ export default defineComponent({
             product_id: null as unknown as number,
         });
 
+        function handleApproveDrafCO() {
+            
+        }
+
+        function handleRejectDrafCO() {
+
+        }
+
 
         function handleAddProduct() {
             // Pastikan quantity dan stok adalah angka
@@ -1203,6 +1219,24 @@ export default defineComponent({
                     value: "false",
                     data_type: 'boolean',
                 },
+                {
+                    name: "Pengajuan Diskon",
+                    category: "Discount Submission",
+                    value: transaction_details.value.submission_discount,
+                    data_type: "string",
+                },
+                {
+                    name: "Status Pengajuan",
+                    category: "Submission Status",
+                    value: "false",
+                    data_type: "boolean",
+                },
+                {
+                    name: "PO Customer",
+                    category: "PO Customer",
+                    value: transaction_details.value.po_customer ?? "no-value",
+                    data_type: "string",
+                }
             ];
 
             form.post(route('sales.create-co-dnp.post'), {
@@ -1291,6 +1325,11 @@ export default defineComponent({
             { label: "ALL SEGMENT", value: "ALL_SEGMENT" }
         ];
 
+        const discountSubmission = [
+            { label: "PENGAJUAN DISKON", value: "SUBMIT" },
+            { label: "TIDAK AJUKAN", value: "NOT SUBMIT" },
+        ]
+
         const termPaymentOptions = (page.props.payment_terms as Lookup[]).map((data) => ({
             label: data.label,
             value: data.value
@@ -1339,6 +1378,7 @@ export default defineComponent({
             grandTotal,
             sendType,
             productMasters,
+            discountSubmission,
             availableProducts,
             handleSearchCustomer: (query: string) => {
                 if (!query.length) {

@@ -41,14 +41,106 @@ class CustomerOrdersController extends Controller
      */
     public function index()
     {
-        $customer_orders = Transactions::with('transactionType', 'transactionDetails', 'transactionItems')
+        $customer_orders = Transactions::with('transactionType', 'transactionDetails', 'transactionItems')  
             ->whereHas('transactionType', function($query) {
                 $query->where('name', 'Sales Order');
+            })
+            ->whereHas('transactionDetails', function($query) {
+                $query
+                    ->where('category', 'Discount Submission')
+                    ->where('value', 'NOT SUBMIT');
             })
             ->orderByDesc('created_at')
             ->paginate(10);
 
-        return Inertia::render('Sales/Sale/ListCO', compact('customer_orders'));
+        $draf_customer_orders = Transactions::with('transactionType', 'transactionDetails', 'transactionItems')  
+            ->whereHas('transactionType', function($query) {
+                $query->where('name', 'Sales Order');
+            })
+            ->whereHas('transactionDetails', function($query) {
+                $query
+                    ->where('category', 'Discount Submission')
+                    ->where('value', 'SUBMIT');
+            })
+            ->whereHas('transactionDetails', function($query) {
+                $query
+                    ->where('category', 'Submission Status')
+                    ->where('value', 'true');
+            })            
+            ->orderByDesc('created_at')
+            ->paginate(10);
+
+        return Inertia::render('Sales/Sale/ListCO', compact('customer_orders', 'draf_customer_orders'));
+    }
+
+    /**
+     * Index draf customer order on marketing page
+     * 
+     * @return Response
+     */
+    public function indexDrafCustomerOrder()
+    {
+        $customer_orders = Transactions::with('transactionType', 'transactionDetails', 'transactionItems')  
+            ->whereHas('transactionType', function($query) {
+                $query->where('name', 'Sales Order');
+            })
+            ->whereHas('transactionDetails', function($query) {
+                $query
+                    ->where('category', 'Discount Submission')
+                    ->where('value', 'SUBMIT');
+            })
+            ->whereHas('transactionDetails', function($query) {
+                $query
+                    ->where('category', 'Submission Status')
+                    ->where('value', '-'); //it means pending
+            })
+            ->orderByDesc('created_at')
+            ->paginate(10);
+
+        return Inertia::render('Marketing/DrafCustomerOrder', compact('customer_orders'));
+    }
+
+    /**
+     * 
+     * 
+     * @param \App\Models\Transactions $transactions
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function processDrafCustomerOrder(Transactions $transactions, Request $request)
+    {
+        DB::transaction(function() use ($transactions, $request) {
+            $tx_details = $transactions->transactionDetails;
+            $valueRequest = $request->valueRequest;
+            
+            foreach($tx_details as $detail) 
+            {
+                if($detail->category === 'Submission Status')
+                {
+                    $detail->update(['value' => $valueRequest]);
+                }
+            }
+        });
+
+        return back()->with('success', 'Berhasil diapprove!');
+    }
+
+    /**
+     * Set discount on customer order has submission discount in it
+     * 
+     * @param \App\Models\Transactions $transactions
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function setDiscount(TransactionItem $transactionItem, Request $request)
+    {
+        DB::transaction(function() use ($transactionItem, $request) {
+            $transactionItem->update([
+                'amount' => $request->newAmount,
+                'total_price' => $request->newTotalPrice,
+            ]);
+        });
+
+        return back()->with('success', 'Diskon berhasil dimasukan!');
     }
 
     /**

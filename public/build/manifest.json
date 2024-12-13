@@ -5,12 +5,12 @@
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-WwP9cA52.js",
+    "file": "assets/app-DoYf87Sw.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "css": [
-      "assets/app--vMCvMB1.css"
+      "assets/app-BcLwDird.css"
     ]
   }
 }
