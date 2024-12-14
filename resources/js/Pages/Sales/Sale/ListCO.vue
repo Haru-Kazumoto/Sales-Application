@@ -109,6 +109,41 @@ export default defineComponent({
                     },
                 },
                 {
+                    title: "STATUS",
+                    key: "status",
+                    width: 100,
+                    render(row) {
+                        let type;
+
+                        switch (row.status) {
+                            case "PENDING":
+                                type = "info";
+                                break;
+                            case "HOLD":
+                                type = "warning";
+                                break;
+                            case "APPROVE":
+                                type = "success";
+                                break;
+                            case "REJECT":
+                                type = 'error';
+                                break;
+                            default:
+                                type = '';
+                                break;
+                        }
+
+                        return h(
+                            NTag,
+                            {
+                                type,
+                                strong: true,
+                                size: 'large',
+                            }, { default: () => row.status }
+                        )
+                    }
+                },
+                {
                     title: "ACTION",
                     key: "action",
                     width: 50,
