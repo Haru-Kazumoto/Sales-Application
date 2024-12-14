@@ -25,6 +25,7 @@ class Transactions extends Model
         'tax_amount',
         'transaction_type_id',
         'file_attachment'
+        'customer_id',
     ];
 
     public function transactionType(): BelongsTo
@@ -55,5 +56,10 @@ class Transactions extends Model
     public function invoicePayments(): HasMany
     {
         return $this->hasMany(InvoicePayment::class, 'transaction_id');
+    }
+
+    public function parties(): BelongsTo
+    {
+        return $this->belongsTo(Parties::class, 'customer_id');
     }
 }

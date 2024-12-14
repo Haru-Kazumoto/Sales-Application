@@ -216,7 +216,7 @@ class CustomerOrdersController extends Controller
             'due_date' => 'required|date',
             'sub_total' => 'required|numeric',
             'total' => 'required|numeric',
-            'tax_amount' => 'required|numeric',
+            'tax_amount' => 'nullable|numeric',
             'transaction_details' => 'required|array',
             'transaction_details.*.name' => 'required|string',
             'transaction_details.*.category' => 'required|string',
@@ -242,6 +242,9 @@ class CustomerOrdersController extends Controller
         DB::transaction(function () use ($request) {
             $tx_type = TransactionType::where('name', 'Sales Order')->first(); //8
             $delivery = $request->transaction_details[4]['value'];
+            $customer_name = $request->transaction_details[1]['value']; //customer name
+
+            $customer = Parties::where('name', $customer_name)->first();
 
             // Simpan customer order
             $transaction = Transactions::create([
@@ -255,6 +258,7 @@ class CustomerOrdersController extends Controller
                 'total' => $request->input('total'),
                 'tax_amount' => $request->input('tax_amount'),
                 'transaction_type_id' => $tx_type->id,
+                'customer_id' => $customer->id,
             ]);
 
             // Simpan transaction details
