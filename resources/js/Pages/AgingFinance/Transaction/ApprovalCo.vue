@@ -118,7 +118,7 @@ function createColumns() {
         {
             title: 'TOTAL FAKTUR YANG BELUM LUNAS',
             key: 'total_invoice_nunggak',
-            width: 150,
+            width: 200,
         },
         {
             title: "ACTION",

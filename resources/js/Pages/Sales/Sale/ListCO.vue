@@ -96,20 +96,20 @@ export default defineComponent({
                         return customer_name?.value;
                     },
                 },
-                {
-                    title: "BADAN USAHA",
-                    key: "legality",
-                    width: 100,
-                    render(rowData) {
-                        const legality = rowData.transaction_details.find((data) => {
-                            return data.category === "Legality";
-                        })
+                // {
+                //     title: "BADAN USAHA",
+                //     key: "legality",
+                //     width: 100,
+                //     render(rowData) {
+                //         const legality = rowData.transaction_details.find((data) => {
+                //             return data.category === "Legality";
+                //         })
 
-                        return legality?.value;
-                    },
-                },
+                //         return legality?.value;
+                //     },
+                // },
                 {
-                    title: "STATUS",
+                    title: "STATUS PENGAJUAN CO",
                     key: "status",
                     width: 100,
                     render(row) {
@@ -140,6 +140,46 @@ export default defineComponent({
                                 strong: true,
                                 size: 'large',
                             }, { default: () => row.status }
+                        )
+                    }
+                },
+                {
+                    title: "STATUS PENGAJUAN DISKON",
+                    key: "status_diskon",
+                    width: 150,
+                    render(row) {
+                        let type;
+                        const status = row.transaction_details.find(data => data.category === "Submission Status")?.value;
+
+                        switch (status) {
+                            case "true":
+                                type = "success";
+                                break;
+                            case "false":
+                                type = "error";
+                                break;
+                            default:
+                                type = "";
+                                break;
+                        }
+
+                        return h(
+                            NTag,
+                            {
+                                type,
+                                strong: true,
+                                size: 'large',
+                            }, { 
+                                default: () => {
+                                    if(status === "true") {
+                                        return "DIAPPROVE";
+                                    } else if (status === "false"){
+                                        return "DIREJECT";
+                                    } else {
+                                        return "TIDAK ADA";
+                                    }
+                                }
+                            }
                         )
                     }
                 },
