@@ -56,6 +56,7 @@ class CustomerOrdersController extends Controller
             ->paginate(10);
 
         $draf_customer_orders = Transactions::with('transactionType', 'transactionDetails', 'transactionItems')
+            ->where('status', '<>', 'PENDING')
             ->whereHas('transactionType', function ($query) {
                 $query->where('name', 'Sales Order');
             })
