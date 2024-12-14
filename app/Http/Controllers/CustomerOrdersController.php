@@ -45,7 +45,7 @@ class CustomerOrdersController extends Controller
         $customer_orders = Transactions::with('transactionType', 'transactionDetails', 'transactionItems')
             ->where('status', '<>', 'PENDING')
             ->whereHas('transactionType', function ($query) {
-                $query->where('name', 'Sales Order');
+                $query->whereIn('name', ['Sales Order', 'Sales Order Need Approval']);
             })
             ->whereHas('transactionDetails', function ($query) {
                 $query
@@ -58,18 +58,18 @@ class CustomerOrdersController extends Controller
         $draf_customer_orders = Transactions::with('transactionType', 'transactionDetails', 'transactionItems')
             ->where('status', '<>', 'PENDING')
             ->whereHas('transactionType', function ($query) {
-                $query->where('name', 'Sales Order');
+                $query->whereIn('name', ['Sales Order', 'Sales Order Need Approval']);
             })
             ->whereHas('transactionDetails', function ($query) {
                 $query
                     ->where('category', 'Discount Submission')
                     ->where('value', 'SUBMIT');
             })
-            ->whereHas('transactionDetails', function ($query) {
-                $query
-                    ->where('category', 'Submission Status')
-                    ->where('value', 'true');
-            })
+            // ->whereHas('transactionDetails', function ($query) {
+            //     $query
+            //         ->where('category', 'Submission Status')
+            //         ->where('value', 'true');
+            // })
             ->orderByDesc('created_at')
             ->paginate(10);
 
