@@ -476,12 +476,12 @@ class CustomerOrdersController extends Controller
         // panggil view invoice_need_approval
         $data = DB::table("invoice_need_approval")
             ->where('status', '<>', 'PENDING')
-            ->orderBy("tanggal_co","desc")
-            ->get(); 
+            ->orderBy("tanggal_co", "desc")
+            ->get();
         $not_process_yet_data = DB::table("invoice_need_approval")
-            ->where('status' ,'PENDING')
-            ->orderBy("tanggal_co","desc")
-            ->get(); 
+            ->where('status', 'PENDING')
+            ->orderBy("tanggal_co", "desc")
+            ->get();
 
         return Inertia::render('AgingFinance/Transaction/ApprovalCo', compact('data', 'not_process_yet_data'));
     }
@@ -489,7 +489,7 @@ class CustomerOrdersController extends Controller
     // bug harusnya datnaya itu muncul karna data nya setelah di approve jadi 8 bukan 70
     public function processCustomerOrder(Transactions $transactions, Request $request)
     {
-        DB::transaction(function() use ($transactions, $request) {
+        DB::transaction(function () use ($transactions, $request) {
             $status = $request->valueRequest;
             $notes = $request->notes;
 
@@ -500,6 +500,27 @@ class CustomerOrdersController extends Controller
                 'approved_by' => Auth::user()->id,
                 'approve_at' => Carbon::now(),
             ]);
+
+            $warehouse = Warehouse::where('name', $request->warehouse)->first();
+            $trx_items = $transactions->transactionItems()->get();
+
+            foreach ($trx_items as $trx_item) {
+                $batch_codes = $this->getBatchCode($trx_item->product_id, $trx_item->quantity);
+                if (count($batch_codes) > 0) {
+                    foreach ($batch_codes as $batch_code) {
+                        ProductJournal::create([
+                            'quantity' => $batch_code["out_stock"],
+                            'amount' => $trx_item->amount * $batch_code["out_stock"],
+                            'action' => "OUT",
+                            'batch_code' => $batch_code["code"],
+                            // 'expiry_date' => $journal['expiry_date'],
+                            'transactions_id' => $transactions->id,
+                            'warehouse_id' => $warehouse->id,
+                            'product_id' => $trx_item->product_id,
+                        ]);
+                    }
+                }
+            }
         });
 
         return redirect()->route('aging-finance.co.process')->with('success', 'CO Berhasil di proses!');
