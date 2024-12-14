@@ -514,8 +514,8 @@ export default defineComponent({
         const availableProducts = ref<any>([]);
 
         const productOptions = (page.props.products as any[]).map((data) => ({
-            label: `${data.name} - ${data.batch_code}`,
-            value: `${data.name} - ${data.batch_code}`,
+            label: data.name,
+            value: data.name,
             unit: data.unit,
             code: data.code,
             warehouse: data.warehouse,
@@ -559,6 +559,7 @@ export default defineComponent({
         watch(
             () => transaction_details.value.delivery, // Perhatikan perubahan di `delivery`
             (delivery) => {
+                // TODO
                 if (['DIRECT', 'DIRECT_DEPO', 'DO'].includes(delivery)) {
                     // Jika delivery adalah salah satu dari jenis pengiriman tersebut, gunakan data master
                     availableProducts.value = productMasters;

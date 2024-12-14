@@ -203,7 +203,22 @@
                         <span class="fw-bold">{{ form.due_date ? dayjs(form.due_date).format('dddd, D MMMM YYYY') : ''
                             }}</span>
                     </div>
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between" v-if="customer_order.status !== null">
+                        <span>STATUS PENGAJUAN CO</span>
+                        <div v-if="customer_order.status === 'APPROVE'">
+                            <n-tag type="success" size="large" bordered="true" strong="true">DIAPPROVE</n-tag>
+                        </div>
+                        <div v-else-if="customer_order.status === 'REJECT'">
+                            <n-tag type="error" size="large" bordered="true" strong="true">DITOLAK</n-tag>
+                        </div>
+                        <div v-else-if="customer_order.status === 'HOLD'">
+                            <n-tag type="warning" size="large" bordered="true" strong="true">DITAHAN</n-tag>
+                        </div>
+                        <div v-else>
+                            <n-tag type="info" size="large" bordered="true" strong="true">BELUM DIPROSES</n-tag>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between" v-if="transaction_details.submission_discount === 'SUBMIT'">
                         <span>STATUS PENGAJUAN DISKON</span>
                         <div v-if="transaction_details.submission_status === 'true'">
                             <n-tag type="success" size="large" bordered="true" strong="true">DIAPPROVE</n-tag>
@@ -219,6 +234,12 @@
             </div>
         </div>
 
+        <div class="d-flex gap-3 ms-auto mb-4"
+            v-if="($page.props.auth as any).user.division.division_name === 'AGING_FINANCE' && customer_order.status === 'PENDING'">
+            <n-button type="error" size="large" @click="handleApprovingCO('REJECT')">REJECT</n-button>
+            <n-button type="warning" size="large" @click="handleApprovingCO('HOLD')">HOLD</n-button>
+            <n-button type="primary" size="large" @click="handleApprovingCO('APPROVE')">APPROVE</n-button>
+        </div>
         <div class="d-flex gap-3 ms-auto mb-4"
             v-if="($page.props.auth as any).user.division.division_name === 'MARKETING'">
             <n-button type="error" size="large" @click="handleProcessCO('false')">REJECT</n-button>
@@ -595,6 +616,29 @@ export default defineComponent({
             form.transaction_items.splice(index, 1);
         }
 
+        function handleApprovingCO(valueRequest: string) {
+            router.patch(route('aging-finance.co.process.patch', customer_order.id), {
+                valueRequest
+            }, {
+                onSuccess: (page) => {
+                    Swal.fire({
+                        icon: "success",
+                        title: page.props.flash.success,
+                        text: "Data CO telah diperbarui",
+                        timer: 2500,
+                    });
+                },
+                onError: () => {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops, server sedang sibuk :(",
+                        text: "Tunggu beberapa saat atau hubungi developer",
+                        timer: 3000,
+                    });
+                }
+            })
+        }
+
         //for marketing processing draf co
         function handleProcessCO(valueRequest: string) {
             Swal.fire({
@@ -625,6 +669,7 @@ export default defineComponent({
         return {
             columns: createColumns(),
             handleOpenDiscountModal,
+            handleApprovingCO,
             handleSubmitDiscount,
             handleProcessCO,
             removeProduct,

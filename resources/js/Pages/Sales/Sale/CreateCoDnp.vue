@@ -564,7 +564,7 @@ export default defineComponent({
                     availableProducts.value = productMasters;
                 } else {
                     // Selain itu, gunakan data dari gudang
-                    availableProducts.value = productOptions;
+                    availableProducts.value = productOptions; 
                 }
             },
             { immediate: true } // Jalankan watch segera saat di-mount

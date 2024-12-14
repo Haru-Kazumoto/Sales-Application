@@ -17,6 +17,7 @@ use App\Models\Warehouse;
 use App\Utils\DocumentNumberGenerator;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -42,6 +43,7 @@ class CustomerOrdersController extends Controller
     public function index()
     {
         $customer_orders = Transactions::with('transactionType', 'transactionDetails', 'transactionItems')
+            ->where('status', '<>', 'PENDING')
             ->whereHas('transactionType', function ($query) {
                 $query->where('name', 'Sales Order');
             })
@@ -146,11 +148,10 @@ class CustomerOrdersController extends Controller
      */
     public function createDnp(): Response
     {
-        $coNumber = DocumentNumberGenerator::generate(
+        $coNumber = DocumentNumberGenerator::generateCoNumber(
             'CO-',
             'transactions',
             'document_code',
-            8
         );
         $dateNow = Carbon::now()->format('Y-m-d H:i:s');
         $customers = Parties::where('type_parties', 'CUSTOMER')
@@ -158,7 +159,7 @@ class CustomerOrdersController extends Controller
             ->with('partiesGroup')
             ->get();
         $payment_terms = Lookup::where('category', 'PAYMENT_TERM')->get();
-        $products = $this->productServices->getStockProducts("DNP", "IN");
+        $products = $this->productServices->getStockProducts("DNP");
         $all_products = Products::query()->get();
 
         return Inertia::render('Sales/Sale/CreateCoDnp', [
@@ -176,18 +177,17 @@ class CustomerOrdersController extends Controller
      */
     public function createDku(): Response
     {
-        $coNumber = DocumentNumberGenerator::generate(
+        $coNumber = DocumentNumberGenerator::generateCoNumber(
             'CO-',
             'transactions',
             'document_code',
-            8
         );
         $dateNow = Carbon::now()->format('Y-m-d H:i:s');
         $customers = Parties::where('type_parties', 'CUSTOMER')
             ->where('users_id', Auth::user()->id)
             ->get();
         $payment_terms = Lookup::where('category', 'PAYMENT_TERM')->get();
-        $products = $this->productServices->getStockProducts("DKU", "IN");
+        $products = $this->productServices->getStockProducts("DKU");
         $all_products = Products::query()->get();
 
         return Inertia::render('Sales/Sale/CreateCoDku', [
@@ -290,6 +290,7 @@ class CustomerOrdersController extends Controller
                 'tax_amount' => $request->input('tax_amount'),
                 'transaction_type_id' => 70,
                 'customer_id' => $customer->id,
+                'status' => 'PENDING',
             ]);
 
             // Simpan transaction details
@@ -408,6 +409,7 @@ class CustomerOrdersController extends Controller
                 'tax_amount' => $request->input('tax_amount'),
                 'transaction_type_id' => 70, // Atur transaction_type_id untuk CO
                 'customer_id' => $customer->id,
+                'status' => 'PENDING',
             ]);
 
             // Simpan transaction details
@@ -467,6 +469,40 @@ class CustomerOrdersController extends Controller
         });
 
         return redirect()->route('sales.create-co-dku')->with('success', 'Customer Order berhasil disubmit!');
+    }
+
+    public function indexCoNeedApprove()
+    {
+        // panggil view invoice_need_approval
+        $data = DB::table("invoice_need_approval")
+            ->where('status', '<>', 'PENDING')
+            ->orderBy("tanggal_co","desc")
+            ->get(); 
+        $not_process_yet_data = DB::table("invoice_need_approval")
+            ->where('status' ,'PENDING')
+            ->orderBy("tanggal_co","desc")
+            ->get(); 
+
+        return Inertia::render('AgingFinance/Transaction/ApprovalCo', compact('data', 'not_process_yet_data'));
+    }
+
+    // bug harusnya datnaya itu muncul karna data nya setelah di approve jadi 8 bukan 70
+    public function processCustomerOrder(Transactions $transactions, Request $request)
+    {
+        DB::transaction(function() use ($transactions, $request) {
+            $status = $request->valueRequest;
+            $notes = $request->notes;
+
+            $transactions->update([
+                'transaction_type_id' => 8,
+                'status' => $status,
+                'approval_notes' => $notes,
+                'approved_by' => Auth::user()->id,
+                'approve_at' => Carbon::now(),
+            ]);
+        });
+
+        return redirect()->route('aging-finance.co.process')->with('success', 'CO Berhasil di proses!');
     }
 
     /**

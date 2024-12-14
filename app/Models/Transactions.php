@@ -24,8 +24,12 @@ class Transactions extends Model
         'total',
         'tax_amount',
         'transaction_type_id',
-        'file_attachment'
+        'file_attachment',
         'customer_id',
+        'status',
+        'approved_by',
+        'approve_at',
+        'approval_notes'
     ];
 
     public function transactionType(): BelongsTo

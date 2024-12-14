@@ -262,6 +262,9 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
 
         Route::post('/send-message', [App\Http\Controllers\BlastWhatsappController::class, 'sendWhatsapp'])->name('send.message');
         Route::get('/export-invoices', [App\Http\Controllers\InvoiceController::class, 'exportInvoice'])->name('invoice.export');
+
+        Route::get('/process-co', [App\Http\Controllers\CustomerOrdersController::class, 'indexCoNeedApprove'])->name('co.process');
+        Route::patch('/process-co/{transactions}', [App\Http\Controllers\CustomerOrdersController::class, 'processCustomerOrder'])->name('co.process.patch');
     });
 
     Route::name('sales.')->group(function() {

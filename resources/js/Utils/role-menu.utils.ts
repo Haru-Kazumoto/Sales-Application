@@ -1,4 +1,4 @@
-import { Box20Regular, Box24Regular, BoxCheckmark20Regular, BoxDismiss24Regular, BoxEdit20Regular, BoxMultiple20Regular, DocumentAdd20Regular, DocumentAdd28Regular, DocumentBulletListMultiple20Regular, DocumentTableTruck24Regular, HomePerson24Regular, PeopleList24Regular, PeopleProhibited20Regular, PeopleSettings24Regular, PeopleSwap16Regular, PeopleTeam28Regular, PersonAccounts24Regular, ReceiptCube24Regular, Textbox16Regular, VehicleTruckProfile20Regular, PeopleAudience24Regular, VehicleTruckCube24Regular, DocumentTextToolbox24Regular } from '@vicons/fluent';
+import { Box20Regular, Box24Regular, BoxCheckmark20Regular, BoxDismiss24Regular, BoxEdit20Regular, BoxMultiple20Regular, DocumentAdd20Regular, DocumentAdd28Regular, DocumentBulletListMultiple20Regular, DocumentTableTruck24Regular, HomePerson24Regular, PeopleList24Regular, PeopleProhibited20Regular, PeopleSettings24Regular, PeopleSwap16Regular, PeopleTeam28Regular, PersonAccounts24Regular, ReceiptCube24Regular, Textbox16Regular, VehicleTruckProfile20Regular, PeopleAudience24Regular, VehicleTruckCube24Regular, DocumentTextToolbox24Regular, DocumentBulletListMultiple24Regular } from '@vicons/fluent';
 import { SkullOutline, CartOutline, FileTrayFullOutline, FileTrayStackedOutline, CubeOutline, WalletOutline, NotificationsOutline, PeopleOutline, ReceiptOutline, SettingsOutline, BarChartOutline, BagCheckOutline, DocumentsOutline, DocumentTextOutline, ShieldCheckmarkOutline, RepeatSharp, WarningOutline, Cart, People, PersonAddOutline, Contract, Analytics, CogOutline, DocumentOutline, PushOutline, ShieldHalf, PieChartOutline, ReorderFourSharp, CartSharp, KeyOutline, LogoWhatsapp, Close, Skull, Bookmarks, BookmarkOutline, AlbumsOutline, TrashOutline } from '@vicons/ionicons5';
 import { WarehouseOutlined } from '@vicons/material';
 import { NIcon } from 'naive-ui';
@@ -171,6 +171,12 @@ export const roleMenus = {
                     href: '/aging',
                     icon: renderIcon(BarChartOutline),
                 },
+                {
+                    label: 'Approval CO',
+                    key: 'process-customer-order',
+                    href: "/process-co",
+                    icon: renderIcon(DocumentBulletListMultiple24Regular),
+                }
             ]
         },
         {
