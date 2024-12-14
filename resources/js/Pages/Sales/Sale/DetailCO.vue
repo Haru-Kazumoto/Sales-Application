@@ -235,7 +235,7 @@
         </div>
 
         <div class="d-flex gap-3 ms-auto mb-4"
-            v-if="($page.props.auth as any).user.division.division_name === 'AGING_FINANCE' && customer_order.status === 'PENDING'">
+            v-if="($page.props.auth as any).user.division.division_name === 'AGING_FINANCE' && customer_order.status !== 'PENDING'">
             <n-button type="error" size="large" @click="handleApprovingCO('REJECT')">REJECT</n-button>
             <n-button type="warning" size="large" @click="handleApprovingCO('HOLD')">HOLD</n-button>
             <n-button type="primary" size="large" @click="handleApprovingCO('APPROVE')">APPROVE</n-button>
@@ -615,10 +615,13 @@ export default defineComponent({
         function removeProduct(index: number) {
             form.transaction_items.splice(index, 1);
         }
-
+        
         function handleApprovingCO(valueRequest: string) {
+            const warehouse = customer_order.transaction_details.find(data => data.category === "Warehouse")?.value;
+
             router.patch(route('aging-finance.co.process.patch', customer_order.id), {
-                valueRequest
+                valueRequest,
+                warehouse
             }, {
                 onSuccess: (page) => {
                     Swal.fire({

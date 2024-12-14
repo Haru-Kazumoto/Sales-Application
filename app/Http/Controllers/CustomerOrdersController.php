@@ -84,7 +84,7 @@ class CustomerOrdersController extends Controller
     {
         $customer_orders = Transactions::with('transactionType', 'transactionDetails', 'transactionItems')
             ->whereHas('transactionType', function ($query) {
-                $query->where('name', 'Sales Order');
+                $query->whereIn('name', ['Sales Order', 'Sales Order Need Approval']);
             })
             ->whereHas('transactionDetails', function ($query) {
                 $query
@@ -121,7 +121,7 @@ class CustomerOrdersController extends Controller
             }
         });
 
-        return back()->with('success', 'Berhasil diapprove!');
+        return redirect()->route('marketing.draf-co')->with('success', 'Berhasil diapprove!');
     }
 
     /**
@@ -326,26 +326,26 @@ class CustomerOrdersController extends Controller
                 ]);
 
                 // decrease quantity at warehouse if the delivery is not 'DIRECT', 'DIRECT_DEPO', 'DO'
-                if ($delivery && !in_array($delivery, ['DIRECT', 'DIRECT_DEPO', 'DO'])) {
-                    foreach ($txItem['product_journals'] as $journal) {
-                        // ngedebet jumlah barang dari satu product dengan batch_code metode FIFO
-                        $batch_codes = $this->getBatchCode($product->id, $journal["quantity"]);
-                        if (count($batch_codes) > 0) {
-                            foreach ($batch_codes as $batch_code) {
-                                ProductJournal::create([
-                                    'quantity' => $batch_code["out_stock"],
-                                    'amount' => $txItem['amount'],
-                                    'action' => $journal['action'],
-                                    'batch_code' => $batch_code["code"],
-                                    // 'expiry_date' => $journal['expiry_date'],
-                                    'transactions_id' => $transaction->id,
-                                    'warehouse_id' => $warehouse->id,
-                                    'product_id' => $product->id,
-                                ]);
-                            }
-                        }
-                    }
-                }
+                // if ($delivery && !in_array($delivery, ['DIRECT', 'DIRECT_DEPO', 'DO'])) {
+                //     foreach ($txItem['product_journals'] as $journal) {
+                //         // ngedebet jumlah barang dari satu product dengan batch_code metode FIFO
+                //         $batch_codes = $this->getBatchCode($product->id, $journal["quantity"]);
+                //         if (count($batch_codes) > 0) {
+                //             foreach ($batch_codes as $batch_code) {
+                //                 ProductJournal::create([
+                //                     'quantity' => $batch_code["out_stock"],
+                //                     'amount' => $txItem['amount'],
+                //                     'action' => $journal['action'],
+                //                     'batch_code' => $batch_code["code"],
+                //                     // 'expiry_date' => $journal['expiry_date'],
+                //                     'transactions_id' => $transaction->id,
+                //                     'warehouse_id' => $warehouse->id,
+                //                     'product_id' => $product->id,
+                //                 ]);
+                //             }
+                //         }
+                //     }
+                // }
             }
         });
 
@@ -445,26 +445,26 @@ class CustomerOrdersController extends Controller
                 ]);
 
                 // decrease quantity at warehouse if the delivery is not 'DIRECT', 'DIRECT_DEPO', 'DO'
-                if ($delivery && !in_array($delivery, ['DIRECT', 'DIRECT_DEPO', 'DO'])) {
-                    foreach ($txItem['product_journals'] as $journal) {
-                        // ngedebet jumlah barang dari satu product dengan batch_code metode FIFO
-                        $batch_codes = $this->getBatchCode($product->id, $journal["quantity"]);
-                        if (count($batch_codes) > 0) {
-                            foreach ($batch_codes as $batch_code) {
-                                ProductJournal::create([
-                                    'quantity' => $batch_code["out_stock"],
-                                    'amount' => $txItem['amount'],
-                                    'action' => $journal['action'],
-                                    'batch_code' => $batch_code["code"],
-                                    // 'expiry_date' => $journal['expiry_date'],
-                                    'transactions_id' => $transaction->id,
-                                    'warehouse_id' => $warehouse->id,
-                                    'product_id' => $product->id,
-                                ]);
-                            }
-                        }
-                    }
-                }
+                // if ($delivery && !in_array($delivery, ['DIRECT', 'DIRECT_DEPO', 'DO'])) {
+                //     foreach ($txItem['product_journals'] as $journal) {
+                //         // ngedebet jumlah barang dari satu product dengan batch_code metode FIFO
+                //         $batch_codes = $this->getBatchCode($product->id, $journal["quantity"]);
+                //         if (count($batch_codes) > 0) {
+                //             foreach ($batch_codes as $batch_code) {
+                //                 ProductJournal::create([
+                //                     'quantity' => $batch_code["out_stock"],
+                //                     'amount' => $txItem['amount'],
+                //                     'action' => $journal['action'],
+                //                     'batch_code' => $batch_code["code"],
+                //                     // 'expiry_date' => $journal['expiry_date'],
+                //                     'transactions_id' => $transaction->id,
+                //                     'warehouse_id' => $warehouse->id,
+                //                     'product_id' => $product->id,
+                //                 ]);
+                //             }
+                //         }
+                //     }
+                // }
             }
         });
 
@@ -504,20 +504,22 @@ class CustomerOrdersController extends Controller
             $warehouse = Warehouse::where('name', $request->warehouse)->first();
             $trx_items = $transactions->transactionItems()->get();
 
-            foreach ($trx_items as $trx_item) {
-                $batch_codes = $this->getBatchCode($trx_item->product_id, $trx_item->quantity);
-                if (count($batch_codes) > 0) {
-                    foreach ($batch_codes as $batch_code) {
-                        ProductJournal::create([
-                            'quantity' => $batch_code["out_stock"],
-                            'amount' => $trx_item->amount * $batch_code["out_stock"],
-                            'action' => "OUT",
-                            'batch_code' => $batch_code["code"],
-                            // 'expiry_date' => $journal['expiry_date'],
-                            'transactions_id' => $transactions->id,
-                            'warehouse_id' => $warehouse->id,
-                            'product_id' => $trx_item->product_id,
-                        ]);
+            if($status === "APPROVE") {
+                foreach ($trx_items as $trx_item) {
+                    $batch_codes = $this->getBatchCode($trx_item->product_id, $trx_item->quantity);
+                    if (count($batch_codes) > 0 ) {
+                        foreach ($batch_codes as $batch_code) {
+                            ProductJournal::create([
+                                'quantity' => $batch_code["out_stock"],
+                                'amount' => $trx_item->amount * $batch_code["out_stock"],
+                                'action' => "OUT",
+                                'batch_code' => $batch_code["code"],
+                                // 'expiry_date' => $journal['expiry_date'],
+                                'transactions_id' => $transactions->id,
+                                'warehouse_id' => $warehouse->id,
+                                'product_id' => $trx_item->product_id,
+                            ]);
+                        }
                     }
                 }
             }
