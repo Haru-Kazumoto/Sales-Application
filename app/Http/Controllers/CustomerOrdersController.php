@@ -205,9 +205,9 @@ class CustomerOrdersController extends Controller
         $result = [];
         $needed_stock = $sell_quantity;
 
-        $batch_codes = DB::select("*")
-            ->from("stock_product_by_batch_code")
+        $batch_codes = DB::table("stock_product_by_batch_code")
             ->where("product_id", "=", $product_id)
+            ->where("last_stock", ">", 0)
             ->orderBy("first_in_date", "asc")
             ->get();
 
@@ -217,7 +217,7 @@ class CustomerOrdersController extends Controller
 
 
         foreach ($batch_codes as $code) {
-            $remaining_stock = $code["last_stock"];
+            $remaining_stock = $code->last_stock;
 
             if ($needed_stock > 0) {
 
