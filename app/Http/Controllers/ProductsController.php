@@ -190,6 +190,7 @@ class ProductsController extends Controller
             'bad_debt_dd' => 'nullable|numeric',
             'saving_marketing' => 'nullable|numeric',
             'product_type_id' => 'numeric|required',
+            'supplier_id' => 'numeric|required',
         ]);
 
         // Lakukan update data
@@ -214,7 +215,8 @@ class ProductsController extends Controller
                 'bad_debt_dd' => $request->input('bad_debt_dd'),
                 'saving_marketing' => $request->input('saving_marketing'),
                 'product_type_id' => $product_type->id,
-                'all_segment_price' => $request->all_segment_price
+                'all_segment_price' => $request->all_segment_price,
+                'supplier_id' => $request->supplier_id,
             ]);
         });
 

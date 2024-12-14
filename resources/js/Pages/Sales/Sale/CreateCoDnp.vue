@@ -514,8 +514,8 @@ export default defineComponent({
         const availableProducts = ref<any>([]);
 
         const productOptions = (page.props.products as any[]).map((data) => ({
-            label: `${data.name} - ${data.batch_code}`,
-            value: `${data.name} - ${data.batch_code}`,
+            label: data.name,
+            value: data.name,
             unit: data.unit,
             code: data.code,
             warehouse: data.warehouse,
@@ -553,7 +553,7 @@ export default defineComponent({
         }));
 
         /**
-         *  watch the sendType if send type is direct, direct depo, and beli do then list all products from data master,
+         *  watch the sendType if send type is direct, direct depo, and beli do then list all products from data master,    
          *  elese list all products from warehouse (batch)
          */
         watch(
@@ -1228,7 +1228,7 @@ export default defineComponent({
                 {
                     name: "Status Pengajuan",
                     category: "Submission Status",
-                    value: "false",
+                    value: "-",
                     data_type: "boolean",
                 },
                 {
@@ -1236,6 +1236,12 @@ export default defineComponent({
                     category: "PO Customer",
                     value: transaction_details.value.po_customer ?? "no-value",
                     data_type: "string",
+                },
+                {
+                    name: "Pajak",
+                    category: "Taxes",
+                    value: transaction_details.value.use_tax,
+                    data_type: "boolean",
                 }
             ];
 

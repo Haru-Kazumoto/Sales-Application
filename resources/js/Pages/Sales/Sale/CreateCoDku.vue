@@ -553,7 +553,7 @@ export default defineComponent({
         }));
 
         /**
-         *  watch the sendType if send type is direct, direct depo, and beli do then list all products from data master,
+         *  watch the sendType if send type is direct, direct depo, and beli do then list all products from data master,    
          *  elese list all products from warehouse (batch)
          */
         watch(
