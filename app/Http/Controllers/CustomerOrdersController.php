@@ -271,7 +271,7 @@ class CustomerOrdersController extends Controller
 
         // Gunakan transaksi database
         DB::transaction(function () use ($request) {
-            $tx_type = TransactionType::where('name', 'Sales Order')->first(); //8
+            $tx_type = TransactionType::where('name', 'Sales Order Need Approval')->first(); //8
             $delivery = $request->transaction_details[4]['value'];
             $customer_name = $request->transaction_details[1]['value']; //customer name
 
@@ -288,7 +288,7 @@ class CustomerOrdersController extends Controller
                 'sub_total' => $request->input('sub_total'),
                 'total' => $request->input('total'),
                 'tax_amount' => $request->input('tax_amount'),
-                'transaction_type_id' => $tx_type->id,
+                'transaction_type_id' => 70,
                 'customer_id' => $customer->id,
             ]);
 
@@ -389,7 +389,11 @@ class CustomerOrdersController extends Controller
 
         // Gunakan transaksi database
         DB::transaction(function () use ($request) {
-            $tx_type = TransactionType::where('name', 'Sales Order')->first();
+            $tx_type = TransactionType::where('name', 'Sales Order Need Approval')->first();
+            $delivery = $request->transaction_details[4]['value'];
+            $customer_name = $request->transaction_details[1]['value']; //customer name
+
+            $customer = Parties::where('name', $customer_name)->first();
 
             // Simpan customer order
             $transaction = Transactions::create([
@@ -402,7 +406,8 @@ class CustomerOrdersController extends Controller
                 'sub_total' => $request->input('sub_total'),
                 'total' => $request->input('total'),
                 'tax_amount' => $request->input('tax_amount'),
-                'transaction_type_id' => $tx_type->id, // Atur transaction_type_id untuk CO
+                'transaction_type_id' => 70, // Atur transaction_type_id untuk CO
+                'customer_id' => $customer->id,
             ]);
 
             // Simpan transaction details
@@ -437,16 +442,27 @@ class CustomerOrdersController extends Controller
                     'product_id' => $product->id, // Menyimpan product_id dari produk yang ditemukan atau baru
                 ]);
 
-                //decrease quantity at warehouse
-                ProductJournal::create([
-                    'quantity' => $txItem['quantity'],
-                    'amount' => $txItem['amount'],
-                    'action' => "OUT",
-                    'expiry_date' => null,
-                    'warehouse_id' => $warehouse->id,
-                    'transactions_id' => $transaction->id,
-                    'product_id' => $product->id,
-                ]);
+                // decrease quantity at warehouse if the delivery is not 'DIRECT', 'DIRECT_DEPO', 'DO'
+                if ($delivery && !in_array($delivery, ['DIRECT', 'DIRECT_DEPO', 'DO'])) {
+                    foreach ($txItem['product_journals'] as $journal) {
+                        // ngedebet jumlah barang dari satu product dengan batch_code metode FIFO
+                        $batch_codes = $this->getBatchCode($product->id, $journal["quantity"]);
+                        if (count($batch_codes) > 0) {
+                            foreach ($batch_codes as $batch_code) {
+                                ProductJournal::create([
+                                    'quantity' => $batch_code["out_stock"],
+                                    'amount' => $txItem['amount'],
+                                    'action' => $journal['action'],
+                                    'batch_code' => $batch_code["code"],
+                                    // 'expiry_date' => $journal['expiry_date'],
+                                    'transactions_id' => $transaction->id,
+                                    'warehouse_id' => $warehouse->id,
+                                    'product_id' => $product->id,
+                                ]);
+                            }
+                        }
+                    }
+                }
             }
         });
 
