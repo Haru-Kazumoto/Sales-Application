@@ -1,6 +1,8 @@
 WAREHOUSE :
+major
 + [REPORT-PRODUCTS:NEW] : [1 hari]
     - kekurangan barang seperti pengiriman bertahap dikirimkan ke supplier lewat WA
+    major
 + [PRODUCTS:REV] : [2 hari]
     - barang yang dibeli (CO) dari sales akan dibuatkan page khusus untuk barang yang keluar (FIFO).
     misal barang TEPUNG HIME dan TEPUNG ZERO dibeli masing masing 40, tepung hime 25 15, tepung zero 20 20
@@ -15,6 +17,8 @@ ADMIN :
     - Kemasan dalam detail produk ada 2 field, mohon dihilangkan satu dan Kemasan itu nanti akan di input manual contoh: 25kg/pak bukan pcs, bag, sak seperti sekarang.
     - label Kelompok di customer ganti ke Channel Customer
     - buatkan service import untuk mengimport data customer dari excel
+    
+major
 + [CUSTOMER-REGION:NEW] : [1 hari]
     - mapping customer untuk membuat wilayah wilayahnya [contoh mapping ada di mapping customer ke sales] 
 
@@ -25,6 +29,8 @@ SALES :
 + [CO:REV] : [1 hari]
     - Harga produk itu gabisa di kurangin dari Harga otomatis, tapi bisa di tambah. Jika dipaksa dikurangi buatkan sebuah notifikasi
     - diskon 1,2,3 itu sekarang di dapetin dari program promo, integrasi
+
+major
 + [CO:NEW-FLOW] : [1 hari]
     - CO tambah 1 field yaitu "Pengajauan Diskon" isinya adalah Pengajuan dan Tidak Pengajuan. 
     Jika pengajuan maka CO ini masuk ke marketing (Draf CO). Ketika approve CO bisa di proses lagi isi diskon nya
