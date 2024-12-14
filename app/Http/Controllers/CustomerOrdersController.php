@@ -41,11 +41,11 @@ class CustomerOrdersController extends Controller
      */
     public function index()
     {
-        $customer_orders = Transactions::with('transactionType', 'transactionDetails', 'transactionItems')  
-            ->whereHas('transactionType', function($query) {
+        $customer_orders = Transactions::with('transactionType', 'transactionDetails', 'transactionItems')
+            ->whereHas('transactionType', function ($query) {
                 $query->where('name', 'Sales Order');
             })
-            ->whereHas('transactionDetails', function($query) {
+            ->whereHas('transactionDetails', function ($query) {
                 $query
                     ->where('category', 'Discount Submission')
                     ->where('value', 'NOT SUBMIT');
@@ -53,20 +53,20 @@ class CustomerOrdersController extends Controller
             ->orderByDesc('created_at')
             ->paginate(10);
 
-        $draf_customer_orders = Transactions::with('transactionType', 'transactionDetails', 'transactionItems')  
-            ->whereHas('transactionType', function($query) {
+        $draf_customer_orders = Transactions::with('transactionType', 'transactionDetails', 'transactionItems')
+            ->whereHas('transactionType', function ($query) {
                 $query->where('name', 'Sales Order');
             })
-            ->whereHas('transactionDetails', function($query) {
+            ->whereHas('transactionDetails', function ($query) {
                 $query
                     ->where('category', 'Discount Submission')
                     ->where('value', 'SUBMIT');
             })
-            ->whereHas('transactionDetails', function($query) {
+            ->whereHas('transactionDetails', function ($query) {
                 $query
                     ->where('category', 'Submission Status')
                     ->where('value', 'true');
-            })            
+            })
             ->orderByDesc('created_at')
             ->paginate(10);
 
@@ -75,21 +75,21 @@ class CustomerOrdersController extends Controller
 
     /**
      * Index draf customer order on marketing page
-     * 
+     *
      * @return Response
      */
     public function indexDrafCustomerOrder()
     {
-        $customer_orders = Transactions::with('transactionType', 'transactionDetails', 'transactionItems')  
-            ->whereHas('transactionType', function($query) {
+        $customer_orders = Transactions::with('transactionType', 'transactionDetails', 'transactionItems')
+            ->whereHas('transactionType', function ($query) {
                 $query->where('name', 'Sales Order');
             })
-            ->whereHas('transactionDetails', function($query) {
+            ->whereHas('transactionDetails', function ($query) {
                 $query
                     ->where('category', 'Discount Submission')
                     ->where('value', 'SUBMIT');
             })
-            ->whereHas('transactionDetails', function($query) {
+            ->whereHas('transactionDetails', function ($query) {
                 $query
                     ->where('category', 'Submission Status')
                     ->where('value', '-'); //it means pending
@@ -101,21 +101,19 @@ class CustomerOrdersController extends Controller
     }
 
     /**
-     * 
-     * 
+     *
+     *
      * @param \App\Models\Transactions $transactions
      * @return \Illuminate\Http\RedirectResponse
      */
     public function processDrafCustomerOrder(Transactions $transactions, Request $request)
     {
-        DB::transaction(function() use ($transactions, $request) {
+        DB::transaction(function () use ($transactions, $request) {
             $tx_details = $transactions->transactionDetails;
             $valueRequest = $request->valueRequest;
-            
-            foreach($tx_details as $detail) 
-            {
-                if($detail->category === 'Submission Status')
-                {
+
+            foreach ($tx_details as $detail) {
+                if ($detail->category === 'Submission Status') {
                     $detail->update(['value' => $valueRequest]);
                 }
             }
@@ -126,14 +124,14 @@ class CustomerOrdersController extends Controller
 
     /**
      * Set discount on customer order has submission discount in it
-     * 
+     *
      * @param \App\Models\Transactions $transactions
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function setDiscount(TransactionItem $transactionItem, Request $request)
     {
-        DB::transaction(function() use ($transactionItem, $request) {
+        DB::transaction(function () use ($transactionItem, $request) {
             $transactionItem->update([
                 'amount' => $request->newAmount,
                 'total_price' => $request->newTotalPrice,
@@ -164,9 +162,9 @@ class CustomerOrdersController extends Controller
         $all_products = Products::query()->get();
 
         return Inertia::render('Sales/Sale/CreateCoDnp', [
-            'coNumber' => $coNumber, 
-            'dateNow' => $dateNow, 
-            'customers' => $customers, 
+            'coNumber' => $coNumber,
+            'dateNow' => $dateNow,
+            'customers' => $customers,
             'payment_terms' => $payment_terms,
             'products' => $products,
             'all_products' => $all_products,
@@ -193,13 +191,46 @@ class CustomerOrdersController extends Controller
         $all_products = Products::query()->get();
 
         return Inertia::render('Sales/Sale/CreateCoDku', [
-            'coNumber' => $coNumber, 
-            'dateNow' => $dateNow, 
-            'customers' => $customers, 
+            'coNumber' => $coNumber,
+            'dateNow' => $dateNow,
+            'customers' => $customers,
             'payment_terms' => $payment_terms,
             'products' => $products,
             'all_products' => $all_products,
         ]);
+    }
+
+    public function getBatchCode($product_id, $sell_quantity): array
+    {
+        $result = [];
+        $needed_stock = $sell_quantity;
+
+        $batch_codes = DB::table("stock_product_by_batch_code")
+            ->where("product_id", "=", $product_id)
+            ->where("last_stock", ">", 0)
+            ->orderBy("first_in_date", "asc")
+            ->get();
+
+        if (count($batch_codes) < 1) {
+            return [];
+        }
+
+
+        foreach ($batch_codes as $code) {
+            $remaining_stock = $code->last_stock;
+
+            if ($needed_stock > 0) {
+
+                $result[] = [
+                    "code" => $code->batch_code,
+                    "out_stock" => $remaining_stock < $needed_stock ? $remaining_stock : $needed_stock
+                ];
+
+                $needed_stock -= $remaining_stock;
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -294,18 +325,24 @@ class CustomerOrdersController extends Controller
                 ]);
 
                 // decrease quantity at warehouse if the delivery is not 'DIRECT', 'DIRECT_DEPO', 'DO'
-                if($delivery && !in_array($delivery, ['DIRECT', 'DIRECT_DEPO', 'DO'])){
+                if ($delivery && !in_array($delivery, ['DIRECT', 'DIRECT_DEPO', 'DO'])) {
                     foreach ($txItem['product_journals'] as $journal) {
-                        ProductJournal::create([
-                            'quantity' => $journal['quantity'],
-                            'amount' => $txItem['amount'],
-                            'action' => $journal['action'],
-                            'batch_code' => $journal['batch_code'], 
-                            // 'expiry_date' => $journal['expiry_date'],
-                            'transactions_id' => $transaction->id,
-                            'warehouse_id' => $warehouse->id,
-                            'product_id' => $product->id,
-                        ]);
+                        // ngedebet jumlah barang dari satu product dengan batch_code metode FIFO
+                        $batch_codes = $this->getBatchCode($product->id, $journal["quantity"]);
+                        if (count($batch_codes) > 0) {
+                            foreach ($batch_codes as $batch_code) {
+                                ProductJournal::create([
+                                    'quantity' => $batch_code["out_stock"],
+                                    'amount' => $txItem['amount'],
+                                    'action' => $journal['action'],
+                                    'batch_code' => $batch_code["code"],
+                                    // 'expiry_date' => $journal['expiry_date'],
+                                    'transactions_id' => $transaction->id,
+                                    'warehouse_id' => $warehouse->id,
+                                    'product_id' => $product->id,
+                                ]);
+                            }
+                        }
                     }
                 }
             }
@@ -314,7 +351,7 @@ class CustomerOrdersController extends Controller
         return redirect()->route('sales.create-co')->with('success', 'Customer Order berhasil disubmit!');
     }
 
-        /**
+    /**
      * Store a newly created resource in storage.
      */
     public function storeDku(Request $request)
@@ -431,10 +468,10 @@ class CustomerOrdersController extends Controller
      */
     public function createTravelDocument()
     {
-        $customer_orders_dnp = $this->customerOrderServices->getTransactions("Sales Order","false",15,'Warehouse','DNP');
-        $customer_orders_dku = $this->customerOrderServices->getTransactions("Sales Order","false",15,'Warehouse','DKU');
-        
-        return Inertia::render('Warehouse/ListTravelDocument', compact('customer_orders_dnp','customer_orders_dku'));
+        $customer_orders_dnp = $this->customerOrderServices->getTransactions("Sales Order", "false", 15, 'Warehouse', 'DNP');
+        $customer_orders_dku = $this->customerOrderServices->getTransactions("Sales Order", "false", 15, 'Warehouse', 'DKU');
+
+        return Inertia::render('Warehouse/ListTravelDocument', compact('customer_orders_dnp', 'customer_orders_dku'));
     }
 
     /**
@@ -442,9 +479,9 @@ class CustomerOrdersController extends Controller
      */
     public function indexTravelDocuments()
     {
-        $travel_documents_dnp = $this->customerOrderServices->getTransactions("Surat Jalan",null,15,"Warehouse","DNP");
-        $travel_documents_dku = $this->customerOrderServices->getTransactions("Surat Jalan",null,15,"Warehouse","DKU");
-        
+        $travel_documents_dnp = $this->customerOrderServices->getTransactions("Surat Jalan", null, 15, "Warehouse", "DNP");
+        $travel_documents_dku = $this->customerOrderServices->getTransactions("Surat Jalan", null, 15, "Warehouse", "DKU");
+
         return Inertia::render('Warehouse/IndexTravelDocument', compact('travel_documents_dnp', 'travel_documents_dku'));
     }
 
@@ -470,7 +507,7 @@ class CustomerOrdersController extends Controller
         }
 
         // Generate the document code with the prefixDocument
-        $document_code = $prefixDocument.'/BKS/SJ/'.rand(10000,99999);
+        $document_code = $prefixDocument . '/BKS/SJ/' . rand(10000, 99999);
 
 
         return Inertia::render('Warehouse/CreateTravelDocument', compact('transactions', 'document_code', 'transports'));
@@ -479,9 +516,9 @@ class CustomerOrdersController extends Controller
     /**
      * Store a newly created Travel document resource in storage.
      */
-    public function storeTravelDocument(Request $request) 
+    public function storeTravelDocument(Request $request)
     {
-    
+
         $request->validate([
             'document_code' => 'required|string',
             'sub_total' => 'required|numeric',
@@ -508,7 +545,7 @@ class CustomerOrdersController extends Controller
 
             $transaction = Transactions::create([
                 'document_code' => $request->input('document_code'),
-                'correlation_id' => rand(10000,99999),
+                'correlation_id' => rand(10000, 99999),
                 'sub_total' => $request->input('sub_total'),
                 'term_of_payment' => $request->input('term_of_payment'),
                 'due_date' => $request->input('due_date'),
@@ -521,7 +558,7 @@ class CustomerOrdersController extends Controller
 
             $tx_details = $request->transaction_details;
             $tx = Transactions::where('document_code', $tx_details[0]['value'])->first();
-            if($tx){
+            if ($tx) {
                 $status = TransactionDetail::where('transactions_id', $tx->id)
                     ->where('category', 'Generating')
                     ->first();
@@ -592,8 +629,6 @@ class CustomerOrdersController extends Controller
 
         $pdf = Pdf::loadView('documents.travel-document', $data);
 
-        return $pdf->stream('travel_document_'.rand(10000, 90000).'.pdf');
+        return $pdf->stream('travel_document_' . rand(10000, 90000) . '.pdf');
     }
-
-    
 }

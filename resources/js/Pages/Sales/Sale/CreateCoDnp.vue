@@ -553,7 +553,7 @@ export default defineComponent({
         }));
 
         /**
-         *  watch the sendType if send type is direct, direct depo, and beli do then list all products from data master,    
+         *  watch the sendType if send type is direct, direct depo, and beli do then list all products from data master,
          *  elese list all products from warehouse (batch)
          */
         watch(
@@ -621,7 +621,7 @@ export default defineComponent({
             }
         );
 
-        // Watch the segment customer and set the product amount 
+        // Watch the segment customer and set the product amount
         // watch(() => transaction_details.value.segment_customer, (segment) => {
 
         // });
@@ -944,7 +944,7 @@ export default defineComponent({
         });
 
         function handleApproveDrafCO() {
-            
+
         }
 
         function handleRejectDrafCO() {
@@ -1240,7 +1240,7 @@ export default defineComponent({
                 {
                     name: "Pajak",
                     category: "Taxes",
-                    value: transaction_details.value.use_tax,
+                    value: String(transaction_details.value.use_tax),
                     data_type: "boolean",
                 }
             ];

@@ -1,9 +1,9 @@
 WAREHOUSE :
 major
-+ [REPORT-PRODUCTS:NEW] : [1 hari]
++ [REPORT-PRODUCTS:NEW] : [1 hari] [DONE]
     - kekurangan barang seperti pengiriman bertahap dikirimkan ke supplier lewat WA
     major
-+ [PRODUCTS:REV] : [2 hari]
++ [PRODUCTS:REV] : [2 hari] [DONE]
     - barang yang dibeli (CO) dari sales akan dibuatkan page khusus untuk barang yang keluar (FIFO).
     misal barang TEPUNG HIME dan TEPUNG ZERO dibeli masing masing 40, tepung hime 25 15, tepung zero 20 20
     nanti di logika tersebut mengambil data barang yang masuk gudang duluan, dan pastinya tersedia. Pengambilan barang tersebut
@@ -17,14 +17,14 @@ ADMIN :
     - Kemasan dalam detail produk ada 2 field, mohon dihilangkan satu dan Kemasan itu nanti akan di input manual contoh: 25kg/pak bukan pcs, bag, sak seperti sekarang.
     - label Kelompok di customer ganti ke Channel Customer
     - buatkan service import untuk mengimport data customer dari excel
-    
+
 major
 + [CUSTOMER-REGION:NEW] : [1 hari]
-    - mapping customer untuk membuat wilayah wilayahnya [contoh mapping ada di mapping customer ke sales] 
+    - mapping customer untuk membuat wilayah wilayahnya [contoh mapping ada di mapping customer ke sales]
 
 SALES :
 + [CO:NEW] : [1 hari]
-    - tambahkan 1 field yaitu PO Customer, digunakan untuk report marketing jika PO Customer 
+    - tambahkan 1 field yaitu PO Customer, digunakan untuk report marketing jika PO Customer
     ini ada berarti di list PO/CO itu disandingin 2 nomor dokumen yang menandakan Bahwa customer tersebut menerbitkan PO sendiri.
 + [CO:REV] : [1 hari]
     - Harga produk itu gabisa di kurangin dari Harga otomatis, tapi bisa di tambah. Jika dipaksa dikurangi buatkan sebuah notifikasi
@@ -32,7 +32,7 @@ SALES :
 
 major
 + [CO:NEW-FLOW] : [1 hari]
-    - CO tambah 1 field yaitu "Pengajauan Diskon" isinya adalah Pengajuan dan Tidak Pengajuan. 
+    - CO tambah 1 field yaitu "Pengajauan Diskon" isinya adalah Pengajuan dan Tidak Pengajuan.
     Jika pengajuan maka CO ini masuk ke marketing (Draf CO). Ketika approve CO bisa di proses lagi isi diskon nya
-    - CO itu ada validasi, si customer ini ada invoice tunggakan gak jadi nanti masuk ke AR dulu untuk approvan, 
+    - CO itu ada validasi, si customer ini ada invoice tunggakan gak jadi nanti masuk ke AR dulu untuk approvan,
     ada 3 status yang diberikan AR yaitu (HOLD, APPROVE, REJECT) kalau statusnya masih HOLD CO nya gabisa di proses, kalau reject hapus CO nya
