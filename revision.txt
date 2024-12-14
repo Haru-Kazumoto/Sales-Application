@@ -31,7 +31,7 @@ SALES :
     - diskon 1,2,3 itu sekarang di dapetin dari program promo, integrasi
 
 major
-+ [CO:NEW-FLOW] : [1 hari]
++ [CO:NEW-FLOW] : [1 hari] [DONE]
     - CO tambah 1 field yaitu "Pengajauan Diskon" isinya adalah Pengajuan dan Tidak Pengajuan.
     Jika pengajuan maka CO ini masuk ke marketing (Draf CO). Ketika approve CO bisa di proses lagi isi diskon nya
     - CO itu ada validasi, si customer ini ada invoice tunggakan gak jadi nanti masuk ke AR dulu untuk approvan,

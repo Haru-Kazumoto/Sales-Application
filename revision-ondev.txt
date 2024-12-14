@@ -1,20 +1,20 @@
 ----------------------DONE
 + [INVOICE:REV] :
 + [PO:REV] :
-    - nomor dokumen diubah menjadi 2411-0001 
+    - nomor dokumen diubah menjadi 2411-0001
     (2411 adalah tahun dan bulan, 0001 adalah angka berjalan atau increment yang mana Ketika sudah berganti bulan
     akan di reset menjadi 0001 lagi atau dari awal Kembali)
 AR CONTROL : [OK]
 + [BLAST-WA:REV] :
     - di filter list data blast WhatsApp berikan filtering by status transaksi
-+ [PO:REV] : 
++ [PO:REV] :
     - label pemasok PO ganti ke principal [OK]
     - hapus field select Gudang,letak field jenis pengiriman naikin ke tempat GUDANG [OK]
     - hilangkan DEPO BANDUNG di select [OK]
     - label alokasi ganti ke perusahaan [OK]
     - kembalikan input Harga angkutan [OK]
 ADMIN : [OK]
-+ [PROGRAM-PROMO:NEW] : 
++ [PROGRAM-PROMO:NEW] :
     -tambahkan 2 field nomor program promo dan upload file attachment (PDF & Image)
     -tambahkan persentase jadi 3, replace logic persentase yang ada di CO jadi otomatis Ketika dapet program promo langsung ada disitu
     -buat halaman untuk menghandle pembayaran program promo dari supplier
@@ -24,31 +24,47 @@ ADMIN : [OK]
       ~ harga jual bakery => harga end user
       ~ harga jual all segment
 PROCUREMENT :
-+ [PO:REV] : 
++ [PO:REV] :
     - Harga berubah saat program beli di terapkan (AKUN GROSIR)
 PROCUREMENT AND ADMIN :
-+ [TRADEPROMO(PROGRAM-BELI):NEW] : 
-    - trade promo ini mempunyai konsep kuota pembelian, jadi di procurement dan di admin mempunyai sebuah page untuk meng assign 
-    sebuah alokasi atau grosir account. 
-    di TRADE PROMO itu juga mengisi sebuah harga setelah diskon nya. 
++ [TRADEPROMO(PROGRAM-BELI):NEW] :
+    - trade promo ini mempunyai konsep kuota pembelian, jadi di procurement dan di admin mempunyai sebuah page untuk meng assign
+    sebuah alokasi atau grosir account.
+    di TRADE PROMO itu juga mengisi sebuah harga setelah diskon nya.
     Jadi Ketika nanti procurement mengisi sebuah barang Harga normalnya itu mengambil Harga normal dari admin lalu tambahkan 1 field yaitu alokasi,
     ketika di alokasi memilih salah satu grosir account maka nanti Harga normal barang berubah menjadi Harga setelah diskon atau Harga di trade promo.
 + [CO:NEW] :
-    - tambahkan 1 field yaitu PO Customer, digunakan untuk report marketing jika PO Customer 
-    - tambahkan 1 field di form produk "Segment Customer" (GROSIR, RETAIL, END USER, ALL SEGMENT) buat dropdown dan Harga akan mengikuti sesuai segment, 
+    - tambahkan 1 field yaitu PO Customer, digunakan untuk report marketing jika PO Customer
+    - tambahkan 1 field di form produk "Segment Customer" (GROSIR, RETAIL, END USER, ALL SEGMENT) buat dropdown dan Harga akan mengikuti sesuai segment,
     dan Harga editable jika sales akan menaikan Harga *Harga tidak turun.
 + [CO:REV] :
     - Harga produk itu gabisa di kurangin dari Harga otomatis, tapi bisa di tambah. Jika dipaksa dikurangi buatkan sebuah notifikasi
-    
+
++ [CO:NEW-FLOW] : [1 hari] [DONE]
+    - CO tambah 1 field yaitu "Pengajauan Diskon" isinya adalah Pengajuan dan Tidak Pengajuan.
+    Jika pengajuan maka CO ini masuk ke marketing (Draf CO). Ketika approve CO bisa di proses lagi isi diskon nya
+    - CO itu ada validasi, si customer ini ada invoice tunggakan gak jadi nanti masuk ke AR dulu untuk approvan,
+    ada 3 status yang diberikan AR yaitu (HOLD, APPROVE, REJECT) kalau statusnya masih HOLD CO nya gabisa di proses, kalau reject hapus CO nya
+
++ [REPORT-PRODUCTS:NEW] : [1 hari] [DONE]
+    - kekurangan barang seperti pengiriman bertahap dikirimkan ke supplier lewat WA
+    major
++ [PRODUCTS:REV] : [2 hari] [DONE]
+    - barang yang dibeli (CO) dari sales akan dibuatkan page khusus untuk barang yang keluar (FIFO).
+    misal barang TEPUNG HIME dan TEPUNG ZERO dibeli masing masing 40, tepung hime 25 15, tepung zero 20 20
+    nanti di logika tersebut mengambil data barang yang masuk gudang duluan, dan pastinya tersedia. Pengambilan barang tersebut
+    harus First In First Out jadi random aja barang dengan kode batch batch nya.
+
+
 ----------------------DEV
 SALES :
 + [CO:NEW] :
     - di list PO/CO itu disandingin 2 nomor dokumen yang menandakan Bahwa customer tersebut menerbitkan PO sendiri. [ONDEV]
-    
-+ [CO:REV] : 
+
++ [CO:REV] :
     - diskon 1,2,3 itu sekarang di dapetin dari program promo, integrasi
-+ [CO:NEW-FLOW] : 
++ [CO:NEW-FLOW] :
     - CO tambah 1 field yaitu "Pengajauan Diskon" isinya adalah Pengajuan dan Tidak Pengajuan.
     Jika pengajuan maka CO ini masuk ke marketing (Draf CO). Ketika approve CO bisa di proses lagi isi diskon nya
-    - CO itu ada validasi, si customer ini ada invoice tunggakan gak jadi nanti masuk ke AR dulu untuk approvan, 
+    - CO itu ada validasi, si customer ini ada invoice tunggakan gak jadi nanti masuk ke AR dulu untuk approvan,
     ada 3 status yang diberikan AR yaitu (HOLD, APPROVE, REJECT) kalau statusnya masih HOLD CO nya gabisa di proses, kalau reject hapus CO nya
