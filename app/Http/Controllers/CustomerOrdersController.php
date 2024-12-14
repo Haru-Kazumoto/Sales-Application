@@ -366,7 +366,7 @@ class CustomerOrdersController extends Controller
             'due_date' => 'required|date',
             'sub_total' => 'required|numeric',
             'total' => 'required|numeric',
-            'tax_amount' => 'required|numeric',
+            'tax_amount' => 'nullable|numeric',
             'transaction_details' => 'required|array',
             'transaction_details.*.name' => 'required|string',
             'transaction_details.*.category' => 'required|string',
