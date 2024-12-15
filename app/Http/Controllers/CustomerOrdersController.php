@@ -714,21 +714,34 @@ class CustomerOrdersController extends Controller
         $transactions
             ->load([
                 'transactionDetails',
-                'transactionItems.product.productJournals' => function ($query) {
-                    $query->where('action', 'IN');
-                },
             ]);
 
         // Mengambil detail berdasarkan kategori
         $customer = $transactions->transactionDetails->firstWhere('category', "Customer")->value ?? null;
+        $co_number = $transactions->transactionDetails->firstWhere('category', "CO Number")->value ?? null;
         $customer_address = $transactions->transactionDetails->firstWhere('category', "Customer Address")->value ?? null;
         $number_plate = $transactions->transactionDetails->firstWhere('category', "Number Plate")->value ?? null;
         $travel_document_date = Carbon::parse($transactions->transactionDetails->firstWhere('category', 'Travel Document Date')->value)->format('d F Y');
         $warehouse = $transactions->transactionDetails->firstWhere('category', 'Warehouse')->value ?? '';
 
+        $products = DB::table('transaction_items as ti')
+            ->join('transactions as t', 'ti.transactions_id', '=', 't.id')
+            ->join('product_journal as pj', 'pj.transactions_id', '=', 't.id')
+            ->join('products as pd', 'pd.id', '=', 'pj.product_id')
+            ->select(
+                't.id',
+                'pj.quantity',
+                'ti.unit',
+                'pj.batch_code',
+                'pd.name'
+            )
+            ->where('t.document_code', $co_number)
+            ->get();
+
         // Data yang akan dikirimkan ke view PDF
         $data = [
             'travel_document' => $transactions, // document_code, produk
+            'products' => $products,
             'customer' => $customer, // nama customer
             'customer_address' => $customer_address,
             'number_plate' => $number_plate,

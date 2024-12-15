@@ -325,16 +325,14 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($travel_document->transactionItems as $index => $transactionItem)
-                @foreach ($transactionItem->product->productJournals as $index => $journal)
-                    <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $journal->batch_code }}</td>
-                        <td>{{ $transactionItem->product->name ?? 'null' }}</td>
-                        <td>{{ $journal->quantity }}</td>
-                        <td>{{ $transactionItem->product->unit ?? 'null' }}</td>
-                    </tr>
-                @endforeach
+            @foreach ($products as $index => $product)
+                <tr>
+                    <td>{{ $index + 1 }}</td>
+                    <td>{{ $product->batch_code }}</td>
+                    <td>{{ $product->name ?? 'null' }}</td>
+                    <td>{{ $product->quantity }}</td>
+                    <td>{{ $product->unit ?? 'null' }}</td>
+                </tr>
             @endforeach
         </tbody>
     </table>
