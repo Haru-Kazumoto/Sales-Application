@@ -6,14 +6,14 @@
             <n-tab-pane name="Surat Jalan DNP" tab="Surat Jalan DNP">
                 <div class="card shadow-sm border-0">
                     <div class="card-body">
-                        <n-data-table :bordered="false" size="small" :columns="columns" :data="($page.props.travel_documents_dnp as any).data" />
+                        <n-data-table :bordered="false" size="small" :columns="columns" :data="($page.props.travel_documents_dnp as any)" />
                     </div>
                 </div>
             </n-tab-pane>
             <n-tab-pane name="Surat Jalan DKU" tab="Surat Jalan DKU">
                 <div class="card shadow-sm border-0">
                     <div class="card-body">
-                        <n-data-table :bordered="false" size="small" :columns="columns" :data="($page.props.travel_documents_dku as any).data" />
+                        <n-data-table :bordered="false" size="small" :columns="columns" :data="($page.props.travel_documents_dku as any)" />
                     </div>
                 </div>
             </n-tab-pane>
@@ -59,46 +59,36 @@ function createColumns(): DataTableColumns<Transactions> {
         },
         {   
             title: "CUSTOMER",
-            key: "customer_name",
-            width: 200,
-            render(rowData) {
-                const customer_name = rowData.transaction_details.find((data) => {
-                    return data.category === "Customer";
-                });
-
-                return customer_name?.value;
-            },
+            key: "customer",
+            width: 180,
         },
         {
             title: "NAMA EKSPEDISI",
-            key: "delivery",
+            key: "ekspedisi",
             width: 200,
-            render(rowData) {
-                return rowData.transaction_details.find((data) => data.category === "Delivery")?.value;
-            }
         },
         {
             title: "NO POLISI",
-            key: 'number_plate',
-            width: 150,
-            render(row) {
-                return row.transaction_details.find((data) => data.category === "Number Plate")?.value;
-            }
+            key: 'no_pol',
+            width: 150
         },
         {
             title: "NAMA DRIVER",
             key: "driver",
             width: 150,
-            render(row) {
-                return row.transaction_details.find((data) => data.category === "Driver")?.value;
-            }
         },
         {
             title: "GUDANG",
-            key: "warehouse",
+            key: "gudang",
             width: 200,
             render(row) {
-                return row.transaction_details.find((data) => data.category === "Shipping Warehouse")?.value;
+                return h(NTag, {
+                    type: row.gudang === "DNP" ? 'success' : 'info',
+                    strong: true,
+                    bordered: true,
+                }, {
+                    default: () => row.gudang
+                })
             }
         },
         {

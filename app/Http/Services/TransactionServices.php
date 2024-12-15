@@ -37,20 +37,18 @@ class TransactionServices
         $query = $this->applySearchFilter($query, $filterField, $filterQuery);
     
         // Menghitung total pembayaran dan sisa tagihan jika tidak menampilkan pembayaran invoice
-        if ($showInvoicePayment === false) {
-            $query->selectRaw('transactions.*, 
-                (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) as total_left, 
-                CASE 
-                    WHEN (SELECT COUNT(*) FROM invoice_payment WHERE transaction_id = transactions.id) = 1 
-                        AND (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) = 0 THEN "FULLY PAID"
-                    WHEN (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) = total THEN "UNPAID"
-  	                WHEN due_date <= CURDATE() THEN "OVERDUE"
-                    WHEN (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) > 0 THEN "INSTALMENT" 
-                    ELSE "PAID" 
-                END as status_payment'
-            )
-            ->orderByDesc('created_at');
-        }
+        $query->selectRaw('transactions.*, 
+            (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) as total_left, 
+            CASE 
+                WHEN (SELECT COUNT(*) FROM invoice_payment WHERE transaction_id = transactions.id) = 1 
+                    AND (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) = 0 THEN "FULLY PAID"
+                WHEN (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) = total THEN "UNPAID"
+                  WHEN due_date <= CURDATE() THEN "OVERDUE"
+                WHEN (total - COALESCE((SELECT SUM(total_paid) FROM invoice_payment WHERE transaction_id = transactions.id), 0)) > 0 THEN "INSTALMENT" 
+                ELSE "PAID" 
+            END as status_payment'
+        )
+        ->orderByDesc('created_at');
     
         // // Pengurutan berdasarkan kondisi tertentu
         // $query->orderByRaw("

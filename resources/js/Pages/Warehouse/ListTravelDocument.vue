@@ -10,7 +10,7 @@
                     </div>
                 </div>
             </n-tab-pane>
-            <n-tab-pane name="Surat Jalan DKu" tab="Surat Jalan DKU">
+            <n-tab-pane name="Surat Jalan DKU" tab="Surat Jalan DKU">
                 <div class="card shadow-sm border-0">
                     <div class="card-body">
                         <n-data-table :bordered="false" size="small" :columns="columns"

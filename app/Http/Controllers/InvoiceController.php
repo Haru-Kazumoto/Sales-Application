@@ -41,7 +41,7 @@ class InvoiceController extends Controller
     public function indexInvoices()
     {
         $tx_type = TransactionType::where('name', 'Penjualan')->first();
-        $invoices = $this->transactionServices->getTransactions($tx_type->id, null,null,10, true);
+        $invoices = $this->transactionServices->getTransactions(6, null,null,10, true);
 
         return Inertia::render('AgingFinance/Sales/ListInvoice', compact('invoices'));
     }

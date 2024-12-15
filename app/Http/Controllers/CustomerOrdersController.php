@@ -555,8 +555,41 @@ class CustomerOrdersController extends Controller
      */
     public function indexTravelDocuments()
     {
-        $travel_documents_dnp = $this->customerOrderServices->getTransactions("Surat Jalan", null, 15, "Warehouse", "DNP");
-        $travel_documents_dku = $this->customerOrderServices->getTransactions("Surat Jalan", null, 15, "Warehouse", "DKU");
+        $travel_documents_dnp = DB::table('transactions as t')
+            ->join('transaction_details as td', function ($join) {
+                $join->on('td.transactions_id', '=', 't.id')
+                    ->where('td.category', '=', 'Warehouse')
+                    ->where('td.value', '=', 'DNP');
+            })
+            ->select(
+                't.id',
+                't.document_code',
+                DB::raw("(SELECT VALUE FROM transaction_details WHERE category = 'Customer' AND transactions_id = t.id) AS customer"),
+                DB::raw("(SELECT VALUE FROM transaction_details WHERE category = 'Delivery' AND transactions_id = t.id) AS ekspedisi"),
+                DB::raw("(SELECT VALUE FROM transaction_details WHERE category = 'Number Plate' AND transactions_id = t.id) AS no_pol"),
+                DB::raw("(SELECT VALUE FROM transaction_details WHERE category = 'Driver' AND transactions_id = t.id) AS driver"),
+                DB::raw("(SELECT VALUE FROM transaction_details WHERE category = 'Warehouse' AND transactions_id = t.id) AS gudang")
+            )
+            ->where('t.transaction_type_id', 65)
+            ->get();
+
+        $travel_documents_dku = DB::table('transactions as t')
+            ->join('transaction_details as td', function ($join) {
+                $join->on('td.transactions_id', '=', 't.id')
+                     ->where('td.category', '=', 'Warehouse')
+                     ->where('td.value', '=', 'DKU');
+            })
+            ->select(
+                't.id',
+                't.document_code',
+                DB::raw("(SELECT VALUE FROM transaction_details WHERE category = 'Customer' AND transactions_id = t.id) AS customer"),
+                DB::raw("(SELECT VALUE FROM transaction_details WHERE category = 'Delivery' AND transactions_id = t.id) AS ekspedisi"),
+                DB::raw("(SELECT VALUE FROM transaction_details WHERE category = 'Number Plate' AND transactions_id = t.id) AS no_pol"),
+                DB::raw("(SELECT VALUE FROM transaction_details WHERE category = 'Driver' AND transactions_id = t.id) AS driver"),
+                DB::raw("(SELECT VALUE FROM transaction_details WHERE category = 'Warehouse' AND transactions_id = t.id) AS gudang")
+            )
+            ->where('t.transaction_type_id', 65)
+            ->get();
 
         return Inertia::render('Warehouse/IndexTravelDocument', compact('travel_documents_dnp', 'travel_documents_dku'));
     }
