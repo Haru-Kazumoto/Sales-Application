@@ -207,6 +207,9 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
     //warehouse Routes
     Route::name('warehouse.')->group(function() {
         Route::get('/stock-goods', [App\Http\Controllers\ProductsController::class, 'indexAllWarehouseProducts'])->name('stock-goods');
+        Route::get('/items-out', [App\Http\Controllers\ProductsController::class, 'indexItemsOut'])->name('items-out');
+
+        Route::post('/send-to-supplier', [App\Http\Controllers\BlastWhatsappController::class, 'sendMessageToSupplier'])->name('send-message-supplier');
 
         Route::get('/dnp-stock-goods', [App\Http\Controllers\ProductsController::class, 'indexDNPWarehouseProducts'])->name('dnp-stock-goods');
         Route::get('/dku-stock-goods', [App\Http\Controllers\ProductsController::class, 'indexDKUWarehouseProducts'])->name('dku-stock-goods');

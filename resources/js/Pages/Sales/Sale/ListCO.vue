@@ -172,9 +172,9 @@ export default defineComponent({
                             }, { 
                                 default: () => {
                                     if(status === "true") {
-                                        return "DIAPPROVE";
+                                        return "APPROVE";
                                     } else if (status === "false"){
-                                        return "DIREJECT";
+                                        return "REJECT";
                                     } else {
                                         return "TIDAK ADA";
                                     }

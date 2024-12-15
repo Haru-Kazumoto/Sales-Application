@@ -36,7 +36,9 @@ class AllProducts implements FromCollection, WithHeadings, WithMapping, WithColu
                 'promo_products.description',
                 'promo_products.min',
                 'promo_products.max',
-                'promo_products.promo_value',
+                'promo_products.promo_value_1',
+                'promo_products.promo_value_2',
+                'promo_products.promo_value_3',
                 'promo_products.start_date',
                 'promo_products.end_date',
                 DB::raw('SUM(CASE WHEN product_journal.action = "IN" THEN product_journal.quantity ELSE 0 END) - 
@@ -67,7 +69,9 @@ class AllProducts implements FromCollection, WithHeadings, WithMapping, WithColu
                 'promo_products.description',
                 'promo_products.min',
                 'promo_products.max', 
-                'promo_products.promo_value',
+                'promo_products.promo_value_1',
+                'promo_products.promo_value_2',
+                'promo_products.promo_value_3',
                 'promo_products.start_date',
                 'promo_products.end_date',
             )

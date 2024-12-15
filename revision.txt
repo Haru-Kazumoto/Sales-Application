@@ -1,14 +1,3 @@
-WAREHOUSE :
-major
-+ [REPORT-PRODUCTS:NEW] : [1 hari] [DONE]
-    - kekurangan barang seperti pengiriman bertahap dikirimkan ke supplier lewat WA
-    major
-+ [PRODUCTS:REV] : [2 hari] [DONE]
-    - barang yang dibeli (CO) dari sales akan dibuatkan page khusus untuk barang yang keluar (FIFO).
-    misal barang TEPUNG HIME dan TEPUNG ZERO dibeli masing masing 40, tepung hime 25 15, tepung zero 20 20
-    nanti di logika tersebut mengambil data barang yang masuk gudang duluan, dan pastinya tersedia. Pengambilan barang tersebut
-    harus First In First Out jadi random aja barang dengan kode batch batch nya.
-
 ADMIN :
 + [CUSTOMER:REV] : [1 hari]
     - pilihan badan usaha (legalitas) diganti hanya menjadi [PT,UD,CV,PERORANGAN]
@@ -27,12 +16,4 @@ SALES :
     - tambahkan 1 field yaitu PO Customer, digunakan untuk report marketing jika PO Customer
     ini ada berarti di list PO/CO itu disandingin 2 nomor dokumen yang menandakan Bahwa customer tersebut menerbitkan PO sendiri.
 + [CO:REV] : [1 hari]
-    - Harga produk itu gabisa di kurangin dari Harga otomatis, tapi bisa di tambah. Jika dipaksa dikurangi buatkan sebuah notifikasi
     - diskon 1,2,3 itu sekarang di dapetin dari program promo, integrasi
-
-major
-+ [CO:NEW-FLOW] : [1 hari] [DONE]
-    - CO tambah 1 field yaitu "Pengajauan Diskon" isinya adalah Pengajuan dan Tidak Pengajuan.
-    Jika pengajuan maka CO ini masuk ke marketing (Draf CO). Ketika approve CO bisa di proses lagi isi diskon nya
-    - CO itu ada validasi, si customer ini ada invoice tunggakan gak jadi nanti masuk ke AR dulu untuk approvan,
-    ada 3 status yang diberikan AR yaitu (HOLD, APPROVE, REJECT) kalau statusnya masih HOLD CO nya gabisa di proses, kalau reject hapus CO nya

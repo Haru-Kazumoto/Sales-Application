@@ -2,20 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\WhatsappService;
 use App\Models\Parties;
 use App\Models\TransactionDetail;
 use App\Models\Transactions;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BlastWhatsappController extends Controller
 {
     private $messageTemplate;
+    private $whatsappService;
 
-    public function __construct(MessageTemplateController $messageTemplateController)
+    public function __construct(MessageTemplateController $messageTemplateController, WhatsappService $whatsappService)
     {
         $this->messageTemplate = $messageTemplateController;
+        $this->whatsappService = $whatsappService;
     }
 
     public function sendWhatsapp(Request $request)
@@ -82,5 +86,28 @@ class BlastWhatsappController extends Controller
 
         return back()->with('success', 'Pesan whatsapp terkirim!');
     }
+
+    public function sendMessageToSupplier()
+    {
+        $dataSuppliers = DB::table('product_in_gap')
+            ->select('usr_id', 'name as supplier_name', 'phone', 'product_name', 'quantity')
+            ->get()
+            ->groupBy('usr_id'); 
+
+        foreach ($dataSuppliers as $supplierId => $products) {
+            $supplier = $products->first();
+
+            $chat_message = "Selamat sore, {$supplier->supplier_name}. Berikut adalah barang Anda yang belum terkirim ke PT DANITAMA NIAGA PRIMA:\n";
+
+            foreach ($products as $index => $product) {
+                $chat_message .= ($index + 1) . ". {$product->product_name} - {$product->quantity}\n";
+            }
+
+            $this->whatsappService->sendMessage($supplier->phone, $chat_message);
+        }
+
+        return back()->with('success', 'Pesan terkirim ke semua supplier!');
+    }
+
 
 }

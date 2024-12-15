@@ -1,5 +1,60 @@
-import { Box20Regular, Box24Regular, BoxCheckmark20Regular, BoxDismiss24Regular, BoxEdit20Regular, BoxMultiple20Regular, DocumentAdd20Regular, DocumentAdd28Regular, DocumentBulletListMultiple20Regular, DocumentTableTruck24Regular, HomePerson24Regular, PeopleList24Regular, PeopleProhibited20Regular, PeopleSettings24Regular, PeopleSwap16Regular, PeopleTeam28Regular, PersonAccounts24Regular, ReceiptCube24Regular, Textbox16Regular, VehicleTruckProfile20Regular, PeopleAudience24Regular, VehicleTruckCube24Regular, DocumentTextToolbox24Regular, DocumentBulletListMultiple24Regular } from '@vicons/fluent';
-import { SkullOutline, CartOutline, FileTrayFullOutline, FileTrayStackedOutline, CubeOutline, WalletOutline, NotificationsOutline, PeopleOutline, ReceiptOutline, SettingsOutline, BarChartOutline, BagCheckOutline, DocumentsOutline, DocumentTextOutline, ShieldCheckmarkOutline, RepeatSharp, WarningOutline, Cart, People, PersonAddOutline, Contract, Analytics, CogOutline, DocumentOutline, PushOutline, ShieldHalf, PieChartOutline, ReorderFourSharp, CartSharp, KeyOutline, LogoWhatsapp, Close, Skull, Bookmarks, BookmarkOutline, AlbumsOutline, TrashOutline } from '@vicons/ionicons5';
+import { Box20Regular, 
+    BoxCheckmark20Regular, 
+    BoxMultiple20Regular, 
+    DocumentAdd20Regular, 
+    DocumentAdd28Regular, 
+    DocumentBulletListMultiple20Regular, 
+    DocumentTableTruck24Regular, 
+    HomePerson24Regular, 
+    PeopleList24Regular, 
+    PeopleProhibited20Regular, 
+    PeopleSettings24Regular, 
+    PeopleSwap16Regular, 
+    PeopleTeam28Regular, 
+    PersonAccounts24Regular, 
+    ReceiptCube24Regular, 
+    Textbox16Regular, 
+    VehicleTruckProfile20Regular, 
+    PeopleAudience24Regular, 
+    DocumentTextToolbox24Regular, 
+    DocumentBulletListMultiple24Regular, 
+    TrayItemRemove24Regular 
+} from '@vicons/fluent';
+import { 
+    CartOutline, 
+    FileTrayFullOutline, 
+    FileTrayStackedOutline, 
+    CubeOutline, 
+    PeopleOutline, 
+    ReceiptOutline, 
+    SettingsOutline, 
+    BarChartOutline, 
+    BagCheckOutline, 
+    DocumentsOutline, 
+    DocumentTextOutline, 
+    RepeatSharp, 
+    WarningOutline, 
+    Cart, 
+    People, 
+    PersonAddOutline, 
+    Contract, 
+    Analytics, 
+    CogOutline, 
+    DocumentOutline, 
+    PushOutline, 
+    ShieldHalf, 
+    PieChartOutline, 
+    ReorderFourSharp, 
+    CartSharp, 
+    KeyOutline, 
+    LogoWhatsapp, 
+    Close, 
+    Skull, 
+    Bookmarks, 
+    BookmarkOutline, 
+    AlbumsOutline, 
+    TrashOutline 
+} from '@vicons/ionicons5';
 import { WarehouseOutlined } from '@vicons/material';
 import { NIcon } from 'naive-ui';
 import { h } from 'vue';
@@ -275,6 +330,12 @@ export const roleMenus = {
             icon: BoxMultiple20Regular,
             key: 'stock-goods',
             href: '/stock-goods'
+        },
+        {
+            label: "Barang Pesanan",
+            icon: TrayItemRemove24Regular,
+            key: "pesanan",
+            href: "/items-out",
         },
         // {
         //     label: "Pengiriman Bertahap",

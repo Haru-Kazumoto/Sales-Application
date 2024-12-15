@@ -54,12 +54,15 @@
                 </n-tab-pane>
                 <n-tab-pane name="gap-products" tab="Selisih produk">
                     <div class="d-flex flex-column gap-2">
-                        <div class="row g-3 ">
-                            <div class="col-12 col-lg-8">
+                        <div class="row ">
+                            <div class="col-12 col-lg-7">
                                 <span class="fs-4">Daftar Selisih Produk</span>
                             </div>
-                            <div class="col-12 col-lg-4 d-flex gap-3 ">
+                            <div class="col-12 col-lg-3 d-flex gap-3 ">
                                 <n-input placeholder="Cari Nama Produk" size="large" />
+                            </div>
+                            <div class="col-3 col-lg-2">
+                                <n-button type="primary" size="large" @click="handleSendMessage">Report Ke Supplier</n-button>
                             </div>
                         </div>
                         <div class="card shadow" style="border: none;">
@@ -155,9 +158,6 @@ import 'dayjs/locale/id'; // Import locale Indonesia
 import Swal from 'sweetalert2';
 
 dayjs.locale('id'); // Set locale to Indonesian
-
-
-
 
 export default defineComponent({
     setup() {
@@ -546,6 +546,17 @@ export default defineComponent({
             });
         }
 
+        function handleSendMessage() {
+            router.post(route('warehouse.send-message-supplier'),{
+                onSuccess: (page) => {
+                    Swal.fire(page.props.flash.success, '', 'success');
+                },
+                onError: () => {
+                    Swal.fire('Oops, server sedang sibuk :(', 'Tunggu sebentar atau lapor developer segera', 'error');
+                }
+            });
+        }
+
         function handleExport(){
             const url = route('warehouse.product.export');
 
@@ -560,6 +571,7 @@ export default defineComponent({
             handleOpenModal,
             addFormProductJournal,
             handleCloseModal,
+            handleSendMessage,
             removeFormProductJournal,
             handleSubmitProduct,
             handleExport,

@@ -15,6 +15,7 @@ use App\Models\Transactions;
 use App\Models\TransactionType;
 use App\Models\Warehouse;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -452,6 +453,31 @@ class ProductsController extends Controller
         $product_stagnations = $this->productServices->getStockProductsWithBatchCode(null, null, null, 20, true);
 
         return Inertia::render('Warehouse/StockItems', compact('products', 'products_batch', 'products_gap', 'product_stagnations'));
+    }
+
+    public function indexItemsOut()
+    {
+
+        $products = DB::table('product_journal as pj')
+            ->select([
+                'tx.id',
+                'tx.document_code',
+                'pj.batch_code',
+                'pj.quantity',
+                'p.name as product_name',
+                'w.name as warehouse',
+                'tx.status',
+            ])
+            ->join('transactions as tx', 'tx.id', '=', 'pj.transactions_id')
+            ->join('products as p', 'p.id', '=', 'pj.product_id')
+            ->join('warehouse as w', 'w.id', '=', 'pj.warehouse_id')
+            ->where('tx.transaction_type_id', 8)
+            ->whereIn('tx.status', ['APPROVE', 'HOLD'])
+            ->orderByRaw("tx.status = 'APPROVE' DESC")
+            ->get();
+
+
+        return Inertia::render('Warehouse/ItemsOut', compact('products'));
     }
 
     /**
