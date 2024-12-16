@@ -60,9 +60,16 @@
                         <n-input placeholder="" size="large" v-model:value="form.city"
                             :on-input="(value) => form.city = value.toUpperCase()" />
                     </div>
-                    <div class="col-12 col-md-6 col-lg-6 d-flex flex-column">
+                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column">
                         <label for="nama_customer" class="form-label">Alamat</label>
                         <n-input placeholder="" size="large" v-model:value="form.address" />
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column">
+                        <label for="nama_customer" class="form-label">Perusahaan</label>
+                        <n-select placeholder="" size="large" :options="[
+                            { label: 'DNP', value: 'DNP'},
+                            { label: 'DKU', value: 'DKU'}
+                        ]" v-model:value="form.company"/>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <label for="ktpImage" class="form-label">Upload Foto KTP</label>
@@ -130,7 +137,7 @@
 import { defineComponent, ref, h, reactive } from 'vue'
 import { router, useForm, usePage } from '@inertiajs/vue3';
 import TitlePage from '../../Components/TitlePage.vue';
-import { DataTableColumns, NButton, NImage, useNotification } from 'naive-ui';
+import { DataTableColumns, NButton, NImage, NTag, useNotification } from 'naive-ui';
 import { Flash, Lookup, Parties, PartiesGroup } from '../../types/model';
 import Swal from 'sweetalert2';
 
@@ -170,6 +177,24 @@ export default defineComponent({
                     title: "TIPE",
                     key: 'type_parties',
                     width: 150,
+                },
+                {
+                    title: "PERUSAHAAN",
+                    key: 'company',
+                    width: 150,
+                    render(row) {
+                        return h(
+                            NTag,
+                            {
+                                type: row.company === "DNP" ? 'success' : 'info',
+                                strong: true,
+                                bordered: true
+                            },
+                            {
+                                default: () => row.company
+                            }
+                        )
+                    }
                 },
                 {
                     title: "CHANNEL CUSTOMER",
@@ -298,6 +323,7 @@ export default defineComponent({
             npwp_image: null as unknown as string,
             ktp_image: null as unknown as string,
             segment_customer: null as unknown as string,
+            company: ''
         });
 
         // Filter data

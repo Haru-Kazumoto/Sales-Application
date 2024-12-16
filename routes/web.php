@@ -155,6 +155,14 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
             Route::patch('/shutdown-promo/{tradePromo}', [App\Http\Controllers\TradePromoController::class, 'shutdownPromo'])->name('trade-promo.shutdown');
             Route::patch('/add-quota', [App\Http\Controllers\TradePromoController::class, 'addQuotaPromo'])->name('trade-promo.add-quota');
         });
+
+        Route::prefix('customer-region')->group(function() {
+            Route::get('', [App\Http\Controllers\CustomerRegionController::class, 'createAndIndex'])->name('customer-region.index');
+            Route::post('', [App\Http\Controllers\CustomerRegionController::class, 'store'])->name('customer-region.store');
+            Route::get('/{customerRegion}/assign', [App\Http\Controllers\CustomerRegionController::class, 'createAssignCustomers'])->name('customer-region.assign');
+            Route::patch('/region/{customerRegion}/assign-customers', [App\Http\Controllers\CustomerRegionController::class, 'assignCustomers'])->name('customer-region.assign-all');
+            Route::patch('/customer/{customer}/unassign', [App\Http\Controllers\CustomerRegionController::class, 'unassignCustomer'])->name('customer-region.unassign');
+        });
     });
 
     // Procurement Routes

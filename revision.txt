@@ -10,10 +10,16 @@ ADMIN :
 major
 + [CUSTOMER-REGION:NEW] : [1 hari]
     - mapping customer untuk membuat wilayah wilayahnya [contoh mapping ada di mapping customer ke sales]
+    dijadikan juga untuk harga angkutan
 
 SALES :
 + [CO:NEW] : [1 hari]
     - tambahkan 1 field yaitu PO Customer, digunakan untuk report marketing jika PO Customer
     ini ada berarti di list PO/CO itu disandingin 2 nomor dokumen yang menandakan Bahwa customer tersebut menerbitkan PO sendiri.
+    - ketika CO statusnya reject restore data barang yang sudah dipilih
 + [CO:REV] : [1 hari]
     - diskon 1,2,3 itu sekarang di dapetin dari program promo, integrasi
+
+PROCUREMENT:
++ [PO:REV] : [1 hari]
+    - buat watch buat ngatur logika pemilihan perusahaan, nanti customernya juga ngikut customer mana aja yang punya perusahaan yg sama

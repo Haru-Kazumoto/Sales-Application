@@ -64,9 +64,16 @@
                         <n-input placeholder="" size="large" v-model:value="form.city"
                             :on-input="(value) => form.city = value.toUpperCase()" />
                     </div>
-                    <div class="col-12 col-md-6 col-lg-6 d-flex flex-column">
+                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column">
                         <label for="nama_customer" class="form-label">Alamat</label>
                         <n-input placeholder="" size="large" v-model:value="form.address" />
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column">
+                        <label for="nama_customer" class="form-label">Perusahaan</label>
+                        <n-select placeholder="" size="large" v-model:value="form.company" :options="[
+                            { label: 'DNP', value: 'DNP'},
+                            { label: 'DKU', value: 'DKU'},
+                        ]"/>
                     </div>
                     <!-- Input NPWP Image -->
                     <div class="col-12 col-md-6 d-flex flex-column">
@@ -121,6 +128,7 @@ export default defineComponent({
             npwp_image: null as unknown as string, // Previous image data
             ktp_image: null as unknown as string, // Previous image data
             segment_customer: customerSelected.segment_customer || null as unknown as string,
+            company: customerSelected.company || null as unknown as string,
         });
         const npwp_img_preview = ref(customerSelected.npwp_image);
         const ktp_img_preview = ref(customerSelected.ktp_image);

@@ -18,7 +18,8 @@ import { Box20Regular,
     PeopleAudience24Regular, 
     DocumentTextToolbox24Regular, 
     DocumentBulletListMultiple24Regular, 
-    TrayItemRemove24Regular 
+    TrayItemRemove24Regular, 
+    Map24Regular
 } from '@vicons/fluent';
 import { 
     CartOutline, 
@@ -158,6 +159,12 @@ export const roleMenus = {
             icon: PeopleList24Regular,
             href: "/customer-sales"
         },
+        {
+            label: "Wilayah Customer",
+            key: "customer-region",
+            icon: Map24Regular,
+            href: "/customer-region",
+        }
     ],
     FINANCE: [
         {

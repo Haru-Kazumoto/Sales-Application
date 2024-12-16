@@ -36,6 +36,7 @@ class Parties extends Model
         'ktp_image',
         'npwp_image',
         'segment_customer',
+        'company'
     ];
 
     public function partiesGroup(): BelongsTo
@@ -51,5 +52,10 @@ class Parties extends Model
     public function transactions(): HasMany
     {
         return $this->hasMany(Transactions::class);
+    }
+
+    public function customerRegion(): BelongsTo
+    {
+        return $this->belongsTo(CustomerRegion::class, 'region_id');
     }
 }

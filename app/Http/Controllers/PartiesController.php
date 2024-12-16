@@ -128,6 +128,7 @@ class PartiesController extends Controller
             'npwp_image' => 'nullable|image|max:2048', // Maks 2MB
             'ktp_image' => 'nullable|image|max:2048', // Maks 2MB
             'segment_customer' => 'required|string',
+            'company' => 'required|string'
         ]);
 
         DB::transaction(function() use ($request) {
@@ -164,6 +165,7 @@ class PartiesController extends Controller
                 'npwp_image' => $npwpImagePath,
                 'ktp_image' => $ktpImagePath,
                 'segment_customer' => $request->segment_customer,
+                'company' => $request->company
             ]);
         });
 
@@ -202,6 +204,7 @@ class PartiesController extends Controller
             'npwp_image' => 'nullable|image|max:2048', // Maks 2MB
             'ktp_image' => 'nullable|image|max:2048', // Maks 2MB
             'segment_customer' => 'required|string',
+            'company' => 'required|string'
         ]);
 
         DB::transaction(function() use ($request, $parties) {
@@ -221,6 +224,7 @@ class PartiesController extends Controller
                 'city' => $request->input('city'),
                 'address' => $request->input('address'),
                 'segment_customer' => $request->segment_customer,
+                'company' => $request->company
             ]);
 
             // Update gambar jika ada yang diupload

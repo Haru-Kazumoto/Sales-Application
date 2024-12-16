@@ -147,7 +147,7 @@ class CustomerController extends Controller
             $customer->save();
         });
 
-        return back()->with('success', 'Customer berhasil di hapus');
+        return back()->with('success', 'Customer berhasil dihapus');
     }
 
 
