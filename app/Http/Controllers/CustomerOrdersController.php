@@ -557,6 +557,7 @@ class CustomerOrdersController extends Controller
      */
     public function indexTravelDocuments()
     {
+        $tx_type = TransactionType::where('name', 'Surat Jalan')->first();
         $travel_documents_dnp = DB::table('transactions as t')
             ->join('transaction_details as td', function ($join) {
                 $join->on('td.transactions_id', '=', 't.id')
@@ -572,7 +573,8 @@ class CustomerOrdersController extends Controller
                 DB::raw("(SELECT VALUE FROM transaction_details WHERE category = 'Driver' AND transactions_id = t.id) AS driver"),
                 DB::raw("(SELECT VALUE FROM transaction_details WHERE category = 'Warehouse' AND transactions_id = t.id) AS gudang")
             )
-            ->where('t.transaction_type_id', 65)
+            ->where('t.transaction_type_id', $tx_type->id)
+            ->orderByDesc('t.created_at')
             ->get();
 
         $travel_documents_dku = DB::table('transactions as t')
@@ -590,7 +592,8 @@ class CustomerOrdersController extends Controller
                 DB::raw("(SELECT VALUE FROM transaction_details WHERE category = 'Driver' AND transactions_id = t.id) AS driver"),
                 DB::raw("(SELECT VALUE FROM transaction_details WHERE category = 'Warehouse' AND transactions_id = t.id) AS gudang")
             )
-            ->where('t.transaction_type_id', 65)
+            ->where('t.transaction_type_id', $tx_type->id)
+            ->orderByDesc('t.created_at')
             ->get();
 
         return Inertia::render('Warehouse/IndexTravelDocument', compact('travel_documents_dnp', 'travel_documents_dku'));
