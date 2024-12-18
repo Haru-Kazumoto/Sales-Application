@@ -324,6 +324,12 @@ export const roleMenus = {
             icon: DocumentTextToolbox24Regular,
             href: "/trade-promo",
         },
+        {
+            label: "Customer",
+            key: 'customer',
+            icon: PeopleTeam28Regular,
+            href: '/customer-management',
+        },
     ],
     WAREHOUSE: [
         {

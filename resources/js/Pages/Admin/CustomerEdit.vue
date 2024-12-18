@@ -75,15 +75,22 @@
                             { label: 'DKU', value: 'DKU'},
                         ]"/>
                     </div>
+                    <div class="col-12 col-md-6 col-lg-4 d-flex flex-column gap-2">
+                        <label for="taxpayer">Wajib Pajak</label>
+                        <n-select size="large" clearable :options="[
+                            { label: 'PKP', value: 'PKP'},
+                            { label: 'NON-PKP', value: 'NON_PKP'}
+                        ]" v-model:value="form.taxpayer"></n-select>
+                    </div> 
                     <!-- Input NPWP Image -->
-                    <div class="col-12 col-md-6 d-flex flex-column">
+                    <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
                         <label for="npwp_image" class="form-label">Upload NPWP</label>
                         <input type="file" class="form-control" id="npwp_image"
                             @change="handleImageUpload($event, 'npwp_image')" />
                     </div>
 
                     <!-- Input KTP Image -->
-                    <div class="col-12 col-md-6 d-flex flex-column">
+                    <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
                         <label for="ktp_image" class="form-label">Upload KTP</label>
                         <input type="file" class="form-control" id="ktp_image"
                             @change="handleImageUpload($event, 'ktp_image')" />
@@ -129,6 +136,7 @@ export default defineComponent({
             ktp_image: null as unknown as string, // Previous image data
             segment_customer: customerSelected.segment_customer || null as unknown as string,
             company: customerSelected.company || null as unknown as string,
+            taxpayer: customerSelected.taxpayer || null as unknown as string,
         });
         const npwp_img_preview = ref(customerSelected.npwp_image);
         const ktp_img_preview = ref(customerSelected.ktp_image);

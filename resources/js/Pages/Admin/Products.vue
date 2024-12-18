@@ -52,7 +52,7 @@
                         <label for="">Kemasan
                             <RequiredMark />
                         </label>
-                        <n-select size="large" placeholder="" :options="unitOptions" v-model:value="form.unit" />
+                        <n-input size="large" placeholder="" v-model:value="form.unit" @input="(value) => form.unit = value.toUpperCase()"/>
                     </div>
                     <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">Harga Tebus

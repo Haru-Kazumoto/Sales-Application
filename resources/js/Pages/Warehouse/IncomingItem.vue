@@ -12,7 +12,7 @@
                         <!-- Kolom Atas -->
                         <div class="col-lg-2 col-6">
                             <label for="field1">
-                                No SSO<span class="text-danger">*</span>
+                                No SSO
                             </label>
                             <n-input placeholder="" id="field1" size="large" v-model:value="form.document_code" />
                         </div>
@@ -22,42 +22,42 @@
                         </div>
                         <div class="col-md-4 col-6">
                             <label for="no_po">
-                                No PO<span class="text-danger">*</span>
+                                No PO
                             </label>
                             <n-input placeholder="" disabled size="large"
                                 v-model:value="transaction_details.purchase_order_number" />
                         </div>
                         <div class="col-md-4 col-6">
                             <label for="tanggal_po">
-                                Tanggal PO<span class="text-danger">*</span>
+                                Tanggal PO
                             </label>
                             <n-input disabled placeholder="" class="w-100" size="large"
                                 v-model:value="transaction_details.purchase_order_date" />
                         </div>
                         <div class="col-md-3 col-6">
                             <label for="alokasi">
-                                Alokasi<span class="text-danger">*</span>
+                                Alokasi
                             </label>
                             <n-input placeholder="" disabled id="alokasi" v-model:value="transaction_details.alocated"
                                 size="large" />
                         </div>
                         <div class="col-md-3 col-6">
                             <label for="pemasok">
-                                Pemasok<span class="text-danger">*</span>
+                                Pemasok
                             </label>
                             <n-input placeholder="" id="pemasok" v-model:value="transaction_details.supplier"
                                 :options="gudangOptions" size="large" disabled />
                         </div>
-                        <div class="col-md-3 col-6">
+                        <!-- <div class="col-md-3 col-6">
                             <label for="gudang_pengirim">
-                                Gudang Pengirim<span class="text-danger">*</span>
+                                Gudang Pengirim
                             </label>
                             <n-input placeholder="" id="gudang_pengirim"
                                 v-model:value="transaction_details.shipping_warehouse" size="large" disabled />
-                        </div>
+                        </div> -->
                         <div class="col-md-3 col-6">
                             <label for="tanggal_kirim">
-                                Tanggal Kirim Barang<span class="text-danger">*</span>
+                                Tanggal Kirim Barang
                             </label>
                             <n-date-picker disabled value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder=""
                                 class="w-100" id="field8" size="large"
@@ -75,7 +75,7 @@
                         </div>
                         <!-- <div class="col-md-3">
                             <label for="tanggal_masuk">
-                                Tanggal Expired<span class="text-danger">*</span>
+                                Tanggal Expired
                             </label>
                             <n-date-picker placeholder="" type="datetime" id="tanggal_masuk"
                                 value-format="yyyy-MM-dd HH:mm:ss"
@@ -83,14 +83,14 @@
                         </div> -->
                         <div class="col-md-3">
                             <label for="pengirim">
-                                Nama Ekspedisi<span class="text-danger">*</span>
+                                Nama Ekspedisi
                             </label>
                             <n-input placeholder="" disabled id="pengirim" v-model:value="transaction_details.sender"
                                 size="large" />
                         </div>
                         <div class="col-md-3">
                             <label for="transportasi">
-                                Nomor Polisi Ekspedisi<span class="text-danger">*</span>
+                                Nomor Polisi Ekspedisi
                             </label>
                             <n-input placeholder="" disabled id="transportasi"
                                 v-model:value="transaction_details.transportation" size="large" />
@@ -536,12 +536,12 @@ export default defineComponent({
                     value: transaction_details.value.supplier,
                     data_type: 'string',
                 },
-                {
-                    name: 'Gudang Pengirim',
-                    category: 'Shipping Warehouse',
-                    value: transaction_details.value.shipping_warehouse,
-                    data_type: 'string',
-                },
+                // {
+                //     name: 'Gudang Pengirim',
+                //     category: 'Shipping Warehouse',
+                //     value: transaction_details.value.shipping_warehouse,
+                //     data_type: 'string',
+                // },
                 {
                     name: 'Tanggal Kirim Barang',
                     category: 'Delivery Date',

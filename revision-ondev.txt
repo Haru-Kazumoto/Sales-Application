@@ -69,7 +69,14 @@ major
     Jika pengajuan maka CO ini masuk ke marketing (Draf CO). Ketika approve CO bisa di proses lagi isi diskon nya
     - CO itu ada validasi, si customer ini ada invoice tunggakan gak jadi nanti masuk ke AR dulu untuk approvan,
     ada 3 status yang diberikan AR yaitu (HOLD, APPROVE, REJECT) kalau statusnya masih HOLD CO nya gabisa di proses, kalau reject hapus CO nya
-
++ [CUSTOMER-REGION:NEW] : [1 hari]
+    - mapping customer untuk membuat wilayah wilayahnya [contoh mapping ada di mapping customer ke sales]
+    dijadikan juga untuk harga angkutan
++ [CUSTOMER:REV] : [1 hari]
+    - pilihan badan usaha (legalitas) diganti hanya menjadi [PT,UD,CV,PERORANGAN] ok
+    - tambahkan 1 field select dengan label wajib pajak dengan value (PKP & NON-PKP) ok
+    - label Kelompok di customer ganti ke Channel Customer ok
+    - Pembelian dan penjualan bisa ppn dan non ppn, jika ada ppn maka perhitungan disertakan PPN 11%, jika memilih non ppn maka perhitungan tagihan tanpa PPN 11% ok
 
 ----------------------DEV
 SALES :

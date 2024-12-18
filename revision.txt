@@ -1,16 +1,7 @@
 ADMIN :
 + [CUSTOMER:REV] : [1 hari]
-    - pilihan badan usaha (legalitas) diganti hanya menjadi [PT,UD,CV,PERORANGAN]
-    - tambahkan 1 field select dengan label wajib pajak dengan value (PKP & NON-PKP)
-    - Pembelian dan penjualan bisa ppn dan non ppn, jika ada ppn maka perhitungan disertakan PPN 11%, jika memilih non ppn maka perhitungan tagihan tanpa PPN 11%
     - Kemasan dalam detail produk ada 2 field, mohon dihilangkan satu dan Kemasan itu nanti akan di input manual contoh: 25kg/pak bukan pcs, bag, sak seperti sekarang.
-    - label Kelompok di customer ganti ke Channel Customer
     - buatkan service import untuk mengimport data customer dari excel
-
-major
-+ [CUSTOMER-REGION:NEW] : [1 hari]
-    - mapping customer untuk membuat wilayah wilayahnya [contoh mapping ada di mapping customer ke sales]
-    dijadikan juga untuk harga angkutan
 
 SALES :
 + [CO:NEW] : [1 hari]

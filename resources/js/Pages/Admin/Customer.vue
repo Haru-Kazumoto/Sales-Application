@@ -16,8 +16,12 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column">
                         <label for="nama_customer" class="form-label">Badan Usaha</label>
-                        <n-input placeholder="" size="large" v-model:value="form.legality"
-                            :on-input="(value) => form.legality = value.toUpperCase()" />
+                        <n-select placeholder="" size="large" v-model:value="form.legality" :options="[
+                            { label: 'PT', value: 'PT'},
+                            { label: 'UD', value: 'UD'},
+                            { label: 'CV', value: 'CV'},
+                            { label: 'PERORANGAN', value: 'PERORANGAN'},
+                        ]"/>
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column">
                         <label for="nama_customer" class="form-label">Segmen Customer</label>
@@ -71,6 +75,13 @@
                             { label: 'DKU', value: 'DKU'}
                         ]" v-model:value="form.company"/>
                     </div>
+                    <div class="col-12 col-md-6 col-lg-4 d-flex flex-column gap-2">
+                        <label for="taxpayer">Wajib Pajak</label>
+                        <n-select size="large" clearable :options="[
+                            { label: 'PKP', value: 'PKP'},
+                            { label: 'NON-PKP', value: 'NON_PKP'}
+                        ]" v-model:value="form.taxpayer"></n-select>
+                    </div> 
                     <div class="col-12 col-md-6 col-lg-4">
                         <label for="ktpImage" class="form-label">Upload Foto KTP</label>
                         <input type="file" id="ktpImage" class="form-control" accept="image/*"
@@ -223,6 +234,14 @@ export default defineComponent({
                     width: 150,
                 },
                 {
+                    title: "WAJIB PAJAK",
+                    key: 'taxpayer',
+                    width: 150,
+                    render(row) {
+                        return row.taxpayer.replace('_',' ');
+                    }
+                },
+                {
                     title: "ALAMAT",
                     key: "address",
                     width: 250,
@@ -323,7 +342,8 @@ export default defineComponent({
             npwp_image: null as unknown as string,
             ktp_image: null as unknown as string,
             segment_customer: null as unknown as string,
-            company: ''
+            company: '',
+            taxpayer: ''
         });
 
         // Filter data

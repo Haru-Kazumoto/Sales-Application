@@ -297,7 +297,7 @@ class PurchaseOrderController extends Controller
         $filterRangeDate = $request->get('range_date', null);  // Default null jika tidak ada
         $filterField = $request->get('filter_field', null);
         $filterQuery = $request->get('filter_query', null);
-        $orderBy = $request->get('order_by', 'asc');
+        $orderBy = $request->get('order_by', 'desc');
         $paginate = $request->get('paginate', 10);  // Default paginate 10 item
 
         // Panggil service method dengan parameter dari request
