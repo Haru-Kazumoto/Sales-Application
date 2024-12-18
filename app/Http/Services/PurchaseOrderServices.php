@@ -38,11 +38,7 @@ class PurchaseOrderServices
 
         $query = $this->scopeFilterByDateRange($query,$filterRangeDate);
         $query = $this->applySearchFilter($query,$filterField,$filterQuery);
-
-        if(!is_null($order_by))
-        {
-            $query->orderBy('created_at', $order_by);
-        }
+        $query->orderBy('created_at', $order_by);
 
         return $this->applyPagination($query,$paginate);
     }
