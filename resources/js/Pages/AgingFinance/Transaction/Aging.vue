@@ -57,8 +57,8 @@ function createColumns() {
             key: 'invoice_date',
             width: 250,
             render(row) {
-                const date = row.transaction_details.find(data => data.category === "Invoice Date")?.value;  // Menampilkan tanggal faktur
-                return dayjs(date).format('dddd, D MMMMYYYY ')
+                // const date = row.transaction_details.find(data => data.category === "Invoice Date")?.value;  // Menampilkan tanggal faktur
+                return dayjs(row.created_at).format('dddd, D MMMM YYYY hh:mm');
             },
         },
         {
