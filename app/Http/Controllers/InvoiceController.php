@@ -272,18 +272,18 @@ class InvoiceController extends Controller
         ->when($statusFilter, function ($query) use ($statusFilter) {
             $query->having('status_payment', $statusFilter); // Filter berdasarkan status
         })
-        ->orderByRaw("
-                CASE 
-                    WHEN EXISTS (
-                        SELECT 1 
-                        FROM transaction_details 
-                        WHERE transaction_details.transactions_id = transactions.id 
-                        AND transaction_details.category = 'Transportation' 
-                        AND transaction_details.value = '-'
-                    ) THEN 0 
-                    ELSE 1 
-                END
-        ")
+        // ->orderByRaw("
+        //         CASE 
+        //             WHEN EXISTS (
+        //                 SELECT 1 
+        //                 FROM transaction_details 
+        //                 WHERE transaction_details.transactions_id = transactions.id 
+        //                 AND transaction_details.category = 'Transportation' 
+        //                 AND transaction_details.value = '-'
+        //             ) THEN 0 
+        //             ELSE 1 
+        //         END
+        // ")
         ->orderByDesc('created_at')
         ->paginate(10);
 
