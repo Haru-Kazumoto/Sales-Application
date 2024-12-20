@@ -505,7 +505,18 @@ export default defineComponent({
         }
 
         function handleImportProducts() {
-            file.post(route('admin.products.import'));
+            file.post(route('admin.products.import'), {
+                onSuccess: (page) => {
+                    Swal.fire({
+                        title: 'Berhasil memasukan data!',
+                        text: 'Silahkan cek list data',
+                        icon: 'success'
+                    });
+                },
+                onError: () => {
+                    Swal.fire('Gagal memasukan data!', 'Silahkan lapor developer', 'error');
+                }
+            });
         }
 
         const pagination = reactive({

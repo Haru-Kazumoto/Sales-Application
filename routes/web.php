@@ -84,6 +84,8 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
             Route::get('/edit-supplier/{parties}', [App\Http\Controllers\PartiesController::class, 'editSupplier'])->name('parties.supplier.edit');
             Route::patch('/update-supplier/{parties}', [App\Http\Controllers\PartiesController::class, 'updateSupplier'])->name('parties.supplier.update');
             Route::delete('/delete-supplier/{parties}', [App\Http\Controllers\PartiesController::class, 'destroySupplier'])->name('parties.supplier.delete');
+
+            Route::post('/import-vendors', [App\Http\Controllers\ImportProductMaster::class, 'importVendors'])->name('vendors.import');
         });
 
         Route::prefix('product-management')->group(function () {

@@ -3,6 +3,21 @@
         <TitlePage title="Daftar Supplier" />
         <div class="card shadow-sm border-0">
             <div class="card-body">
+                <div class="row g-2">
+                    <div class="col-4 d-flex flex-column">
+                        <h4>Tambah data dari excel</h4>
+                        <label for="file-upload" class="form-label">Upload File Excel</label>
+                        <input type="file" id="file-upload" accept=".xlsx" class="form-control" @change="handleChangeFile"/>
+                        <small class="text-muted">
+                            Hanya file Excel (.xlsx) yang diperbolehkan.
+                        </small>
+                        <n-button type="primary" class="mt-3 w-25" @click="handleImportProducts">Import</n-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
                 <form class="row g-3" @submit.prevent="handleSubmitCustomer">
                     <!-- First row -->
                     <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
@@ -258,6 +273,29 @@ export default defineComponent({
             });
         };
 
+        const file = useForm({
+            attachment: null as unknown as any,
+        });
+
+        function handleChangeFile(event) {
+            file.attachment = event.target.files[0];
+        }
+
+        function handleImportProducts() {
+            file.post(route('admin.vendors.import'), {
+                onSuccess: (page) => {
+                    Swal.fire({
+                        title: 'Berhasil memasukan data!',
+                        text: 'Silahkan cek list data',
+                        icon: 'success'
+                    });
+                },
+                onError: () => {
+                    Swal.fire('Gagal memasukan data!', 'Silahkan lapor developer', 'error');
+                }
+            });
+        }
+
         // Function to handle page change
         function handlePageChange(page: number) {
             router.get(route('admin.parties.supplier'), {
@@ -307,6 +345,8 @@ export default defineComponent({
             handlePageChange,
             handleSearch,
             columns: createColumns(),
+            handleChangeFile,
+            handleImportProducts,
             currentPage,
             form,
             groups,
