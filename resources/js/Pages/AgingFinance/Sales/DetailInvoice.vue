@@ -12,53 +12,49 @@
         <div class="card shadow-sm border-0">
             <div class="card-body">
                 <div class="row g-2">
-                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
+                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1" >
                         <label for="">NOMOR CO</label>
-                        <n-input placeholder="" size="large" v-model:value="dataInvoice.customer_order_number" />
+                        <n-input placeholder="" size="large" v-model:value="dataInvoice.customer_order_number" disabled/>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
+                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1" >
                         <label for="">NOMOR SURAT JALAN</label>
-                        <n-input placeholder="" size="large" v-model:value="dataInvoice.travel_document_number" />
+                        <n-input placeholder="" size="large" v-model:value="dataInvoice.travel_document_number" disabled/>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
+                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1" >
                         <label for="">NOMOR FAKTUR</label>
-                        <n-input placeholder="" size="large" v-model:value="dataInvoice.invoice_number" />
+                        <n-input placeholder="" size="large" v-model:value="dataInvoice.invoice_number" disabled/>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
+                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1" >
                         <label for="">TANGGAL FAKTUR</label>
-                        <n-input placeholder="" size="large" v-model:value="dataInvoice.invoice_date" />
+                        <n-input placeholder="" size="large" v-model:value="dataInvoice.invoice_date" disabled/>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
+                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1" >
                         <label for="">TERMIN</label>
-                        <n-input placeholder="" size="large" v-model:value="dataInvoice.term_of_payment" />
+                        <n-input placeholder="" size="large" v-model:value="dataInvoice.term_of_payment" disabled/>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
+                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1" >
                         <label for="">TANGGAL JATUH TEMPO</label>
-                        <n-input placeholder="" size="large" v-model:value="dataInvoice.due_date" />
+                        <n-input placeholder="" size="large" v-model:value="dataInvoice.due_date" disabled/>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
+                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1" >
                         <label for="">NOMOR POLISI</label>
-                        <n-input placeholder="" size="large" v-model:value="dataInvoice.number_plate" />
+                        <n-input placeholder="" size="large" v-model:value="dataInvoice.number_plate" disabled/>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
+                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1" >
                         <label for="">SALESMAN</label>
-                        <n-input placeholder="" size="large" v-model:value="dataInvoice.salesman" />
+                        <n-input placeholder="" size="large" v-model:value="dataInvoice.salesman" disabled/>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
+                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1" >
                         <label for="">NAMA CUSTOMER</label>
-                        <n-input placeholder="" size="large" v-model:value="dataInvoice.customer_name" />
+                        <n-input placeholder="" size="large" v-model:value="dataInvoice.customer_name" disabled/>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
+                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1" >
                         <label for="">NPWP</label>
-                        <n-input placeholder="" size="large" v-model:value="dataInvoice.npwp" />
+                        <n-input placeholder="" size="large" v-model:value="dataInvoice.npwp" disabled/>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
+                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1" >
                         <label for="">ALAMAT CUSTOMER</label>
-                        <n-input placeholder="" size="large" v-model:value="dataInvoice.customer_address" />
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
-                        <label for="">PPN</label>
-                        <n-input placeholder="" size="large" v-model:value="dataInvoice.ppn" />
+                        <n-input placeholder="" size="large" v-model:value="dataInvoice.customer_address" disabled/>
                     </div>
                 </div>
             </div>
@@ -77,7 +73,7 @@
                     <span>Sub Total</span>
                     <span>{{ subtotal }}</span>
                 </div>
-                <div class="d-flex justify-content-between py-2">
+                <div class="d-flex justify-content-between py-2" v-if="use_tax">
                     <span>PPN 11%</span>
                     <span>{{ totalPPN }}</span>
                 </div>
@@ -111,6 +107,9 @@
                 </div>
             </div>
         </div>
+
+        <n-button type="primary" size="medium" class="ms-auto mb-3" @click="handlePreviewDocument">Preview dokumen faktur</n-button>
+
         <div class="card shadow-sm border-0 mb-5" v-if="$page.props.auth.user.division.division_name === 'FINANCE'">
             <div class="card-body">
                 <div class="d-flex align-items-center">
@@ -294,6 +293,13 @@ export default defineComponent({
             ]
         }
 
+        const page = usePage();
+        const data = page.props.data as any;
+        const dataDetails = data.transaction_details as any[];
+        const use_tax = page.props.use_tax as boolean;
+        const showModal = ref(false);
+        const notification = useNotification();
+
         const totalPPN = computed(() => {
             // Menghitung subtotal dari semua produk tanpa mengalikan quantity
             const subtotal = data.transaction_items.reduce((total, item) => {
@@ -330,20 +336,22 @@ export default defineComponent({
             }, 0);
 
             // Menghitung total harga termasuk PPN 11%
-            const totalWithPPN = subtotal + (subtotal * 0.11);
+            let total = null as unknown as number;
+
+            if(use_tax) {
+                total = subtotal + (subtotal * 0.11);
+            } else {
+                total = subtotal;
+            }
 
             // Menyimpan total ke dalam form
-            data.total = totalWithPPN;
+            data.total = total;
 
             // Mengembalikan total harga yang diformat
-            return totalWithPPN;
+            return total;
         });
 
-        const page = usePage();
-        const data = page.props.data as any;
-        const dataDetails = data.transaction_details as any[];
-        const showModal = ref(false);
-        const notification = useNotification();
+        
 
         const dataInvoice = ref({
             customer_order_number: dataDetails.find(data => data.category === "CO Number")?.value,
@@ -377,6 +385,10 @@ export default defineComponent({
                     size: 'medium',
                 }, { default: () => currentPaymentStatus }
             )
+        }
+
+        function handlePreviewDocument() {
+            window.open(route('aging-finance.generate-invoice'),'_blank');
         }
 
         watch(() => payForm.total_paid, (data) => {
@@ -420,6 +432,7 @@ export default defineComponent({
 
         return {
             columns: createColumns(),
+            handlePreviewDocument,
             handlePayInvoice,
             formatRupiah,
             handleSetStatus,
@@ -433,6 +446,7 @@ export default defineComponent({
             ArrowBack,
             ReceiptMoney24Filled,
             paymentMethod,
+            use_tax,
             bodyStyle: {
                 width: '600px'
             },

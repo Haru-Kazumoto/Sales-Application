@@ -43,7 +43,7 @@ class CustomerOrdersController extends Controller
     public function index()
     {
         $customer_orders = Transactions::with('transactionType', 'transactionDetails', 'transactionItems')
-            ->where('status', '<>', 'PENDING')
+            // ->where('status', '<>', 'PENDING')
             ->whereHas('transactionType', function ($query) {
                 $query->whereIn('name', ['Sales Order', 'Sales Order Need Approval']);
             })
@@ -56,7 +56,7 @@ class CustomerOrdersController extends Controller
             ->paginate(10);
 
         $draf_customer_orders = Transactions::with('transactionType', 'transactionDetails', 'transactionItems')
-            ->where('status', '<>', 'PENDING')
+            // ->where('status', '<>', 'PENDING')
             ->whereHas('transactionType', function ($query) {
                 $query->whereIn('name', ['Sales Order', 'Sales Order Need Approval']);
             })

@@ -68,11 +68,11 @@
                         <n-input size="large" placeholder="" v-model:value="transaction_details.customer_address"
                             disabled />
                     </div>
-                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
+                    <!-- <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1">
                         <label for="">PPN</label>
                         <n-select size="large" placeholder="" @update:value="updateTax" :options="ppnOptions"
                             v-model:value="tax.tax_id" />
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -89,7 +89,7 @@
                     <span>Sub Total</span>
                     <span>{{ subtotal }}</span>
                 </div>
-                <div class="d-flex justify-content-between py-2">
+                <div class="d-flex justify-content-between py-2" v-if="is_usetax">
                     <span>PPN 11%</span>
                     <span>{{ totalPPN }}</span>
                 </div>
@@ -204,7 +204,8 @@ export default defineComponent({
     setup() {
         const page = usePage();
         const travel_document = page.props.transactions as Transactions;
-        console.log(travel_document);
+        const is_usetax = page.props.use_tax;
+
         const form = useForm({
             document_code: page.props.invoice_number as string,
             term_of_payment: travel_document.term_of_payment,
@@ -251,6 +252,7 @@ export default defineComponent({
                     product_id: item.product_id,
                     tax_amount: item.tax_amount,
                     tax_value: null,
+                    tax_id: null,
                     product: {
                         code: item.product?.code || '',
                         unit: item.product?.unit || '',
@@ -388,13 +390,19 @@ export default defineComponent({
             }, 0);
 
             // Menghitung total harga termasuk PPN 11%
-            const totalWithPPN = subtotal + (subtotal * 0.11);
+            let total = null as unknown as number;
+            
+            if(is_usetax) {
+                total = subtotal + (subtotal * 0.11);
+            } else {
+                total = subtotal;
+            }
 
             // Menyimpan total ke dalam form
-            form.total = totalWithPPN;
+            form.total = total;
 
             // Mengembalikan total harga yang diformat
-            return formatRupiah(totalWithPPN);
+            return formatRupiah(total);
         });
 
         const termPaymentOptions = (page.props.payment_terms as Lookup[]).map((data) => ({
@@ -432,6 +440,7 @@ export default defineComponent({
             tax,
             totalPPN,
             subtotal,
+            is_usetax,
             totalPrice,
             ArrowBack
         }

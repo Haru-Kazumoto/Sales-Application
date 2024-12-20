@@ -106,7 +106,7 @@
                         <span>Sub Total</span>
                         <span>{{ subTotal }}</span>
                     </div>
-                    <div class="d-flex justify-content-between py-2">
+                    <div class="d-flex justify-content-between py-2" v-if="transaction_details.use_tax">
                         <span>PPN 11%</span>
                         <span>{{ resultPpn }}</span>
                     </div>
@@ -183,6 +183,7 @@ export default defineComponent({
             transportation: '',
             sender: '',
             employee_name: (page.props.auth.user as User).fullname,
+            use_tax: '',
         });
 
         const products = ref({
@@ -255,14 +256,6 @@ export default defineComponent({
                     width: 200,
                     render(row) {
                         return formatRupiah((row.total_price ?? 0));
-                    }
-                },
-                {
-                    title: 'PPN',
-                    key: 'tax_amount',
-                    width: 100,
-                    render(row) {
-                        return row.tax_value;
                     }
                 },
                 {
@@ -467,6 +460,7 @@ export default defineComponent({
                     const sender = data.transaction_details.find(data => data.category === "Sender")?.value || '';
                     const delivery_type = data.transaction_details.find(data => data.category === "Delivery Type")?.value || '';
                     const number_plate = data.transaction_details.find(data => data.category === "Transportation")?.value || '';
+                    const use_tax = data.transaction_details.find(data => data.category === "Use Tax")?.value || '';
 
                     form.term_of_payment = data.term_of_payment;
                     form.due_date = data.due_date;
@@ -479,6 +473,7 @@ export default defineComponent({
                     transaction_details.value.sender = sender.replace("_", ' ');
                     transaction_details.value.delivery_type = delivery_type.replace("_", " ");
                     transaction_details.value.transportation = number_plate;
+                    transaction_details.value.use_tax = use_tax;
 
                     // Reset form.transaction_items untuk memasukkan produk baru
                     form.transaction_items = [];
@@ -553,16 +548,22 @@ export default defineComponent({
             }, 0);
 
             // Menghitung total harga termasuk PPN 11%
-            const totalWithPPN = subtotal + (subtotal * 0.11);
+            let total = null as unknown as number;
+
+            if(transaction_details.value.use_tax) {
+                total = subtotal + (subtotal * 0.11);
+            } else {
+                total = subtotal;
+            }
 
             // Menyimpan total ke dalam form
-            const roundedTotalWithPpn = Math.round(totalWithPPN);
+            const roundedTotalWithPpn = Math.round(total);
 
             form.total = roundedTotalWithPpn;
 
             // Mengembalikan total harga yang diformat
             // return roundedTotalWithPpn;
-            return formatRupiah(totalWithPPN);
+            return formatRupiah(total);
         });
 
         const angkutanOptions = (page.props.parties as Parties[]).map(data => ({

@@ -14,6 +14,7 @@ use App\Models\TransactionItem;
 use App\Models\Transactions;
 use App\Models\TransactionType;
 use App\Utils\DocumentNumberGenerator;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -71,6 +72,14 @@ class InvoiceController extends Controller
         // Load relasi yang diperlukan
         $transactions->load('transactionType', 'transactionDetails', 'transactionItems.product');
 
+        $co_number = $transactions->transactionDetails[0]['value'];
+        
+        $customer_order = Transactions::with('transactionDetails')
+            ->where('document_code', $co_number)
+            ->first();
+
+        $use_tax = (bool) $customer_order->transactionDetails[16]['value'];
+
         $invoice_number = DocumentNumberGenerator::generate(
             '',
             'transactions',
@@ -83,7 +92,7 @@ class InvoiceController extends Controller
         $taxes = Tax::all();
 
         // Render Inertia dengan data
-        return Inertia::render('AgingFinance/Sales/CreateInvoiceDNP', compact('transactions', 'invoice_number', 'payment_terms', 'taxes'));
+        return Inertia::render('AgingFinance/Sales/CreateInvoiceDNP', compact('transactions', 'invoice_number', 'payment_terms', 'taxes', 'use_tax'));
     }
 
 
@@ -114,7 +123,7 @@ class InvoiceController extends Controller
             'transaction_items.*.quantity' => 'required|numeric',
             'transaction_items.*.tax_amount' => 'nullable|numeric',
             'transaction_items.*.amount' => 'nullable|numeric',
-            'transaction_items.*.tax_id' => 'required|numeric',
+            'transaction_items.*.tax_id' => 'nullable|numeric',
             'transaction_items.*.product_id' => 'required|numeric',
             'transaction_items.*.product' => 'required_if:transaction_items.*.product_id,null|array',
             'transaction_items.*.product.code' => 'required_with:transaction_items.*.product|string',
@@ -166,7 +175,7 @@ class InvoiceController extends Controller
                     'unit' => $txItem['unit'],
                     'quantity' => $txItem['quantity'],
                     'amount' => $txItem['amount'],
-                    'tax_id' => $txItem['tax_id'],
+                    // 'tax_id' => $txItem['tax_id'],
                     'total_price' => $txItem['total_price'],
                     'transactions_id' => $transaction->id,
                     'product_id' => $product->id, 
@@ -203,6 +212,14 @@ class InvoiceController extends Controller
             }
         ]); 
 
+        $co_number = $transactions->transactionDetails[0]['value'];
+        
+        $customer_order = Transactions::with('transactionDetails')
+            ->where('document_code', $co_number)
+            ->first();
+
+        $use_tax = (bool) $customer_order->transactionDetails[16]['value'];
+
         $totalTagihan = $transactions->total;
         $totalPaid = $transactions->invoicePayments->sum('total_paid');
         $totalLeft = $totalTagihan - $totalPaid;
@@ -224,6 +241,7 @@ class InvoiceController extends Controller
             'totalPaid',
             'totalLeft',
             'statusPayment',
+            'use_tax'
         ));
     }
 
@@ -294,5 +312,12 @@ class InvoiceController extends Controller
     public function exportInvoice()
     {
         return Excel::download(new InvoiceExport(), 'invoice_data_'.date('d_F_Y').'.xlsx');
+    }
+
+    public function generateInvoiceDocument() 
+    {
+        $pdf = Pdf::loadView('documents.invoice-document');
+
+        return $pdf->stream('invoice_'.rand(100000,900000).'_.pdf');
     }
 }

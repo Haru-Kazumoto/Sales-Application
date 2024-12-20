@@ -25,11 +25,6 @@
                             <n-input disabled id="field2" size="large" v-model:value="transaction_details.supplier" />
                         </div>
                         <div class="col-md-3">
-                            <label for="field3">Gudang</label>
-                            <n-select disabled id="field3" size="large"
-                                v-model:value="transaction_details.storehouse" />
-                        </div>
-                        <div class="col-md-3">
                             <label for="field4">Alokasi</label>
                             <n-select disabled id="field4" size="large" v-model:value="transaction_details.located" />
                         </div>
@@ -96,7 +91,7 @@
                         <span>Sub Total</span>
                         <span>{{ formatRupiah(form.sub_total) }}</span>
                     </div>
-                    <div class="d-flex justify-content-between py-2">
+                    <div class="d-flex justify-content-between py-2" v-if="form.tax_amount">
                         <span>PPN 11%</span>
                         <span>{{ formatRupiah(form.tax_amount) }}</span>
                     </div>
@@ -199,15 +194,6 @@ function createColumns(): DataTableColumns<TransactionItems> {
                 return formatRupiah((row.total_price ?? 0));
             }
         },
-        {
-            title: 'PPN',
-            key: 'tax_amount',
-            width: 100,
-            render(row) {
-                return row.tax?.value;
-            }
-        },
-
     ];
 }
 

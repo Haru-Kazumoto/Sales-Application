@@ -3,9 +3,9 @@
     <Head title="Update PO" />
     <div class="d-flex flex-column gap-4">
         <TitlePage title="Update PO" />
-        <div class="d-flex gap-2 align-items-center">
+        <!-- <div class="d-flex gap-2 align-items-center">
             <n-select :options="dateOptions" class="w-25" size="large" placeholder="Filter data per waktu" />
-        </div>
+        </div> -->
         <div class="card shadow" style="border: none;">
             <div class="card-body">
                 <n-data-table :columns="columns" :bordered="false" :data="$page.props.purchase_orders.data" />
@@ -94,18 +94,6 @@ export default defineComponent({
                         })
 
                         return senderData?.value?.replace("_", " ");
-                    },
-                },
-                {
-                    title: 'Gudang',
-                    key: 'storehouse',
-                    width: 200,
-                    render(rowData) {
-                        const storehouseData = rowData.transaction_details.find((data) => {
-                            return data.category === "Storehouse";
-                        })
-
-                        return storehouseData?.value;
                     },
                 },
                 {

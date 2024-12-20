@@ -17,6 +17,7 @@ class PromoProgramController extends Controller
                 '*', 
                 DB::raw("CASE WHEN end_date < CURDATE() THEN 'BERAKHIR' ELSE 'AKTIF' END AS status")
             )
+            ->orderByRaw("CASE WHEN end_date < CURDATE() THEN 1 ELSE 0 END")
             ->orderByDesc('created_at')
             ->get();
 

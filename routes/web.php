@@ -276,6 +276,9 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
 
         Route::get('/process-co', [App\Http\Controllers\CustomerOrdersController::class, 'indexCoNeedApprove'])->name('co.process');
         Route::patch('/process-co/{transactions}', [App\Http\Controllers\CustomerOrdersController::class, 'processCustomerOrder'])->name('co.process.patch');
+
+        // INVOICEIST
+        Route::get('/generate-invoice', [App\Http\Controllers\InvoiceController::class, 'generateInvoiceDocument'])->name('generate-invoice');
     });
 
     Route::name('sales.')->group(function() {

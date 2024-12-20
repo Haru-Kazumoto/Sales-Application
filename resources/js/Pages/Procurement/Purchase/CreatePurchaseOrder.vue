@@ -655,6 +655,12 @@ export default defineComponent({
                     category: "Transportation Cost",
                     value: transaction_details.value.transportation_cost || "0",
                     data_type: "float",
+                },
+                {
+                    name: "PPN",
+                    category: "Use Tax",
+                    value: String(transaction_details.value.use_tax),
+                    data_type: 'boolean'
                 }
             ];
 
@@ -732,10 +738,10 @@ export default defineComponent({
         }
 
         //options
-        const storeLocationOptions = (page.props.store_locations as Lookup[]).map((data) => ({
-            label: data.label,
-            value: data.value
-        }));
+        const storeLocationOptions = [
+            {label: "DNP", value: "DNP"},
+            {label: "DKU", value: "DKU"}
+        ];
 
         const storehouseOptions = (page.props.storehouses as Storehouse[]).map((data) => ({
             label: data.name,

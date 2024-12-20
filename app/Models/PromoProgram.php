@@ -13,7 +13,7 @@ class PromoProgram extends Model
     protected $table = 'promo_products';
 
     protected $fillable = [
-        'name',
+    'name',
         'description',
         'min',
         'max',
