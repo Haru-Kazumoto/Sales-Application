@@ -194,6 +194,28 @@
                             </template>
                         </n-input>
                     </div>
+                    <div class="col-12 col-lg-4 d-flex flex-column">
+                        <label for="">Margin End User
+                            <RequiredMark />
+                        </label>
+                        <n-input size="large" placeholder="" v-model:value="form.margin_end_user"
+                            @input="(value) => form.margin_end_user = value.replace(/\D/g, '')">
+                            <template #prefix>
+                                Rp
+                            </template>
+                        </n-input>
+                    </div>
+                    <div class="col-12 col-lg-4 d-flex flex-column">
+                        <label for="">Margin Retail
+                            <RequiredMark />
+                        </label>
+                        <n-input size="large" placeholder="" v-model:value="form.margin_retail"
+                            @input="(value) => form.margin_retail = value.replace(/\D/g, '')">
+                            <template #prefix>
+                                Rp
+                            </template>
+                        </n-input>
+                    </div>
                 </form>
             </div>
         </div>
@@ -238,6 +260,8 @@ export default defineComponent({
             all_segment_price: product.all_segment_price || null as unknown as number,
             supplier_id: product.supplier_id || null as unknown as number,
             transportation_cost: product.transportation_cost || null as unknown as number,
+            margin_end_user: product.margin_end_user || null as unknown as number,
+            margin_retail: product.margin_retail || null as unknown as number,
         });
 
         function handleSubmitProduct() {

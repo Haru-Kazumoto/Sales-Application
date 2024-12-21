@@ -135,6 +135,8 @@ class ProductsController extends Controller
             $product->all_segment_price = $request->all_segment_price;
             $product->product_type_id = $product_type->id;
             $product->transportation_cost = $request->input('transportation_cost');
+            $product->margin_retail = $request->input('margin_retail');
+            $product->margin_end_user = $request->input('margin_end_user');
 
             // Simpan produk
             $product->save();
@@ -222,6 +224,8 @@ class ProductsController extends Controller
                 'all_segment_price' => $request->all_segment_price,
                 'supplier_id' => $request->supplier_id,
                 'transportation_cost' => $request->input('transportation_cost'),
+                'margin_retail' => $request->input('margin_retail'),
+                'margin_end_user' => $request->input('margin_end_user'),
             ]);
         });
 

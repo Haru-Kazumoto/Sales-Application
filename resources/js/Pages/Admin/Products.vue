@@ -70,7 +70,7 @@
                         </n-input>
                     </div>
                     <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Margin Normal
+                        <label for="">Margin All Segment
                             <RequiredMark />
                         </label>
                         <n-input size="large" placeholder="" v-model:value="form.normal_margin"
@@ -202,6 +202,28 @@
                             </template>
                         </n-input>
                     </div>
+                    <div class="col-12 col-lg-4 d-flex flex-column">
+                        <label for="">Margin End User
+                            <RequiredMark />
+                        </label>
+                        <n-input size="large" placeholder="" v-model:value="form.margin_end_user"
+                            @input="(value) => form.margin_end_user = value.replace(/\D/g, '')">
+                            <template #prefix>
+                                Rp
+                            </template>
+                        </n-input>
+                    </div>
+                    <div class="col-12 col-lg-4 d-flex flex-column">
+                        <label for="">Margin Retail
+                            <RequiredMark />
+                        </label>
+                        <n-input size="large" placeholder="" v-model:value="form.margin_retail"
+                            @input="(value) => form.margin_retail = value.replace(/\D/g, '')">
+                            <template #prefix>
+                                Rp
+                            </template>
+                        </n-input>
+                    </div>
 
                     <div class="d-flex">
                         <n-button type="primary" class="ms-auto" attr-type="submit">Tambah Data</n-button>
@@ -285,6 +307,8 @@ export default defineComponent({
             product_type_id: null as unknown as number,
             supplier_id: null as unknown as number,
             transportation_cost: null as unknown as number,
+            margin_retail: null as unknown as number,
+            margin_end_user: null as unknown as number,
         });
 
         function createColumns() {
@@ -387,11 +411,27 @@ export default defineComponent({
                     }
                 },
                 {
-                    title: "MARGIN NORMAL",
+                    title: "MARGIN ALL SEGMENT",
                     key: "margin_normal",
                     width: 200,
                     render(row) {
                         return formatRupiah(row.normal_margin);
+                    }
+                },
+                {
+                    title: "MARGIN END USER",
+                    key: "margin_end_user",
+                    width: 200,
+                    render(row) {
+                        return formatRupiah(row.normal_end_user);
+                    }
+                },
+                {
+                    title: "MARGIN RETAIL",
+                    key: "margin_retail",
+                    width: 200,
+                    render(row) {
+                        return formatRupiah(row.normal_retail);
                     }
                 },
                 {
