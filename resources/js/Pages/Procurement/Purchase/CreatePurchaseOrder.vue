@@ -166,7 +166,7 @@
                                 Harga Barang
                             </label>
                             <n-input size="large" id="product_price" placeholder=""
-                                v-model:value="transaction_items.amount" >
+                                v-model:value="transaction_items.amount">
                                 <template #prefix>Rp </template>
                             </n-input>
                         </div>
@@ -323,7 +323,7 @@ export default defineComponent({
         }, { deep: true, immediate: true });
 
         watch(() => transaction_items.value.quantity, (quantity) => {
-            if(quotaTradePromo.value !== null && quotaTradePromo.value < quantity){
+            if (quotaTradePromo.value !== null && quotaTradePromo.value < quantity) {
                 Swal.fire({
                     icon: "error",
                     title: "Kuota tidak cukup!",
@@ -390,7 +390,7 @@ export default defineComponent({
                 : String(transaction_items.value.amount).replace(/\./g, '').replace(',', '.'); // Atau gunakan input amount
 
             // Parsing amount yang sudah diformat ke angka desimal
-            const productPrice = parseFloat(formattedAmount);
+            let productPrice = parseFloat(formattedAmount);
             if (isNaN(productPrice)) {
                 notification.error({
                     title: 'Nilai jumlah produk tidak valid',
@@ -399,6 +399,9 @@ export default defineComponent({
                 });
                 return;
             }
+
+            // Round the product price to 2 decimal places
+            productPrice = Math.round(productPrice * 100) / 100;
 
             // Perhitungan tanpa pembulatan
             const ppnAmount = productPrice * selectedPpnValue;
@@ -411,10 +414,8 @@ export default defineComponent({
                 unit: transaction_items.value.unit,
                 quantity: transaction_items.value.quantity,
                 product_id: transaction_items.value.product_id,
-                // tax_amount: selectedTax?.value_tax,
                 amount: productPrice,
                 tax_id: transaction_items.value.tax_id,
-                // tax_value: selectedTax?.value_tax ?? 0,
                 use_tax: transaction_details.value.use_tax,
                 trade_promo_id: transaction_items.value.trade_promo_id,
                 total_price: formattedTotalPrice,
@@ -739,8 +740,8 @@ export default defineComponent({
 
         //options
         const storeLocationOptions = [
-            {label: "DNP", value: "DNP"},
-            {label: "DKU", value: "DKU"}
+            { label: "DNP", value: "DNP" },
+            { label: "DKU", value: "DKU" }
         ];
 
         const storehouseOptions = (page.props.storehouses as Storehouse[]).map((data) => ({
