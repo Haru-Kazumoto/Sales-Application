@@ -105,6 +105,7 @@ class ProductsController extends Controller
             'supplier_id' => 'nullable|numeric',
             'saving_marketing' => 'nullable|numeric',
             'product_type_id' => 'numeric|required',
+            'transportation_cost' => 'nullable|numeric',
         ]);
 
         
@@ -133,6 +134,7 @@ class ProductsController extends Controller
             $product->saving_marketing = $request->input('saving_marketing');
             $product->all_segment_price = $request->all_segment_price;
             $product->product_type_id = $product_type->id;
+            $product->transportation_cost = $request->input('transportation_cost');
 
             // Simpan produk
             $product->save();
@@ -192,6 +194,7 @@ class ProductsController extends Controller
             'saving_marketing' => 'nullable|numeric',
             'product_type_id' => 'numeric|required',
             'supplier_id' => 'numeric|required',
+            'transportation_cost' => 'nullable|numeric',
         ]);
 
         // Lakukan update data
@@ -218,6 +221,7 @@ class ProductsController extends Controller
                 'product_type_id' => $product_type->id,
                 'all_segment_price' => $request->all_segment_price,
                 'supplier_id' => $request->supplier_id,
+                'transportation_cost' => $request->input('transportation_cost'),
             ]);
         });
 

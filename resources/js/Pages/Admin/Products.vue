@@ -191,6 +191,18 @@
                         </n-input>
                     </div>
 
+                    <div class="col-12 col-lg-4 d-flex flex-column">
+                        <label for="">Harga Trucking
+                            <RequiredMark />
+                        </label>
+                        <n-input size="large" placeholder="" v-model:value="form.transportation_cost"
+                            @input="(value) => form.transportation_cost = value.replace(/\D/g, '')">
+                            <template #prefix>
+                                Rp
+                            </template>
+                        </n-input>
+                    </div>
+
                     <div class="d-flex">
                         <n-button type="primary" class="ms-auto" attr-type="submit">Tambah Data</n-button>
                     </div>
@@ -272,6 +284,7 @@ export default defineComponent({
             saving_marketing: null as unknown as number,
             product_type_id: null as unknown as number,
             supplier_id: null as unknown as number,
+            transportation_cost: null as unknown as number,
         });
 
         function createColumns() {

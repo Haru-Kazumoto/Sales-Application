@@ -33,6 +33,7 @@ class Products extends Model
         'all_segment_price',
         'product_type',
         'product_company',
+        'transportation_cost'
     ];
 
     public function tax(): BelongsTo
