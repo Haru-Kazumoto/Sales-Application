@@ -36,17 +36,19 @@ class ProductsAllImports implements ToCollection, WithStartRow
                     $supplier = Parties::where('name', $row[2])->first();
                     $product_type = ProductType::where('name', $row[7])->first();
 
-                    Products::create([
+                    $data = Products::create([
                         'code' => $row[3],
                         'name' => $row[4],
                         'unit' => $row[5],
                         'product_company' => $row[1],
                         'product_type' => $row[6],
                         'category' => $row[8],
-                        'product_type_id' => $product_type->id,
+                        // 'product_type_id' => $product_type->id,
                         //7 buat channel / segment
                         'supplier_id' => $supplier->id
                     ]);
+
+                    $data->productType()->associate($product_type);
                 }
             }
         );
