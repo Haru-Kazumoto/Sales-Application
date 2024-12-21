@@ -1,7 +1,7 @@
 <template>
     <div class="d-flex flex-column gap-4">
         <div class="d-flex flex-column gap-3">
-            <TitlePage title="Edit Customer" />
+            <TitlePage title="Edit Produk" />
             <n-button text class="justify-content-start w-25 " size="large"
                 @click="router.visit(route('admin.products'), { method: 'get' })">
                 <n-icon :component="ArrowBack" style="margin-right: 5px;" />
@@ -257,8 +257,8 @@ export default defineComponent({
         }));
 
         const categoryProductOptions = [
-            { label: "NT", value: "NT" },
-            { label: "T", value: "T" },
+            { label: "NON TEPUNG", value: "NON TEPUNG" },
+            { label: "TEPUNG", value: "TEPUNG" },
         ]
         
         const supplierOptions = (page.props.suppliers as any[]).map((data) => ({

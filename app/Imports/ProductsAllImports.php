@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Models\Parties;
 use App\Models\Products;
+use App\Models\ProductType;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\ToCollection;
@@ -31,6 +32,7 @@ class ProductsAllImports implements ToCollection, WithStartRow
                 foreach($collection as $row) 
                 {
                     $supplier = Parties::where('name', $row[2])->first();
+                    $product_type = ProductType::where('name', $row[7])->first();
 
                     Products::create([
                         'code' => $row[3],
@@ -39,6 +41,8 @@ class ProductsAllImports implements ToCollection, WithStartRow
                         'product_company' => $row[1],
                         'product_type' => $row[6],
                         'category' => $row[8],
+                        'product_type_id' => $product_type->id,
+                        //7 buat channel / segment
                         'supplier_id' => $supplier->id
                     ]);
                 }

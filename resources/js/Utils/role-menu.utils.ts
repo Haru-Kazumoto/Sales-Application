@@ -111,12 +111,12 @@ export const roleMenus = {
             icon: HomePerson24Regular,
             href: '/supplier-management',
         },
-        {
-            label: "Satuan",
-            key: 'units',
-            icon: Box20Regular,
-            href: '/unit-management',
-        },
+        // {
+        //     label: "Satuan",
+        //     key: 'units',
+        //     icon: Box20Regular,
+        //     href: '/unit-management',
+        // },
         {
             label: "Products",
             key: 'products',
@@ -531,23 +531,22 @@ export const roleMenus = {
             }
         },
         {
-            label: "Penjualan",
-            key: 'sales',
-            icon: CartSharp,
-            children: [
-                {
-                    label: 'Buat CO',
-                    icon: renderIcon(DocumentOutline),
-                    key: 'create-co',
-                    href: '/create-co',
-                },
-                {
-                    label: 'List CO',
-                    icon: renderIcon(DocumentsOutline),
-                    key: 'list-co',
-                    href: '/list-co',
-                }
-            ]
+            label: 'Buat Customer Order DNP',
+            icon: renderIcon(DocumentOutline),
+            key: 'create-co',
+            href: '/create-co-dnp',
+        },
+        {
+            label: 'Buat Customer Order DKU',
+            icon: renderIcon(DocumentOutline),
+            key: 'create-co-dku',
+            href: '/create-co-dku'
+        },
+        {
+            label: 'Daftar Customer Order',
+            icon: renderIcon(DocumentsOutline),
+            key: 'list-co',
+            href: '/list-co',
         },
         // {
         //     label: "Booking Barang",

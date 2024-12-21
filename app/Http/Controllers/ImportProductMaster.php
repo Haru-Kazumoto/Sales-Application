@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\CustomerImport;
 use App\Imports\PartiesImport;
 use App\Imports\ProductMasterImport;
 use Illuminate\Http\Request;
@@ -17,5 +18,10 @@ class ImportProductMaster extends Controller
     public function importVendors(Request $request) 
     {
         Excel::import(new PartiesImport, $request->attachment);
+    }
+
+    public function importCustomer(Request $request) 
+    {
+        Excel::import(new CustomerImport, $request->attachment);
     }
 }

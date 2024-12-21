@@ -7,7 +7,8 @@
                     <div class="col-4 d-flex flex-column">
                         <h4>Tambah data dari excel</h4>
                         <label for="file-upload" class="form-label">Upload File Excel</label>
-                        <input type="file" id="file-upload" accept=".xlsx" class="form-control" @change="handleChangeFile"/>
+                        <input type="file" id="file-upload" accept=".xlsx" class="form-control"
+                            @change="handleChangeFile" />
                         <small class="text-muted">
                             Hanya file Excel (.xlsx) yang diperbolehkan.
                         </small>
@@ -18,6 +19,8 @@
         </div>
         <div class="card shadow-sm border-0">
             <div class="card-body">
+                <h4>Tambah data baru</h4>
+                <n-divider></n-divider>
                 <form class="row g-3" @submit.prevent="handleSubmitProduct">
                     <!-- FIRST ROW -->
                     <div class="col-12 col-lg-4 d-flex flex-column">
@@ -44,7 +47,7 @@
                             <RequiredMark />
                         </label>
                         <n-select placeholder="" v-model:value="form.supplier_id" size="large"
-                            :options="supplierOptions" filterable/>
+                            :options="supplierOptions" filterable />
                     </div>
 
                     <!-- SECOND ROW -->
@@ -52,7 +55,8 @@
                         <label for="">Kemasan
                             <RequiredMark />
                         </label>
-                        <n-input size="large" placeholder="" v-model:value="form.unit" @input="(value) => form.unit = value.toUpperCase()"/>
+                        <n-input size="large" placeholder="" v-model:value="form.unit"
+                            @input="(value) => form.unit = value.toUpperCase()" />
                     </div>
                     <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">Harga Tebus
@@ -298,19 +302,18 @@ export default defineComponent({
                         return row.product_type?.name
                     }
                 },
-                {
-                    title: "KEMASAN",
-                    key: "package",
-                    width: 150,
-                },
+                // {
+                //     title: "KEMASAN",
+                //     key: "package",
+                //     width: 150,
+                // },
                 {
                     title: "KATEGORI",
                     key: "category",
                     width: 100,
-
                 },
                 {
-                    title: "SATUAN",
+                    title: "KEMASAN",
                     key: 'unit',
                     width: 100,
                 },
@@ -505,8 +508,19 @@ export default defineComponent({
         }
 
         function handleImportProducts() {
+            // Show loading notification
+            Swal.fire({
+                title: 'Importing data...',
+                text: 'Please wait while we import the data.',
+                icon: 'info',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
             file.post(route('admin.products.import'), {
-                onSuccess: (page) => {
+                onSuccess: () => {
                     Swal.fire({
                         title: 'Berhasil memasukan data!',
                         text: 'Silahkan cek list data',
@@ -537,8 +551,8 @@ export default defineComponent({
         }));
 
         const categoryProductOptions = [
-            { label: "NT (NON TEPUNG)", value: "NT" },
-            { label: "T (TEPUNG)", value: "T" },
+            { label: "NON TEPUNG", value: "NON TEPUNG" },
+            { label: "TEPUNG", value: "TEPUNG" },
         ];
 
         const supplierOptions = (page.props.suppliers as any[]).map((data) => ({
