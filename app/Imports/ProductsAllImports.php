@@ -27,6 +27,7 @@ class ProductsAllImports implements ToCollection, WithStartRow
     */
     public function collection(Collection $collection)
     {
+        dd($collection);
         DB::transaction(function() use ($collection)
             {
                 foreach($collection as $row) 

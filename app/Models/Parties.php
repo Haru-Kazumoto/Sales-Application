@@ -21,6 +21,7 @@ class Parties extends Model
         'email',
         'website',
         'npwp',
+        'ktp',
         'contact_person',
         'address',
         'postal_code',
@@ -37,7 +38,8 @@ class Parties extends Model
         'npwp_image',
         'segment_customer',
         'company',
-        'taxpayer'
+        'taxpayer',
+        'payment_customer',
     ];
 
     public function partiesGroup(): BelongsTo

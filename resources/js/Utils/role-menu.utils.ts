@@ -57,7 +57,7 @@ import {
     TrashOutline 
 } from '@vicons/ionicons5';
 import { WarehouseOutlined } from '@vicons/material';
-import { NIcon } from 'naive-ui';
+import { iconDark, NIcon } from 'naive-ui';
 import { h } from 'vue';
 
 // Utility function to render icons safely (without wrapping twice)
@@ -498,6 +498,12 @@ export const roleMenus = {
             key: "draf-co",
             icon: DocumentBulletListMultiple20Regular,
             href: "/draf-co",
+        },
+        {
+            label: "CO Office",
+            key: "co-office",
+            icon: DocumentTextOutline,
+            href: '/co-office',
         },
         //Aging Sales
         { key: 'role-label', label: "AGING SALES", disabled: true },

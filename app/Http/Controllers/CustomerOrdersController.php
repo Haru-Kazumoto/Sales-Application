@@ -201,6 +201,35 @@ class CustomerOrdersController extends Controller
         ]);
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function createOffice(): Response
+    {
+        $coNumber = DocumentNumberGenerator::generateCoNumber(
+            'CO-',
+            'transactions',
+            'document_code',
+        );
+        $dateNow = Carbon::now()->format('Y-m-d H:i:s');
+        $customers = Parties::where('type_parties', 'CUSTOMER')
+            ->where('segment_customer', 'OFFICE')
+            // ->where('users_id', Auth::user()->id) // disabled for marketing becaue they can create CO for other user
+            ->get();
+        $payment_terms = Lookup::where('category', 'PAYMENT_TERM')->get();
+        $products = $this->productServices->getStockProducts();
+        $all_products = Products::query()->get();
+
+        return Inertia::render('Marketing/CreateCoOffice', [
+            'coNumber' => $coNumber,
+            'dateNow' => $dateNow,
+            'customers' => $customers,
+            'payment_terms' => $payment_terms,
+            'products' => $products,
+            'all_products' => $all_products,
+        ]);
+    }
+
     public function getBatchCode($product_id, $sell_quantity): array
     {
         $result = [];
