@@ -166,7 +166,7 @@
                                 Harga Barang
                             </label>
                             <n-input size="large" id="product_price" placeholder=""
-                                v-model:value="transaction_items.amount" disabled>
+                                v-model:value="transaction_items.amount" >
                                 <template #prefix>Rp </template>
                             </n-input>
                         </div>

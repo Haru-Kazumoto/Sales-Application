@@ -59,11 +59,11 @@
                         </n-input>
                     </div>
                     <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Margin Normal
+                        <label for="">Harga Trucking
                             <RequiredMark />
                         </label>
-                        <n-input size="large" placeholder="" v-model:value="form.normal_margin"
-                            @input="(value) => form.normal_margin = value.replace(/\D/g, '')">
+                        <n-input size="large" placeholder="" v-model:value="form.transportation_cost"
+                            @input="(value) => form.transportation_cost = value.replace(/\D/g, '')">
                             <template #prefix>
                                 Rp
                             </template>
@@ -179,16 +179,12 @@
                             </template>
                         </n-input>
                     </div>
-                    <div class="d-flex">
-                        <n-button type="primary" class="ms-auto" attr-type="submit">Update Product</n-button>
-                    </div>
-
                     <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Harga Trucking
+                        <label for="">Margin All Segment
                             <RequiredMark />
                         </label>
-                        <n-input size="large" placeholder="" v-model:value="form.transportation_cost"
-                            @input="(value) => form.transportation_cost = value.replace(/\D/g, '')">
+                        <n-input size="large" placeholder="" v-model:value="form.normal_margin"
+                            @input="(value) => form.normal_margin = value.replace(/\D/g, '')">
                             <template #prefix>
                                 Rp
                             </template>
@@ -216,6 +212,22 @@
                             </template>
                         </n-input>
                     </div>
+                    <div class="col-12 col-lg-4 d-flex flex-column">
+                        <label for="">Margin Grosir
+                            <RequiredMark />
+                        </label>
+                        <n-input size="large" placeholder="" v-model:value="form.margin_grosir"
+                            @input="(value) => form.margin_grosir = value.replace(/\D/g, '')">
+                            <template #prefix>
+                                Rp
+                            </template>
+                        </n-input>
+                    </div>
+                    <div class="d-flex">
+                        <n-button type="primary" class="ms-auto" attr-type="submit">Update Product</n-button>
+                    </div>
+
+                    
                 </form>
             </div>
         </div>
@@ -262,6 +274,7 @@ export default defineComponent({
             transportation_cost: product.transportation_cost || null as unknown as number,
             margin_end_user: product.margin_end_user || null as unknown as number,
             margin_retail: product.margin_retail || null as unknown as number,
+            margin_grosir: product.margin_grosir || null as unknown as number,
         });
 
         function handleSubmitProduct() {
