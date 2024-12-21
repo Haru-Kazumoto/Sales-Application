@@ -33,7 +33,7 @@ class ProductsAllImports implements ToCollection, WithStartRow
                 foreach($collection as $row) 
                 {
                     $supplier = Parties::where('name', $row[2])->first();
-                    $product_type = ProductType::where('name', $row[7])->first();
+                    // $product_type = ProductType::where('name', $row[7])->first();
 
                     Products::create([
                         'code' => $row[3],
@@ -42,7 +42,7 @@ class ProductsAllImports implements ToCollection, WithStartRow
                         'product_company' => $row[1],
                         'product_type' => $row[6],
                         'category' => $row[8],
-                        'product_type_id' => $product_type->id,
+                        'product_type_id' => 1,
                         //7 buat channel / segment
                         'supplier_id' => $supplier->id
                     ]);
