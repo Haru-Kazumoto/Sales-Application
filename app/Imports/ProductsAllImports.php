@@ -52,7 +52,7 @@ class ProductsAllImports implements ToCollection, WithStartRow
                         'product_type' => $row[6],
                         'category' => $row[8],
                         'product_type_id' => $product_type->id,
-                        'supplier_id' => $supplier->id
+                        'supplier_id' => $supplier->id,
                     ]);
                 }
 

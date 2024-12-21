@@ -295,26 +295,26 @@ export default defineComponent({
                     width: 200,
                 },
                 {
-                    title: "SEG PRODUK",
+                    title: "KEMASAN",
+                    key: 'unit',
+                    width: 100,
+                },
+                {
+                    title: "JENIS PRODUK",
+                    key: "product_type",
+                    width: 150,
+                },
+                {
+                    title: "SEGMENT PRODUK",
                     key: "segment",
                     width: 150,
                     render(row) {
                         return row.product_type?.name
                     }
                 },
-                // {
-                //     title: "KEMASAN",
-                //     key: "package",
-                //     width: 150,
-                // },
                 {
                     title: "KATEGORI",
                     key: "category",
-                    width: 100,
-                },
-                {
-                    title: "KEMASAN",
-                    key: 'unit',
                     width: 100,
                 },
                 {
