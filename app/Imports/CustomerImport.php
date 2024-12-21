@@ -27,7 +27,7 @@ class CustomerImport implements ToCollection, WithStartRow
     */
     public function collection(Collection $collection)
     {
-        dd($collection);
+        // dd($collection);
 
         $type = PartiesGroup::where('name', 'Others')->first();
 
