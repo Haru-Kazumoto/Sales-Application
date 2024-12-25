@@ -195,7 +195,10 @@ class UserController extends Controller
     {
         $sales_users = User::whereHas('division', function ($query) {
             $query->where('division_name', 'SALES');
-        })->with('division')->paginate(10);
+        })
+            ->with('division')
+            ->orderByDesc('created_at')
+            ->paginate(10);
 
         return Inertia::render('Admin/CustomerSales', compact('sales_users'));
     }
@@ -204,10 +207,11 @@ class UserController extends Controller
     {
         $user
             ->load('division','parties')
-            ->orderByDesc('created_at')
+            ->orderByDesc('updated_at')
             ->first();
         $customers = Parties::where('type_parties', 'CUSTOMER')
             ->where('users_id', null)
+            ->orderByDesc('created_at')
             ->get();
     
         return Inertia::render('Admin/AssignCustomer', compact('user', 'customers'));

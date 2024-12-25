@@ -32,6 +32,7 @@ class CustomerImport implements ToCollection, WithStartRow
         $type = PartiesGroup::where('name', 'Others')->first();
 
         DB::transaction(function() use ($collection, $type) {
+            // dd($collection);
             foreach($collection as $row) {
                 Parties::create([
                     'company' => $row[1],
@@ -47,6 +48,9 @@ class CustomerImport implements ToCollection, WithStartRow
                     'type_parties' => "CUSTOMER",
                     'payment_customer' => $row[13],
                     'parties_group_id' => $type->id,
+                    'owner' => $row[7],
+                    'pic' => $row[8],
+                    'return_address' => $row[11],
                     // 'segment_customer' => $row[13],
                 ]);
             }

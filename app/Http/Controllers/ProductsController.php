@@ -44,9 +44,13 @@ class ProductsController extends Controller
      */
     public function createProduct(Request $request)
     {
-        $query = Products::with(['productType','parties']);
+        $query = Products::with(['productType', 'parties'])
+            ->select([
+                'products.*', // Pilih semua kolom dari tabel products
+                'product_type as type', // Berikan alias untuk field product_type
+            ]);
 
-         // Filter berdasarkan field dan query yang diterima dari request
+        // Filter berdasarkan field dan query yang diterima dari request
         if($request->filled('filter_field') && $request->filled('filter_query')) {
             $field = $request->input('filter_field'); // Field yang dipilih (nama, tipe, nomor telepon)
             $value = $request->input('filter_query'); // Nilai filter

@@ -40,6 +40,9 @@ class Parties extends Model
         'company',
         'taxpayer',
         'payment_customer',
+        'return_address',
+        'owner',
+        'pic',
     ];
 
     public function partiesGroup(): BelongsTo

@@ -1,281 +1,415 @@
 <template>
     <div class="d-flex flex-column gap-4">
         <TitlePage title="Daftar Produk" />
-        <div class="card shadow-sm border-0">
-            <div class="card-body">
-                <div class="row g-2">
-                    <div class="col-4 d-flex flex-column">
-                        <h4>Tambah data dari excel</h4>
-                        <label for="file-upload" class="form-label">Upload File Excel</label>
-                        <input type="file" id="file-upload" accept=".xlsx" class="form-control"
-                            @change="handleChangeFile" />
-                        <small class="text-muted">
-                            Hanya file Excel (.xlsx) yang diperbolehkan.
-                        </small>
-                        <n-button type="primary" class="mt-3 w-25" @click="handleImportProducts">Import</n-button>
+        <n-tabs type="line" animated size="large">
+            <n-tab-pane name="products" tab="Daftar Produk">
+                <div class="row g-3">
+                    <div class="col-12 col-lg-6 d-flex align-items-lg-center gap-3 mb-3">
+                        <label>Total Jumlah Produk</label>
+                        <span class="border px-4 py-1 bg-white" style="border-radius: 3px;">
+                            {{ ($page.props.products as any).total }}
+                        </span>
+                    </div>
+                    <div class="col-12 col-lg-6 d-flex">
+                        <div class="ms-auto d-flex align-items-lg-center gap-2 justify-content-lg-end w-100">
+                            <label>Pencarian Data</label>
+                            <n-select class="w-25" v-model:value="filterField" placeholder="Pilih field" :options="[
+                                { label: 'Kode', value: 'code' },
+                                { label: 'Nama', value: 'name' },
+                                { label: 'Kategori', value: 'category' },
+                                { label: 'Supplier', value: 'supplier' },
+                            ]" />
+                            <n-input class="w-50" placeholder="" @input="handleSearchQuery"
+                                v-model:value="filterQuery" />
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="card shadow-sm border-0">
-            <div class="card-body">
-                <h4>Tambah data baru</h4>
-                <n-divider></n-divider>
-                <form class="row g-3" @submit.prevent="handleSubmitProduct">
-                    <!-- FIRST ROW -->
-                    <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Kode Barang
-                            <RequiredMark />
-                        </label>
-                        <n-input size="large" placeholder="" v-model:value="form.code" />
-                    </div>
-                    <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Nama Produk
-                            <RequiredMark />
-                        </label>
-                        <n-input size="large" placeholder="" v-model:value="form.name" />
-                    </div>
-                    <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Kelompok
-                            <RequiredMark />
-                        </label>
-                        <n-select size="large" placeholder="" :options="productTypeOptions"
-                            v-model:value="form.product_type_id" />
-                    </div>
-                    <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Pemasok
-                            <RequiredMark />
-                        </label>
-                        <n-select placeholder="" v-model:value="form.supplier_id" size="large"
-                            :options="supplierOptions" filterable />
-                    </div>
 
-                    <!-- SECOND ROW -->
-                    <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Kemasan
-                            <RequiredMark />
-                        </label>
-                        <n-input size="large" placeholder="" v-model:value="form.unit"
-                            @input="(value) => form.unit = value.toUpperCase()" />
+                <div class="card shadow-sm border-0 mb-5">
+                    <div class="card-body">
+                        <n-data-table :columns="columns" :bordered="false" :data="($page.props.products as any).data"
+                            pagination-behavior-on-filter="first" />
+                        <div class="d-flex mt-3">
+                            <n-pagination class="ms-auto" v-model:page="pagination.current_page"
+                                :page-count="pagination.last_page" :page-size="pagination.per_page"
+                                @update:page="handlePageChange"
+                                @update:page-count="pagination.last_page = ($page.props.units as any).last_page" />
+                        </div>
                     </div>
-                    <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Harga Tebus
-                            <RequiredMark />
-                        </label>
-                        <n-input size="large" placeholder="" v-model:value="form.redemp_price"
-                            @input="(value) => form.redemp_price = value.replace(/\D/g, '')">
-                            <template #prefix>
-                                Rp
-                            </template>
-                        </n-input>
-                    </div>
-                    <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Harga Trucking
-                            <RequiredMark />
-                        </label>
-                        <n-input size="large" placeholder="" v-model:value="form.transportation_cost"
-                            @input="(value) => form.transportation_cost = value.replace(/\D/g, '')">
-                            <template #prefix>
-                                Rp
-                            </template>
-                        </n-input>
-                    </div>
-                    <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Kategori Produk
-                            <RequiredMark />
-                        </label>
-                        <n-select size="large" placeholder="" v-model:value="form.category"
-                            :options="categoryProductOptions" />
-                    </div>
-
-                    <!-- THIRD ROW -->
-                    <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">OH Depo
-                            <RequiredMark />
-                        </label>
-                        <n-input size="large" placeholder="" v-model:value="form.oh_depo"
-                            @input="(value) => form.oh_depo = value.replace(/\D/g, '')">
-                            <template #prefix>
-                                Rp
-                            </template>
-                        </n-input>
-                    </div>
-                    <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Saving
-                            <RequiredMark />
-                        </label>
-                        <n-input size="large" placeholder="" v-model:value="form.saving"
-                            @input="(value) => form.saving = value.replace(/\D/g, '')">
-                            <template #prefix>
-                                Rp
-                            </template>
-                        </n-input>
-                    </div>
-                    <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Bad Debt
-                            <RequiredMark />
-                        </label>
-                        <n-input size="large" placeholder="" v-model:value="form.bad_debt_dd"
-                            @input="(value) => form.bad_debt_dd = value.replace(/\D/g, '')">
-                            <template #prefix>
-                                Rp
-                            </template>
-                        </n-input>
-                    </div>
-                    <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Saving Marketing
-                            <RequiredMark />
-                        </label>
-                        <n-input size="large" placeholder="" v-model:value="form.saving_marketing"
-                            @input="(value) => form.saving_marketing = value.replace(/\D/g, '')">
-                            <template #prefix>
-                                Rp
-                            </template>
-                        </n-input>
-                    </div>
-
-                    <!-- FOURTH ROW -->
-                    <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Harga Jual Grosir
-                            <RequiredMark />
-                        </label>
-                        <n-input size="large" placeholder="" v-model:value="form.retail_price"
-                            @input="(value) => form.retail_price = value.replace(/\D/g, '')">
-                            <template #prefix>
-                                Rp
-                            </template>
-                        </n-input>
-                    </div>
-                    <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Harga Retail
-                            <RequiredMark />
-                        </label>
-                        <n-input size="large" placeholder="" v-model:value="form.restaurant_price"
-                            @input="(value) => form.restaurant_price = value.replace(/\D/g, '')">
-                            <template #prefix>
-                                Rp
-                            </template>
-                        </n-input>
-                    </div>
-                    <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Harga End User
-                            <RequiredMark />
-                        </label>
-                        <n-input size="large" placeholder="" v-model:value="form.price_3"
-                            @input="(value) => form.price_3 = value.replace(/\D/g, '')">
-                            <template #prefix>
-                                Rp
-                            </template>
-                        </n-input>
-                    </div>
-                    <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Harga All Segment
-                            <RequiredMark />
-                        </label>
-                        <n-input size="large" placeholder="" v-model:value="form.all_segment_price"
-                            @input="(value) => form.all_segment_price = value.replace(/\D/g, '')">
-                            <template #prefix>
-                                Rp
-                            </template>
-                        </n-input>
-                    </div>
-                    <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Harga Jual DD
-                            <RequiredMark />
-                        </label>
-                        <n-input size="large" placeholder="" v-model:value="form.dd_price"
-                            @input="(value) => form.dd_price = value.replace(/\D/g, '')">
-                            <template #prefix>
-                                Rp
-                            </template>
-                        </n-input>
-                    </div>
-
-                    
-                    <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Margin All Segment
-                            <RequiredMark />
-                        </label>
-                        <n-input size="large" placeholder="" v-model:value="form.normal_margin"
-                            @input="(value) => form.normal_margin = value.replace(/\D/g, '')">
-                            <template #prefix>
-                                Rp
-                            </template>
-                        </n-input>
-                    </div>
-                    <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Margin End User
-                            <RequiredMark />
-                        </label>
-                        <n-input size="large" placeholder="" v-model:value="form.margin_end_user"
-                            @input="(value) => form.margin_end_user = value.replace(/\D/g, '')">
-                            <template #prefix>
-                                Rp
-                            </template>
-                        </n-input>
-                    </div>
-                    <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Margin Retail
-                            <RequiredMark />
-                        </label>
-                        <n-input size="large" placeholder="" v-model:value="form.margin_retail"
-                            @input="(value) => form.margin_retail = value.replace(/\D/g, '')">
-                            <template #prefix>
-                                Rp
-                            </template>
-                        </n-input>
-                    </div>
-                    <div class="col-12 col-lg-4 d-flex flex-column">
-                        <label for="">Margin Grosir
-                            <RequiredMark />
-                        </label>
-                        <n-input size="large" placeholder="" v-model:value="form.margin_grosir"
-                            @input="(value) => form.margin_grosir = value.replace(/\D/g, '')">
-                            <template #prefix>
-                                Rp
-                            </template>
-                        </n-input>
-                    </div>
-
-                    <div class="d-flex">
-                        <n-button type="primary" class="ms-auto" attr-type="submit">Tambah Data</n-button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <div class="row g-3">
-            <div class="col-12 col-lg-6 d-flex align-items-lg-center gap-3">
-                <label>Total Jumlah Produk</label>
-                <span class="border px-4 py-1 bg-white" style="border-radius: 3px;">
-                    {{ ($page.props.products as any).total }}
-                </span>
-            </div>
-            <div class="col-12 col-lg-6 d-flex">
-                <div class="ms-auto d-flex align-items-lg-center gap-2 justify-content-lg-end w-100">
-                    <label>Pencarian Data</label>
-                    <n-select class="w-25" v-model:value="filterField" placeholder="Pilih field" :options="[
-                        { label: 'Kode', value: 'code' },
-                        { label: 'Nama', value: 'name' },
-                        { label: 'Kategori', value: 'category' },
-                        { label: 'Supplier', value: 'supplier' },
-                    ]" />
-                    <n-input class="w-50" placeholder="" @input="handleSearchQuery" v-model:value="filterQuery" />
                 </div>
-            </div>
-        </div>
 
-        <div class="card shadow-sm border-0 mb-5">
-            <div class="card-body">
-                <n-data-table :columns="columns" :bordered="false" :data="($page.props.products as any).data"
-                    pagination-behavior-on-filter="first" />
-                <div class="d-flex mt-3">
-                    <n-pagination class="ms-auto" v-model:page="pagination.current_page"
-                        :page-count="pagination.last_page" :page-size="pagination.per_page"
-                        @update:page="handlePageChange"
-                        @update:page-count="pagination.last_page = ($page.props.units as any).last_page" />
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Detail Barang</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <table class="table table-borderless">
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Nama Barang</strong></td>
+                                            <td>:</td>
+                                            <td>{{ selectedData.name }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Kode Barang</strong></td>
+                                            <td>:</td>
+                                            <td>{{ selectedData.code }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Jenis Produk</strong></td>
+                                            <td>:</td>
+                                            <td>{{ selectedData.type }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Segment Produk</strong></td>
+                                            <td>:</td>
+                                            <td>{{ selectedData.product_type?.name }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Kategori</strong></td>
+                                            <td>:</td>
+                                            <td>{{ selectedData.category }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Pemasok</strong></td>
+                                            <td>:</td>
+                                            <td>{{ selectedData.parties?.name }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <n-divider>HARGA</n-divider>
+                                <table class="table table-borderless">
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Harga Tebus</strong></td>
+                                            <td>:</td>
+                                            <td>{{ formatRupiah(selectedData.redemp_price) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Harga Jual Grosir</strong></td>
+                                            <td>:</td>
+                                            <td>{{ formatRupiah(selectedData.retail_price) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Harga Retail</strong></td>
+                                            <td>:</td>
+                                            <td>{{ formatRupiah(selectedData.restaurant_price) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Harga All Segment</strong></td>
+                                            <td>:</td>
+                                            <td>{{ formatRupiah(selectedData.all_segment_price) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Harga End User</strong></td>
+                                            <td>:</td>
+                                            <td>{{ formatRupiah(selectedData.price_3) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Harga DD</strong></td>
+                                            <td>:</td>
+                                            <td>{{ formatRupiah(selectedData.dd_price) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Margin All Segment</strong></td>
+                                            <td>:</td>
+                                            <td>{{ formatRupiah(selectedData.normal_margin) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Margin End User</strong></td>
+                                            <td>:</td>
+                                            <td>{{ formatRupiah(selectedData.margin_end_user) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Margin Retail</strong></td>
+                                            <td>:</td>
+                                            <td>{{ formatRupiah(selectedData.margin_retail) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>OH Depo</strong></td>
+                                            <td>:</td>
+                                            <td>{{ formatRupiah(selectedData.oh_depo) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Saving</strong></td>
+                                            <td>:</td>
+                                            <td>{{ formatRupiah(selectedData.saving) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Bad Debt DD</strong></td>
+                                            <td>:</td>
+                                            <td>{{ formatRupiah(selectedData.bad_debt_dd) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Saving Marketing</strong></td>
+                                            <td>:</td>
+                                            <td>{{ formatRupiah(selectedData.saving_marketing) }}</td>
+                                        </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">TUTUP</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
+
+            </n-tab-pane>
+            <n-tab-pane name="create-product" tab="Buat Produk Baru">
+                <div class="card shadow-sm border-0 mb-3">
+                    <div class="card-body">
+                        <div class="row g-2">
+                            <div class="col-4 d-flex flex-column">
+                                <h4>Tambah data dari excel</h4>
+                                <n-divider></n-divider>
+                                <label for="file-upload" class="form-label">Upload File Excel</label>
+                                <input type="file" id="file-upload" accept=".xlsx" class="form-control"
+                                    @change="handleChangeFile" />
+                                <small class="text-muted">
+                                    Hanya file Excel (.xlsx) yang diperbolehkan.
+                                </small>
+                                <n-button type="primary" class="mt-3 w-25"
+                                    @click="handleImportProducts">Import</n-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card shadow-sm border-0 mb-3">
+                    <div class="card-body">
+                        <h4>Tambah data baru</h4>
+                        <n-divider></n-divider>
+                        <form class="row g-3" @submit.prevent="handleSubmitProduct">
+                            <!-- FIRST ROW -->
+                            <div class="col-12 col-lg-4 d-flex flex-column">
+                                <label for="">Kode Barang
+                                    <RequiredMark />
+                                </label>
+                                <n-input size="large" placeholder="" v-model:value="form.code" />
+                            </div>
+                            <div class="col-12 col-lg-4 d-flex flex-column">
+                                <label for="">Nama Produk
+                                    <RequiredMark />
+                                </label>
+                                <n-input size="large" placeholder="" v-model:value="form.name" />
+                            </div>
+                            <div class="col-12 col-lg-4 d-flex flex-column">
+                                <label for="">Kelompok
+                                    <RequiredMark />
+                                </label>
+                                <n-select size="large" placeholder="" :options="productTypeOptions"
+                                    v-model:value="form.product_type_id" />
+                            </div>
+                            <div class="col-12 col-lg-4 d-flex flex-column">
+                                <label for="">Pemasok
+                                    <RequiredMark />
+                                </label>
+                                <n-select placeholder="" v-model:value="form.supplier_id" size="large"
+                                    :options="supplierOptions" filterable />
+                            </div>
+
+                            <!-- SECOND ROW -->
+                            <div class="col-12 col-lg-4 d-flex flex-column">
+                                <label for="">Kemasan
+                                    <RequiredMark />
+                                </label>
+                                <n-input size="large" placeholder="" v-model:value="form.unit"
+                                    @input="(value) => form.unit = value.toUpperCase()" />
+                            </div>
+                            <div class="col-12 col-lg-4 d-flex flex-column">
+                                <label for="">Harga Tebus
+                                    <RequiredMark />
+                                </label>
+                                <n-input size="large" placeholder="" v-model:value="form.redemp_price"
+                                    @input="(value) => form.redemp_price = value.replace(/\D/g, '')">
+                                    <template #prefix>
+                                        Rp
+                                    </template>
+                                </n-input>
+                            </div>
+                            <div class="col-12 col-lg-4 d-flex flex-column">
+                                <label for="">Harga Trucking
+                                    <RequiredMark />
+                                </label>
+                                <n-input size="large" placeholder="" v-model:value="form.transportation_cost"
+                                    @input="(value) => form.transportation_cost = value.replace(/\D/g, '')">
+                                    <template #prefix>
+                                        Rp
+                                    </template>
+                                </n-input>
+                            </div>
+                            <div class="col-12 col-lg-4 d-flex flex-column">
+                                <label for="">Kategori Produk
+                                    <RequiredMark />
+                                </label>
+                                <n-select size="large" placeholder="" v-model:value="form.category"
+                                    :options="categoryProductOptions" />
+                            </div>
+
+                            <!-- THIRD ROW -->
+                            <div class="col-12 col-lg-4 d-flex flex-column">
+                                <label for="">OH Depo
+                                    <RequiredMark />
+                                </label>
+                                <n-input size="large" placeholder="" v-model:value="form.oh_depo"
+                                    @input="(value) => form.oh_depo = value.replace(/\D/g, '')">
+                                    <template #prefix>
+                                        Rp
+                                    </template>
+                                </n-input>
+                            </div>
+                            <div class="col-12 col-lg-4 d-flex flex-column">
+                                <label for="">Saving
+                                    <RequiredMark />
+                                </label>
+                                <n-input size="large" placeholder="" v-model:value="form.saving"
+                                    @input="(value) => form.saving = value.replace(/\D/g, '')">
+                                    <template #prefix>
+                                        Rp
+                                    </template>
+                                </n-input>
+                            </div>
+                            <div class="col-12 col-lg-4 d-flex flex-column">
+                                <label for="">Bad Debt
+                                    <RequiredMark />
+                                </label>
+                                <n-input size="large" placeholder="" v-model:value="form.bad_debt_dd"
+                                    @input="(value) => form.bad_debt_dd = value.replace(/\D/g, '')">
+                                    <template #prefix>
+                                        Rp
+                                    </template>
+                                </n-input>
+                            </div>
+                            <div class="col-12 col-lg-4 d-flex flex-column">
+                                <label for="">Saving Marketing
+                                    <RequiredMark />
+                                </label>
+                                <n-input size="large" placeholder="" v-model:value="form.saving_marketing"
+                                    @input="(value) => form.saving_marketing = value.replace(/\D/g, '')">
+                                    <template #prefix>
+                                        Rp
+                                    </template>
+                                </n-input>
+                            </div>
+
+                            <!-- FOURTH ROW -->
+                            <div class="col-12 col-lg-4 d-flex flex-column">
+                                <label for="">Harga Jual Grosir
+                                    <RequiredMark />
+                                </label>
+                                <n-input size="large" placeholder="" v-model:value="form.retail_price"
+                                    @input="(value) => form.retail_price = value.replace(/\D/g, '')">
+                                    <template #prefix>
+                                        Rp
+                                    </template>
+                                </n-input>
+                            </div>
+                            <div class="col-12 col-lg-4 d-flex flex-column">
+                                <label for="">Harga Retail
+                                    <RequiredMark />
+                                </label>
+                                <n-input size="large" placeholder="" v-model:value="form.restaurant_price"
+                                    @input="(value) => form.restaurant_price = value.replace(/\D/g, '')">
+                                    <template #prefix>
+                                        Rp
+                                    </template>
+                                </n-input>
+                            </div>
+                            <div class="col-12 col-lg-4 d-flex flex-column">
+                                <label for="">Harga End User
+                                    <RequiredMark />
+                                </label>
+                                <n-input size="large" placeholder="" v-model:value="form.price_3"
+                                    @input="(value) => form.price_3 = value.replace(/\D/g, '')">
+                                    <template #prefix>
+                                        Rp
+                                    </template>
+                                </n-input>
+                            </div>
+                            <div class="col-12 col-lg-4 d-flex flex-column">
+                                <label for="">Harga All Segment
+                                    <RequiredMark />
+                                </label>
+                                <n-input size="large" placeholder="" v-model:value="form.all_segment_price"
+                                    @input="(value) => form.all_segment_price = value.replace(/\D/g, '')">
+                                    <template #prefix>
+                                        Rp
+                                    </template>
+                                </n-input>
+                            </div>
+                            <div class="col-12 col-lg-4 d-flex flex-column">
+                                <label for="">Harga Jual DD
+                                    <RequiredMark />
+                                </label>
+                                <n-input size="large" placeholder="" v-model:value="form.dd_price"
+                                    @input="(value) => form.dd_price = value.replace(/\D/g, '')">
+                                    <template #prefix>
+                                        Rp
+                                    </template>
+                                </n-input>
+                            </div>
+
+
+                            <div class="col-12 col-lg-4 d-flex flex-column">
+                                <label for="">Margin All Segment
+                                    <RequiredMark />
+                                </label>
+                                <n-input size="large" placeholder="" v-model:value="form.normal_margin"
+                                    @input="(value) => form.normal_margin = value.replace(/\D/g, '')">
+                                    <template #prefix>
+                                        Rp
+                                    </template>
+                                </n-input>
+                            </div>
+                            <div class="col-12 col-lg-4 d-flex flex-column">
+                                <label for="">Margin End User
+                                    <RequiredMark />
+                                </label>
+                                <n-input size="large" placeholder="" v-model:value="form.margin_end_user"
+                                    @input="(value) => form.margin_end_user = value.replace(/\D/g, '')">
+                                    <template #prefix>
+                                        Rp
+                                    </template>
+                                </n-input>
+                            </div>
+                            <div class="col-12 col-lg-4 d-flex flex-column">
+                                <label for="">Margin Retail
+                                    <RequiredMark />
+                                </label>
+                                <n-input size="large" placeholder="" v-model:value="form.margin_retail"
+                                    @input="(value) => form.margin_retail = value.replace(/\D/g, '')">
+                                    <template #prefix>
+                                        Rp
+                                    </template>
+                                </n-input>
+                            </div>
+                            <div class="col-12 col-lg-4 d-flex flex-column">
+                                <label for="">Margin Grosir
+                                    <RequiredMark />
+                                </label>
+                                <n-input size="large" placeholder="" v-model:value="form.margin_grosir"
+                                    @input="(value) => form.margin_grosir = value.replace(/\D/g, '')">
+                                    <template #prefix>
+                                        Rp
+                                    </template>
+                                </n-input>
+                            </div>
+
+                            <div class="d-flex">
+                                <n-button type="primary" class="ms-auto" attr-type="submit">Tambah Data</n-button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </n-tab-pane>
+        </n-tabs>
+
 
     </div>
 </template>
@@ -284,12 +418,13 @@
 import { defineComponent, h, ref, reactive } from 'vue';
 import TitlePage from '../../Components/TitlePage.vue';
 import RequiredMark from '../../Components/RequiredMark.vue';
-import { DataTableColumns, NButton, SelectOption, useNotification } from 'naive-ui';
+import { DataTableColumns, NButton, NIcon, SelectOption, useNotification } from 'naive-ui';
 import { router, useForm, usePage } from '@inertiajs/vue3';
 import { Flash, Lookup, Products } from '../../types/model';
 import { formatRupiah } from '../../Utils/options-input.utils';
 import Swal from 'sweetalert2';
 import axios from 'axios';
+import { ClipboardBulletListLtr20Regular } from '@vicons/fluent';
 
 export default defineComponent({
     setup() {
@@ -298,6 +433,7 @@ export default defineComponent({
         const notification = useNotification();
         const supplierOptionsRef = ref<SelectOption[]>([]);
         const loading = ref(false);
+        const selectedData = ref({});
 
         const form = useForm({
             code: '',
@@ -335,6 +471,29 @@ export default defineComponent({
                     }
                 },
                 {
+                    title: "DETAIL",
+                    key: 'detail',
+                    width: 80,
+                    render(row) {
+                        return h(
+                            NButton,
+                            {
+                                type: "info",
+                                size: "medium",
+                                onClick() {
+                                    showDetail(row);
+                                },
+                                renderIcon() {
+                                    return h(NIcon, {
+                                        component: ClipboardBulletListLtr20Regular,
+                                        size: 20
+                                    });
+                                },
+                            }
+                        );
+                    }
+                },
+                {
                     title: "KODE BARANG",
                     key: "code",
                     width: 150
@@ -351,7 +510,7 @@ export default defineComponent({
                 },
                 {
                     title: "JENIS PRODUK",
-                    key: "product_type",
+                    key: "type",
                     width: 150,
                 },
                 {
@@ -436,7 +595,7 @@ export default defineComponent({
                     key: "margin_end_user",
                     width: 200,
                     render(row) {
-                        return formatRupiah(row.normal_end_user);
+                        return formatRupiah(row.margin_end_user);
                     }
                 },
                 {
@@ -444,7 +603,7 @@ export default defineComponent({
                     key: "margin_retail",
                     width: 200,
                     render(row) {
-                        return formatRupiah(row.normal_retail);
+                        return formatRupiah(row.margin_retail);
                     }
                 },
                 {
@@ -528,6 +687,16 @@ export default defineComponent({
         const filterField = ref('name'); // Default filter field
         const filterQuery = ref(''); // Filter input value
 
+        function showDetail(row) {
+            selectedData.value = row;
+
+            const modal = new bootstrap.Modal(document.getElementById('exampleModal'));
+
+            modal.show();
+
+            console.log(selectedData.value);
+        }
+
         // Fungsi untuk meng-handle pencarian
         const handleSearchQuery = () => {
             router.get(route('admin.products'), {
@@ -574,6 +743,11 @@ export default defineComponent({
         }
 
         function handleImportProducts() {
+            if (file.attachment === null) {
+                Swal.fire('File belum di pilih!', 'Silahkan pilih file excel terlebih dahulu', 'error');
+                return;
+            }
+
             // Show loading notification
             Swal.fire({
                 title: 'Importing data...',
@@ -628,6 +802,7 @@ export default defineComponent({
 
         return {
             columns: createColumns(),
+            showDetail,
             handleImportProducts,
             handleChangeFile,
             handlePageChange,
@@ -636,8 +811,10 @@ export default defineComponent({
             currentPage,
             unitOptions,
             productTypeOptions,
+            selectedData,
             categoryProductOptions,
             form,
+            formatRupiah,
             filterField,
             filterQuery,
             pagination,

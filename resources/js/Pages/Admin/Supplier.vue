@@ -94,7 +94,7 @@
                         { label: 'Tipe', value: 'type_parties' },
                         { label: 'Nomor Telepon', value: 'phone' }
                     ]" />
-                    <n-input class="w-50" placeholder="Mau cari siapa hayo" @input="handleSearch"
+                    <n-input class="w-50" placeholder="" @input="handleSearch"
                         v-model:value="filterQuery" />
                 </div>
             </div>
