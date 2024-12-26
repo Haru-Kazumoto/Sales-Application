@@ -192,6 +192,12 @@ export const roleMenus = {
             href: '/list-invoices',
             icon: renderIcon(ReceiptCube24Regular),
         },
+        {
+            label: 'Approval CO',
+            key: 'process-customer-order',
+            href: "/process-co",
+            icon: renderIcon(DocumentBulletListMultiple24Regular),
+        }
     ],
     INVOICEIST: [
         {

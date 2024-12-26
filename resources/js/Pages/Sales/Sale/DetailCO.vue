@@ -206,16 +206,16 @@
                     <div class="d-flex justify-content-between" v-if="customer_order.status !== null">
                         <span>STATUS PENGAJUAN CO</span>
                         <div v-if="customer_order.status === 'APPROVE'">
-                            <n-tag type="success" size="large" bordered="true" strong="true">DIAPPROVE</n-tag>
+                            <n-tag type="success" size="large" bordered="true" strong="true">{{ customer_order.status.replace(/_/g, ' ') }}</n-tag>
                         </div>
-                        <div v-else-if="customer_order.status === 'REJECT'">
-                            <n-tag type="error" size="large" bordered="true" strong="true">DITOLAK</n-tag>
+                        <div v-else-if="customer_order.status === 'REJECT_BY_AGING' || customer_order.status === 'REJECT_BY_FINANCE'">
+                            <n-tag type="error" size="large" bordered="true" strong="true">{{ customer_order.status.replace(/_/g, ' ') }}</n-tag>
                         </div>
-                        <div v-else-if="customer_order.status === 'HOLD'">
-                            <n-tag type="warning" size="large" bordered="true" strong="true">DITAHAN</n-tag>
+                        <div v-else-if="customer_order.status === 'HOLD_BY_AGING' || customer_order.status === 'HOLD_BY_FINANCE'">
+                            <n-tag type="warning" size="large" bordered="true" strong="true">{{ customer_order.status.replace(/_/g, ' ') }}</n-tag>
                         </div>
                         <div v-else>
-                            <n-tag type="info" size="large" bordered="true" strong="true">BELUM DIPROSES</n-tag>
+                            <n-tag type="info" size="large" bordered="true" strong="true">{{ customer_order.status.replace(/_/g, ' ') }}</n-tag>
                         </div>
                     </div>
                     <div class="d-flex justify-content-between" v-if="transaction_details.submission_discount === 'SUBMIT'">
@@ -236,8 +236,14 @@
 
         <div class="d-flex gap-3 ms-auto mb-4"
             v-if="($page.props.auth as any).user.division.division_name === 'AGING_FINANCE' && customer_order.status === 'PENDING'">
-            <n-button type="error" size="large" @click="handleApprovingCO('REJECT')">REJECT</n-button>
-            <n-button type="warning" size="large" @click="handleApprovingCO('HOLD')">HOLD</n-button>
+            <n-button type="error" size="large" @click="handleApprovingCO('REJECT_BY_AGING')">REJECT</n-button>
+            <n-button type="warning" size="large" @click="handleApprovingCO('HOLD_BY_AGING')">HOLD</n-button>
+            <n-button type="primary" size="large" @click="handleApprovingCO('PENDING_ON_FINANCE')">APPROVE</n-button>
+        </div>
+        <div class="d-flex gap-3 ms-auto mb-4"
+            v-if="($page.props.auth as any).user.division.division_name === 'FINANCE' && customer_order.status === 'PENDING_ON_FINANCE'">
+            <n-button type="error" size="large" @click="handleApprovingCO('REJECT_BY_FINANCE')">REJECT</n-button>
+            <n-button type="warning" size="large" @click="handleApprovingCO('HOLD_BY_FINANCE')">HOLD</n-button>
             <n-button type="primary" size="large" @click="handleApprovingCO('APPROVE')">APPROVE</n-button>
         </div>
         <div class="d-flex gap-3 ms-auto mb-4"

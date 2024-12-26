@@ -101,10 +101,16 @@ class PurchaseOrderController extends Controller
         $store_locations = $this->lookupService->getAllLookupBy('category', 'STORE_LOCATION');
 
         // $suppliers = Parties::where('type_parties', 'VENDOR')->where('')->get();
-        $suppliers = DB::table('parties as p')
-            ->join('parties_groups as pg', 'p.parties_group_id', '=', 'pg.id')
-            ->where('pg.name', 'Angkutan')
-            ->select('p.*')
+        $type_parties = DB::table('parties_groups as pg')
+            ->where('pg.name', '=', 'Angkutan')
+            ->first();
+
+        // Ambil data Parties dengan eager loading untuk relasi partiesGroup
+        $suppliers = Parties::with('partiesGroup')
+            ->whereHas('partiesGroup', function($query) use ($type_parties) {
+                $query->where('id','<>', $type_parties->id);
+            })
+            ->where('type_parties', "VENDOR")
             ->get();
 
         $products = Products::all();

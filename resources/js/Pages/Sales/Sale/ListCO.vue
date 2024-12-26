@@ -116,16 +116,25 @@ export default defineComponent({
                         let type;
 
                         switch (row.status) {
-                            case "PENDING":
+                            case "PENDING_ON_AGING":
                                 type = "info";
                                 break;
-                            case "HOLD":
+                            case "PENDING_ON_FINANCE":
+                                type = "info";
+                                break;
+                            case "HOLD_BY_FINANCE":
+                                type = "warning";
+                                break;
+                            case "HOLD_BY_AGING":
                                 type = "warning";
                                 break;
                             case "APPROVE":
                                 type = "success";
                                 break;
-                            case "REJECT":
+                            case "REJECT_BY_FINANCE":
+                                type = 'error';
+                                break;
+                            case "REJECT_BY_AGING":
                                 type = 'error';
                                 break;
                             default:
@@ -139,7 +148,7 @@ export default defineComponent({
                                 type,
                                 strong: true,
                                 size: 'large',
-                            }, { default: () => row.status }
+                            }, { default: () => row.status.replace(/_/g, " ") }
                         )
                     }
                 },

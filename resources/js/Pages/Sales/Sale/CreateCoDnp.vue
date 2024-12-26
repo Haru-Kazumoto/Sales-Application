@@ -539,7 +539,7 @@ export default defineComponent({
             redemp_price: data.redemp_price,
             restaurant_price: data.restaurant_price,
             all_segment_price: data.all_segment_price,
-            // end_user_price: data.end_user_price,
+            end_user_price: data.price_3,
         }));
 
         const productMasters = (page.props.all_products as any[]).map((data) => ({
@@ -553,7 +553,7 @@ export default defineComponent({
             redemp_price: data.redemp_price,
             restaurant_price: data.restaurant_price,
             all_segment_price: data.all_segment_price,
-            // end_user_price: data.end_user_price,
+            end_user_price: data.price_3,
         }));
 
         /**

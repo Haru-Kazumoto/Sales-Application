@@ -6,7 +6,8 @@
                 <n-tab-pane name="unprocessed" tab="BELUM DIPROSES">
                     <div class="card shadow-sm border-0">
                         <div class="card-body d-flex flex-column">
-                            <n-data-table :bordered="false" :columns="columns" :data="$page.props.not_process_yet_data" size="small" />
+                            <n-data-table :bordered="false" :columns="columns" :data="$page.props.not_process_yet_data"
+                                size="small" />
                         </div>
                     </div>
                 </n-tab-pane>
@@ -66,16 +67,25 @@ function createColumns() {
                 let type;
 
                 switch (row.status) {
-                    case "PENDING":
+                    case "PENDING_ON_AGING":
                         type = "info";
                         break;
-                    case "HOLD":
+                    case "PENDING_ON_FINANCE":
+                        type = "info";
+                        break;
+                    case "HOLD_BY_FINANCE":
+                        type = "warning";
+                        break;
+                    case "HOLD_BY_AGING":
                         type = "warning";
                         break;
                     case "APPROVE":
                         type = "success";
                         break;
-                    case "REJECT":
+                    case "REJECT_BY_FINANCE":
+                        type = 'error';
+                        break;
+                    case "REJECT_BY_AGING":
                         type = 'error';
                         break;
                     default:
@@ -89,7 +99,7 @@ function createColumns() {
                         type,
                         strong: true,
                         size: 'large',
-                    }, { default: () => row.status }
+                    }, { default: () => row.status.replace(/_/g, ' ') }
                 )
             }
         },

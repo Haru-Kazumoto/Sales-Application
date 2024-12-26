@@ -320,7 +320,7 @@ class CustomerOrdersController extends Controller
                 'tax_amount' => $request->input('tax_amount'),
                 'transaction_type_id' => 70,
                 'customer_id' => $customer->id,
-                'status' => 'PENDING',
+                'status' => 'PENDING_ON_AGING',
             ]);
 
             // Simpan transaction details

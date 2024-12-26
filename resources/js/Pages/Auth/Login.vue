@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Signup" />
     <div class="card h-100 rounded-end w-100" style="border: none">
         <div class="card-body d-flex flex-column gap-5 justify-content-center"
@@ -10,6 +11,9 @@
 
             <form @submit.prevent="handleSubmit" class="d-flex flex-column gap-4">
                 <span class="fs-4 fw-medium">Login to your account</span>
+                <div v-if="flash.info" class="alert alert-danger">
+                    {{ flash.info }}
+            </div>
                 <div class="d-flex flex-column gap-4">
                     <!-- USERNAME INPUT -->
                     <div class="d-flex flex-column gap-1">
@@ -25,7 +29,8 @@
                     <!-- PASSWORD INPUT -->
                     <div class="d-flex flex-column gap-1">
                         <label for="password">Password</label>
-                        <n-input type="password" show-password-on="click" v-model:value="model.password" size="large" placeholder="Password">
+                        <n-input type="password" show-password-on="click" v-model:value="model.password" size="large"
+                            placeholder="Password">
                             <template #prefix>
                                 <n-icon :component="LockClosedOutline" />
                             </template>
@@ -56,8 +61,8 @@
 <script lang="ts">
 import GuestLayout from '../../Layouts/GuestLayout.vue';
 import ErrorInput from '../../Components/ErrorInput.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
-import { defineComponent, h, ref, onMounted } from 'vue'
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
+import { defineComponent, h, ref, onMounted, computed } from 'vue'
 import { NIcon, useNotification } from 'naive-ui'
 import { PersonOutline, LockClosedOutline, LogInOutline } from "@vicons/ionicons5"
 import { RequestLoginDto } from '../../types/dto';
@@ -75,6 +80,10 @@ export default defineComponent({
             isMobile.value = window.innerWidth <= 768;
         }
 
+        const flash = computed(() => {
+            return usePage().props.flash as any;
+        });
+
         function handleSubmit() {
             form.post(route('login'), {
                 preserveScroll: false,
@@ -90,7 +99,7 @@ export default defineComponent({
                         timer: 2500,
                         title: `Selamat datang, ${page.props.auth.user.fullname}!`,
                         icon: "success",
-                    });  
+                    });
                 }
             });
         }
@@ -111,7 +120,8 @@ export default defineComponent({
             handleSubmit,
             PersonOutline,
             LockClosedOutline,
-            LogInOutline
+            LogInOutline,
+            flash
         }
     },
     components: {
@@ -123,4 +133,3 @@ export default defineComponent({
     layout: GuestLayout
 })
 </script>
-
