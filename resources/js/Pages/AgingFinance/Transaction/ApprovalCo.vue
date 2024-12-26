@@ -4,17 +4,28 @@
         <div class="d-flex flex-column gap-3">
             <n-tabs type="line" animated>
                 <n-tab-pane name="unprocessed" tab="BELUM DIPROSES">
-                    <div class="card shadow-sm border-0">
+                    <div v-if="$page.props.auth.user.division.division_name === 'AGING_FINANCE'" class="card shadow-sm border-0">
                         <div class="card-body d-flex flex-column">
-                            <n-data-table :bordered="false" :columns="columns" :data="$page.props.not_process_yet_data"
+                            <n-data-table :bordered="false" :columns="columns" :data="$page.props.not_process_yet_data_aging"
+                                size="small" />
+                        </div>
+                    </div>
+                    <div v-if="$page.props.auth.user.division.division_name === 'FINANCE'" class="card shadow-sm border-0">
+                        <div class="card-body d-flex flex-column">
+                            <n-data-table :bordered="false" :columns="columns" :data="$page.props.not_process_yet_data_finance"
                                 size="small" />
                         </div>
                     </div>
                 </n-tab-pane>
                 <n-tab-pane name="processed" tab="DIPROSES">
-                    <div class="card shadow-sm border-0">
+                    <div v-if="$page.props.auth.user.division.division_name === 'AGING_FINANCE'" class="card shadow-sm border-0">
                         <div class="card-body d-flex flex-column">
                             <n-data-table :bordered="false" :columns="columns" :data="$page.props.data" size="small" />
+                        </div>
+                    </div>
+                    <div v-if="$page.props.auth.user.division.division_name === 'FINANCE'" class="card shadow-sm border-0">
+                        <div class="card-body d-flex flex-column">
+                            <n-data-table :bordered="false" :columns="columns" :data="$page.props.data_finance" size="small" />
                         </div>
                     </div>
                 </n-tab-pane>

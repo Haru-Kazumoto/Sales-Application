@@ -505,23 +505,31 @@ class CustomerOrdersController extends Controller
     {
         // panggil view invoice_need_approval
         $data = DB::table("invoice_need_approval")
-            ->where('status', '<>', 'PENDING')
+            ->where('status', '<>', 'PENDING_ON_AGING')
             ->orderBy("tanggal_co", "desc")
             ->get();
-        $not_process_yet_data = DB::table("invoice_need_approval")
-            ->where('status', 'PENDING')
+        $data_finance = DB::table("invoice_need_approval")
+            ->whereNotIn('status', ['PENDING_ON_AGING', 'PENDING_ON_FINANCE'])
+            ->orderBy("tanggal_co", "desc")
+            ->get();
+        $not_process_yet_data_aging = DB::table("invoice_need_approval")
+            ->where('status', 'PENDING_ON_AGING')
+            ->orderBy("tanggal_co", "desc")
+            ->get();
+        $not_process_yet_data_finance = DB::table("invoice_need_approval")
+            ->where('status', 'PENDING_ON_FINANCE')
             ->orderBy("tanggal_co", "desc")
             ->get();
 
-        return Inertia::render('AgingFinance/Transaction/ApprovalCo', compact('data', 'not_process_yet_data'));
+        return Inertia::render('AgingFinance/Transaction/ApprovalCo', compact('data','data_finance', 'not_process_yet_data_finance','not_process_yet_data_aging'));
     }
 
-    // bug harusnya datnaya itu muncul karna data nya setelah di approve jadi 8 bukan 70
     public function processCustomerOrder(Transactions $transactions, Request $request)
     {
         DB::transaction(function () use ($transactions, $request) {
             $status = $request->valueRequest;
             $notes = $request->notes;
+            $journals = $transactions->load('productJournals')->productJournals;
 
             $transactions->update([
                 'transaction_type_id' => 8,
@@ -532,29 +540,20 @@ class CustomerOrdersController extends Controller
             ]);
 
             // create logic to handle if the $status is REJECT then restore (insert) items to the product_journals again
-
-            // $warehouse = Warehouse::where('name', $request->warehouse)->first();
-            // $trx_items = $transactions->transactionItems()->get();
-
-            // if($status === "APPROVE") {
-            //     foreach ($trx_items as $trx_item) {
-            //         $batch_codes = $this->getBatchCode($trx_item->product_id, $trx_item->quantity);
-            //         if (count($batch_codes) > 0 ) {
-            //             foreach ($batch_codes as $batch_code) {
-            //                 ProductJournal::create([
-            //                     'quantity' => $batch_code["out_stock"],
-            //                     'amount' => $trx_item->amount * $batch_code["out_stock"],
-            //                     'action' => "OUT",
-            //                     'batch_code' => $batch_code["code"],
-            //                     // 'expiry_date' => $journal['expiry_date'],
-            //                     'transactions_id' => $transactions->id,
-            //                     'warehouse_id' => $warehouse->id,
-            //                     'product_id' => $trx_item->product_id,
-            //                 ]);
-            //             }
-            //         }
-            //     }
-            // }
+            if($status === "REJECT_BY_AGING" || $status === "REJECT_BY_AGING") {
+                foreach($journals as $j)
+                {
+                    ProductJournal::create([
+                        'quantity' => $j->quantity,
+                        'amount' => $j->amount,
+                        'action' => 'IN',
+                        'batch_code' => $j->batch_code,
+                        'transactions_id' => $transactions->id,
+                        'warehouse_id' => $j->warehouse_id,
+                        'product_id' => $j->product_id,
+                    ]);
+                }
+            }
         });
 
         return redirect()->route('aging-finance.co.process')->with('success', 'CO Berhasil di proses!');
