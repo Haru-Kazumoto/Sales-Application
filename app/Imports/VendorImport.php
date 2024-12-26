@@ -26,7 +26,10 @@ class VendorImport implements ToCollection, WithStartRow
     */
     public function collection(Collection $collection)
     {
+        
         DB::transaction(function() use ($collection) {
+            $parties_group = DB::table('parties_groups')->where('name', 'Others')->first();
+
             foreach($collection as $row) 
             {
                 Parties::create([
@@ -36,7 +39,7 @@ class VendorImport implements ToCollection, WithStartRow
                     'taxpayer' => 'PKP',
                     'legality' => 'PT',
                     'term_payment' => 45,
-                    'parties_group_id' => 6
+                    'parties_group_id' => $parties_group->id
                 ]);
             }
         });

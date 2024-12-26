@@ -30,7 +30,7 @@ class TransportController extends Controller
         }
 
         // Urutkan berdasarkan created_at dan paginasi data
-        $transports = $query->orderBy('created_at', 'desc')->paginate(10);
+        $transports = $query->orderBy('created_at', 'desc')->paginate(500);
 
         // Pastikan total item sesuai dengan hasil yang difilter
         $transports->appends($request->only('filter_field', 'filter_query'));

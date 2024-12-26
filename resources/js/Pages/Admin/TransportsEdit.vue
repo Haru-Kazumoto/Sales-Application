@@ -29,24 +29,24 @@
                     </div>
 
                     <!-- Second row -->
-                    <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
+                    <!-- <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
                         <label for="">Tipe</label>
                         <n-input size="large" placeholder="" v-model:value="form.type" />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
                         <label for="">Kelompok</label>
                         <n-input size="large" placeholder="" v-model:value="form.group_name" disabled />
-                    </div>
+                    </div> -->
                     <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
                         <label for="">Nomor Telepon</label>
                         <n-input size="large" placeholder="" v-model:value="form.phone"/>
                     </div>
 
                     <!-- Third row -->
-                    <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
+                    <!-- <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
                         <label for="">Kota</label>
                         <n-input size="large" placeholder="" v-model:value="form.city"/>
-                    </div>
+                    </div> -->
                     <div class="col-12 col-md-6 col-lg-8 d-flex flex-column">
                         <label for="">Alamat</label>
                         <n-input size="large" placeholder="" type="textarea" v-model:value="form.address" />

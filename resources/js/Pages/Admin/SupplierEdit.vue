@@ -19,14 +19,14 @@
                     </div>
 
                     <!-- Second row -->
-                    <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
+                    <!-- <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
                         <label for="nama_customer" class="form-label">Tipe</label>
                         <n-select size="large" v-model:value="form.type_parties" :options="supplier_type" />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
                         <label for="nama_customer" class="form-label">Kelompok</label>
                         <n-select size="large" v-model:value="form.parties_group_id" placeholder="" :options="groups" />
-                    </div>
+                    </div> -->
                     <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
                         <label for="nama_customer" class="form-label">NPWP</label>
                         <n-input placeholder="" size="large" v-model:value="form.npwp" />
@@ -37,11 +37,11 @@
                         <label for="nama_customer" class="form-label">No. Telpon</label>
                         <n-input placeholder="" size="large" v-model:value="form.phone" />
                     </div>
-                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column">
+                    <!-- <div class="col-12 col-md-6 col-lg-3 d-flex flex-column">
                         <label for="nama_customer" class="form-label">Kota</label>
                         <n-input placeholder="" size="large" v-model:value="form.city" />
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-6 d-flex flex-column">
+                    </div> -->
+                    <div class="col-12 col-md-6 col-lg-5 d-flex flex-column">
                         <label for="nama_customer" class="form-label">Alamat</label>
                         <n-input placeholder="" size="large" v-model:value="form.address" />
                     </div>

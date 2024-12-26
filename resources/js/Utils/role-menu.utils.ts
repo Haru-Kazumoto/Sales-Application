@@ -135,12 +135,12 @@ export const roleMenus = {
             icon: PersonAccounts24Regular,
             href: "/driver-management"
         },
-        {
-            label: "Gudang",
-            key: "warehouses",
-            icon: WarehouseOutlined,
-            href: "/storehouse-management"
-        },
+        // {
+        //     label: "Gudang",
+        //     key: "warehouses",
+        //     icon: WarehouseOutlined,
+        //     href: "/storehouse-management"
+        // },
         {
             label: "Program Promo Jual",
             key: "promo-program",

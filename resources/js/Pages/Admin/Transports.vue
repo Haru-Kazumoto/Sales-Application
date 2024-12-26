@@ -25,7 +25,7 @@
                     </div>
 
                     <!-- Second row -->
-                    <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
+                    <!-- <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
                         <label for="">Tipe
                             <RequiredMark />
                         </label>
@@ -36,17 +36,17 @@
                             <RequiredMark />
                         </label>
                         <n-input size="large" placeholder="" v-model:value="form.group_name" disabled />
-                    </div>
+                    </div> -->
                     <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
                         <label for="">Nomor Telepon</label>
                         <n-input size="large" placeholder="" v-model:value="form.phone" />
                     </div>
 
                     <!-- Third row -->
-                    <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
+                    <!-- <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
                         <label for="">Kota</label>
                         <n-input size="large" placeholder="" v-model:value="form.city" />
-                    </div>
+                    </div> -->
                     <div class="col-12 col-md-6 col-lg-8 d-flex flex-column">
                         <label for="">Alamat</label>
                         <n-input size="large" placeholder="" type="textarea" v-model:value="form.address" />
@@ -61,7 +61,7 @@
 
         <div class="row g-3">
             <div class="col-12 col-lg-6 d-flex align-items-lg-center gap-3">
-                <label>Total Jumlah Satuan</label>
+                <label>Total Jumlah Transportasi</label>
                 <span class="border px-4 py-1 bg-white" style="border-radius: 3px;">
                     {{ ($page.props.transports as any).total }}
                 </span>
@@ -134,29 +134,29 @@ export default defineComponent({
                     key: "number_plate",
                     width: 170,
                 },
-                {
-                    title: "TIPE",
-                    key: "type_parties",
-                    width: 100,
-                },
-                {
-                    title: "KELOMPOK",
-                    key: "group_name",
-                    width: 150,
-                    render(row) {
-                        return row.parties_group.name;
-                    }
-                },
+                // {
+                //     title: "TIPE",
+                //     key: "type_parties",
+                //     width: 100,
+                // },
+                // {
+                //     title: "KELOMPOK",
+                //     key: "group_name",
+                //     width: 150,
+                //     render(row) {
+                //         return row.parties_group.name;
+                //     }
+                // },
                 {
                     title: "NOMOR TELEPON",
                     key: "phone",
                     width: 200,
                 },
-                {
-                    title: "KOTA",
-                    key: "city",
-                    width: 150,
-                },
+                // {
+                //     title: "KOTA",
+                //     key: "city",
+                //     width: 150,
+                // },
                 {
                     title: "ALAMAT",
                     key: "address",
@@ -225,7 +225,7 @@ export default defineComponent({
             code: '',
             name: '',
             number_plate: '',
-            type: 'VENDOR',
+            type: 'TRANSPORT',
             group_name: 'ANGKUTAN',
             phone: '',
             city: '',

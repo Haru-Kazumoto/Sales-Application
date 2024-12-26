@@ -50,9 +50,16 @@ class PartiesController extends Controller
 
     public function createSupplier(Request $request)
     {
+        $type_parties = DB::table('parties_groups as pg')
+            ->where('pg.name', 'like', 'Angkutan')
+            ->first();
+
         // Ambil data Parties dengan eager loading untuk relasi partiesGroup
         $query = Parties::with('partiesGroup')
-            ->where('type_parties', "VENDOR"); // Filter khusus untuk CUSTOMER
+            ->whereHas('partiesGroup', function($query) use ($type_parties) {
+                $query->where('id','<>', $type_parties->id);
+            })
+            ->where('type_parties', "VENDOR");
 
         // Filter berdasarkan field dan query yang diterima dari request
         if ($request->filled('filter_field') && $request->filled('filter_query')) {
@@ -64,7 +71,7 @@ class PartiesController extends Controller
         }
 
         // Urutkan berdasarkan created_at dan paginasi data
-        $parties = $query->orderBy('created_at', 'desc')->paginate(10);
+        $parties = $query->orderBy('created_at', 'desc')->paginate(500);
 
         // Pastikan total item sesuai dengan hasil yang difilter
         $parties->appends($request->only('filter_field', 'filter_query'));

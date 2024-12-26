@@ -516,7 +516,7 @@ export default defineComponent({
                 {
                     title: "SEGMENT PRODUK",
                     key: "segment",
-                    width: 150,
+                    width: 200,
                     render(row) {
                         return row.product_type?.name
                     }
@@ -524,7 +524,7 @@ export default defineComponent({
                 {
                     title: "KATEGORI",
                     key: "category",
-                    width: 100,
+                    width: 150,
                 },
                 {
                     title: "PEMASOK",

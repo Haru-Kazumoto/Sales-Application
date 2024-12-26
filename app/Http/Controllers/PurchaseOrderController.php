@@ -99,7 +99,14 @@ class PurchaseOrderController extends Controller
     {
         $payment_terms = $this->lookupService->getAllLookupBy('category', 'PAYMENT_TERM');
         $store_locations = $this->lookupService->getAllLookupBy('category', 'STORE_LOCATION');
-        $suppliers = Parties::where('type_parties', 'VENDOR')->get();
+
+        // $suppliers = Parties::where('type_parties', 'VENDOR')->where('')->get();
+        $suppliers = DB::table('parties as p')
+            ->join('parties_groups as pg', 'p.parties_group_id', '=', 'pg.id')
+            ->where('pg.name', 'Angkutan')
+            ->select('p.*')
+            ->get();
+
         $products = Products::all();
         $units = $this->lookupService->getAllLookupBy('category', 'UNIT');
         $transports = $this->partiesService->getPartiesByGroupAndType('VENDOR', 'Angkutan');

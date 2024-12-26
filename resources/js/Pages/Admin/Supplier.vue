@@ -40,7 +40,7 @@
                     </div>
 
                     <!-- Second row -->
-                    <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
+                    <!-- <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
                         <label for="nama_customer" class="form-label">Tipe
                             <RequiredMark />
                         </label>
@@ -51,7 +51,7 @@
                             <RequiredMark />
                         </label>
                         <n-select size="large" v-model:value="form.parties_group_id" placeholder="" :options="groups" />
-                    </div>
+                    </div> -->
                     <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
                         <label for="nama_customer" class="form-label">NPWP</label>
                         <n-input placeholder="" size="large" v-model:value="form.npwp" />
@@ -62,11 +62,11 @@
                         <label for="nama_customer" class="form-label">No. Telpon</label>
                         <n-input placeholder="" size="large" v-model:value="form.phone" />
                     </div>
-                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column">
+                    <!-- <div class="col-12 col-md-6 col-lg-3 d-flex flex-column">
                         <label for="nama_customer" class="form-label">Kota</label>
                         <n-input placeholder="" size="large" v-model:value="form.city" />
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-6 d-flex flex-column">
+                    </div> -->
+                    <div class="col-12 col-md-6 col-lg-5 d-flex flex-column">
                         <label for="nama_customer" class="form-label">Alamat</label>
                         <n-input placeholder="" size="large" v-model:value="form.address" />
                     </div>
@@ -81,7 +81,7 @@
 
         <div class="row g-3">
             <div class="col-12 col-lg-6 d-flex align-items-lg-center gap-3">
-                <label>Total Jumlah Customer</label>
+                <label>Total Jumlah Vendor</label>
                 <span class="border px-4 py-1 bg-white" style="border-radius: 3px;">
                     {{ ($page.props.parties as any).total }}
                 </span>
@@ -141,12 +141,12 @@ export default defineComponent({
                     }
                 },
                 {
-                    title: "KODE PEMASOK",
+                    title: "KODE VENDOR",
                     key: 'code',
                     width: 260,
                 },
                 {
-                    title: "NAMA PEMASOK",
+                    title: "NAMA VENDOR",
                     key: 'name',
                     width: 250,
                 },
@@ -160,24 +160,24 @@ export default defineComponent({
                     key: 'type_parties',
                     width: 150,
                 },
-                {
-                    title: "KELOMPOK",
-                    key: "parties_group",
-                    width: 150,
-                    render(row) {
-                        return row.parties_group?.name;
-                    }
-                },
+                // {
+                //     title: "KELOMPOK",
+                //     key: "parties_group",
+                //     width: 150,
+                //     render(row) {
+                //         return row.parties_group?.name;
+                //     }
+                // },
                 {
                     title: "NO TELP",
                     key: 'phone',
                     width: 200,
                 },
-                {
-                    title: "KOTA",
-                    key: "city",
-                    width: 150,
-                },
+                // {
+                //     title: "KOTA",
+                //     key: "city",
+                //     width: 150,
+                // },
                 {
                     title: "ALAMAT",
                     key: "address",
