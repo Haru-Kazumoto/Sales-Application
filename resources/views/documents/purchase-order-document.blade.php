@@ -233,12 +233,12 @@
                 <tr>
                     <td class="text-center">{{ $index + 1 }}</td>
                     <td>{{ $txItem->product->code }} - {{ $txItem->product->name }}</td>
-                    <td>{{ $txItem->quantity }} {{ $txItem->unit }}</td>
+                    <td>{{ $txItem->quantity }}</td>
                     <td>Rp {{ number_format($txItem->amount, 0, ',', '.') }}</td>
                     <td class="text-center"></td>
                     <td class="text-right"></td>
                     <td class="text-center">Rp {{ number_format($txItem->amount, 0, ',', '.') }}</td>
-                    <td class="text-center">Rp {{ number_format($purchase_order->sub_total, 0, ',', '.') }}</td>
+                    <td class="text-center">Rp {{ number_format($txItem->total_price, 0, ',', '.') }}</td>
                 </tr>
             @endforeach
         </tbody>
@@ -348,7 +348,7 @@
                 <td width="40%">
                     <div style="display: flex; flex-direction: column; gap: 7px; align-items: center;">
                         <div style="font-size: medium; margin-bottom: 130px;">Menyetujui,</div>
-                        <div style="font-weight: bold; font-size: 11px; ">PT MULIA INTIPANGAN</div>
+                        <div style="font-weight: bold; font-size: 11px; ">{{ $supplier }}</div>
                     </div>
                 </td>
             </tr>

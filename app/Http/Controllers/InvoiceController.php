@@ -314,9 +314,17 @@ class InvoiceController extends Controller
         return Excel::download(new InvoiceExport(), 'invoice_data_'.date('d_F_Y').'.xlsx');
     }
 
-    public function generateInvoiceDocument() 
+    public function generateInvoiceDocument(Transactions $transactions) 
     {
-        $pdf = Pdf::loadView('documents.invoice-document');
+        $transactions->load([
+            'transactionDetails',
+            'transactionItems.product',
+            'transactionItems.tax',
+        ]);
+        dd($transactions);
+        $pdf = Pdf::loadView('documents.invoice-document', [
+            'transactions' => $transactions,
+        ]);
 
         return $pdf->stream('invoice_'.rand(100000,900000).'_.pdf');
     }

@@ -226,7 +226,7 @@
                                 <label for="">Harga Tebus
                                     <RequiredMark />
                                 </label>
-                                <n-input size="large" placeholder="" v-model:value="form.redemp_price">
+                                <n-input size="large" placeholder="" v-model:value="form.redemp_price" @input="(value) => form.redemp_price = value.replace(/\./g, '').replace(',', '.')">
                                     <template #prefix>
                                         Rp
                                     </template>
@@ -424,6 +424,7 @@ import { formatRupiah } from '../../Utils/options-input.utils';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import { ClipboardBulletListLtr20Regular } from '@vicons/fluent';
+import { watch } from 'vue';
 
 export default defineComponent({
     setup() {
@@ -681,6 +682,34 @@ export default defineComponent({
                 }
             ]
         }
+
+        // watch(
+        //     () => form.redemp_price,
+        //     (newVal, oldVal) => {
+        //         if (newVal) {
+        //             // Hilangkan pemisah ribuan jika ada
+        //             let cleanValue = String(newVal).replace(/\./g, '').replace(',', '.');
+
+        //             // Parsing menjadi angka
+        //             let parsedValue = parseFloat(cleanValue);
+
+        //             if (!isNaN(parsedValue)) {
+        //                 // Lakukan pembulatan ke ribuan
+        //                 const roundedValue = Math.round(parsedValue);
+
+        //                 // Format kembali sebagai string dengan separator ribuan (opsional)
+        //                 // const formattedValue = new Intl.NumberFormat('id-ID').format(roundedValue);
+
+        //                 // Update nilai pada form.redemp_price
+        //                 form.redemp_price = roundedValue;
+        //             } else {
+        //                 // Jika nilai tidak valid, kembalikan ke nilai lama
+        //                 form.redemp_price = oldVal;
+        //             }
+        //         }
+        //     }
+        // );
+
 
         // Filter data
         const filterField = ref('name'); // Default filter field

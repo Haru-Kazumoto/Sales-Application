@@ -107,7 +107,7 @@
             <tr>
               <td class="logo-cell">
                 <img src="{{ public_path('images/dnp_hd.png') }}" alt="Logo Perusahaan" class="logo">
-                <span class="logo-text">danitama niagaprima</span>
+                <span class="logo-text">DANITAMA NIAGAPRIMA</span>
               </td>
             </tr>
           </table>

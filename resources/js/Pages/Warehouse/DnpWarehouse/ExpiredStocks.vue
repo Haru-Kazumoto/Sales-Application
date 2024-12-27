@@ -67,7 +67,7 @@ function createColumns() {
         {
             title: 'TANGGAL EXPIRED',
             key: 'expiry_date',
-            width: 100,
+            width: 200,
             render(rowData) {
                 return h(
                     NTag,
@@ -78,11 +78,27 @@ function createColumns() {
                         type: 'error',
                         bordered: false
                     },
-                    { default: () => dayjs(rowData.expiry_date).format('dddd, D MMMMYYYY ') }
+                    { default: () => dayjs(rowData.expiry_date).format('dddd, D MMMM YYYY ') }
                 );
             },
         },
-
+        {
+            title: "ACTION",
+            key: "action",
+            width: 150,
+            render(rowData) {
+                return h(
+                    NButton,
+                    {
+                        type: "error",
+                        onClick: () => {
+                            console.log(rowData);
+                        }
+                    },
+                    { default: () => 'PROSES' }
+                );
+            }
+        }
     ];
 }
 

@@ -165,11 +165,15 @@
                             <label for="product_price">
                                 Harga Barang
                             </label>
-                            <n-input size="large" id="product_price" placeholder=""
-                                v-model:value="transaction_items.amount">
+                            <n-input size="large" id="product_price" placeholder="" :value="transaction_items.amount"
+                                @input="(value) => {
+                                    transaction_items.amount = value.replace(/\./g, ',');
+                                }">
                                 <template #prefix>Rp </template>
                             </n-input>
                         </div>
+
+
 
                         <div class="col-md-6" v-if="transaction_items.trade_promo_id !== null">
                             <label for="ppn">
@@ -342,6 +346,7 @@ export default defineComponent({
 
             // Jika produk ditemukan, isi 'products.code' dan 'transaction_items.product_id' secara otomatis
             if (selectedProduct) {
+                // console.log(selectedProduct.redemp_price.replace(/\./g, ','));
                 products.value.code = selectedProduct.code; // Set 'code' produk
                 transaction_items.value.product_id = selectedProduct.id ?? 0; // Set 'product_id' dari produk yang dipilih
                 transaction_items.value.unit = selectedProduct.unit;
@@ -387,7 +392,9 @@ export default defineComponent({
             // Format nilai `amount` untuk menangani separator ribuan/desimal
             const formattedAmount = useDiscount
                 ? String(transaction_items.value.amount_discount) // Gunakan amount_discount jika tersedia
-                : String(transaction_items.value.amount).replace(/\./g, '').replace(',', '.'); // Atau gunakan input amount
+                : String(transaction_items.value.amount).replace(',', '.'); // Atau gunakan input amount
+                // console.log(formattedAmount);
+                // : String(transaction_items.value.amount).replace(/\./g, ','); // Atau gunakan input amount
 
             // Parsing amount yang sudah diformat ke angka desimal
             let productPrice = parseFloat(formattedAmount);
@@ -432,6 +439,7 @@ export default defineComponent({
             transaction_items.value.amount = null as unknown as number;
             transaction_items.value.tax_id = null as unknown as number;
             transaction_items.value.trade_promo_id = null as unknown as number;
+            quotaTradePromo.value = null as unknown as number;
 
             notification.success({
                 title: 'Berhasil',

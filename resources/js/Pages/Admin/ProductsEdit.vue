@@ -51,7 +51,7 @@
                         <label for="">Harga Tebus
                             <RequiredMark />
                         </label>
-                        <n-input size="large" placeholder="" v-model:value="form.redemp_price">
+                        <n-input size="large" placeholder="" v-model:value="form.redemp_price" @input="(value) => form.redemp_price = value.replace(/\./g, '').replace(',', '.')">
                             <template #prefix>
                                 Rp
                             </template>

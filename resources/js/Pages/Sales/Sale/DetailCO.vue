@@ -235,13 +235,15 @@
         </div>
 
         <div class="d-flex gap-3 ms-auto mb-4"
-            v-if="($page.props.auth as any).user.division.division_name === 'AGING_FINANCE' && customer_order.status === 'PENDING_ON_AGING'">
+            v-if="($page.props.auth as any).user.division.division_name === 'AGING_FINANCE' && [
+                'PENDING_ON_AGING', 'HOLD_BY_AGING', 'REJECT_BY_AGING'
+            ].includes(customer_order.status)">
             <n-button type="error" size="large" @click="handleApprovingCO('REJECT_BY_AGING')">REJECT</n-button>
             <n-button type="warning" size="large" @click="handleApprovingCO('HOLD_BY_AGING')">HOLD</n-button>
             <n-button type="primary" size="large" @click="handleApprovingCO('PENDING_ON_FINANCE')">APPROVE</n-button>
         </div>
         <div class="d-flex gap-3 ms-auto mb-4"
-            v-if="($page.props.auth as any).user.division.division_name === 'FINANCE' && customer_order.status === 'PENDING_ON_FINANCE'">
+            v-if="($page.props.auth as any).user.division.division_name === 'FINANCE' && customer_order.status !== 'APPROVE'">
             <n-button type="error" size="large" @click="handleApprovingCO('REJECT_BY_FINANCE')">REJECT</n-button>
             <n-button type="warning" size="large" @click="handleApprovingCO('HOLD_BY_FINANCE')">HOLD</n-button>
             <n-button type="primary" size="large" @click="handleApprovingCO('APPROVE')">APPROVE</n-button>

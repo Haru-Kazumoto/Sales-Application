@@ -388,7 +388,7 @@ export default defineComponent({
         }
 
         function handlePreviewDocument() {
-            window.open(route('aging-finance.generate-invoice'),'_blank');
+            window.open(route('aging-finance.generate-invoice', data.id),'_blank');
         }
 
         watch(() => payForm.total_paid, (data) => {

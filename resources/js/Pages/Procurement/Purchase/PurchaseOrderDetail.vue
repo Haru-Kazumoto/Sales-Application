@@ -274,19 +274,19 @@ export default defineComponent({
         // });
 
         function handleGenerateDocument() {
-            Swal.fire({
-                icon: "question",
-                text: `Preview PO ${detailTransaction.document_code} ?`,
-                confirmButtonText: "Generate",
-                showCancelButton: true,
-                heightAuto: true,
-                toast: true,
-                position: 'top',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.open(route('procurement.generate-po-document', detailTransaction.id), '_blank');
-                }
-            });
+            window.open(route('procurement.generate-po-document', detailTransaction.id), '_blank');
+            // Swal.fire({
+            //     icon: "question",
+            //     text: `Preview PO ${detailTransaction.document_code} ?`,
+            //     confirmButtonText: "Generate",
+            //     showCancelButton: true,
+            //     heightAuto: true,
+            //     toast: true,
+            //     position: 'top',
+            // }).then((result) => {
+            //     if (result.isConfirmed) {
+            //     }
+            // });
         }
 
         return {

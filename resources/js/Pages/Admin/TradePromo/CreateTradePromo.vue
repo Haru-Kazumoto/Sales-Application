@@ -161,6 +161,7 @@ export default defineComponent({
                                 {
                                     type: "info",
                                     size: "medium",
+                                    disabled: row.is_active === 0,
                                     onClick: () => {
                                         handleUpdate(row);
                                     }
