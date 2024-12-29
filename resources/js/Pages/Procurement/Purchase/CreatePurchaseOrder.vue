@@ -245,7 +245,7 @@ import { DataTableColumns, NButton, SelectOption, useNotification } from 'naive-
 import Swal from 'sweetalert2';
 import RequiredMark from '../../../Components/RequiredMark.vue';
 import TitlePage from '../../../Components/TitlePage.vue';
-import { Head, useForm, usePage } from '@inertiajs/vue3';
+import { Head, router, useForm, usePage } from '@inertiajs/vue3';
 import { formatRupiah, capitalize } from '../../../Utils/options-input.utils';
 import dayjs from 'dayjs';
 import 'dayjs/locale/id'; // Import locale Indonesia
@@ -393,8 +393,8 @@ export default defineComponent({
             const formattedAmount = useDiscount
                 ? String(transaction_items.value.amount_discount) // Gunakan amount_discount jika tersedia
                 : String(transaction_items.value.amount).replace(',', '.'); // Atau gunakan input amount
-                // console.log(formattedAmount);
-                // : String(transaction_items.value.amount).replace(/\./g, ','); // Atau gunakan input amount
+            // console.log(formattedAmount);
+            // : String(transaction_items.value.amount).replace(/\./g, ','); // Atau gunakan input amount
 
             // Parsing amount yang sudah diformat ke angka desimal
             let productPrice = parseFloat(formattedAmount);
@@ -609,7 +609,16 @@ export default defineComponent({
         }
 
         function handleSubmit() {
-            console.log(form.transaction_details);
+            Swal.fire({
+                title: 'Sedang Memproses PO...',
+                text: 'Mohon tunggu sebentar',
+                icon: 'info',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
             form.transaction_details = [
                 {
                     name: 'Pemasok',
@@ -674,6 +683,7 @@ export default defineComponent({
             ];
 
             form.post(route('procurement.create-po'), {
+                preserveScroll: true,
                 onError: (error) => {
                     if (error !== null) {
                         Swal.fire({
@@ -731,7 +741,10 @@ export default defineComponent({
 
                     Swal.fire({
                         icon: 'success',
-                        title: page.props.flash.success
+                        title: page.props.flash.success,
+                        showConfirmButton: false,
+                        timer: 1800,
+                        timerProgressBar: true,
                     });
 
                 },

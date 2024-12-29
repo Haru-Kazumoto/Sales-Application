@@ -511,6 +511,20 @@ export default defineComponent({
 
 
         function handleSubmit() {
+            // Periksa apakah ada item di transaction_items dengan product_journals yang kosong
+            const hasEmptyProductJournal = form.transaction_items.some(item => {
+                return !item.product_journals || item.product_journals.length === 0;
+            });
+
+            if (hasEmptyProductJournal) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Data tidak lengkap!',
+                    text: 'Pastikan semua barang telah di format kode batch dan tanggal expired.',
+                });
+                return; // Hentikan eksekusi jika ada yang kosong
+            }
+
             form.transaction_details = [
                 {
                     name: "Nomor PO",
@@ -578,7 +592,6 @@ export default defineComponent({
                 }
                 return item;
             });
-
             form.post(route('warehouse.store-products'), {
                 onSuccess() {
                     form.reset()

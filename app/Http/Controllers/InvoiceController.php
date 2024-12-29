@@ -316,12 +316,7 @@ class InvoiceController extends Controller
 
     public function generateInvoiceDocument(Transactions $transactions) 
     {
-        $transactions->load([
-            'transactionDetails',
-            'transactionItems.product',
-            'transactionItems.tax',
-        ]);
-        dd($transactions);
+        
         $pdf = Pdf::loadView('documents.invoice-document', [
             'transactions' => $transactions,
         ]);

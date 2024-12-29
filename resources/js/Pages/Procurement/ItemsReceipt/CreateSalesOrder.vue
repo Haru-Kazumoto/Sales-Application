@@ -39,7 +39,7 @@
 
                         <!-- Baris Kedua -->
                         <div class="col-lg-4 col-6">
-                            <label for="field4">Tanggal PO </label> 
+                            <label for="field4">Tanggal PO </label>
                             <n-input size="large" v-model:value="transaction_details.purchase_order_date" disabled
                                 placeholder="" />
                         </div>
@@ -69,8 +69,8 @@
                         <!-- Baris Ketiga -->
                         <div class="col-lg-4 col-6">
                             <label for="field10">Nama Ekspedisi </label>
-                            <n-input id="field10" size="large" placeholder="" filterable :options="angkutanOptions" disabled
-                                v-model:value="transaction_details.sender" />
+                            <n-input id="field10" size="large" placeholder="" filterable :options="angkutanOptions"
+                                disabled v-model:value="transaction_details.sender" />
                         </div>
                         <div class="col-lg-4 col-6">
                             <label for="field11">Jenis Pengiriman </label>
@@ -308,6 +308,15 @@ export default defineComponent({
         });
 
         function handleSubmit() {
+            Swal.fire({
+                title: 'Sedang Memproses SSO...',
+                text: 'Mohon tunggu sebentar',
+                icon: 'info',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             form.transaction_details = [
                 {
                     name: "Nomor PO",
@@ -386,6 +395,8 @@ export default defineComponent({
                     });
                 },
                 onSuccess: () => {
+
+
                     // Reset form dengan nilai awal
                     form.document_code = '',
                         form.term_of_payment = '',
@@ -431,7 +442,10 @@ export default defineComponent({
 
                     Swal.fire({
                         icon: 'success',
-                        title: 'Success submit SSO!'
+                        title: page.props.flash.success,
+                        showConfirmButton: false,
+                        timer: 1800,
+                        timerProgressBar: true,
                     });
 
                 },
@@ -550,7 +564,7 @@ export default defineComponent({
             // Menghitung total harga termasuk PPN 11%
             let total = null as unknown as number;
 
-            if(transaction_details.value.use_tax) {
+            if (transaction_details.value.use_tax) {
                 total = subtotal + (subtotal * 0.11);
             } else {
                 total = subtotal;
