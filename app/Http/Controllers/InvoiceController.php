@@ -316,10 +316,44 @@ class InvoiceController extends Controller
 
     public function generateInvoiceDocument(Transactions $transactions) 
     {
+        $transactions->load('transactionDetails', 'transactionItems.product');
+
+        $customer = $transactions->transactionDetails[6]['value'];
+
+        $address = DB::table('parties as customer')
+            ->where('customer.name', $customer)
+            ->select('address', 'return_address')
+            ->first();
         
-        $pdf = Pdf::loadView('documents.invoice-document', [
-            'transactions' => $transactions,
-        ]);
+        $data = [
+            'co_number' => $transactions->transactionDetails[0]['value'],
+            'invoice_number' => $transactions->document_code,
+            'invoice_date' => Carbon::now()->format('d F Y'),
+            'due_date' => Carbon::now()->addDays($transactions->term_of_payment)->format('d F Y'),
+            'customer' => $transactions->transactionDetails[6]['value'],
+            'customer_address' => $address->address,
+            'customer_return_address' => $address->return_address,
+            'number_plate' => $transactions->transactionDetails[4]['value'],
+            'salesman' => $transactions->transactionDetails[5]['value'],
+            'customer_npwp' => $transactions->transactionDetails[7]['value'],
+            'travel_document_number' => $transactions->transactionDetails[1]['value'],
+            'payment_terms' => $transactions->term_of_payment,
+            'sub_total' => $transactions->sub_total,
+            'tax_amount' => $transactions->tax_amount,
+            'total' => $transactions->total,
+            'transaction_items' => $transactions->transactionItems->map(function ($item) {
+                return [
+                    'unit' => $item->unit,
+                    'quantity' => $item->quantity,
+                    'amount' => $item->amount,
+                    'total_price' => $item->total_price,
+                    'product_code' => $item->product->code,
+                    'product_name' => $item->product->name,
+                ];
+            }),
+        ];
+
+        $pdf = Pdf::loadView('documents.invoice-document', $data);
 
         return $pdf->stream('invoice_'.rand(100000,900000).'_.pdf');
     }

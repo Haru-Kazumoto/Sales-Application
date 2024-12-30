@@ -56,6 +56,10 @@
                         <label for="">ALAMAT CUSTOMER</label>
                         <n-input placeholder="" size="large" v-model:value="dataInvoice.customer_address" disabled/>
                     </div>
+                    <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1" >
+                        <label for="">GUDANG</label>
+                        <n-input placeholder="" size="large" v-model:value="dataInvoice.warehouse" disabled/>
+                    </div>
                 </div>
             </div>
         </div>
@@ -366,6 +370,7 @@ export default defineComponent({
             npwp: dataDetails.find(data => data.category === "NPWP")?.value,
             customer_address: dataDetails.find(data => data.category === "Customer Address")?.value,
             ppn: 11,
+            warehouse: dataDetails.find(data => data.category === "Warehouse")?.value,
         });
 
         const payForm = useForm({
@@ -388,7 +393,7 @@ export default defineComponent({
         }
 
         function handlePreviewDocument() {
-            window.open(route('aging-finance.generate-invoice', data.id),'_blank');
+            window.open(route('aging-finance.preview-invoice', data.id),'_blank');
         }
 
         watch(() => payForm.total_paid, (data) => {
