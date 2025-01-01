@@ -710,19 +710,20 @@ export default defineComponent({
                 normal_margin,
             } = form;
 
-            // const vendor = form.vendor; // Assuming vendor is part of form data
-            // const transportCost = (vendor === 'BONANSA' || vendor === 'CMP') ? 0 : transportation_cost;
-
             const ppn = 0.11; // 11% PPN
+
+            // Pembulatan redemp_price ke bawah ke ribuan terdekat
+            const roundedRedempPrice = Math.floor((Number(redemp_price) || 0) / 1000) * 1000;
+
             const basePrice =
-                (Number(redemp_price) || 0) +
+                roundedRedempPrice +
                 (Number(transportation_cost) || 0) +
                 (Number(oh_depo) || 0) +
                 (Number(bad_debt_dd) || 0) +
                 (Number(saving) || 0) +
                 (Number(normal_margin) || 0);
 
-            form.all_segment_price = basePrice + (basePrice * ppn);
+            form.all_segment_price = basePrice + basePrice * ppn;
         }
 
 
