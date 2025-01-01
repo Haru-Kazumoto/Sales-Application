@@ -36,7 +36,8 @@ class Products extends Model
         'transportation_cost',
         'margin_retail',
         'margin_end_user',
-        'margin_grosir'
+        'margin_grosir',
+        'discount_vendor'
     ];
 
     public function tax(): BelongsTo

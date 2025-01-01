@@ -11,7 +11,7 @@
         <div class="card shadow-sm border-0">
             <div class="card-body">
                 <form class="row g-3" @submit.prevent="handleSubmitProduct">
-                    
+
                     <!-- FIRST ROW -->
                     <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">Kode Barang
@@ -37,7 +37,7 @@
                             <RequiredMark />
                         </label>
                         <n-select placeholder="" v-model:value="form.supplier_id" size="large"
-                            :options="supplierOptions" filterable/>
+                            :options="supplierOptions" filterable />
                     </div>
 
                     <!-- SECOND ROW -->
@@ -48,10 +48,21 @@
                         <n-select size="large" placeholder="" :options="unitOptions" v-model:value="form.unit" />
                     </div>
                     <div class="col-12 col-lg-4 d-flex flex-column">
+                        <label for="">Harga Vendor
+                            <RequiredMark />
+                        </label>
+                        <n-input size="large" placeholder="" v-model:value="form.discount_vendor">
+                            <template #prefix>
+                                Rp
+                            </template>
+                        </n-input>
+                    </div>
+                    <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">Harga Tebus
                             <RequiredMark />
                         </label>
-                        <n-input size="large" placeholder="" v-model:value="form.redemp_price" @input="(value) => form.redemp_price = value.replace(/\./g, '').replace(',', '.')">
+                        <n-input size="large" placeholder="" v-model:value="form.redemp_price"
+                            @input="(value) => form.redemp_price = value.replace(/\./g, '').replace(',', '.')">
                             <template #prefix>
                                 Rp
                             </template>
@@ -226,7 +237,7 @@
                         <n-button type="primary" class="ms-auto" attr-type="submit">Update Product</n-button>
                     </div>
 
-                    
+
                 </form>
             </div>
         </div>
@@ -274,6 +285,7 @@ export default defineComponent({
             margin_end_user: product.margin_end_user || null as unknown as number,
             margin_retail: product.margin_retail || null as unknown as number,
             margin_grosir: product.margin_grosir || null as unknown as number,
+            discount_vendor: product.discount_vendor || null as unknown as number,
         });
 
         function handleSubmitProduct() {
@@ -309,7 +321,7 @@ export default defineComponent({
             { label: "NON TEPUNG", value: "NON TEPUNG" },
             { label: "TEPUNG", value: "TEPUNG" },
         ]
-        
+
         const supplierOptions = (page.props.suppliers as any[]).map((data) => ({
             label: data.name,
             value: data.id,

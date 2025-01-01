@@ -110,6 +110,7 @@ class ProductsController extends Controller
             'saving_marketing' => 'nullable|numeric',
             'product_type_id' => 'numeric|required',
             'transportation_cost' => 'nullable|numeric',
+            'discount_vendor' => 'nullable|numeric',
         ]);
 
         
@@ -141,6 +142,7 @@ class ProductsController extends Controller
             $product->transportation_cost = $request->input('transportation_cost');
             $product->margin_retail = $request->input('margin_retail');
             $product->margin_end_user = $request->input('margin_end_user');
+            $product->discount_vendor = $request->input('discount_vendor');
 
             // Simpan produk
             $product->save();
@@ -201,6 +203,7 @@ class ProductsController extends Controller
             'product_type_id' => 'numeric|required',
             'supplier_id' => 'numeric|required',
             'transportation_cost' => 'nullable|numeric',
+            'discount_vendor' => 'nullable|numeric',
         ]);
 
         // Lakukan update data
@@ -230,6 +233,7 @@ class ProductsController extends Controller
                 'transportation_cost' => $request->input('transportation_cost'),
                 'margin_retail' => $request->input('margin_retail'),
                 'margin_end_user' => $request->input('margin_end_user'),
+                'discount_vendor' => $request->input('discount_vendor'),
             ]);
         });
 

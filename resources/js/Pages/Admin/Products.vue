@@ -2,166 +2,6 @@
     <div class="d-flex flex-column gap-4">
         <TitlePage title="Daftar Produk" />
         <n-tabs type="line" animated size="large">
-            <n-tab-pane name="products" tab="Daftar Produk">
-                <div class="row g-3">
-                    <div class="col-12 col-lg-6 d-flex align-items-lg-center gap-3 mb-3">
-                        <label>Total Jumlah Produk</label>
-                        <span class="border px-4 py-1 bg-white" style="border-radius: 3px;">
-                            {{ ($page.props.products as any).total }}
-                        </span>
-                    </div>
-                    <div class="col-12 col-lg-6 d-flex">
-                        <div class="ms-auto d-flex align-items-lg-center gap-2 justify-content-lg-end w-100">
-                            <label>Pencarian Data</label>
-                            <n-select class="w-25" v-model:value="filterField" placeholder="Pilih field" :options="[
-                                { label: 'Kode', value: 'code' },
-                                { label: 'Nama', value: 'name' },
-                                { label: 'Kategori', value: 'category' },
-                                { label: 'Supplier', value: 'supplier' },
-                            ]" />
-                            <n-input class="w-50" placeholder="" @input="handleSearchQuery"
-                                v-model:value="filterQuery" />
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card shadow-sm border-0 mb-5">
-                    <div class="card-body">
-                        <n-data-table :columns="columns" :bordered="false" :data="($page.props.products as any).data"
-                            pagination-behavior-on-filter="first" />
-                        <div class="d-flex mt-3">
-                            <n-pagination class="ms-auto" v-model:page="pagination.current_page"
-                                :page-count="pagination.last_page" :page-size="pagination.per_page"
-                                @update:page="handlePageChange"
-                                @update:page-count="pagination.last_page = ($page.props.units as any).last_page" />
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-scrollable">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Detail Barang</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <table class="table table-borderless">
-                                    <tbody>
-                                        <tr>
-                                            <td><strong>Nama Barang</strong></td>
-                                            <td>:</td>
-                                            <td>{{ selectedData.name }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Kode Barang</strong></td>
-                                            <td>:</td>
-                                            <td>{{ selectedData.code }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Jenis Produk</strong></td>
-                                            <td>:</td>
-                                            <td>{{ selectedData.type }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Segment Produk</strong></td>
-                                            <td>:</td>
-                                            <td>{{ selectedData.product_type?.name }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Kategori</strong></td>
-                                            <td>:</td>
-                                            <td>{{ selectedData.category }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Pemasok</strong></td>
-                                            <td>:</td>
-                                            <td>{{ selectedData.parties?.name }}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <n-divider>HARGA</n-divider>
-                                <table class="table table-borderless">
-                                    <tbody>
-                                        <tr>
-                                            <td><strong>Harga Tebus</strong></td>
-                                            <td>:</td>
-                                            <td>{{ formatRupiah(selectedData.redemp_price) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Harga Jual Grosir</strong></td>
-                                            <td>:</td>
-                                            <td>{{ formatRupiah(selectedData.retail_price) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Harga Retail</strong></td>
-                                            <td>:</td>
-                                            <td>{{ formatRupiah(selectedData.restaurant_price) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Harga All Segment</strong></td>
-                                            <td>:</td>
-                                            <td>{{ formatRupiah(selectedData.all_segment_price) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Harga End User</strong></td>
-                                            <td>:</td>
-                                            <td>{{ formatRupiah(selectedData.price_3) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Harga DD</strong></td>
-                                            <td>:</td>
-                                            <td>{{ formatRupiah(selectedData.dd_price) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Margin All Segment</strong></td>
-                                            <td>:</td>
-                                            <td>{{ formatRupiah(selectedData.normal_margin) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Margin End User</strong></td>
-                                            <td>:</td>
-                                            <td>{{ formatRupiah(selectedData.margin_end_user) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Margin Retail</strong></td>
-                                            <td>:</td>
-                                            <td>{{ formatRupiah(selectedData.margin_retail) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>OH Depo</strong></td>
-                                            <td>:</td>
-                                            <td>{{ formatRupiah(selectedData.oh_depo) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Saving</strong></td>
-                                            <td>:</td>
-                                            <td>{{ formatRupiah(selectedData.saving) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Bad Debt DD</strong></td>
-                                            <td>:</td>
-                                            <td>{{ formatRupiah(selectedData.bad_debt_dd) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Saving Marketing</strong></td>
-                                            <td>:</td>
-                                            <td>{{ formatRupiah(selectedData.saving_marketing) }}</td>
-                                        </tr>
-                                    </tbody>
-
-                                </table>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">TUTUP</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </n-tab-pane>
             <n-tab-pane name="create-product" tab="Buat Produk Baru">
                 <div class="card shadow-sm border-0 mb-3">
                     <div class="card-body">
@@ -223,10 +63,21 @@
                                     @input="(value) => form.unit = value.toUpperCase()" />
                             </div>
                             <div class="col-12 col-lg-4 d-flex flex-column">
+                                <label for="">Harga Vendor
+                                    <RequiredMark />
+                                </label>
+                                <n-input size="large" placeholder="" v-model:value="form.discount_vendor">
+                                    <template #prefix>
+                                        Rp
+                                    </template>
+                                </n-input>
+                            </div>
+                            <div class="col-12 col-lg-4 d-flex flex-column">
                                 <label for="">Harga Tebus
                                     <RequiredMark />
                                 </label>
-                                <n-input size="large" placeholder="" v-model:value="form.redemp_price" @input="(value) => form.redemp_price = value.replace(/\./g, '').replace(',', '.')">
+                                <n-input size="large" placeholder="" v-model:value="form.redemp_price"
+                                    @input="(value) => form.redemp_price = value.replace(/\./g, '').replace(',', '.')">
                                     <template #prefix>
                                         Rp
                                     </template>
@@ -401,12 +252,176 @@
                             </div>
 
                             <div class="d-flex">
-                                <n-button type="primary" class="ms-auto" attr-type="submit">Tambah Data</n-button>
+                                <div class="ms-auto d-flex gap-3">
+                                    <n-button type="primary" @click="calculateRedempPrice">Kalkulasi Harga</n-button>
+                                    <n-button type="primary" attr-type="submit">Tambah Data</n-button>
+                                </div>
                             </div>
                         </form>
                     </div>
                 </div>
             </n-tab-pane>
+            <n-tab-pane name="products" tab="Daftar Produk">
+                <div class="row g-3">
+                    <div class="col-12 col-lg-6 d-flex align-items-lg-center gap-3 mb-3">
+                        <label>Total Jumlah Produk</label>
+                        <span class="border px-4 py-1 bg-white" style="border-radius: 3px;">
+                            {{ ($page.props.products as any).total }}
+                        </span>
+                    </div>
+                    <div class="col-12 col-lg-6 d-flex">
+                        <div class="ms-auto d-flex align-items-lg-center gap-2 justify-content-lg-end w-100">
+                            <label>Pencarian Data</label>
+                            <n-select class="w-25" v-model:value="filterField" placeholder="Pilih field" :options="[
+                                { label: 'Kode', value: 'code' },
+                                { label: 'Nama', value: 'name' },
+                                { label: 'Kategori', value: 'category' },
+                                { label: 'Supplier', value: 'supplier' },
+                            ]" />
+                            <n-input class="w-50" placeholder="" @input="handleSearchQuery"
+                                v-model:value="filterQuery" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm border-0 mb-5">
+                    <div class="card-body">
+                        <n-data-table :columns="columns" :bordered="false" :data="($page.props.products as any).data"
+                            pagination-behavior-on-filter="first" />
+                        <div class="d-flex mt-3">
+                            <n-pagination class="ms-auto" v-model:page="pagination.current_page"
+                                :page-count="pagination.last_page" :page-size="pagination.per_page"
+                                @update:page="handlePageChange"
+                                @update:page-count="pagination.last_page = ($page.props.units as any).last_page" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Detail Barang</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <table class="table table-borderless">
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Nama Barang</strong></td>
+                                            <td>:</td>
+                                            <td>{{ selectedData.name }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Kode Barang</strong></td>
+                                            <td>:</td>
+                                            <td>{{ selectedData.code }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Jenis Produk</strong></td>
+                                            <td>:</td>
+                                            <td>{{ selectedData.type }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Segment Produk</strong></td>
+                                            <td>:</td>
+                                            <td>{{ selectedData.product_type?.name }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Kategori</strong></td>
+                                            <td>:</td>
+                                            <td>{{ selectedData.category }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Pemasok</strong></td>
+                                            <td>:</td>
+                                            <td>{{ selectedData.parties?.name }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <n-divider>HARGA</n-divider>
+                                <table class="table table-borderless">
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Harga Tebus</strong></td>
+                                            <td>:</td>
+                                            <td>{{ formatRupiah(selectedData.redemp_price) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Harga Jual Grosir</strong></td>
+                                            <td>:</td>
+                                            <td>{{ formatRupiah(selectedData.retail_price) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Harga Retail</strong></td>
+                                            <td>:</td>
+                                            <td>{{ formatRupiah(selectedData.restaurant_price) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Harga All Segment</strong></td>
+                                            <td>:</td>
+                                            <td>{{ formatRupiah(selectedData.all_segment_price) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Harga End User</strong></td>
+                                            <td>:</td>
+                                            <td>{{ formatRupiah(selectedData.price_3) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Harga DD</strong></td>
+                                            <td>:</td>
+                                            <td>{{ formatRupiah(selectedData.dd_price) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Margin All Segment</strong></td>
+                                            <td>:</td>
+                                            <td>{{ formatRupiah(selectedData.normal_margin) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Margin End User</strong></td>
+                                            <td>:</td>
+                                            <td>{{ formatRupiah(selectedData.margin_end_user) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Margin Retail</strong></td>
+                                            <td>:</td>
+                                            <td>{{ formatRupiah(selectedData.margin_retail) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>OH Depo</strong></td>
+                                            <td>:</td>
+                                            <td>{{ formatRupiah(selectedData.oh_depo) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Saving</strong></td>
+                                            <td>:</td>
+                                            <td>{{ formatRupiah(selectedData.saving) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Bad Debt DD</strong></td>
+                                            <td>:</td>
+                                            <td>{{ formatRupiah(selectedData.bad_debt_dd) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Saving Marketing</strong></td>
+                                            <td>:</td>
+                                            <td>{{ formatRupiah(selectedData.saving_marketing) }}</td>
+                                        </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">TUTUP</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </n-tab-pane>
+
         </n-tabs>
 
 
@@ -458,6 +473,7 @@ export default defineComponent({
             margin_retail: null as unknown as number,
             margin_end_user: null as unknown as number,
             margin_grosir: null as unknown as number,
+            discount_vendor: null as unknown as number,
         });
 
         function createColumns() {
@@ -683,32 +699,31 @@ export default defineComponent({
             ]
         }
 
-        // watch(
-        //     () => form.redemp_price,
-        //     (newVal, oldVal) => {
-        //         if (newVal) {
-        //             // Hilangkan pemisah ribuan jika ada
-        //             let cleanValue = String(newVal).replace(/\./g, '').replace(',', '.');
+        // calculate
+        function calculateRedempPrice() {
+            const {
+                redemp_price,
+                transportation_cost,
+                oh_depo,
+                bad_debt_dd,
+                saving,
+                normal_margin,
+            } = form;
 
-        //             // Parsing menjadi angka
-        //             let parsedValue = parseFloat(cleanValue);
+            // const vendor = form.vendor; // Assuming vendor is part of form data
+            // const transportCost = (vendor === 'BONANSA' || vendor === 'CMP') ? 0 : transportation_cost;
 
-        //             if (!isNaN(parsedValue)) {
-        //                 // Lakukan pembulatan ke ribuan
-        //                 const roundedValue = Math.round(parsedValue);
+            const ppn = 0.11; // 11% PPN
+            const basePrice =
+                (Number(redemp_price) || 0) +
+                (Number(transportation_cost) || 0) +
+                (Number(oh_depo) || 0) +
+                (Number(bad_debt_dd) || 0) +
+                (Number(saving) || 0) +
+                (Number(normal_margin) || 0);
 
-        //                 // Format kembali sebagai string dengan separator ribuan (opsional)
-        //                 // const formattedValue = new Intl.NumberFormat('id-ID').format(roundedValue);
-
-        //                 // Update nilai pada form.redemp_price
-        //                 form.redemp_price = roundedValue;
-        //             } else {
-        //                 // Jika nilai tidak valid, kembalikan ke nilai lama
-        //                 form.redemp_price = oldVal;
-        //             }
-        //         }
-        //     }
-        // );
+            form.all_segment_price = basePrice + (basePrice * ppn);
+        }
 
 
         // Filter data
@@ -830,6 +845,7 @@ export default defineComponent({
 
         return {
             columns: createColumns(),
+            calculateRedempPrice,
             showDetail,
             handleImportProducts,
             handleChangeFile,
