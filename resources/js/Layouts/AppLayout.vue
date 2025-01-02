@@ -6,21 +6,16 @@
           <n-layout-header style="height: 64px;" bordered>
             <Header />
           </n-layout-header>
-          <n-layout position="absolute" style="top: 64px;" has-sider>
-            <n-layout-sider :native-scrollbar="false" bordered collapse-mode="width" show-trigger
-              :collapsed-width="computedCollapsedWidth" :width="siderWidth" :collapsed="collapsed"
-              @collapse="collapsed = true" @expand="collapsed = false" class="z-3">
-              <n-menu :collapsed="collapsed" :collapsed-width="computedCollapsedWidth" :collapsed-icon-size="22"
-                :options="menuOptions" :render-label="renderMenuLabel" :expand-icon="expandIcon"
-                default-value="dashboard" @update:value="handleMenuClick" />
+          <n-layout has-sider position="absolute" style="top: 64px;">
+            <n-layout-sider :native-scrollbar="false" bordered collapse-mode="width" :width="300" :collapsed="collapsed"
+              @collapse="collapsed = true" @expand="collapsed = false" :collapsed-width="0" show-trigger>
+              <n-menu :collapsed="collapsed" :collapsed-width="64" :collapsed-icon-size="22" :options="menuOptions"
+                :render-label="renderMenuLabel" default-value="dashboard" />
             </n-layout-sider>
             <n-layout :native-scrollbar="false">
               <div class="container-fluid flex-grow-1 min-vh-100 z-n1" style="background-color: #EEF8F5;">
                 <slot />
               </div>
-              <!-- <n-layout-footer position="absolute" bordered>
-                  <Footer />
-                </n-layout-footer> -->
             </n-layout>
           </n-layout>
         </n-layout>
@@ -33,7 +28,7 @@
 import Sidebar from '../Components/Sidebar.vue';
 import Header from '../Components/Header.vue';
 import Footer from '../Components/Footer.vue';
-import { defineComponent, inject, computed, h, ref, provide, onMounted, onBeforeUnmount } from 'vue';
+import { defineComponent, inject, computed, h, ref, provide, onMounted, onBeforeUnmount, onUnmounted } from 'vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
 import { NIcon } from 'naive-ui';
 import type { MenuOption } from 'naive-ui';
@@ -48,12 +43,9 @@ export default defineComponent({
     Footer
   },
   setup() {
-    const windowWidth = ref(window.innerWidth);
-    // const collapsed = ref(windowWidth.value < 576); // Set to true for mobile
     const page = usePage();
     const role = (page.props.auth as any).user.division.division_name;
-    const siderWidth = ref(270); // Default width
-    const collapsed = ref(false); // Set to true to collapse the sidebar by default on mobile
+    const collapsed = ref(false);
 
     // Function to toggle the sidebar collapse state
     function toggleCollapse() {
@@ -64,26 +56,6 @@ export default defineComponent({
     provide('collapsed', collapsed);
     provide('toggleCollapse', toggleCollapse);
 
-    const computedCollapsedWidth = computed(() => {
-      if (windowWidth.value < 576) return 0; // 0 width for collapsed on mobile
-      if (windowWidth.value < 768) return 64; // Adjust for tablet sizes
-      return 64; // Default for larger screens
-    });
-
-    const updateWindowWidth = () => {
-      windowWidth.value = window.innerWidth;
-
-      // Update collapsed state based on window width
-      if (windowWidth.value < 576) {
-        // Set sider to fullscreen if collapsed is false on mobile
-        siderWidth.value = collapsed.value ? 0 : '100vw';
-        collapsed.value = true; // Ensure collapsed is true on mobile
-      } else {
-        siderWidth.value = 270; // Reset to default width on larger screens
-        collapsed.value = false; // Ensure sidebar is expanded on larger screens
-      }
-    };
-
     function handleMenuClick(key: string) {
       // Arahkan ke route yang sesuai menggunakan Inertia.js
       const selectedItem = menuOptions.value.find(item => item.key === key);
@@ -93,13 +65,25 @@ export default defineComponent({
       }
     }
 
+    // Fungsi untuk mendeteksi ukuran layar
+    function handleResize() {
+      const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
+      if (isSmallScreen) {
+        collapsed.value = true; // Sider tertutup di layar kecil
+      }
+    }
+
+    // Pasang listener saat komponen dimuat
     onMounted(() => {
-      window.addEventListener('resize', updateWindowWidth);
-      updateWindowWidth(); // Initial check on mount
+      handleResize(); // Set initial state
+      window.addEventListener("resize", handleResize);
+
+      router.on("navigate", handleResize);
     });
 
-    onBeforeUnmount(() => {
-      window.removeEventListener('resize', updateWindowWidth);
+    // Hapus listener saat komponen dilepas
+    onUnmounted(() => {
+      window.removeEventListener("resize", handleResize);
     });
 
     const staticMenuOptions: MenuOption[] = [
@@ -139,8 +123,6 @@ export default defineComponent({
       collapsed,
       toggleCollapse,
       menuOptions,
-      computedCollapsedWidth,
-      siderWidth,
       renderMenuLabel(option) {
         // Pastikan href tidak undefined
         if (!option.href) {

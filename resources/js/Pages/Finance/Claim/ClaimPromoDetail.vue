@@ -12,19 +12,23 @@
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-6 col-lg-3 d-flex flex-column gap-1">
-                        <label for="">Input label</label>
+                        <label for="">NOMOR CLAIM</label>
                         <n-input size="large" />
                     </div>
                     <div class="col-6 col-lg-3 d-flex flex-column gap-1">
-                        <label for="">Input label</label>
+                        <label for="">BULAN CLAIM</label>
                         <n-input size="large" />
                     </div>
                     <div class="col-6 col-lg-3 d-flex flex-column gap-1">
-                        <label for="">Input label</label>
+                        <label for="">NAMA DISTRIBUTOR</label>
                         <n-select size="large" />
                     </div>
                     <div class="col-6 col-lg-3 d-flex flex-column gap-1">
-                        <label for="">Input label</label>
+                        <label for="">AREA</label>
+                        <n-select size="large" />
+                    </div>
+                    <div class="col-6 col-lg-3 d-flex flex-column gap-1">
+                        <label for="">PROGRAM</label>
                         <n-select size="large" />
                     </div>
                 </div>

@@ -702,28 +702,28 @@ export default defineComponent({
         // calculate
         function calculateRedempPrice() {
             const {
-                redemp_price,
-                transportation_cost,
-                oh_depo,
-                bad_debt_dd,
-                saving,
-                normal_margin,
+                redemp_price, // harga tebus
+                transportation_cost, // harga angkutan
+                oh_depo, //oh depo
+                bad_debt_dd, // bad debt
+                saving, // Budget Marketing
+                normal_margin, // margin normal
             } = form;
 
-            const ppn = 0.11; // 11% PPN
-
-            // Pembulatan redemp_price ke bawah ke ribuan terdekat
-            const roundedRedempPrice = Math.floor((Number(redemp_price) || 0) / 1000) * 1000;
-
+            // Hitung basePrice tanpa PPN
             const basePrice =
-                roundedRedempPrice +
+                Number(redemp_price) +
                 (Number(transportation_cost) || 0) +
                 (Number(oh_depo) || 0) +
                 (Number(bad_debt_dd) || 0) +
                 (Number(saving) || 0) +
                 (Number(normal_margin) || 0);
 
-            form.all_segment_price = basePrice + basePrice * ppn;
+            // Kalkulasi harga jual all_segment_price tanpa PPN
+            form.all_segment_price = Math.ceil(basePrice);
+
+            console.log('Updated Redemp Price:', form.redemp_price);
+            console.log('All Segment Price:', form.all_segment_price);
         }
 
 

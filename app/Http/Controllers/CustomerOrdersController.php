@@ -268,7 +268,7 @@ class CustomerOrdersController extends Controller
      */
     public function storeDnp(Request $request)
     {
-        // dd($request->all()); // Digunakan untuk debugging
+        // dd($request->total_discount);
 
         // Validasi input request
         $request->validate([
@@ -278,6 +278,7 @@ class CustomerOrdersController extends Controller
             'sub_total' => 'required|numeric',
             'total' => 'required|numeric',
             'tax_amount' => 'nullable|numeric',
+            'total_discount' => 'nullable|numeric',
             'transaction_details' => 'required|array',
             'transaction_details.*.name' => 'required|string',
             'transaction_details.*.category' => 'required|string',
@@ -321,6 +322,7 @@ class CustomerOrdersController extends Controller
                 'transaction_type_id' => 70,
                 'customer_id' => $customer->id,
                 'status' => 'PENDING_ON_AGING',
+                'total_discount' => $request->input('total_discount'),
             ]);
 
             // Simpan transaction details
@@ -397,6 +399,7 @@ class CustomerOrdersController extends Controller
             'sub_total' => 'required|numeric',
             'total' => 'required|numeric',
             'tax_amount' => 'nullable|numeric',
+            'total_discount' => 'nullable|numeric',
             'transaction_details' => 'required|array',
             'transaction_details.*.name' => 'required|string',
             'transaction_details.*.category' => 'required|string',
@@ -440,6 +443,7 @@ class CustomerOrdersController extends Controller
                 'transaction_type_id' => 70, // Atur transaction_type_id untuk CO
                 'customer_id' => $customer->id,
                 'status' => 'PENDING_ON_AGING',
+                'total_discount' => $request->input('total_discount'),
             ]);
 
             // Simpan transaction details

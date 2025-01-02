@@ -15,7 +15,7 @@
         <!-- Bagian tabel: responsive dengan card -->
         <div class="card shadow-sm" style="border: none;">
             <div class="card-body">
-                <n-data-table :bordered="false" :data="$page.props.data_claim.data" :columns="columns" size="small" />
+                <n-data-table :bordered="false" :data="$page.props.result" :columns="columns" size="small" />
             </div>
         </div>
     </div>
@@ -56,28 +56,25 @@ export default defineComponent({
                     key: 'created_at',
                     width: 250,
                     render(row) {
-                        return dayjs(row.creted_at).format('dddd, D MMMM YYYY HH:mm')
+                        return dayjs(row.claim_date).format('dddd, D MMMM YYYY HH:mm')
                     }
                 },
                 {
                     title: "NOMOR KLAIM PROMO",
-                    key: 'document_code',
+                    key: 'claim_number',
                     width: 250,
                 },
                 {
                     title: "NAMA DISTRIBUTOR",
-                    key: 'distributor_name',
+                    key: 'distributor',
                     width: 250,
-                    render(row) {
-                        return row.transaction_details.find(data => data.category === "Distributor")?.value;
-                    }
                 },
                 {
                     title: "TOTAL KLAIM",
                     key: 'total_claim',
                     width: 200,
                     render(row) {
-                        return formatRupiah(0);
+                        return formatRupiah(row.total_claim);
                     }
                 },
                 {
@@ -85,7 +82,7 @@ export default defineComponent({
                     key: 'status_claim',
                     width: 200,
                     render(row) {
-                        const status = row.transaction_details.find(data => data.category === "Claim Payment")?.value;
+                        const status = row.status_payment_claim;
                         let type: any;
 
                         switch (status) {
@@ -93,7 +90,7 @@ export default defineComponent({
                                 type = 'success';
                                 break;
                             case 'UNPAID':
-                                type = 'warning';
+                                type = 'error';
                                 break;
                             default:
                                 type = ''; // Default type
@@ -114,8 +111,9 @@ export default defineComponent({
                 {
                     title: 'ACTION',
                     key: 'actions',
+                    width: 100,
                     render(row) {
-                        const status = row.transaction_details.find(data => data.category === "Claim Payment")?.value;
+                        const status = row.status_payment_claim;
                         return h('div', { class: 'd-flex gap-2' }, [
                             h(
                                 NButton,
@@ -157,29 +155,7 @@ export default defineComponent({
                                     type: 'primary',
                                     size: 'small',
                                     onClick: () => {
-                                        document_code.value = row.document_code;
-
-                                        Swal.fire({
-                                            icon: 'warning',
-                                            title: document_code.value,
-                                            text: "Ubah status menjadi PAID untuk promo ini?",
-                                            showCancelButton: true,
-                                            confirmButtonText: 'UBAH',
-                                            cancelButtonText: 'BATAL',
-                                            cancelButtonColor: 'red',
-                                            confirmButtonColor: '#00a54f'
-                                        }).then(result => {
-                                            if (result.isConfirmed) {
-                                                router.patch(route('finance.change-status', row.id),{},{
-                                                    onSuccess: (page) => {
-                                                        Swal.fire(page.props.flash.success,'','success');
-                                                    },
-                                                    onError: (error) => {
-                                                        Swal.fire('Gagal memperbarui status, silahkan lapor pengembang','','error');
-                                                    }
-                                                })
-                                            }
-                                        });
+                                        router.visit(route('finance.claim-promo.detail', row.id), { method: 'get' });
                                     }
                                 },
                                 { default: () => 'Detail' }

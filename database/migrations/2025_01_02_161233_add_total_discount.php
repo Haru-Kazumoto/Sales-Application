@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->integer('discount_vendor')->default(0)->nullable()->after('supplier_id');
+        Schema::table('transactions', function (Blueprint $table) {
+            $table->float('total_discount')->nullable()->after('sub_total');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn('discount_vendor');
+        Schema::table('transactions', function (Blueprint $table) {
+            $table->dropColumn('total_discount');
         });
     }
 };

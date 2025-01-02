@@ -29,7 +29,8 @@ class Transactions extends Model
         'status',
         'approved_by',
         'approve_at',
-        'approval_notes'
+        'approval_notes',
+        'total_discount',
     ];
 
     public function transactionType(): BelongsTo

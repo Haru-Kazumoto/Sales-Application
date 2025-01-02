@@ -153,36 +153,67 @@ class ClaimPromoController extends Controller
     public function indexDataClaimPromo()
     {
         $txType = TransactionType::where('name', 'Klaim Promo')->first();
-        $data_claim = Transactions::where('transaction_type_id', $txType->id)
-            ->with('transactionItems','transactionDetails')
-            ->orderByDesc('created_at')
-            ->paginate(15);
+        $result = DB::table('transactions as tx')
+            ->select([
+                'tx.id',
+                'tx.document_code as claim_number',
+                'tx.total as total_claim',
+                'tx.created_at as claim_date',
+                DB::raw("
+                    (SELECT 
+                        CASE 
+                            WHEN tx_details.value = 'false' THEN 'UNPAID' 
+                            WHEN tx_details.value = 'true' THEN 'PAID' 
+                            ELSE NULL 
+                        END
+                    FROM transaction_details tx_details 
+                    WHERE tx_details.category = 'Claim Payment' 
+                    AND tx_details.transactions_id = tx.id) as status_payment_claim
+                "),
+                DB::raw("
+                    (SELECT 
+                        tx_details.value 
+                    FROM transaction_details tx_details 
+                    WHERE tx_details.category = 'Distributor' 
+                    AND tx_details.transactions_id = tx.id) as distributor
+                ")
+            ])
+            ->where('tx.transaction_type_id', $txType->id)
+            ->orderByDesc('tx.created_at')
+            ->get();       
 
-        return Inertia::render('Finance/Claim/ListClaimPromo', compact('data_claim'));
+        return Inertia::render('Finance/Claim/ListClaimPromo', compact('result'));
     }
 
     public function changeStatusPaymentClaim(Transactions $transactions)
-{
-    DB::transaction(function() use ($transactions) {
-        // Memastikan transaksi memuat transactionDetails
-        $transactions = Transactions::with('transactionDetails')
-            ->whereHas('transactionDetails', function($query) {
-                $query->where('category', 'Claim Payment')
-                      ->where('value', 'UNPAID');
-            })
-            ->find($transactions->id); // Menggunakan find untuk memastikan ID benar
+    {
+        DB::transaction(function() use ($transactions) {
+            // Memastikan transaksi memuat transactionDetails
+            $transactions = Transactions::with('transactionDetails')
+                ->whereHas('transactionDetails', function($query) {
+                    $query->where('category', 'Claim Payment')
+                        ->where('value', 'UNPAID');
+                })
+                ->find($transactions->id); // Menggunakan find untuk memastikan ID benar
 
-        if ($transactions) {
-            foreach ($transactions->transactionDetails as $detail) {
-                if ($detail->category === 'Claim Payment' && $detail->value === 'UNPAID') {
-                    $detail->update(['value' => 'PAID']);
+            if ($transactions) {
+                foreach ($transactions->transactionDetails as $detail) {
+                    if ($detail->category === 'Claim Payment' && $detail->value === 'UNPAID') {
+                        $detail->update(['value' => 'PAID']);
+                    }
                 }
             }
-        }
-    });
+        });
 
-    return back()->with('success', 'Berhasil memperbarui status!');
-}
+        return back()->with('success', 'Berhasil memperbarui status!');
+    }
 
+    public function showClaimPromo(Transactions $transactions)
+    {
+        $transactions->load('transactionItems', 'transactionDetails');
 
+        dd($transactions->transactionItems->toArray());
+
+        return Inertia::render('Finance/Claim/ClaimPromoDetail', compact('transactions'));
+    }
 }

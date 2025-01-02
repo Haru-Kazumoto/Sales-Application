@@ -95,7 +95,7 @@ class PromoProgramController extends Controller
             }
         });
 
-        return back()->with('success', 'Promo berhasil terbuat!');
+        return redirect()->route('admin.index-promo')->with('success', 'Promo berhasil terbuat!');
     }
 
     public function show(PromoProgram $promoProgram)

@@ -53,12 +53,12 @@
                         <n-input placeholder="" size="large" v-model:value="dataInvoice.npwp" disabled/>
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1" >
-                        <label for="">ALAMAT CUSTOMER</label>
-                        <n-input placeholder="" size="large" v-model:value="dataInvoice.customer_address" disabled/>
+                        <label for="">PERUSAHAAN</label>
+                        <n-input placeholder="" size="large" v-model:value="dataInvoice.warehouse" disabled/>
                     </div>
                     <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-1" >
-                        <label for="">GUDANG</label>
-                        <n-input placeholder="" size="large" v-model:value="dataInvoice.warehouse" disabled/>
+                        <label for="">ALAMAT CUSTOMER</label>
+                        <n-input placeholder="" size="large" v-model:value="dataInvoice.customer_address" disabled type="textarea"/>
                     </div>
                 </div>
             </div>

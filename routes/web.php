@@ -205,7 +205,7 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         Route::get('/invoices', fn() => Inertia::render('Finance/Bill/Sales'))->name('invoices');
         
         Route::get('/claim-promo', [App\Http\Controllers\ClaimPromoController::class, 'indexClaimPromo'])->name('claim.index');
-        Route::get('/detail-claim', fn() => Inertia::render('Finance/Claim/ClaimPromoDetail'))->name('claim-promo.detail');
+        Route::get('/detail-claim/{transactions}', [App\Http\Controllers\ClaimPromoController::class, 'showClaimPromo'])->name('claim-promo.detail');
         Route::get('/claim-promo-list', [App\Http\Controllers\ClaimPromoController::class, 'indexDataClaimPromo'])->name('list-claim-promo');
         Route::get('/form-claim', [App\Http\Controllers\ClaimPromoController::class, 'createClaim'])->name('form-claim-promo.get');
         Route::post('/form-claim', [App\Http\Controllers\ClaimPromoController::class, 'createClaim'])->name('form-claim-promo');

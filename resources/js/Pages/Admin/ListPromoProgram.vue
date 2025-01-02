@@ -36,6 +36,16 @@ export default defineComponent({
                     }
                 },
                 {
+                    title: "Status Kupon",
+                    key: "status",
+                    width: 150,
+                    render(row) {
+                        return h(NTag, {
+                            type: row.status === 'BERAKHIR' ? 'error' : 'success', // Menentukan tipe berdasarkan status
+                        }, row.status); // Menampilkan status langsung
+                    }
+                },
+                {
                     title: "Nama Promo",
                     key: "name",
                     width: 180,
@@ -95,16 +105,7 @@ export default defineComponent({
                         return dayjs(row.end_date).format('DD MMMM YYYY HH:mm:ss');
                     }
                 },
-                {
-                    title: "Status Kupon",
-                    key: "status",
-                    width: 150,
-                    render(row) {
-                        return h(NTag, {
-                            type: row.status === 'BERAKHIR' ? 'error' : 'success', // Menentukan tipe berdasarkan status
-                        }, row.status); // Menampilkan status langsung
-                    }
-                },
+                
                 {
                     title: "Aksi",
                     key: "action",

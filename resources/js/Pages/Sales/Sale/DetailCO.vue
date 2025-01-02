@@ -144,15 +144,16 @@
 
         <n-modal v-model:show="showModal" :mask-closable="false" class="d-flex" preset="card" :style="bodyStyle"
             title="HARGA DISKON BARANG" :bordered="false" size="huge" :segmented="segmented">
-            
+
             <div class="row g-3">
                 <div class="col-12 d-flex flex-column gap-1">
                     <label for="newDiscount">QUANTITY BARANG</label>
-                    <n-input size="large" placeholder="" v-model:value="setDiscounts.quantity" disabled/>
+                    <n-input size="large" placeholder="" v-model:value="setDiscounts.quantity" disabled />
                 </div>
                 <div class="col-12 d-flex flex-column gap-1">
                     <label for="newDiscount">HARGA DISKON</label>
-                    <n-input size="large" placeholder="" v-model:value="setDiscounts.newAmount" @input="(value) => setDiscounts.newAmount = value.replace(/\D/g, '')">
+                    <n-input size="large" placeholder="" v-model:value="setDiscounts.newAmount"
+                        @input="(value) => setDiscounts.newAmount = value.replace(/\D/g, '')">
                         <template #prefix>
                             Rp
                         </template>
@@ -172,7 +173,8 @@
                 <div class="d-flex">
                     <div class="d-flex gap-2 ms-auto">
                         <n-button type="error" size="large" @click="showModal = false">Batal</n-button>
-                        <n-button type="info" size="large" @click="handleSubmitDiscount(setDiscounts.customer_order_id)">Simpan</n-button>
+                        <n-button type="info" size="large"
+                            @click="handleSubmitDiscount(setDiscounts.customer_order_id)">Simpan</n-button>
                     </div>
                 </div>
             </template>
@@ -183,15 +185,24 @@
             <div class="card-body d-flex flex-column">
                 <div class="d-flex justify-content-between py-2">
                     <span>Sub Total</span>
-                    <span>{{ formatRupiah(($page.props.customer_order as Transactions).sub_total ?? 0) }}</span>
+                    <span>{{ formatRupiah(customer_order.sub_total) }}</span>
                 </div>
-                <div class="d-flex justify-content-between py-2" v-if="transaction_details.use_tax === 'PPN'">
-                    <span>PPN 11%</span>
-                    <span>{{ formatRupiah(($page.props.customer_order as Transactions).tax_amount ?? 0) }}</span>
+                <div class="d-flex justify-content-between py-2"
+                    v-if="customer_order.total_discount !== undefined || customer_order.total_discount !== 0">
+                    <span>Diskon</span>
+                    <span>{{ formatRupiah(customer_order.total_discount) }}</span>
                 </div>
                 <div class="d-flex justify-content-between py-2 fw-bold border-top border-bottom">
                     <span>Total harga</span>
-                    <span>{{ formatRupiah(($page.props.customer_order as Transactions).total ?? 0) }}</span>
+                    <span>{{ formatRupiah(totalPrice) }}</span>
+                </div>
+                <div class="d-flex justify-content-between py-2" v-if="transaction_details.use_tax === 'PPN'">
+                    <span>PPN 11%</span>
+                    <span>{{ formatRupiah(customer_order.tax_amount) }}</span>
+                </div>
+                <div class="d-flex justify-content-between py-2 fw-bold border-top border-bottom">
+                    <span>Total Tagihan</span>
+                    <span>{{ formatRupiah(customer_order.total) }}</span>
                 </div>
                 <div class="d-flex flex-column w-100 justify-content-between mt-2 gap-3">
                     <div class="d-flex justify-content-between">
@@ -206,19 +217,27 @@
                     <div class="d-flex justify-content-between" v-if="customer_order.status !== null">
                         <span>STATUS PENGAJUAN CO</span>
                         <div v-if="customer_order.status === 'APPROVE'">
-                            <n-tag type="success" size="large" bordered="true" strong="true">{{ customer_order.status.replace(/_/g, ' ') }}</n-tag>
+                            <n-tag type="success" size="large" bordered="true" strong="true">{{
+                                customer_order.status.replace(/_/g, ' ') }}</n-tag>
                         </div>
-                        <div v-else-if="customer_order.status === 'REJECT_BY_AGING' || customer_order.status === 'REJECT_BY_FINANCE'">
-                            <n-tag type="error" size="large" bordered="true" strong="true">{{ customer_order.status.replace(/_/g, ' ') }}</n-tag>
+                        <div
+                            v-else-if="customer_order.status === 'REJECT_BY_AGING' || customer_order.status === 'REJECT_BY_FINANCE'">
+                            <n-tag type="error" size="large" bordered="true" strong="true">{{
+                                customer_order.status.replace(/_/g, ' ') }}</n-tag>
                         </div>
-                        <div v-else-if="customer_order.status === 'HOLD_BY_AGING' || customer_order.status === 'HOLD_BY_FINANCE'">
-                            <n-tag type="warning" size="large" bordered="true" strong="true">{{ customer_order.status.replace(/_/g, ' ') }}</n-tag>
+                        <div
+                            v-else-if="customer_order.status === 'HOLD_BY_AGING' || customer_order.status === 'HOLD_BY_FINANCE'">
+                            <n-tag type="warning" size="large" bordered="true" strong="true">{{
+                                customer_order.status.replace(/_/g, ' ') }}</n-tag>
                         </div>
                         <div v-else>
-                            <n-tag type="info" size="large" bordered="true" strong="true">{{ customer_order.status.replace(/_/g, ' ') }}</n-tag>
+                            <n-tag type="info" size="large" bordered="true" strong="true">{{
+                                customer_order.status.replace(/_/g,
+                                ' ') }}</n-tag>
                         </div>
                     </div>
-                    <div class="d-flex justify-content-between" v-if="transaction_details.submission_discount === 'SUBMIT'">
+                    <div class="d-flex justify-content-between"
+                        v-if="transaction_details.submission_discount === 'SUBMIT'">
                         <span>STATUS PENGAJUAN DISKON</span>
                         <div v-if="transaction_details.submission_status === 'true'">
                             <n-tag type="success" size="large" bordered="true" strong="true">DIAPPROVE</n-tag>
@@ -234,10 +253,9 @@
             </div>
         </div>
 
-        <div class="d-flex gap-3 ms-auto mb-4"
-            v-if="($page.props.auth as any).user.division.division_name === 'AGING_FINANCE' && [
-                'PENDING_ON_AGING', 'HOLD_BY_AGING', 'REJECT_BY_AGING'
-            ].includes(customer_order.status)">
+        <div class="d-flex gap-3 ms-auto mb-4" v-if="($page.props.auth as any).user.division.division_name === 'AGING_FINANCE' && [
+            'PENDING_ON_AGING', 'HOLD_BY_AGING', 'REJECT_BY_AGING'
+        ].includes(customer_order.status)">
             <n-button type="error" size="large" @click="handleApprovingCO('REJECT_BY_AGING')">REJECT</n-button>
             <n-button type="warning" size="large" @click="handleApprovingCO('HOLD_BY_AGING')">HOLD</n-button>
             <n-button type="primary" size="large" @click="handleApprovingCO('PENDING_ON_FINANCE')">APPROVE</n-button>
@@ -274,7 +292,7 @@ export default defineComponent({
     setup() {
         const page = usePage();
         const notification = useNotification();
-        const customer_order = page.props.customer_order as Transactions;
+        const customer_order = page.props.customer_order as any;
         const showModal = ref(false);
         const selectedItem = ref(null);
         const selectedProduct = ref({}); // Menyimpan data produk yang dipilih
@@ -322,80 +340,80 @@ export default defineComponent({
                     }
                 },
 
-                // {
-                //     title: "DISCOUNT 1",
-                //     key: 'discount_1',
-                //     width: 200,
-                //     render(row) {
-                //         return `${row.discount_1} %`
-                //     }
-                // },
-                // {
-                //     title: "HARGA DISCOUNT 1",
-                //     key: 'total_price_discount_1',
-                //     width: 250,
-                //     render(row) {
-                //         // Menghitung harga setelah diskon 1
-                //         const amount = row.amount ?? 0;
-                //         const discount_1 = row.discount_1 ?? 0;
-                //         const priceAfterDiscount1 = amount - (amount * discount_1 / 100);
+                {
+                    title: "DISCOUNT 1",
+                    key: 'discount_1',
+                    width: 200,
+                    render(row) {
+                        return `${row.discount_1} %`
+                    }
+                },
+                {
+                    title: "HARGA DISCOUNT 1",
+                    key: 'total_price_discount_1',
+                    width: 250,
+                    render(row) {
+                        // Menghitung harga setelah diskon 1
+                        const amount = row.amount ?? 0;
+                        const discount_1 = row.discount_1 ?? 0;
+                        const priceAfterDiscount1 = amount - (amount * discount_1 / 100);
 
-                //         // Mengembalikan harga setelah diskon 1
-                //         return formatRupiah(priceAfterDiscount1 ?? 0);
-                //     }
-                // },
+                        // Mengembalikan harga setelah diskon 1
+                        return formatRupiah(priceAfterDiscount1 ?? 0);
+                    }
+                },
 
-                // {
-                //     title: "DISCOUNT 2",
-                //     key: 'discount_2',
-                //     width: 200,
-                //     render(row) {
-                //         return `${row.discount_2} %`
-                //     }
-                // },
-                // {
-                //     title: "HARGA DISCOUNT 2",
-                //     key: 'total_price_discount_2',
-                //     width: 250,
-                //     render(row) {
-                //         // Menghitung harga setelah diskon 2
-                //         const amount = row.amount ?? 0;
-                //         const discount_1 = row.discount_1 ?? 0;
-                //         const discount_2 = row.discount_2 ?? 0;
-                //         const priceAfterDiscount1 = amount - (amount * discount_1 / 100);
-                //         const priceAfterDiscount2 = priceAfterDiscount1 - (priceAfterDiscount1 * discount_2 / 100);
+                {
+                    title: "DISCOUNT 2",
+                    key: 'discount_2',
+                    width: 200,
+                    render(row) {
+                        return `${row.discount_2} %`
+                    }
+                },
+                {
+                    title: "HARGA DISCOUNT 2",
+                    key: 'total_price_discount_2',
+                    width: 250,
+                    render(row) {
+                        // Menghitung harga setelah diskon 2
+                        const amount = row.amount ?? 0;
+                        const discount_1 = row.discount_1 ?? 0;
+                        const discount_2 = row.discount_2 ?? 0;
+                        const priceAfterDiscount1 = amount - (amount * discount_1 / 100);
+                        const priceAfterDiscount2 = priceAfterDiscount1 - (priceAfterDiscount1 * discount_2 / 100);
 
-                //         // Mengembalikan harga setelah diskon 2
-                //         return formatRupiah(priceAfterDiscount2 ?? 0);
-                //     }
-                // },
-                // {
-                //     title: "DISCOUNT 3",
-                //     key: 'discount_3',
-                //     width: 200,
-                //     render(row) {
-                //         return `${row.discount_3} %`
-                //     }
-                // },
+                        // Mengembalikan harga setelah diskon 2
+                        return formatRupiah(priceAfterDiscount2 ?? 0);
+                    }
+                },
+                {
+                    title: "DISCOUNT 3",
+                    key: 'discount_3',
+                    width: 200,
+                    render(row) {
+                        return `${row.discount_3} %`
+                    }
+                },
 
-                // {
-                //     title: "HARGA DISCOUNT 3",
-                //     key: 'total_price_discount_3',
-                //     width: 250,
-                //     render(row) {
-                //         // Menghitung harga setelah diskon 3
-                //         const amount = row.amount ?? 0;
-                //         const discount_1 = row.discount_1 ?? 0;
-                //         const discount_2 = row.discount_2 ?? 0;
-                //         const discount_3 = row.discount_3 ?? 0;
-                //         const priceAfterDiscount1 = amount - (amount * discount_1 / 100);
-                //         const priceAfterDiscount2 = priceAfterDiscount1 - (priceAfterDiscount1 * discount_2 / 100);
-                //         const priceAfterDiscount3 = priceAfterDiscount2 - (priceAfterDiscount2 * discount_3 / 100);
+                {
+                    title: "HARGA DISCOUNT 3",
+                    key: 'total_price_discount_3',
+                    width: 250,
+                    render(row) {
+                        // Menghitung harga setelah diskon 3
+                        const amount = row.amount ?? 0;
+                        const discount_1 = row.discount_1 ?? 0;
+                        const discount_2 = row.discount_2 ?? 0;
+                        const discount_3 = row.discount_3 ?? 0;
+                        const priceAfterDiscount1 = amount - (amount * discount_1 / 100);
+                        const priceAfterDiscount2 = priceAfterDiscount1 - (priceAfterDiscount1 * discount_2 / 100);
+                        const priceAfterDiscount3 = priceAfterDiscount2 - (priceAfterDiscount2 * discount_3 / 100);
 
-                //         // Mengembalikan harga setelah diskon 3
-                //         return formatRupiah(priceAfterDiscount3 ?? 0);
-                //     }
-                // },
+                        // Mengembalikan harga setelah diskon 3
+                        return formatRupiah(priceAfterDiscount3 ?? 0);
+                    }
+                },
                 {
                     title: "TOTAL HARGA",
                     key: 'total',
@@ -544,7 +562,7 @@ export default defineComponent({
         //create watch for new discounts
         watch(() => setDiscounts.newAmount, (amount) => {
             setDiscounts.newTotalPrice = amount * setDiscounts.quantity;
-        }, {deep: true});
+        }, { deep: true });
 
         function handleSubmitDiscount(co_id: number) {
             setDiscounts.patch(route('sales.new-discount', co_id), {
@@ -600,30 +618,28 @@ export default defineComponent({
         });
         const totalPrice = computed(() => {
             // Menghitung subtotal dari semua produk tanpa mengalikan quantity
-            const subtotal = form.transaction_items.reduce((total, item) => {
-                return total + Number(item.amount ?? 0); // Konversi amount ke number
-            }, 0);
+            // const subtotal = form.transaction_items.reduce((total, item) => {
+            //     return total + Number(item.total_price ?? 0); // Konversi amount ke number
+            // }, 0);
 
             // Menghitung total harga termasuk PPN 11%
-            let total = null as unknown as number;
-
-            if (transaction_details.value.use_tax === "PPN") {
-                total = subtotal + (subtotal * 0.11);
-            } else {
-                total = subtotal;
-            }
+            // const totalWithPPN = subtotal + (subtotal * 0.11);
+            const totalWithDiscounts = customer_order.sub_total - customer_order.total_discount;
 
             // Menyimpan total ke dalam form
-            form.total = total;
+            const total = Math.round(totalWithDiscounts);
+
+            // form.total = total;
 
             // Mengembalikan total harga yang diformat
-            return total;
+            // return total;
+            return totalWithDiscounts;
         });
 
         function removeProduct(index: number) {
             form.transaction_items.splice(index, 1);
         }
-        
+
         function handleApprovingCO(valueRequest: string) {
             const warehouse = customer_order.transaction_details.find(data => data.category === "Warehouse")?.value;
 
