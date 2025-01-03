@@ -14,14 +14,14 @@
                 <div class="row g-3">
                     <div class="col-12 col-md-6 col-lg-4 d-flex flex-column gap-2">
                         <label for="claim promo number">Nomor Klaim Promo</label>
-                        <n-input placeholder="" size="large" id="claim promo number"
-                            v-model:value="form.document_code" />
+                        <n-input placeholder="" size="large" id="claim promo number" v-model:value="form.document_code"
+                            disabled />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4 d-flex flex-column gap-2">
-                        <label for="month">Bulan</label>
+                        <label for="month">Bulan <span class="text-danger">*</span></label>
                         <n-select placeholder="" size="large" id="month" v-model:value="form.month" :options="months" />
                     </div>
-                    <div class="col-12 col-md-6 col-lg-4 d-flex flex-column gap-2">
+                    <!-- <div class="col-12 col-md-6 col-lg-4 d-flex flex-column gap-2">
                         <label for="distributor name">Program</label>
                         <n-input placeholder="" size="large" id="distributor name" v-model:value="form.program" />
                     </div>
@@ -32,7 +32,7 @@
                     <div class="col-12 col-md-6 col-lg-8 d-flex flex-column gap-2">
                         <label for="distributor name">Nama Distributor</label>
                         <n-input placeholder="" size="large" id="distributor name" v-model:value="form.distributor" />
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -44,13 +44,8 @@
         <div class="card shadow" style="border: none;">
             <div class="card-body d-flex flex-column gap-3">
                 <div class="d-flex">
-                    <span class="fw-bold">SUB TOTAL</span>
-                    <span class="ms-auto">{{ subTotal }}</span>
-                </div>
-                <div style="width: 100%; border: 1px solid grey;" />
-                <div class="d-flex">
-                    <span class="fw-bold">GRAND TOTAL</span>
-                    <span class="ms-auto">{{ totalPrice }}</span>
+                    <span class="fw-bold">TOTAL HARGA CLAIM</span>
+                    <span class="ms-auto">{{ formatRupiah(totalClaim) }}</span>
                 </div>
             </div>
         </div>
@@ -147,7 +142,7 @@ function createColumns() {
             }
         },
         {
-            title: "DISKON LOKAL",
+            title: "DISKON 1",
             key: 'discount_1',
             width: 150,
             render(row) {
@@ -155,16 +150,16 @@ function createColumns() {
             }
         },
         {
-            title: "TOTAL DISKON LOKAL",
+            title: "TOTAL DISKON 1",
             key: 'total_discount_1',
             width: 200,
             render(row) {
                 const discountAmount1 = row.total_price * (row.discount_1 / 100);
-                return formatRupiah(discountAmount1);
+                return formatRupiah(discountAmount1); // Harga diskon 1
             }
         },
         {
-            title: "DISKON WS",
+            title: "DISKON 2",
             key: 'discount_2',
             width: 150,
             render(row) {
@@ -176,14 +171,12 @@ function createColumns() {
             key: 'total_discount_2',
             width: 200,
             render(row) {
-                const discountAmount1 = row.total_price * (row.discount_1 / 100);
-                const remainingAfterDiscount1 = row.total_price - discountAmount1;
-                const discountAmount2 = remainingAfterDiscount1 * (row.discount_2 / 100);
-                return formatRupiah(discountAmount2);
+                const discountAmount2 = row.total_price * (row.discount_2 / 100);
+                return formatRupiah(discountAmount2); // Harga diskon 2
             }
         },
         {
-            title: "DISKON ED",
+            title: "DISKON 3",
             key: 'discount_3',
             width: 150,
             render(row) {
@@ -192,51 +185,33 @@ function createColumns() {
         },
         {
             title: "TOTAL DISKON 3",
-            key: 'total_price_discount_3',
+            key: 'total_discount_3',
             width: 200,
             render(row) {
-                const discountAmount1 = row.total_price * (row.discount_1 / 100);
-                const remainingAfterDiscount1 = row.total_price - discountAmount1;
-                const discountAmount2 = remainingAfterDiscount1 * (row.discount_2 / 100);
-                const remainingAfterDiscount2 = remainingAfterDiscount1 - discountAmount2;
-                const discountAmount3 = remainingAfterDiscount2 * (row.discount_3 / 100);
-                return formatRupiah(discountAmount3);
+                const discountAmount3 = row.total_price * (row.discount_3 / 100);
+                return formatRupiah(discountAmount3); // Harga diskon 3
             }
         },
         {
-            title: "TOTAL AKHIR",
+            title: "TOTAL DISKON",
             key: 'total_price_all',
             width: 200,
             render(row) {
-                const discountAmount1 = row.total_price * (row.discount_1 / 100);
-                const remainingAfterDiscount1 = row.total_price - discountAmount1;
-                const discountAmount2 = remainingAfterDiscount1 * (row.discount_2 / 100);
-                const remainingAfterDiscount2 = remainingAfterDiscount1 - discountAmount2;
-                const discountAmount3 = remainingAfterDiscount2 * (row.discount_3 / 100);
-                const finalTotal = remainingAfterDiscount2 - discountAmount3;
-                return formatRupiah(finalTotal);
+                let finalDiscountPrice = 0;
+
+                // Ambil diskon terakhir yang terisi
+                if (row.discount_3 > 0) {
+                    finalDiscountPrice = row.total_price * (row.discount_3 / 100);
+                } else if (row.discount_2 > 0) {
+                    finalDiscountPrice = row.total_price * (row.discount_2 / 100);
+                } else if (row.discount_1 > 0) {
+                    finalDiscountPrice = row.total_price * (row.discount_1 / 100);
+                }
+
+                const totalAfterDiscount = finalDiscountPrice * row.quantity; // Harga diskon terakhir dikalikan quantity
+                return formatRupiah(totalAfterDiscount);
             }
         },
-        // {
-        //     title: 'ACTION',
-        //     key: 'actions',
-        //     width: 150,
-        //     render(row) {
-        //         return h('div', { class: 'd-flex gap-2' }, [
-        //             h(
-        //                 NButton,
-        //                 {
-        //                     type: 'error',
-        //                     size: 'small',
-        //                     onClick: () => {
-        //                         alert(`${row.key} is selected!`);
-        //                     }
-        //                 },
-        //                 { default: () => 'Delete' }
-        //             )
-        //         ]);
-        //     }
-        // }
     ];
 }
 
@@ -256,34 +231,27 @@ export default defineComponent({
             transaction_details: [] as any[]
         });
 
-        const subTotal = computed(() => {
-            const total = form.transaction_items.reduce((total, item) => {
-                return total + Number(item.total_price ?? 0); // Konversi amount ke number
-            }, 0);
+        const totalClaim = computed(() => {
+            return form.transaction_items.reduce((acc, item) => {
+                // Ambil diskon terakhir yang terisi
+                let finalDiscountPrice = 0;
+                if (item.discount_3 > 0) {
+                    finalDiscountPrice = item.total_price * (item.discount_3 / 100);
+                } else if (item.discount_2 > 0) {
+                    finalDiscountPrice = item.total_price * (item.discount_2 / 100);
+                } else if (item.discount_1 > 0) {
+                    finalDiscountPrice = item.total_price * (item.discount_1 / 100);
+                }
 
-            form.sub_total = total;
+                const totalAfterDiscount = finalDiscountPrice * item.quantity; // Harga diskon terakhir dikalikan quantity
+                const result = acc + totalAfterDiscount;
 
-            return formatRupiah(total);
+                form.total = result; // Set total harga klaim
+
+                return result;
+            }, 0); // Mulai dengan akumulator 0
         });
 
-        const totalPrice = computed(() => {
-            // Menghitung subtotal dari semua produk tanpa mengalikan quantity
-            const subtotal = form.transaction_items.reduce((total, item) => {
-                return total + Number(item.total_price ?? 0); // Konversi amount ke number
-            }, 0);
-
-            // Menghitung total harga termasuk PPN 11%
-            const totalWithPPN = subtotal + (subtotal * 0.11);
-
-            // Menyimpan total ke dalam form
-            const roundedTotalWithPpn = Math.round(totalWithPPN);
-
-            form.total = roundedTotalWithPpn;
-
-            // Mengembalikan total harga yang diformat
-            // return roundedTotalWithPpn;
-            return formatRupiah(totalWithPPN);
-        });
 
         function handleSubmitClaim() {
             form.transaction_details = [
@@ -299,24 +267,24 @@ export default defineComponent({
                     value: form.month,
                     data_type: 'string',
                 },
-                {
-                    name: "Program Klaim",
-                    category: "Program",
-                    value: form.program,
-                    data_type: "string",
-                },
-                {
-                    name: "Area",
-                    category: "Area",
-                    value: form.area,
-                    data_type: 'string',
-                },
-                {
-                    name: "Nama Distributor",
-                    category: "Distributor",
-                    value: form.distributor,
-                    data_type: 'string',
-                },
+                // {
+                //     name: "Program Klaim",
+                //     category: "Program",
+                //     value: form.program,
+                //     data_type: "string",
+                // },
+                // {
+                //     name: "Area",
+                //     category: "Area",
+                //     value: form.area,
+                //     data_type: 'string',
+                // },
+                // {
+                //     name: "Nama Distributor",
+                //     category: "Distributor",
+                //     value: form.distributor,
+                //     data_type: 'string',
+                // },
             ];
 
             form.post(route('finance.claim.post'), {
@@ -348,8 +316,8 @@ export default defineComponent({
             router,
             months,
             form,
-            subTotal,
-            totalPrice,
+            formatRupiah,
+            totalClaim
         }
     },
     components: {

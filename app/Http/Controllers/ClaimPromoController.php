@@ -76,7 +76,7 @@ class ClaimPromoController extends Controller
     {
         $request->validate([
             'document_code' => 'required|string',
-            'sub_total' => 'required|numeric', 
+            // 'sub_total' => 'nullable|numeric', 
             'total' => 'required|numeric', 
             'transaction_details' => 'required|array',
             'transaction_details.*.name' => 'required|string',
