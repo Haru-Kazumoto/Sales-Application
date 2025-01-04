@@ -192,14 +192,14 @@ class ClaimPromoController extends Controller
             $transactions = Transactions::with('transactionDetails')
                 ->whereHas('transactionDetails', function($query) {
                     $query->where('category', 'Claim Payment')
-                        ->where('value', 'UNPAID');
+                        ->where('value', 'false');
                 })
                 ->find($transactions->id); // Menggunakan find untuk memastikan ID benar
 
             if ($transactions) {
                 foreach ($transactions->transactionDetails as $detail) {
-                    if ($detail->category === 'Claim Payment' && $detail->value === 'UNPAID') {
-                        $detail->update(['value' => 'PAID']);
+                    if ($detail->category === 'Claim Payment' && $detail->value === 'false') {
+                        $detail->update(['value' => 'true']);
                     }
                 }
             }

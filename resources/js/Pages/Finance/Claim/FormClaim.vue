@@ -138,7 +138,9 @@ function createColumns() {
             key: 'total',
             width: 200,
             render(row) {
-                return formatRupiah(row.total_price);
+                let total = row.amount * row.quantity;
+
+                return formatRupiah(total);
             }
         },
         {
@@ -154,7 +156,8 @@ function createColumns() {
             key: 'total_discount_1',
             width: 200,
             render(row) {
-                const discountAmount1 = row.total_price * (row.discount_1 / 100);
+                const discountAmount1 = row.amount * (row.discount_1 / 100);
+
                 return formatRupiah(discountAmount1); // Harga diskon 1
             }
         },
@@ -171,7 +174,10 @@ function createColumns() {
             key: 'total_discount_2',
             width: 200,
             render(row) {
-                const discountAmount2 = row.total_price * (row.discount_2 / 100);
+                //total diskon 1 
+                const discountAmount1 = row.amount * (row.discount_1 / 100);
+                const discountAmount2 = (row.amount - discountAmount1) * (row.discount_2 / 100);
+
                 return formatRupiah(discountAmount2); // Harga diskon 2
             }
         },
@@ -188,7 +194,10 @@ function createColumns() {
             key: 'total_discount_3',
             width: 200,
             render(row) {
-                const discountAmount3 = row.total_price * (row.discount_3 / 100);
+                const discountAmount1 = row.amount * (row.discount_1 / 100);
+                const discountAmount2 = (row.amount - discountAmount1) * (row.discount_2 / 100)
+                const discountAmount3 = (row.amount - discountAmount1 - discountAmount2) * (row.discount_3 / 100);
+
                 return formatRupiah(discountAmount3); // Harga diskon 3
             }
         },
@@ -197,18 +206,11 @@ function createColumns() {
             key: 'total_price_all',
             width: 200,
             render(row) {
-                let finalDiscountPrice = 0;
+                const discountAmount1 = row.amount * (row.discount_1 / 100);
+                const discountAmount2 = (row.amount - discountAmount1) * (row.discount_2 / 100)
+                const discountAmount3 = (row.amount - discountAmount1 - discountAmount2) * (row.discount_3 / 100);
 
-                // Ambil diskon terakhir yang terisi
-                if (row.discount_3 > 0) {
-                    finalDiscountPrice = row.total_price * (row.discount_3 / 100);
-                } else if (row.discount_2 > 0) {
-                    finalDiscountPrice = row.total_price * (row.discount_2 / 100);
-                } else if (row.discount_1 > 0) {
-                    finalDiscountPrice = row.total_price * (row.discount_1 / 100);
-                }
-
-                const totalAfterDiscount = finalDiscountPrice * row.quantity; // Harga diskon terakhir dikalikan quantity
+                const totalAfterDiscount = (discountAmount1 + discountAmount2 + discountAmount3) * row.quantity;
                 return formatRupiah(totalAfterDiscount);
             }
         },
@@ -233,24 +235,21 @@ export default defineComponent({
 
         const totalClaim = computed(() => {
             return form.transaction_items.reduce((acc, item) => {
-                // Ambil diskon terakhir yang terisi
-                let finalDiscountPrice = 0;
-                if (item.discount_3 > 0) {
-                    finalDiscountPrice = item.total_price * (item.discount_3 / 100);
-                } else if (item.discount_2 > 0) {
-                    finalDiscountPrice = item.total_price * (item.discount_2 / 100);
-                } else if (item.discount_1 > 0) {
-                    finalDiscountPrice = item.total_price * (item.discount_1 / 100);
-                }
+                // Hitung diskon 1, diskon 2, dan diskon 3
+                const discountAmount1 = item.amount * (item.discount_1 / 100);
+                const discountAmount2 = (item.amount - discountAmount1) * (item.discount_2 / 100);
+                const discountAmount3 = (item.amount - discountAmount1 - discountAmount2) * (item.discount_3 / 100);
 
-                const totalAfterDiscount = finalDiscountPrice * item.quantity; // Harga diskon terakhir dikalikan quantity
+                // Total diskon untuk item ini
+                const totalAfterDiscount = (discountAmount1 + discountAmount2 + discountAmount3) * item.quantity;
                 const result = acc + totalAfterDiscount;
+                form.total = result
 
-                form.total = result; // Set total harga klaim
-
+                // Tambahkan ke akumulator
                 return result;
-            }, 0); // Mulai dengan akumulator 0
+            }, 0); // Akumulator dimulai dari 0
         });
+
 
 
         function handleSubmitClaim() {
