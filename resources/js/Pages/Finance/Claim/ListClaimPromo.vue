@@ -64,11 +64,11 @@ export default defineComponent({
                     key: 'claim_number',
                     width: 250,
                 },
-                {
-                    title: "NAMA DISTRIBUTOR",
-                    key: 'distributor',
-                    width: 250,
-                },
+                // {
+                //     title: "NAMA DISTRIBUTOR",
+                //     key: 'distributor',
+                //     width: 250,
+                // },
                 {
                     title: "TOTAL KLAIM",
                     key: 'total_claim',

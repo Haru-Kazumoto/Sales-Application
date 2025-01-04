@@ -268,7 +268,7 @@ class CustomerOrdersController extends Controller
      */
     public function storeDnp(Request $request)
     {
-        // dd($request->total_discount);
+        // dd($request->transaction_items);
 
         // Validasi input request
         $request->validate([

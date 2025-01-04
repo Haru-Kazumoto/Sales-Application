@@ -212,7 +212,7 @@ class ClaimPromoController extends Controller
     {
         $transactions->load('transactionItems', 'transactionDetails');
 
-        dd($transactions->transactionItems->toArray());
+        // dd($transactions->transactionItems->toArray());
 
         return Inertia::render('Finance/Claim/ClaimPromoDetail', compact('transactions'));
     }

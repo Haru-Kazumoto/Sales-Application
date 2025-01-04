@@ -519,6 +519,7 @@ export default defineComponent({
             quantity: null as unknown as number,
             tax_amount: 0,
             amount: null as unknown as number,
+            amount_after_discount: null as unknown as number, // for discount if exist
             product_id: null as unknown as number,
             tax_id: null as unknown as number,
             discount_1: null as unknown as number,
@@ -734,27 +735,34 @@ export default defineComponent({
                 transaction_details.value.total_discount_3 = null;
 
                 // Cek apakah promo_value_1 berubah dan belum dihitung
-                if (products.value.promo_value_1 !== null && products.value.promo_value_1 !== undefined && products.value.promo_value_1 > 0) {
+                if (products.value.promo_value_1 > 0) {
                     let discount1 = originalPrice * products.value.promo_value_1 / 100;
                     transaction_details.value.total_discount_1 = originalPrice - discount1;
                 }
 
                 // Cek apakah promo_value_2 berubah dan belum dihitung
-                if (products.value.promo_value_2 !== null && products.value.promo_value_2 !== undefined && products.value.promo_value_2 > 0 && transaction_details.value.total_discount_1 !== null) {
+                if (products.value.promo_value_2 > 0 && transaction_details.value.total_discount_1 !== null) {
                     let discount2 = transaction_details.value.total_discount_1 * products.value.promo_value_2 / 100;
                     transaction_details.value.total_discount_2 = transaction_details.value.total_discount_1 - discount2;
                 }
 
                 // Cek apakah promo_value_3 berubah dan belum dihitung
-                if (products.value.promo_value_3 !== null && products.value.promo_value_3 !== undefined && products.value.promo_value_3 > 0 && transaction_details.value.total_discount_2 !== null) {
+                if (products.value.promo_value_3 > 0 && transaction_details.value.total_discount_2 !== null) {
                     let discount3 = transaction_details.value.total_discount_2 * products.value.promo_value_3 / 100;
                     transaction_details.value.total_discount_3 = transaction_details.value.total_discount_2 - discount3;
                 }
 
                 // Mengupdate total_price menjadi nilai terakhir yang dihitung dari diskon yang tersedia
-                transaction_items.value.total_price = transaction_details.value.total_discount_3 || transaction_details.value.total_discount_2 || transaction_details.value.total_discount_1 || originalPrice;
+                transaction_items.value.total_price =
+                    transaction_details.value.total_discount_3 ||
+                    transaction_details.value.total_discount_2 ||
+                    transaction_details.value.total_discount_1 ||
+                    originalPrice;
+
+                transaction_items.value.amount_after_discount = transaction_items.value.total_price;
             }
         );
+
 
 
         // Watch the segment customer and set the product amount
@@ -1107,6 +1115,7 @@ export default defineComponent({
                     product_id: transaction_items.value.product_id,
                     tax_amount: formattedTaxAmount,
                     amount: amount,
+                    amount_after_discount: transaction_items.value.amount_after_discount,
                     tax_id: transaction_items.value.tax_id,
                     total_price: totalPrice, // Total setelah semua diskon
                     discount_1: products.value.promo_value_1 || 0,
@@ -1160,24 +1169,6 @@ export default defineComponent({
 
         function handleSubmitCo() {
             form.transaction_details = [
-                // {
-                //     name: "Total Harga Diskon 1",
-                //     category: "Total Discount 1",
-                //     value: form.transaction_items.find(data => data.total_discount_1)?.total_discount_1 ? '0' : '0',
-                //     data_type: 'float',
-                // },
-                // {
-                //     name: "Total Harga Diskon 2",
-                //     category: "Total Discount 2",
-                //     value: transaction_details.value.total_discount_2 ? '0' : '0',
-                //     data_type: 'float',
-                // },
-                // {
-                //     name: "Total Harga Diskon 3",
-                //     category: "Total Discount 3",
-                //     value: transaction_details.value.total_discount_3 ? '0' : '0',
-                //     data_type: 'float',
-                // },
                 {
                     name: "Tanggal CO",
                     category: 'CO Date',
@@ -1202,12 +1193,6 @@ export default defineComponent({
                     value: transaction_details.value.customer_address,
                     data_type: 'string',
                 },
-                // {
-                //     name: 'Biaya Angkutan',
-                //     category: 'Transportation Cost',
-                //     value: transaction_details.value.transportation_cost as any,
-                //     data_type: 'float',
-                // },
                 {
                     name: "Pengiriman",
                     category: "Delivery",
@@ -1287,6 +1272,18 @@ export default defineComponent({
                     data_type: "boolean",
                 }
             ];
+
+            //replace real amount of product to amount after discount
+            form.transaction_items.forEach((item) => {
+                console.log(item);
+                const { amount, amount_after_discount, quantity } = item;
+
+                if (amount_after_discount && amount_after_discount < amount) {
+                    item.amount = amount_after_discount;
+                }
+
+                item.total_price = item.amount * quantity;
+            })
 
             form.post(route('sales.create-co-dnp.post'), {
                 onError(error) {

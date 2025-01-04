@@ -86,85 +86,85 @@ function createColumns() {
                 return formatRupiah(row.amount);
             }
         },
-        {
-            title: "TOTAL",
-            key: 'total',
-            width: 200,
-            render(row) {
-                return formatRupiah(row.total);
-            }
-        },
-        {
-            title: "DISKON LOKAL",
-            key: 'discount_1',
-            width: 150,
-            render(row) {
-                return `${row.discount_1}%`;
-            }
-        },
-        {
-            title: "TOTAL DISKON LOKAL",
-            key: 'total_discount_1',
-            width: 200,
-            render(row) {
-                const discountAmount1 = row.total * (row.discount_1 / 100);
-                return formatRupiah(discountAmount1);
-            }
-        },
-        {
-            title: "DISKON WS",
-            key: 'discount_2',
-            width: 150,
-            render(row) {
-                return `${row.discount_2}%`;
-            }
-        },
-        {
-            title: "TOTAL DISKON 2",
-            key: 'total_discount_2',
-            width: 200,
-            render(row) {
-                const discountAmount1 = row.total * (row.discount_1 / 100);
-                const remainingAfterDiscount1 = row.total - discountAmount1;
-                const discountAmount2 = remainingAfterDiscount1 * (row.discount_2 / 100);
-                return formatRupiah(discountAmount2);
-            }
-        },
-        {
-            title: "DISKON ED",
-            key: 'discount_3',
-            width: 150,
-            render(row) {
-                return `${row.discount_3}%`;
-            }
-        },
-        {
-            title: "TOTAL DISKON 3",
-            key: 'total_discount_3',
-            width: 200,
-            render(row) {
-                const discountAmount1 = row.total * (row.discount_1 / 100);
-                const remainingAfterDiscount1 = row.total - discountAmount1;
-                const discountAmount2 = remainingAfterDiscount1 * (row.discount_2 / 100);
-                const remainingAfterDiscount2 = remainingAfterDiscount1 - discountAmount2;
-                const discountAmount3 = remainingAfterDiscount2 * (row.discount_3 / 100);
-                return formatRupiah(discountAmount3);
-            }
-        },
-        {
-            title: "TOTAL AKHIR",
-            key: 'total_all',
-            width: 200,
-            render(row) {
-                const discountAmount1 = row.total * (row.discount_1 / 100);
-                const remainingAfterDiscount1 = row.total - discountAmount1;
-                const discountAmount2 = remainingAfterDiscount1 * (row.discount_2 / 100);
-                const remainingAfterDiscount2 = remainingAfterDiscount1 - discountAmount2;
-                const discountAmount3 = remainingAfterDiscount2 * (row.discount_3 / 100);
-                const finalTotal = remainingAfterDiscount2 - discountAmount3;
-                return formatRupiah(finalTotal);
-            }
-        },
+        // {
+        //     title: "TOTAL",
+        //     key: 'total',
+        //     width: 200,
+        //     render(row) {
+        //         return formatRupiah(row.total);
+        //     }
+        // },
+        // {
+        //     title: "DISKON LOKAL",
+        //     key: 'discount_1',
+        //     width: 150,
+        //     render(row) {
+        //         return `${row.discount_1}%`;
+        //     }
+        // },
+        // {
+        //     title: "TOTAL DISKON LOKAL",
+        //     key: 'total_discount_1',
+        //     width: 200,
+        //     render(row) {
+        //         const discountAmount1 = row.total * (row.discount_1 / 100);
+        //         return formatRupiah(discountAmount1);
+        //     }
+        // },
+        // {
+        //     title: "DISKON WS",
+        //     key: 'discount_2',
+        //     width: 150,
+        //     render(row) {
+        //         return `${row.discount_2}%`;
+        //     }
+        // },
+        // {
+        //     title: "TOTAL DISKON 2",
+        //     key: 'total_discount_2',
+        //     width: 200,
+        //     render(row) {
+        //         const discountAmount1 = row.total * (row.discount_1 / 100);
+        //         const remainingAfterDiscount1 = row.total - discountAmount1;
+        //         const discountAmount2 = remainingAfterDiscount1 * (row.discount_2 / 100);
+        //         return formatRupiah(discountAmount2);
+        //     }
+        // },
+        // {
+        //     title: "DISKON ED",
+        //     key: 'discount_3',
+        //     width: 150,
+        //     render(row) {
+        //         return `${row.discount_3}%`;
+        //     }
+        // },
+        // {
+        //     title: "TOTAL DISKON 3",
+        //     key: 'total_discount_3',
+        //     width: 200,
+        //     render(row) {
+        //         const discountAmount1 = row.total * (row.discount_1 / 100);
+        //         const remainingAfterDiscount1 = row.total - discountAmount1;
+        //         const discountAmount2 = remainingAfterDiscount1 * (row.discount_2 / 100);
+        //         const remainingAfterDiscount2 = remainingAfterDiscount1 - discountAmount2;
+        //         const discountAmount3 = remainingAfterDiscount2 * (row.discount_3 / 100);
+        //         return formatRupiah(discountAmount3);
+        //     }
+        // },
+        // {
+        //     title: "TOTAL AKHIR",
+        //     key: 'total_all',
+        //     width: 200,
+        //     render(row) {
+        //         const discountAmount1 = row.total * (row.discount_1 / 100);
+        //         const remainingAfterDiscount1 = row.total - discountAmount1;
+        //         const discountAmount2 = remainingAfterDiscount1 * (row.discount_2 / 100);
+        //         const remainingAfterDiscount2 = remainingAfterDiscount1 - discountAmount2;
+        //         const discountAmount3 = remainingAfterDiscount2 * (row.discount_3 / 100);
+        //         const finalTotal = remainingAfterDiscount2 - discountAmount3;
+        //         return formatRupiah(finalTotal);
+        //     }
+        // },
         // {
         //     title: 'ACTION',
         //     key: 'actions',
