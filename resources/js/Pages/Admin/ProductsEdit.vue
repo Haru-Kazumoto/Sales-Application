@@ -359,11 +359,13 @@ export default defineComponent({
         });
 
         const showPrice = computed(() => {
-            return form.supplier_id !== 6766;
+            // return form.supplier_id !== 6766;
+            return form.supplier_id !== 7539;
         });
 
         const showPriceDetail = computed(() => {
-            return form.supplier_id === 6766;
+            // return form.supplier_id === 6766;
+            return form.supplier_id === 7539;
         });
 
         // calculate
