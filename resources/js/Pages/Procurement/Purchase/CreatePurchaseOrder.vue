@@ -398,6 +398,7 @@ export default defineComponent({
 
             // Parsing amount yang sudah diformat ke angka desimal
             let productPrice = parseFloat(formattedAmount);
+            productPrice = productPrice * 1.11; // inc ppn
             if (isNaN(productPrice)) {
                 notification.error({
                     title: 'Nilai jumlah produk tidak valid',

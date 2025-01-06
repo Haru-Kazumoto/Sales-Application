@@ -28,6 +28,7 @@ class Products extends Model
         'saving_marketing',
         'tax_id',
         'product_type_id',
+        'product_sub_type_id',
         'supplier_id',
         'package',
         'all_segment_price',
@@ -48,6 +49,11 @@ class Products extends Model
     public function productType(): BelongsTo
     {
         return $this->belongsTo(ProductType::class, 'product_type_id');
+    }
+
+    public function productSubType(): BelongsTo
+    {
+        return $this->belongsTo(ProductSubType::class, 'product_sub_type_id');
     }
 
     public function transactionItems(): HasMany

@@ -8,6 +8,7 @@ use App\Models\Lookup;
 use App\Models\Parties;
 use App\Models\ProductJournal;
 use App\Models\Products;
+use App\Models\ProductSubType;
 use App\Models\ProductType;
 use App\Models\TransactionDetail;
 use App\Models\TransactionItem;
@@ -15,7 +16,6 @@ use App\Models\Transactions;
 use App\Models\TransactionType;
 use App\Models\Warehouse;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -57,7 +57,8 @@ class ProductsController extends Controller
 
             // Tambahkan where dengan like untuk pencarian berdasarkan field yang dipilih
             if($field === "supplier") {
-                $query->whereHas('parties', function ($q) use ($value) {
+                $query->whereHas('parties',
+                 function ($q) use ($value) {
                     $q->where('name', 'like', '%' . $value . '%'); // Menggunakan relasi parties
                 });
             } else {
@@ -73,13 +74,19 @@ class ProductsController extends Controller
 
         $product_type = ProductType::all();
         $units = Lookup::where('category', 'UNIT')->get();
-        $suppliers = Parties::with('partiesGroup')->where('type_parties', "VENDOR")->get();
+        $suppliers = Parties::where('type_parties', "VENDOR")
+            ->whereHas('partiesGroup', function($q) {
+                $q->where('name', '<>','Angkutan');
+            })
+            ->get();    
+        $product_sub_type = ProductSubType::all();
 
         return Inertia::render('Admin/Products', compact(
             'products',
             'product_type',
             'units',
-            'suppliers'
+            'suppliers',
+            'product_sub_type'
         ));
     }
 
@@ -109,6 +116,7 @@ class ProductsController extends Controller
             'supplier_id' => 'nullable|numeric',
             'saving_marketing' => 'nullable|numeric',
             'product_type_id' => 'numeric|required',
+            'product_sub_type_id' => 'numeric|required',
             'transportation_cost' => 'nullable|numeric',
             'discount_vendor' => 'nullable|numeric',
         ]);
@@ -143,6 +151,7 @@ class ProductsController extends Controller
             $product->margin_retail = $request->input('margin_retail');
             $product->margin_end_user = $request->input('margin_end_user');
             $product->discount_vendor = $request->input('discount_vendor');
+            $product->product_sub_type_id = $request->input('product_sub_type_id');
 
             // Simpan produk
             $product->save();
@@ -167,14 +176,20 @@ class ProductsController extends Controller
     public function edit(Products $product)
     {
         $product_type = ProductType::all();
-        $units = Lookup::where('category', 'UNIT')->get();
-        $suppliers = Parties::with('partiesGroup')->where('type_parties', "VENDOR")->get();
+        $units = Lookup::where('category', 'UNIT')->get();  
+        $suppliers = Parties::where('type_parties', "VENDOR")
+            ->whereHas('partiesGroup', function($q) {
+                $q->where('name', '<>','Angkutan');
+            })
+            ->get();  
+        $product_sub_type = ProductSubType::all();
 
         return Inertia::render('Admin/ProductsEdit', compact(
             'product_type',
             'units',
             'product',
-            'suppliers'
+            'suppliers',
+            'product_sub_type'
         ));
     }
 
@@ -201,6 +216,7 @@ class ProductsController extends Controller
             'bad_debt_dd' => 'nullable|numeric',
             'saving_marketing' => 'nullable|numeric',
             'product_type_id' => 'numeric|required',
+            'product_sub_type_id' => 'numeric|required',
             'supplier_id' => 'numeric|required',
             'transportation_cost' => 'nullable|numeric',
             'discount_vendor' => 'nullable|numeric',
@@ -234,6 +250,7 @@ class ProductsController extends Controller
                 'margin_retail' => $request->input('margin_retail'),
                 'margin_end_user' => $request->input('margin_end_user'),
                 'discount_vendor' => $request->input('discount_vendor'),
+                'product_sub_type_id' => $request->input('product_sub_type_id'),
             ]);
         });
 

@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Models\Parties;
 use App\Models\Products;
+use App\Models\ProductSubType;
 use App\Models\ProductType;
 use Exception;
 use Illuminate\Support\Collection;
@@ -35,6 +36,7 @@ class ProductsAllImports implements ToCollection, WithStartRow
                 {
                     $supplier = Parties::where('name', $row[2])->first();
                     $product_type = ProductType::where('name', $row[7])->first();
+                    $product_sub_type = ProductSubType::where('name', $row[6])->first();
 
                     if (!$supplier) {
                         throw new Exception("Supplier with name {$row[2]} not found.");
@@ -52,6 +54,7 @@ class ProductsAllImports implements ToCollection, WithStartRow
                         'product_type' => $row[6],
                         'category' => $row[8],
                         'product_type_id' => $product_type->id,
+                        'product_sub_type_id' => $product_sub_type->id,
                         'supplier_id' => $supplier->id,
                     ]);
                 }

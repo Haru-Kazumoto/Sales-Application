@@ -79,9 +79,20 @@
                                 <n-select size="large" placeholder="" v-model:value="form.category"
                                     :options="categoryProductOptions" />
                             </div>
+                            <div class="col-12 col-lg-4 d-flex flex-column">
+                                <label for="">Jenis Produk
+                                    <RequiredMark />
+                                </label>
+                                <n-select size="large" placeholder="" :options="productSubTypeOptions"
+                                    v-model:value="form.product_sub_type_id" />
+                            </div>
                             <n-divider></n-divider>
-                            <h4>Penghargaan</h4>
-
+                            <h4>Kalkulasi Harga</h4>
+                            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                <span>Harga tebus sudah otomatis exclude 1.11</span>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
                             <div class="col-12 col-lg-4 d-flex flex-column">
                                 <label for="">Harga Tebus
                                     <RequiredMark />
@@ -261,7 +272,8 @@
                                 </n-input>
                             </div>
                             <div class="d-flex">
-                                <n-button type="primary" class="ms-auto" @click="calculateRoundedPrice">Kalkulasi pembulatan</n-button>
+                                <n-button type="primary" class="ms-auto" @click="calculateRoundedPrice">Kalkulasi
+                                    pembulatan</n-button>
                             </div>
                             <n-divider></n-divider>
 
@@ -418,12 +430,7 @@
                                             <td>:</td>
                                             <td>{{ formatRupiah(selectedData.price_3) }}</td>
                                         </tr>
-                                        <tr>
-                                            <td><strong>Harga DD</strong></td>
-                                            <td>:</td>
-                                            <td>{{ formatRupiah(selectedData.dd_price) }}</td>
-                                        </tr>
-                                        <tr>
+                                        <!-- <tr>
                                             <td><strong>Margin All Segment</strong></td>
                                             <td>:</td>
                                             <td>{{ formatRupiah(selectedData.normal_margin) }}</td>
@@ -437,7 +444,7 @@
                                             <td><strong>Margin Retail</strong></td>
                                             <td>:</td>
                                             <td>{{ formatRupiah(selectedData.margin_retail) }}</td>
-                                        </tr>
+                                        </tr> -->
                                         <tr>
                                             <td><strong>OH Depo</strong></td>
                                             <td>:</td>
@@ -449,12 +456,12 @@
                                             <td>{{ formatRupiah(selectedData.saving) }}</td>
                                         </tr>
                                         <tr>
-                                            <td><strong>Bad Debt DD</strong></td>
+                                            <td><strong>Bad Debt</strong></td>
                                             <td>:</td>
                                             <td>{{ formatRupiah(selectedData.bad_debt_dd) }}</td>
                                         </tr>
                                         <tr>
-                                            <td><strong>Saving Marketing</strong></td>
+                                            <td><strong>Budget Marketing</strong></td>
                                             <td>:</td>
                                             <td>{{ formatRupiah(selectedData.saving_marketing) }}</td>
                                         </tr>
@@ -517,6 +524,7 @@ export default defineComponent({
             bad_debt_dd: null as unknown as number,
             saving_marketing: null as unknown as number,
             product_type_id: null as unknown as number,
+            product_sub_type_id: null as unknown as number,
             supplier_id: null as unknown as number,
             transportation_cost: null as unknown as number,
             margin_retail: null as unknown as number,
@@ -645,38 +653,38 @@ export default defineComponent({
                         return formatRupiah(row.price_3);
                     }
                 },
-                {
-                    title: "HARGA DD",
-                    key: "price_dd",
-                    width: 200,
-                    render(row) {
-                        return formatRupiah(row.dd_price);
-                    }
-                },
-                {
-                    title: "MARGIN ALL SEGMENT",
-                    key: "margin_normal",
-                    width: 200,
-                    render(row) {
-                        return formatRupiah(row.normal_margin);
-                    }
-                },
-                {
-                    title: "MARGIN END USER",
-                    key: "margin_end_user",
-                    width: 200,
-                    render(row) {
-                        return formatRupiah(row.margin_end_user);
-                    }
-                },
-                {
-                    title: "MARGIN RETAIL",
-                    key: "margin_retail",
-                    width: 200,
-                    render(row) {
-                        return formatRupiah(row.margin_retail);
-                    }
-                },
+                // {
+                //     title: "HARGA DD",
+                //     key: "price_dd",
+                //     width: 200,
+                //     render(row) {
+                //         return formatRupiah(row.dd_price);
+                //     }
+                // },
+                // {
+                //     title: "MARGIN ALL SEGMENT",
+                //     key: "margin_normal",
+                //     width: 200,
+                //     render(row) {
+                //         return formatRupiah(row.normal_margin);
+                //     }
+                // },
+                // {
+                //     title: "MARGIN END USER",
+                //     key: "margin_end_user",
+                //     width: 200,
+                //     render(row) {
+                //         return formatRupiah(row.margin_end_user);
+                //     }
+                // },
+                // {
+                //     title: "MARGIN RETAIL",
+                //     key: "margin_retail",
+                //     width: 200,
+                //     render(row) {
+                //         return formatRupiah(row.margin_retail);
+                //     }
+                // },
                 {
                     title: "OH DEPO",
                     key: "over_head_depo",
@@ -694,7 +702,7 @@ export default defineComponent({
                     }
                 },
                 {
-                    title: "BAD DEBT DD",
+                    title: "BAD DEBT",
                     key: "bad_debt_dd",
                     width: 200,
                     render(row) {
@@ -702,7 +710,7 @@ export default defineComponent({
                     }
                 },
                 {
-                    title: "SAVING MARKETING",
+                    title: "BUDGET MARKETING",
                     key: "saving_marketing",
                     width: 200,
                     render(row) {
@@ -757,7 +765,6 @@ export default defineComponent({
         // calculate
         function calculateRedempPrice() {
             const {
-                redemp_price, // harga tebus
                 transportation_cost, // harga angkutan
                 oh_depo, //oh depo
                 bad_debt_dd, // bad debt
@@ -766,9 +773,16 @@ export default defineComponent({
                 normal_margin, // margin normal
             } = form;
 
+            // Kalkulasi redemp_price dengan faktor 1.11
+            let redemp_price = form.redemp_price;
+            if (redemp_price) {
+                redemp_price = Number(redemp_price) / 1.11;
+                form.redemp_price = redemp_price; // Update nilai redemp_price di form
+            }
+
             // Hitung basePrice tanpa PPN
             const basePrice =
-                Number(redemp_price) +
+                redemp_price +
                 (Number(transportation_cost) || 0) +
                 (Number(oh_depo) || 0) +
                 (Number(bad_debt_dd) || 0) +
@@ -918,6 +932,11 @@ export default defineComponent({
             value: data.id,
         }));
 
+        const productSubTypeOptions = (page.props.product_sub_type as any[]).map((data) => ({
+            label: data.name,
+            value: data.id,
+        }));
+
         const categoryProductOptions = [
             { label: "NON TEPUNG", value: "NON TEPUNG" },
             { label: "TEPUNG", value: "TEPUNG" },
@@ -941,6 +960,7 @@ export default defineComponent({
             currentPage,
             unitOptions,
             productTypeOptions,
+            productSubTypeOptions,
             selectedData,
             categoryProductOptions,
             form,
