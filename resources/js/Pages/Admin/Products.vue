@@ -181,7 +181,7 @@
 
 
                             <!-- FOURTH ROW -->
-                            <div class="col-12 col-lg-3 d-flex flex-column">
+                            <div class="col-12 col-lg-3 d-flex flex-column" v-if="showPrice">
                                 <label for="">Harga All Segment
                                     <RequiredMark />
                                 </label>
@@ -192,7 +192,7 @@
                                     </template>
                                 </n-input>
                             </div>
-                            <div class="col-12 col-lg-3 d-flex flex-column">
+                            <div class="col-12 col-lg-3 d-flex flex-column" v-if="showPriceDetail">
                                 <label for="">Harga Jual Grosir
                                     <RequiredMark />
                                 </label>
@@ -203,7 +203,7 @@
                                     </template>
                                 </n-input>
                             </div>
-                            <div class="col-12 col-lg-3 d-flex flex-column">
+                            <div class="col-12 col-lg-3 d-flex flex-column" v-if="showPriceDetail">
                                 <label for="">Harga Retail
                                     <RequiredMark />
                                 </label>
@@ -214,7 +214,7 @@
                                     </template>
                                 </n-input>
                             </div>
-                            <div class="col-12 col-lg-3 d-flex flex-column">
+                            <div class="col-12 col-lg-3 d-flex flex-column" v-if="showPriceDetail">
                                 <label for="">Harga End User
                                     <RequiredMark />
                                 </label>
@@ -496,6 +496,7 @@ import Swal from 'sweetalert2';
 import axios from 'axios';
 import { ClipboardBulletListLtr20Regular } from '@vicons/fluent';
 import { watch } from 'vue';
+import { computed } from 'vue';
 
 export default defineComponent({
     setup() {
@@ -762,6 +763,14 @@ export default defineComponent({
             ]
         }
 
+        const showPrice = computed(() => {
+            return form.supplier_id !== 6766;
+        });
+
+        const showPriceDetail = computed(() => {
+            return form.supplier_id === 6766;
+        });
+
         // calculate
         function calculateRedempPrice() {
             const {
@@ -772,11 +781,20 @@ export default defineComponent({
                 saving, // saving
                 normal_margin, // margin normal
             } = form;
+            // Pembulatan redemp_price ke ratusan ribu tanpa koma/desimal
+            if (form.redemp_price) {
+                form.redemp_price = Math.round(Number(form.redemp_price)); // Pembulatan ke bilangan bulat
+            }
+
+            // Hilangkan desimal sepenuhnya jika ada
+            if (form.redemp_price) {
+                form.redemp_price = Math.trunc(form.redemp_price); // Membulatkan ke bilangan bulat dengan membuang koma
+            }
 
             // Kalkulasi redemp_price dengan faktor 1.11
             let redemp_price = form.redemp_price;
             if (redemp_price) {
-                redemp_price = Number(redemp_price) / 1.11;
+                redemp_price = Math.trunc(Number(redemp_price) / 1.11); // Membulatkan hasil pembagian ke bilangan bulat
                 form.redemp_price = redemp_price; // Update nilai redemp_price di form
             }
 
@@ -801,7 +819,19 @@ export default defineComponent({
             const resultPpn = Math.ceil(ppn * 0.11);
 
             // Kalkulasi harga jual all_segment_price tanpa PPN
-            form.all_segment_price = Math.ceil(basePrice + resultPpn);
+            // form.all_segment_price = Math.ceil(basePrice + resultPpn);
+
+            if (form.supplier_id === 6766) { // ID untuk ARES
+                form.retail_price = Math.ceil(basePrice + resultPpn); // Retail
+                form.restaurant_price = Math.ceil(basePrice + resultPpn); // Grosir
+                form.price_3 = Math.ceil(basePrice + resultPpn); // End User
+                form.all_segment_price = null as unknown as number; // Kosongkan harga all segment
+            } else {
+                form.all_segment_price = Math.ceil(basePrice + resultPpn); // All Segment
+                form.retail_price = null as unknown as number; // Kosongkan harga retail
+                form.restaurant_price = null as unknown as number; // Kosongkan harga grosir
+                form.price_3 = null as unknown as number; // Kosongkan harga end user
+            }
         }
 
         function calculateRoundedPrice() {
@@ -947,11 +977,15 @@ export default defineComponent({
             value: data.id,
         }));
 
+
+
         return {
             columns: createColumns(),
             calculateRedempPrice,
             calculateRoundedPrice,
             showDetail,
+            showPrice,
+            showPriceDetail,
             handleImportProducts,
             handleChangeFile,
             handlePageChange,
