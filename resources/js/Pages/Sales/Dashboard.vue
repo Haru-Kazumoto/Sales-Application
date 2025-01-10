@@ -27,7 +27,7 @@
                                 <span class="fw-semibold">TARGET PENJUALAN</span>
                             </div>
                             <div class="card-content mb-3">
-                                <span class="fs-3 fw-medium">Rp 1.000.000.000</span>
+                                <span class="fs-3 fw-medium">{{ formatRupiah($page.props.target.annual_target) }}</span>
                             </div>
                             <span>BULAN SEPTEMBER 2024</span>
                         </div>
@@ -74,10 +74,10 @@
         <!-- Chart and Sales Target Row -->
         <div class="row g-4 " style="height: 28rem;">
             <!-- Left Column: Date Picker and Chart -->
-            <div class="col-12 col-lg-8 d-flex flex-column gap-4">
+            <div class="col-12 col-lg-8 d-flex flex-column gap-4 mb-3">
                 <div class="card flex-grow-1" style="border: none;">
                     <div class="card-body d-flex flex-column h-100">
-                        <ChartSales class="h-100 w-100" />
+                        <ChartSales class="h-100 w-100" :target="$page.props.target.annual_target" />
                     </div>
                 </div>
             </div>
@@ -88,14 +88,22 @@
                     <n-tab-pane name="Penjualan" tab="Penjualan">
                         <div class="card shadow h-100" style="border: none;">
                             <div class="card-body d-flex flex-column gap-3">
-                                <n-data-table :bordered="false" :columns="columnsSales" size="small" />
+                                <n-data-table :bordered="false" :columns="columnsSales" size="small"
+                                    :data="$page.props.sales" :rows="paginatedSalesData" :pagination="paginationSales"
+                                    v-model:page="paginationSales.page" :page-size="paginationSales.pageSize"
+                                    :page-count="pageCountSales" @update:page="handlePageChangeSales" />
+                                <!-- <n-pagination v-model:page="paginationSales.page" :page-size="paginationSales.pageSize"
+                                    :page-count="pageCountSales" @update:page="handlePageChangeSales" /> -->
                             </div>
                         </div>
                     </n-tab-pane>
                     <n-tab-pane name="Aging" tab="Aging">
                         <div class="card shadow h-100" style="border: none;">
                             <div class="card-body d-flex flex-column gap-3">
-                                <n-data-table :bordered="false" :columns="columnsAging" size="small" />
+                                <n-data-table :bordered="false" :columns="columnsAging" size="small" :data="$page.props.sales"
+                                    :rows="paginatedAgingData" :pagination="paginationAging"
+                                    v-model:page="paginationAging.page" :page-size="paginationAging.pageSize"
+                                    :page-count="pageCountAging" @update:page="handlePageChangeAging" />
                             </div>
                         </div>
                     </n-tab-pane>
@@ -107,7 +115,7 @@
 
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
 import SalesCountCard from '../../Components/SalesCountCard.vue';
 import ChartSales from '../../Components/ChartSales.vue';
 import ChartSalesTarget from '../../Components/ChartSalesTarget.vue';
@@ -115,6 +123,7 @@ import TitlePage from '../../Components/TitlePage.vue';
 import { usePage } from '@inertiajs/vue3';
 import { DataTableColumns } from 'naive-ui';
 import { OpenOutline, BarChart, AnalyticsSharp, Book } from '@vicons/ionicons5';
+import { formatRupiah } from '../../Utils/options-input.utils';
 
 interface RowDataSales {
     customer_name: string;
@@ -146,13 +155,13 @@ function createColumnsSales(): DataTableColumns<RowDataSales> {
             title: "TOTAL",
             key: 'total',
             render(row) {
-                return row.total;
+                return formatRupiah(row.total);
             }
         }
     ]
 }
 
-function createColumnsAging(): DataTableColumns<RowDataAging> {
+function createColumnsAging() {
     return [
         {
             title: '#',
@@ -182,6 +191,52 @@ export default defineComponent({
     setup() {
         const page = usePage();
 
+        // Paginasi untuk sales
+        const paginationSales = ref({
+            page: 1,
+            pageSize: 5
+        });
+
+        // Paginasi untuk aging
+        const paginationAging = ref({
+            page: 1,
+            pageSize: 5
+        });
+
+        // Menghitung page count untuk Sales
+        const pageCountSales = computed(() => {
+            return Math.ceil(page.props.sales.length / paginationSales.value.pageSize);
+        });
+
+        // Menghitung page count untuk Aging
+        const pageCountAging = computed(() => {
+            return Math.ceil(page.props.sales.length / paginationAging.value.pageSize);
+        });
+
+        // Mengambil data yang dipaginasikan untuk Sales
+        const paginatedSalesData = computed(() => {
+            const start = (paginationSales.value.page - 1) * paginationSales.value.pageSize;
+            const end = start + paginationSales.value.pageSize;
+            return page.props.sales.slice(start, end);
+        });
+
+        // Mengambil data yang dipaginasikan untuk Aging
+        const paginatedAgingData = computed(() => {
+            const start = (paginationAging.value.page - 1) * paginationAging.value.pageSize;
+            const end = start + paginationAging.value.pageSize;
+            return page.props.sales.slice(start, end);
+        });
+
+        // Fungsi untuk mengubah halaman untuk Sales
+        function handlePageChangeSales(page: number) {
+            paginationSales.value.page = page;
+        }
+
+        // Fungsi untuk mengubah halaman untuk Aging
+        function handlePageChangeAging(page: number) {
+            paginationAging.value.page = page;
+        }
+
         return {
             timestamp: ref(1183135260000),
             columnsSales: createColumnsSales(),
@@ -189,7 +244,16 @@ export default defineComponent({
             OpenOutline,
             BarChart,
             AnalyticsSharp,
-            Book
+            Book,
+            formatRupiah,
+            paginationAging,
+            pageCountSales,
+            paginatedSalesData,
+            handlePageChangeSales,
+            paginationSales,
+            pageCountAging,
+            paginatedAgingData,
+            handlePageChangeAging,
         }
     },
     components: {

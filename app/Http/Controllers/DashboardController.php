@@ -6,8 +6,10 @@ use App\Http\Services\TransactionServices;
 use App\Models\ProductJournal;
 use App\Models\Transactions;
 use App\Models\TransactionType;
+use App\Models\UserTarget;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -207,7 +209,21 @@ class DashboardController extends Controller
 
     public function indexSalesDashboard(): Response
     {
-        return Inertia::render('Sales/Dashboard');
+        $user_id = Auth::user()->id;
+        $target = UserTarget::where('user_id', $user_id)->first();
+        $sales = DB::table('transactions as tx')
+        ->select(
+            'tx.id',
+            DB::raw("(
+                SELECT value FROM transaction_details td WHERE td.category = 'Customer' LIMIT 1
+            ) AS customer_name"),
+            'tx.total',
+            DB::raw("DATE_FORMAT(tx.due_date, '%d %M %Y') AS due_date")
+        )
+        ->where('tx.created_by', $user_id)
+        ->get();
+
+        return Inertia::render('Sales/Dashboard', compact('target', 'sales'));
     }
 
     public function indexMarketingDashboard(): Response

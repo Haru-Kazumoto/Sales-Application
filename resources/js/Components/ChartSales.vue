@@ -5,35 +5,42 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, defineProps, computed } from 'vue';
 import ApexCharts from 'vue3-apexcharts';
+import { formatRupiah } from '../Utils/options-input.utils';
 
-// Data series and chart options
-const series = ref([{
+// Define props
+const props = defineProps({
+    target: Number
+});
+
+// Data series (reactive with computed)
+const series = computed(() => [{
     name: 'Total penjualan',
-    data: [76, 85, 101, 98, 87, 105, 91, 114, 94]
+    data: [7600000, 8500000, 101000, 98000, 870000, 1050000, 910000, 1140000, 9400000]
 }, {
     name: 'Target penjualan',
-    data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
+    data: Array(12).fill(props.target) // Menggunakan target prop untuk semua nilai
 }]);
 
 const chartOptions = ref({
     chart: {
         type: 'bar',
-        height: 350,
+        height: 450,
         toolbar: {
-            show: true, // Untuk menampilkan toolbar
+            show: true,
             tools: {
-                download: false // Menonaktifkan opsi download
+                download: false
             }
         }
     },
     plotOptions: {
         bar: {
-            horizontal: false,
-            columnWidth: '55%',
-            endingShape: 'rounded'
-        },
+            horizontal: true,
+            dataLabels: {
+                position: 'top',
+            },
+        }
     },
     dataLabels: {
         enabled: false
@@ -44,12 +51,32 @@ const chartOptions = ref({
         colors: ['transparent']
     },
     xaxis: {
-        categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+        categories: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
+        labels: {
+            formatter: function (val) {
+                if (val >= 1000000000) {
+                    return "Rp " + (val / 1000000000) + " M";
+                } else if (val >= 1000000) {
+                    return "Rp " + (val / 1000000) + " Jt";
+                }
+                return "Rp " + val.toLocaleString();
+            }
+        }
     },
     yaxis: {
         title: {
             text: 'Rp (RUPIAH)'
-        }
+        },
+        // labels: {
+        //     formatter: function (val) {
+        //         if (val >= 1000000000) {
+        //             return "Rp " + (val / 1000000000) + " M";
+        //         } else if (val >= 1000000) {
+        //             return "Rp " + (val / 1000000) + " Jt";
+        //         }
+        //         return "Rp " + val.toLocaleString();
+        //     }
+        // }
     },
     fill: {
         opacity: 1
@@ -57,7 +84,12 @@ const chartOptions = ref({
     tooltip: {
         y: {
             formatter: function (val) {
-                return "Rp " + val + " thousands"
+                if (val >= 1000000000) {
+                    return "Rp " + (val / 1000000000).toFixed(2) + " M";
+                } else if (val >= 1000000) {
+                    return "Rp " + (val / 1000000) + " Jt";
+                }
+                return "Rp " + val.toLocaleString();
             }
         }
     },
