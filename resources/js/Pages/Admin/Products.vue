@@ -227,7 +227,7 @@
                             </div>
                             <n-divider></n-divider>
                             <h4>Pembulatan harga (opsional)</h4>
-                            <div class="col-12 col-lg-3 d-flex flex-column">
+                            <div class="col-12 col-lg-3 d-flex flex-column"v-if="showPrice">
                                 <label for="">Pembulatan Harga All Segment
 
                                 </label>
@@ -238,7 +238,7 @@
                                     </template>
                                 </n-input>
                             </div>
-                            <div class="col-12 col-lg-3 d-flex flex-column">
+                            <div class="col-12 col-lg-3 d-flex flex-column"v-if="showPriceDetail">
                                 <label for="">Pembulatan Harga Jual Grosir
 
                                 </label>
@@ -249,7 +249,7 @@
                                     </template>
                                 </n-input>
                             </div>
-                            <div class="col-12 col-lg-3 d-flex flex-column">
+                            <div class="col-12 col-lg-3 d-flex flex-column"v-if="showPriceDetail">
                                 <label for="">Pembulatan Harga Retail
 
                                 </label>
@@ -260,7 +260,7 @@
                                     </template>
                                 </n-input>
                             </div>
-                            <div class="col-12 col-lg-3 d-flex flex-column">
+                            <div class="col-12 col-lg-3 d-flex flex-column"v-if="showPriceDetail">
                                 <label for="">Pembulatan Harga End User
 
                                 </label>

@@ -213,8 +213,8 @@ class CustomerOrdersController extends Controller
         );
         $dateNow = Carbon::now()->format('Y-m-d H:i:s');
         $customers = Parties::where('type_parties', 'CUSTOMER')
-            ->where('segment_customer', 'OFFICE')
-            // ->where('users_id', Auth::user()->id) // disabled for marketing becaue they can create CO for other user
+            // ->where('users_id', Auth::user()->id)
+            ->with('partiesGroup')
             ->get();
         $payment_terms = Lookup::where('category', 'PAYMENT_TERM')->get();
         $products = $this->productServices->getStockProducts();
@@ -268,7 +268,6 @@ class CustomerOrdersController extends Controller
      */
     public function storeDnp(Request $request)
     {
-        // dd($request->transaction_items);
 
         // Validasi input request
         $request->validate([
@@ -299,9 +298,10 @@ class CustomerOrdersController extends Controller
             'transaction_items.*.product.unit' => 'required_with:transaction_items.*.product|string',
             'transaction_items.*.product.name' => 'required_with:transaction_items.*.product|string',
         ]);
+        $user_division = Auth::user()->division->division_name;
 
         // Gunakan transaksi database
-        DB::transaction(function () use ($request) {
+        DB::transaction(function () use ($request, $user_division) {
             $tx_type = TransactionType::where('name', 'Sales Order Need Approval')->first(); //8
             $delivery = $request->transaction_details[4]['value'];
             $customer_name = $request->transaction_details[1]['value']; //customer name
@@ -319,9 +319,9 @@ class CustomerOrdersController extends Controller
                 'sub_total' => $request->input('sub_total'),
                 'total' => $request->input('total'),
                 'tax_amount' => $request->input('tax_amount'),
-                'transaction_type_id' => 70,
+                'transaction_type_id' => $user_division === 'MARKETING' ? 8 : 70,
                 'customer_id' => $customer->id,
-                'status' => 'PENDING_ON_AGING',
+                'status' => $user_division === 'MARKETING' ? 'NOT_HAVE_PROCEED' : 'PENDING_ON_AGING',
                 'total_discount' => $request->input('total_discount'),
             ]);
 
@@ -381,7 +381,9 @@ class CustomerOrdersController extends Controller
             }
         });
 
-        return redirect()->route('sales.create-co')->with('success', 'Customer Order berhasil disubmit!');
+        $redirect_path = $user_division === 'MARKETING' ? 'sales.create-co-office' : 'sales.create-co';
+
+        return redirect()->route($redirect_path)->with('success', 'Customer Order berhasil disubmit!');
     }
 
     /**

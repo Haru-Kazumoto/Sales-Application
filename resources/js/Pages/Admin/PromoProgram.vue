@@ -31,7 +31,7 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <label for="">Persentase Promo 1
-                            <RequiredMark />
+                            
                         </label>
                         <n-input size="large" placeholder="" v-model:value="form.promo_value_1" @input="(value) => form.promo_value_1 = value.replace(/\D/g, '')">
                             <template #suffix>%</template>
@@ -39,7 +39,7 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <label for="">Persentase Promo 2 
-                            <RequiredMark />
+                            
                         </label>
                         <n-input size="large" placeholder="" v-model:value="form.promo_value_2" @input="(value) => form.promo_value_2 = value.replace(/\D/g, '')">
                             <template #suffix>%</template>
@@ -47,7 +47,7 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <label for="">Persentase Promo 3
-                            <RequiredMark />
+                            
                         </label>
                         <n-input size="large" placeholder="" v-model:value="form.promo_value_3" @input="(value) => form.promo_value_3 = value.replace(/\D/g, '')">
                             <template #suffix>%</template>

@@ -2,7 +2,7 @@
 
     <Head title="Create CO" />
     <div class="d-flex flex-column gap-4">
-        <TitlePage title="CUSTOMER ORDER | DNP" />
+        <TitlePage title="CUSTOMER ORDER | OFFICE" />
         <!-- INPUT CO FORM -->
         <div class="card shadow" style="border: none;">
             <!-- INPUT CO -->
@@ -22,6 +22,7 @@
                                 placeholder="" />
                         </div>
                     </div>
+                    <n-divider>CUSTOMER INFO</n-divider>
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">NAMA CUSTOMER</label>
@@ -31,16 +32,21 @@
                     </div>
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">BADAN USAHA</label>
-                            <n-input size="large" v-model:value="transaction_details.legality" placeholder="" />
+                            <label for="">PENGIRIMAN
+                                <RequiredMark />
+                            </label>
+                            <n-select size="large" v-model:value="transaction_details.delivery" :options="sendType"
+                                placeholder="" />
                         </div>
                     </div>
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
-                            <label for="">ALAMAT CUSTOMER</label>
-                            <n-input size="large" v-model:value="transaction_details.customer_address" placeholder="" />
+                            <label for="">BADAN USAHA</label>
+                            <n-input size="large" v-model:value="transaction_details.legality" placeholder=""
+                                disabled />
                         </div>
                     </div>
+
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">TERMIN</label>
@@ -56,15 +62,7 @@
                                 size="large" v-model:formatted-value="form.due_date" disabled />
                         </div>
                     </div>
-                    <div class="col-12 col-sm-6 col-md-6 col-lg-4">
-                        <div class="d-flex flex-column gap-1">
-                            <label for="">PENGIRIMAN
-                                <RequiredMark />
-                            </label>
-                            <n-select size="large" v-model:value="transaction_details.delivery" :options="sendType"
-                                placeholder="" />
-                        </div>
-                    </div>
+
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">SALESMAN</label>
@@ -72,7 +70,14 @@
                                 placeholder="" />
                         </div>
                     </div>
-                    <div class="col-6 col-md-6 col-lg-4 d-flex flex-column gap-1">
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-4">
+                        <div class="d-flex flex-column gap-1">
+                            <label for="">ALAMAT CUSTOMER</label>
+                            <n-input size="large" type="textarea" v-model:value="transaction_details.customer_address"
+                                placeholder="" disabled />
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-4 d-flex flex-column gap-1">
                         <label for="">SEGMEN CUSTOMER</label>
                         <n-select size="large" v-model:value="transaction_details.segment_customer" placeholder=""
                             :options="segmentCustomer" />
@@ -89,7 +94,7 @@
                             </n-input>
                         </div>
                     </div> -->
-                    <n-divider title-placement="left">OPSIONAL</n-divider>
+                    <n-divider>OPSIONAL</n-divider>
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="d-flex flex-column gap-1">
                             <label for="">NOMOR PO CUSTOMER </label>
@@ -98,7 +103,7 @@
                                 placeholder="" />
                         </div>
                     </div>
-                    <div class="col-6 col-sm-6 col-md-6 col-lg-3">
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                         <div class="d-flex flex-column gap-1">
                             <label for="">CASHBACK + PPH 4%</label>
                             <n-input size="large" v-model:value="transaction_details.cashback" placeholder=""
@@ -107,7 +112,7 @@
                             </n-input>
                         </div>
                     </div>
-                    <div class="col-6 col-sm-6 col-md-6 col-lg-3">
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                         <div class="d-flex flex-column gap-1">
                             <label for="">BIAYA BONGKAR</label>
                             <n-input size="large" v-model:value="transaction_details.unloading_cost" placeholder=""
@@ -116,14 +121,14 @@
                             </n-input>
                         </div>
                     </div>
-                    <div class="col-6 col-sm-6 col-md-6 col-lg-3">
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                         <div class="d-flex flex-column gap-1">
                             <label for="ppn">PPN</label>
                             <n-select size="large" placeholder="" :options="ppnOptions"
                                 v-model:value="transaction_details.use_tax" />
                         </div>
                     </div>
-                    <div class="col-6 col-sm-6 col-md-6 col-lg-3">
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                         <div class="d-flex flex-column gap-1">
                             <label for="ppn">Pengajuan Diskon</label>
                             <n-select size="large" placeholder="" :options="discountSubmission"
@@ -137,9 +142,12 @@
         <!-- INPUT PRODUCTS -->
         <div class="card shadow" style="border: none;">
             <div class="card-body d-flex flex-column gap-3">
+                <div class="card-title">
+                    <h3>Informasi Produk</h3>
+                </div>
                 <div class="row g-3">
                     <!-- INPUT PRODUCTS FORM -->
-                    <div class="col-6 col-md-6 col-lg-6 d-flex flex-column gap-1">
+                    <div class="col-12 col-md-6 col-lg-6 d-flex flex-column gap-1">
                         <label for="">NAMA PRODUK</label>
                         <n-select filterable :options="availableProducts" placeholder="" size="large"
                             v-model:value="products.name" clearable />
@@ -149,15 +157,15 @@
                         </span>
                     </div>
 
-                    <div class="col-6 col-md-6 col-lg-6 d-flex flex-column gap-1">
+                    <div class="col-12 col-md-6 col-lg-6 d-flex flex-column gap-1">
                         <label for="">QUANTITY</label>
                         <n-input size="large" v-model:value="transaction_items.quantity" placeholder="" />
                     </div>
-                    <div class="col-6 col-md-6 col-lg-2 d-flex flex-column gap-1">
+                    <div class="col-12 col-md-6 col-lg-2 d-flex flex-column gap-1">
                         <label for="">KEMASAN</label>
                         <n-input size="large" v-model:value="transaction_items.unit" disabled placeholder="" />
                     </div>
-                    <div class="col-6 col-md-6 col-lg-4 d-flex flex-column gap-1">
+                    <div class="col-12 col-md-6 col-lg-4 d-flex flex-column gap-1">
                         <label for="">HARGA PRODUK</label>
                         <n-input size="large" v-model:value="transaction_items.amount" placeholder="">
                             <template #prefix>Rp</template>
@@ -184,11 +192,11 @@
                                 </div>
                             </div>
                         </div>
-    
+
                         <!-- INPUT DISCOUNT FORM -->
                         <div class="col-6 d-flex flex-column gap-1">
                             <label for="">DISCOUNT 1</label>
-                            <n-input size="large" placeholder="" v-model:value="products.promo_value_1"
+                            <n-input size="large" placeholder="" v-model:value="products.promo_value_1" disabled
                                 @input="(value) => products.promo_value_1 = value.replace(/\D/g, '')">
                                 <template #suffix>
                                     %
@@ -204,7 +212,7 @@
                         </div>
                         <div class="col-6 d-flex flex-column gap-1">
                             <label for="">DISCOUNT 2</label>
-                            <n-input size="large" placeholder="" v-model:value="products.promo_value_2"
+                            <n-input size="large" placeholder="" v-model:value="products.promo_value_2" disabled
                                 @input="(value) => products.promo_value_2 = value.replace(/\D/g, '')">
                                 <template #suffix>
                                     %
@@ -220,7 +228,7 @@
                         </div>
                         <div class="col-6 d-flex flex-column gap-1">
                             <label for="">DISCOUNT 3</label>
-                            <n-input size="large" placeholder="" v-model:value="products.promo_value_3"
+                            <n-input size="large" placeholder="" v-model:value="products.promo_value_3" disabled
                                 @input="(value) => products.promo_value_3 = value.replace(/\D/g, '')">
                                 <template #suffix>
                                     %
@@ -244,6 +252,14 @@
         <!-- PRODUCT CHOOSEN LIST -->
         <div class="card shadow" style="border: none;">
             <div class="card-body">
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    <span>* Geser tabel untuk lebih detail</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div class="card-title">
+                    <h3>Produk Pesanan</h3>
+                </div>
+
                 <n-data-table :bordered="false" :columns="columns" :data="form.transaction_items" />
             </div>
         </div>
@@ -449,6 +465,7 @@ export default defineComponent({
             description: '',
             sub_total: null as unknown as number,
             total: null as unknown as number,
+            total_discount: null as unknown as number,
             term_of_payment: null as unknown as number,
             tax_amount: null as unknown as number,
             transaction_details: [] as TransactionDetail[],
@@ -502,6 +519,7 @@ export default defineComponent({
             quantity: null as unknown as number,
             tax_amount: 0,
             amount: null as unknown as number,
+            amount_after_discount: null as unknown as number, // for discount if exist
             product_id: null as unknown as number,
             tax_id: null as unknown as number,
             discount_1: null as unknown as number,
@@ -509,6 +527,7 @@ export default defineComponent({
             discount_3: null as unknown as number,
             total_price: null as unknown as number,
             product_journals: [] as any[],
+            real_amount: null as unknown as number,
             // total_price_discount: null as unknown as number,
         });
 
@@ -539,7 +558,7 @@ export default defineComponent({
             redemp_price: data.redemp_price,
             restaurant_price: data.restaurant_price,
             all_segment_price: data.all_segment_price,
-            // end_user_price: data.end_user_price,
+            end_user_price: data.price_3,
         }));
 
         const productMasters = (page.props.all_products as any[]).map((data) => ({
@@ -553,7 +572,7 @@ export default defineComponent({
             redemp_price: data.redemp_price,
             restaurant_price: data.restaurant_price,
             all_segment_price: data.all_segment_price,
-            // end_user_price: data.end_user_price,
+            end_user_price: data.price_3,
         }));
 
         /**
@@ -612,7 +631,6 @@ export default defineComponent({
                 const today = new Date();
                 const endDate = new Date(selectedProduct.end_date);
 
-                console.log(selectedProduct);
                 products.value.code = selectedProduct.code;
                 transaction_items.value.product_id = selectedProduct.id;
                 transaction_items.value.unit = selectedProduct.unit;
@@ -622,18 +640,23 @@ export default defineComponent({
                 //todo : switch statement for handle the price of products
                 switch (transaction_details.value.segment_customer) {
                     case "GROSIR":
+                        transaction_items.value.real_amount = selectedProduct.retail_price
                         transaction_items.value.amount = selectedProduct.retail_price;
                         break;
                     case "RETAIL":
+                        transaction_items.value.real_amount = selectedProduct.restaurant_price
                         transaction_items.value.amount = selectedProduct.restaurant_price;
                         break;
                     case "END_USER":
+                        transaction_items.value.real_amount = selectedProduct.price_3
                         transaction_items.value.amount = selectedProduct.price_3;
                         break;
                     case "ALL_SEGMENT":
+                        transaction_items.value.real_amount = selectedProduct.all_segment_price
                         transaction_items.value.amount = selectedProduct.all_segment_price;
                         break;
                     default:
+                        transaction_items.value.real_amount = selectedProduct.all_segment_price
                         transaction_items.value.amount = products.value.all_segment_price;
                         break;
                 }
@@ -712,27 +735,34 @@ export default defineComponent({
                 transaction_details.value.total_discount_3 = null;
 
                 // Cek apakah promo_value_1 berubah dan belum dihitung
-                if (products.value.promo_value_1 !== null && products.value.promo_value_1 !== undefined && products.value.promo_value_1 > 0) {
+                if (products.value.promo_value_1 > 0) {
                     let discount1 = originalPrice * products.value.promo_value_1 / 100;
                     transaction_details.value.total_discount_1 = originalPrice - discount1;
                 }
 
                 // Cek apakah promo_value_2 berubah dan belum dihitung
-                if (products.value.promo_value_2 !== null && products.value.promo_value_2 !== undefined && products.value.promo_value_2 > 0 && transaction_details.value.total_discount_1 !== null) {
+                if (products.value.promo_value_2 > 0 && transaction_details.value.total_discount_1 !== null) {
                     let discount2 = transaction_details.value.total_discount_1 * products.value.promo_value_2 / 100;
                     transaction_details.value.total_discount_2 = transaction_details.value.total_discount_1 - discount2;
                 }
 
                 // Cek apakah promo_value_3 berubah dan belum dihitung
-                if (products.value.promo_value_3 !== null && products.value.promo_value_3 !== undefined && products.value.promo_value_3 > 0 && transaction_details.value.total_discount_2 !== null) {
+                if (products.value.promo_value_3 > 0 && transaction_details.value.total_discount_2 !== null) {
                     let discount3 = transaction_details.value.total_discount_2 * products.value.promo_value_3 / 100;
                     transaction_details.value.total_discount_3 = transaction_details.value.total_discount_2 - discount3;
                 }
 
                 // Mengupdate total_price menjadi nilai terakhir yang dihitung dari diskon yang tersedia
-                transaction_items.value.total_price = transaction_details.value.total_discount_3 || transaction_details.value.total_discount_2 || transaction_details.value.total_discount_1 || originalPrice;
+                transaction_items.value.total_price =
+                    transaction_details.value.total_discount_3 ||
+                    transaction_details.value.total_discount_2 ||
+                    transaction_details.value.total_discount_1 ||
+                    originalPrice;
+
+                transaction_items.value.amount_after_discount = transaction_items.value.total_price;
             }
         );
+
 
 
         // Watch the segment customer and set the product amount
@@ -742,7 +772,6 @@ export default defineComponent({
 
         watch(() => transaction_details.value.customer, (name) => {
             const selectedCustomer = customerOptions.find(data => data.label === name);
-            console.log(selectedCustomer);
 
             // set customer group
             customerGroup.value = selectedCustomer?.partiesGroup?.name;
@@ -873,6 +902,14 @@ export default defineComponent({
                 const quantity = item.quantity || 0;
                 const originalPrice = item.amount * quantity;
 
+                // Periksa apakah quantity memenuhi syarat rentang promo
+                const isValidPromo = quantity >= (products.value.min || 0) && quantity <= (products.value.max || Infinity);
+
+                if (!isValidPromo) {
+                    // Jika tidak memenuhi rentang promo, lewati item ini (tidak ada diskon)
+                    return total;
+                }
+
                 // Menghitung diskon 1 berdasarkan harga asli
                 const discount1 = originalPrice * (item.discount_1 || 0) / 100;
 
@@ -883,11 +920,16 @@ export default defineComponent({
                 const discount3 = (originalPrice - discount1 - discount2) * (item.discount_3 || 0) / 100;
 
                 // Menambahkan total diskon untuk setiap item
-                return total + discount1 + discount2 + discount3;
+                const result = total + discount1 + discount2 + discount3;
+
+                form.total_discount = result;
+
+                return result;
             }, 0);
 
             return resultDiscounts;
         });
+
 
         const totalPrice = computed(() => {
             // Menghitung subtotal dari semua produk tanpa mengalikan quantity
@@ -957,21 +999,12 @@ export default defineComponent({
             product_id: null as unknown as number,
         });
 
-        function handleApproveDrafCO() {
-
-        }
-
-        function handleRejectDrafCO() {
-
-        }
-
-
         function handleAddProduct() {
             // Pastikan quantity dan stok adalah angka
             const quantity = Number(transaction_items.value.quantity);
             const lastStock = Number(products.value.last_stock);
 
-            if(quantity === null) {
+            if (quantity === null) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Quantity kosong!',
@@ -990,13 +1023,25 @@ export default defineComponent({
             }
 
             let finalAmount = transaction_items.value.amount; // Default ke harga asli
-            if (products.value.promo_value_3) {
-                finalAmount = transaction_details.value.total_discount_3;
-            } else if (products.value.promo_value_2) {
-                finalAmount = transaction_details.value.total_discount_2;
-            } else if (products.value.promo_value_1) {
-                finalAmount = transaction_details.value.total_discount_1;
+
+            if (isPromoActive.value) {
+                const quantity = transaction_items.value.quantity; // Pastikan quantity tersedia
+                const { min, max, promo_value_3, promo_value_2, promo_value_1 } = products.value;
+
+                // Pastikan min dan max tidak undefined/null
+                if (quantity !== undefined && min !== undefined && max !== undefined) {
+                    if (quantity >= min && quantity <= max) {
+                        if (promo_value_3) {
+                            finalAmount = transaction_details.value.total_discount_3;
+                        } else if (promo_value_2) {
+                            finalAmount = transaction_details.value.total_discount_2;
+                        } else if (promo_value_1) {
+                            finalAmount = transaction_details.value.total_discount_1;
+                        }
+                    }
+                }
             }
+
             if (finalAmount === null || isNaN(finalAmount)) {
                 Swal.fire({
                     icon: 'error',
@@ -1016,30 +1061,40 @@ export default defineComponent({
                 return;
             }
 
+            // Validasi: Harga tidak boleh berkurang
+            if (transaction_items.value.amount < transaction_items.value.real_amount) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Harga tidak bisa dikurangi!',
+                    text: 'Silakan masukkan harga yang lebih besar atau sama dengan harga sebelumnya.',
+                });
+                return; // Hentikan eksekusi
+            }
+
             // Hitung total harga barang sebelum diskon (harga satuan * quantity)
             let totalPrice = finalAmount * quantity;
 
-            // kurangi total price dari program promo yang dibuat (jika ada dan aktif)
-            if (isPromoActive.value) {
-                if (promoPercentage.value) {
-                    const convertedToPercentage = promoPercentage.value / 100;
+            // Kurangi total price dari program promo yang dibuat (jika ada dan aktif)
+            // if (isPromoActive.value) {
+            //     if (promoPercentage.value) {
+            //         const convertedToPercentage = promoPercentage.value / 100;
 
-                    // Menghitung diskon berdasarkan persentase
-                    const discountAmount = totalPrice * convertedToPercentage;
+            //         // Menghitung diskon berdasarkan persentase
+            //         const discountAmount = totalPrice * convertedToPercentage;
 
-                    // Mengurangi harga total dengan diskon
-                    totalPrice -= discountAmount;
-                }
-            }
+            //         // Mengurangi harga total dengan diskon
+            //         totalPrice -= discountAmount;
+            //     }
+            // }
 
             // Hitung total dari semua diskon yang diisi
-            const totalDiscount =
-                (transaction_details.value.total_discount_1 || 0) +
-                (transaction_details.value.total_discount_2 || 0) +
-                (transaction_details.value.total_discount_3 || 0);
+            // const totalDiscount =
+            //     (transaction_details.value.total_discount_1 || 0) +
+            //     (transaction_details.value.total_discount_2 || 0) +
+            //     (transaction_details.value.total_discount_3 || 0);
 
-            // Kurangi total_price dengan total diskon
-            totalPrice -= totalDiscount;
+            // // Kurangi total_price dengan total diskon
+            // totalPrice -= totalDiscount;
 
             // Pastikan total_price tidak negatif
             totalPrice = Math.max(totalPrice, 0);
@@ -1060,6 +1115,7 @@ export default defineComponent({
                     product_id: transaction_items.value.product_id,
                     tax_amount: formattedTaxAmount,
                     amount: amount,
+                    amount_after_discount: transaction_items.value.amount_after_discount,
                     tax_id: transaction_items.value.tax_id,
                     total_price: totalPrice, // Total setelah semua diskon
                     discount_1: products.value.promo_value_1 || 0,
@@ -1101,42 +1157,11 @@ export default defineComponent({
                     closable: false,
                 });
             } finally {
-                products.value.name = null as any;
-                products.value.promo_value_1 = null as any;
-                products.value.promo_value_2 = null as any;
-                products.value.promo_value_3 = null as any;
-                transaction_items.value.quantity = null as any;
-                // RESET FORM YANG DIISI
-                // transaction_items.value = {
-                //     unit: "",
-                //     quantity: null as unknown as number,
-                //     product_id: null,
-                //     tax_id: null,
-                //     discount_1: null as unknown as number,
-                //     discount_2: null as unknown as number,
-                //     discount_3: null as unknown as number,
-                //     amount: null as unknown as number,
-                // };
-
-                // transaction_details.value = {
-                //     total_discount_1: null as unknown as number,
-                //     total_discount_2: null as unknown as number,
-                //     total_discount_3: null as unknown as number,
-                // };
-
-                // product_journals.value = {
-                //     batch_code: "",
-                //     expiry_date: null,
-                //     product_id: null,
-                // };
-
-                // products.value = {
-                //     code: "",
-                //     name: "",
-                //     last_stock: null as unknown as number,
-                // };
+                products.value.name = null;
+                transaction_items.value.quantity = null;
             }
         }
+
 
         function removeProduct(index: number) {
             form.transaction_items.splice(index, 1);
@@ -1144,24 +1169,6 @@ export default defineComponent({
 
         function handleSubmitCo() {
             form.transaction_details = [
-                // {
-                //     name: "Total Harga Diskon 1",
-                //     category: "Total Discount 1",
-                //     value: form.transaction_items.find(data => data.total_discount_1)?.total_discount_1 ? '0' : '0',
-                //     data_type: 'float',
-                // },
-                // {
-                //     name: "Total Harga Diskon 2",
-                //     category: "Total Discount 2",
-                //     value: transaction_details.value.total_discount_2 ? '0' : '0',
-                //     data_type: 'float',
-                // },
-                // {
-                //     name: "Total Harga Diskon 3",
-                //     category: "Total Discount 3",
-                //     value: transaction_details.value.total_discount_3 ? '0' : '0',
-                //     data_type: 'float',
-                // },
                 {
                     name: "Tanggal CO",
                     category: 'CO Date',
@@ -1186,12 +1193,6 @@ export default defineComponent({
                     value: transaction_details.value.customer_address,
                     data_type: 'string',
                 },
-                // {
-                //     name: 'Biaya Angkutan',
-                //     category: 'Transportation Cost',
-                //     value: transaction_details.value.transportation_cost as any,
-                //     data_type: 'float',
-                // },
                 {
                     name: "Pengiriman",
                     category: "Delivery",
@@ -1272,6 +1273,18 @@ export default defineComponent({
                 }
             ];
 
+            //replace real amount of product to amount after discount
+            // form.transaction_items.forEach((item) => {
+            //     console.log(item);
+            //     const { amount, amount_after_discount, quantity } = item;
+
+            //     if (amount_after_discount && amount_after_discount < amount) {
+            //         item.amount = amount_after_discount;
+            //     }
+
+            //     item.total_price = item.amount * quantity;
+            // })
+
             form.post(route('sales.create-co-dnp.post'), {
                 onError(error) {
                     Swal.fire({
@@ -1280,7 +1293,7 @@ export default defineComponent({
                         text: error.message,
                     });
                 },
-                onSuccess() {
+                onSuccess(page) {
                     // Reset form dengan nilai awal
                     form.document_code = (page.props.coNumber as string);
                     form.term_of_payment = null as unknown as number;
@@ -1306,6 +1319,7 @@ export default defineComponent({
                         unloading_cost: null as unknown as number,
                         po_customer: null as unknown as string,
                         delivery: null as unknown as string,
+                        segment_customer: null as unknown as string,
                     };
 
                     products.value = {
@@ -1333,7 +1347,7 @@ export default defineComponent({
 
                     Swal.fire({
                         icon: 'success',
-                        title: 'CO berhasil dibuat',
+                        title: page.props.flash.success,
                     });
                 }
             })

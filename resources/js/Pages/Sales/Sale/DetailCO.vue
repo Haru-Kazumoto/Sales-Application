@@ -267,7 +267,7 @@
             <n-button type="primary" size="large" @click="handleApprovingCO('APPROVE')">APPROVE</n-button>
         </div>
         <div class="d-flex gap-3 ms-auto mb-4"
-            v-if="($page.props.auth as any).user.division.division_name === 'MARKETING'">
+            v-if="($page.props.auth as any).user.division.division_name === 'MARKETING' && transaction_details.submission_discount === 'SUBMIT'">
             <n-button type="error" size="large" @click="handleProcessCO('false')">REJECT</n-button>
             <n-button type="primary" size="large" @click="handleProcessCO('true')">APPROVE</n-button>
         </div>

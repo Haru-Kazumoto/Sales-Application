@@ -7,10 +7,19 @@ use App\Models\PartiesGroup;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class CustomerImport implements ToCollection, WithStartRow
+class CustomerImport implements ToCollection, WithStartRow, WithMultipleSheets
 {
+
+    public function sheets(): array
+    {
+        return [
+            // 'VENDOR' => new VendorImport(),
+            'DATABASE 2025' => new CustomerImport(),
+        ];
+    }
 
     /**
      * Tentukan baris awal data yang akan diproses.
@@ -27,13 +36,18 @@ class CustomerImport implements ToCollection, WithStartRow
     */
     public function collection(Collection $collection)
     {
-        // dd($collection);
-
         $type = PartiesGroup::where('name', 'Others')->first();
-
         DB::transaction(function() use ($collection, $type) {
-            // dd($collection);
-            foreach($collection as $row) {
+            foreach ($collection as $row) {
+                // Cek apakah kode sudah ada di database
+                $existingParty = Parties::where('code', $row[2])->first();
+
+                // Jika kode sudah ada, skip iterasi ini
+                if ($existingParty) {
+                    continue;
+                }
+
+                // Jika tidak ada, buat data baru
                 Parties::create([
                     'company' => $row[1],
                     'code' => $row[2],

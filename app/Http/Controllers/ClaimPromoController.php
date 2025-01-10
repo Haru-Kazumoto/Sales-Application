@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ClaimExport;
 use App\Http\Services\ClaimPromoServices;
 use App\Models\Products;
 use App\Models\TransactionDetail;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ClaimPromoController extends Controller
 {
@@ -215,5 +217,10 @@ class ClaimPromoController extends Controller
         // dd($transactions->transactionItems->toArray());
 
         return Inertia::render('Finance/Claim/ClaimPromoDetail', compact('transactions'));
+    }
+
+    public function exportClaim()
+    {
+        return Excel::download(new ClaimExport(), 'claim_data_' . date('d_F_Y') . '.xlsx');
     }
 }

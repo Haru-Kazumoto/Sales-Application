@@ -1,60 +1,40 @@
-import { Box20Regular, 
-    BoxCheckmark20Regular, 
-    BoxMultiple20Regular, 
-    DocumentAdd20Regular, 
-    DocumentAdd28Regular, 
-    DocumentBulletListMultiple20Regular, 
-    DocumentTableTruck24Regular, 
-    HomePerson24Regular, 
-    PeopleList24Regular, 
-    PeopleProhibited20Regular, 
-    PeopleSettings24Regular, 
-    PeopleSwap16Regular, 
-    PeopleTeam28Regular, 
-    PersonAccounts24Regular, 
-    ReceiptCube24Regular, 
-    Textbox16Regular, 
-    VehicleTruckProfile20Regular, 
-    PeopleAudience24Regular, 
-    DocumentTextToolbox24Regular, 
-    DocumentBulletListMultiple24Regular, 
-    TrayItemRemove24Regular, 
+import {
+    BoxCheckmark20Regular,
+    BoxMultiple20Regular,
+    DocumentAdd20Regular,
+    DocumentAdd28Regular,
+    DocumentBulletListMultiple20Regular,
+    DocumentTableTruck24Regular,
+    HomePerson24Regular,
+    PeopleList24Regular,
+    PeopleProhibited20Regular,
+    PeopleSettings24Regular,
+    PeopleSwap16Regular,
+    PeopleTeam28Regular,
+    PersonAccounts24Regular,
+    ReceiptCube24Regular,
+    Textbox16Regular,
+    VehicleTruckProfile20Regular,
+    PeopleAudience24Regular,
+    DocumentTextToolbox24Regular,
+    DocumentBulletListMultiple24Regular,
+    TrayItemRemove24Regular,
     Map24Regular
 } from '@vicons/fluent';
-import { 
-    CartOutline, 
-    FileTrayFullOutline, 
-    FileTrayStackedOutline, 
-    CubeOutline, 
-    PeopleOutline, 
-    ReceiptOutline, 
-    SettingsOutline, 
-    BarChartOutline, 
-    BagCheckOutline, 
-    DocumentsOutline, 
-    DocumentTextOutline, 
-    RepeatSharp, 
-    WarningOutline, 
-    Cart, 
-    People, 
-    PersonAddOutline, 
-    Contract, 
-    Analytics, 
-    CogOutline, 
-    DocumentOutline, 
-    PushOutline, 
-    ShieldHalf, 
-    PieChartOutline, 
-    ReorderFourSharp, 
-    CartSharp, 
-    KeyOutline, 
-    LogoWhatsapp, 
-    Close, 
-    Skull, 
-    Bookmarks, 
-    BookmarkOutline, 
-    AlbumsOutline, 
-    TrashOutline 
+import {
+    CartOutline,
+    FileTrayFullOutline,
+    PeopleOutline,
+    ReceiptOutline,
+    SettingsOutline,
+    BarChartOutline,
+    BagCheckOutline,
+    DocumentsOutline,
+    DocumentTextOutline,
+    PersonAddOutline,
+    DocumentOutline,
+    LogoWhatsapp,
+    Close,
 } from '@vicons/ionicons5';
 import { WarehouseOutlined } from '@vicons/material';
 import { iconDark, NIcon } from 'naive-ui';
@@ -506,10 +486,10 @@ export const roleMenus = {
             href: "/draf-co",
         },
         {
-            label: "CO Office",
+            label: "Customer Order Office",
             key: "co-office",
             icon: DocumentTextOutline,
-            href: '/co-office',
+            href: '/create-co-office',
         },
         //Aging Sales
         { key: 'role-label', label: "AGING SALES", disabled: true },
@@ -525,9 +505,29 @@ export const roleMenus = {
             }
         },
         {
-            label: "Transaksi",
-            key: "transaction-sales",
-            icon: ReceiptOutline,
+            label: 'Transaksi',
+            key: 'transaction',
+            icon: renderIcon(ReceiptOutline),
+            children: [
+                {
+                    label: 'Aging',
+                    key: 'aging',
+                    href: '/aging',
+                    icon: renderIcon(BarChartOutline),
+                },
+                // {
+                //     label: 'Approval CO',
+                //     key: 'process-customer-order',
+                //     href: "/process-co",
+                //     icon: renderIcon(DocumentBulletListMultiple24Regular),
+                // }
+            ]
+        },
+        {
+            label: "Setting Pesan WA",
+            key: 'whatsapp_reminder',
+            icon: renderIcon(LogoWhatsapp),
+            href: "/whatsapp-message"
         },
         //SALES
         { key: 'role-label', label: "SALES", disabled: true },
@@ -648,6 +648,18 @@ export const roleMenus = {
                 }
             ]
         },
+        {
+            label: "List Faktur",
+            key: "list-invoice",
+            href: '/list-invoices',
+            icon: renderIcon(ReceiptCube24Regular),
+        },
+        // {
+        //     label: 'Approval CO',
+        //     key: 'process-customer-order',
+        //     href: "/process-co",
+        //     icon: renderIcon(DocumentBulletListMultiple24Regular),
+        // },
         //WAREHOUSE
         { key: 'role-label', label: "WAREHOUSE", disabled: true },
         {
@@ -663,19 +675,31 @@ export const roleMenus = {
         },
         {
             label: "Barang Masuk",
-            icon: CubeOutline,
+            icon: BoxCheckmark20Regular,
             key: 'barang-masuk',
             href: '/incoming-item'
         },
         {
             label: "Stok Gudang Bekasi",
-            icon: FileTrayFullOutline,
+            icon: BoxMultiple20Regular,
             key: 'stock-goods',
             href: '/stock-goods'
         },
+        {
+            label: "Barang Pesanan",
+            icon: TrayItemRemove24Regular,
+            key: "pesanan",
+            href: "/items-out",
+        },
+        // {
+        //     label: "Pengiriman Bertahap",
+        //     icon: VehicleTruckCube24Regular,
+        //     key: "gradual-delivery",
+        //     href: "/gradual-delivery",
+        // },
         // {
         //     label: 'Booking Barang',
-        //     icon: CartOutline,
+        //     icon: BoxEdit20Regular  ,
         //     key: 'booking-items',
         //     href: '/booking-requests',
         // },
@@ -687,20 +711,20 @@ export const roleMenus = {
                 {
                     label: "Buat Surat Jalan",
                     key: 'travel-document',
-                    icon: renderIcon(DocumentOutline),
+                    icon: renderIcon(DocumentAdd20Regular),
                     href: '/travel-document',
                 },
                 {
                     label: "List Surat Jalan",
                     key: 'list-travel-document',
-                    icon: renderIcon(DocumentsOutline),
-                    href: '/list-travel-document',
+                    icon: renderIcon(DocumentBulletListMultiple20Regular),
+                    href: '/index-travel-document',
                 },
             ]
         },
         {
             label: "Gudang DNP",
-            icon: FileTrayStackedOutline,
+            icon: WarehouseOutlined,
             key: 'dnp-storehouse',
             children: [
                 {
@@ -719,7 +743,7 @@ export const roleMenus = {
         },
         {
             label: "Gudang DKU",
-            icon: FileTrayStackedOutline,
+            icon: WarehouseOutlined,
             key: 'dku-storehouse',
             children: [
                 {
@@ -735,24 +759,6 @@ export const roleMenus = {
                     href: '/dku-expired-stocks',
                 }
             ]
-        },
-        {
-            label: "Barang Rusak",
-            icon: PushOutline,
-            children: [
-                {
-                    label: "Retur Barang Rusak",
-                    icon: renderIcon(RepeatSharp),
-                    key: 'return-broken-goods',
-                    href: '/return-broken-goods',
-                },
-                {
-                    label: "Pemusnahan Barang",
-                    icon: renderIcon(TrashOutline),
-                    key: 'destruction-goods',
-                    href: '/destruction-broken-goods',
-                }
-            ],
         },
     ]
 };

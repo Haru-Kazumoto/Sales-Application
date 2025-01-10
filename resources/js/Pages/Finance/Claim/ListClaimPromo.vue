@@ -12,10 +12,13 @@
             </div>
         </div>
 
-        <!-- Bagian tabel: responsive dengan card -->
-        <div class="card shadow-sm" style="border: none;">
-            <div class="card-body">
-                <n-data-table :bordered="false" :data="$page.props.result" :columns="columns" size="small" />
+        <div class="d-flex flex-column gap-2">
+            <n-button type="primary" size="medium" @click="handleExport" class="ms-auto">EXPORT CLAIM</n-button>
+            <!-- Bagian tabel: responsive dengan card -->
+            <div class="card shadow-sm" style="border: none;">
+                <div class="card-body">
+                    <n-data-table :bordered="false" :data="$page.props.result" :columns="columns" size="small" />
+                </div>
             </div>
         </div>
     </div>
@@ -166,8 +169,15 @@ export default defineComponent({
             ];
         }
 
+        function handleExport(){
+            const url = route('finance.export-claim');
+
+            window.location.href = url;
+        }
+
         return {
             columns: createColumns(),
+            handleExport,
             bodyStyle: {
                 width: '600px'
             },
@@ -176,7 +186,8 @@ export default defineComponent({
                 footer: 'soft'
             } as const,
             showModal,
-            document_code
+            document_code,
+            router
         }
     },
     components: {

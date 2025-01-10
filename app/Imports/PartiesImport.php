@@ -12,6 +12,7 @@ class PartiesImport implements WithMultipleSheets
     {
         return [
             'VENDOR' => new VendorImport(),
+            'DATABASE 2025' => new CustomerImport(),
         ];
     }
 }

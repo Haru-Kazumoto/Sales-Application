@@ -212,6 +212,8 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         Route::post('/post/claim', [App\Http\Controllers\ClaimPromoController::class, 'storeClaim'])->name('claim.post');
         Route::patch('/update-status-payment/{transactions}', [App\Http\Controllers\ClaimPromoController::class, 'changeStatusPaymentClaim'])->name('change-status');
 
+        Route::get('/export-claim', [App\Http\Controllers\ClaimPromoController::class,'exportClaim'])->name('export-claim');
+
         // Route::get('/form-claim', [App\Http\Controllers\ClaimPromoController::class, 'createClaim'])->name('form-claim-promo');
         // Route::get('/test', fn() => Inertia::render('Test'));
     });
@@ -287,6 +289,7 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
 
     Route::name('sales.')->group(function() {
         Route::get('/create-co-dnp', [App\Http\Controllers\CustomerOrdersController::class, 'createDnp'])->name('create-co');
+        Route::get('/create-co-office', [App\Http\Controllers\CustomerOrdersController::class, 'createOffice'])->name('create-co-office');
         Route::get('/create-co-dku', [App\Http\Controllers\CustomerOrdersController::class, 'createDku'])->name('create-co-dku');
         Route::post('/post-create-co-dnp', [App\Http\Controllers\CustomerOrdersController::class, 'storeDnp'])->name('create-co-dnp.post');
         Route::post('/post-create-co-dku', [App\Http\Controllers\CustomerOrdersController::class, 'storeDku'])->name('create-co-dku.post');

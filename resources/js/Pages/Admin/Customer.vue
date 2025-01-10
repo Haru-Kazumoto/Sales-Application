@@ -38,7 +38,7 @@
                     </div>
                 </div>
             </n-tab-pane>
-            <n-tab-pane name="create" tab="Buat Produk Baru">
+            <n-tab-pane name="create" tab="Buat Customer Baru">
                 <div class="d-flex flex-column gap-3">
                     <div class="card shadow-sm border-0">
                         <div class="card-body">
