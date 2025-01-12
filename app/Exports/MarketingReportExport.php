@@ -39,6 +39,7 @@ class MarketingReportExport implements FromCollection,WithHeadings, WithColumnWi
             "CASHBACK + PPH 4%",
             "BONGKAR",
             "SAVING",
+            "BAD DEBT",
             "BUDGET MARKETING",
             "PPN 11%",
             "HARGA JUAL NORMAL",
