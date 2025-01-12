@@ -93,7 +93,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="alert"
                                     aria-label="Close"></button>
                             </div>
-                            <div class="col-12 col-lg-4 d-flex flex-column">
+                            <div class="col-12 col-lg-2 d-flex flex-column">
                                 <label for="">Harga Tebus
                                     <RequiredMark />
                                 </label>
@@ -103,6 +103,9 @@
                                         Rp
                                     </template>
                                 </n-input>
+                            </div>
+                            <div class="col-12 col-lg-2 d-flex flex-column justify-content-end">
+                                <n-button secondary type="primary" size="large" @click="calculateExcludePpnRedempPrice" :disabled="hasExluded" >Exclude 11%</n-button>
                             </div>
                             <div class="col-12 col-lg-4 d-flex flex-column">
                                 <label for="">Harga Trucking
@@ -506,6 +509,7 @@ export default defineComponent({
         const supplierOptionsRef = ref<SelectOption[]>([]);
         const loading = ref(false);
         const selectedData = ref({});
+        const hasExluded = ref(false);
 
         const form = useForm({
             code: '',
@@ -795,10 +799,10 @@ export default defineComponent({
 
             // Kalkulasi redemp_price dengan faktor 1.11
             let redemp_price = form.redemp_price;
-            if (redemp_price) {
-                redemp_price = Math.trunc(Number(redemp_price) / 1.11); // Membulatkan hasil pembagian ke bilangan bulat
-                form.redemp_price = redemp_price; // Update nilai redemp_price di form
-            }
+            // if (redemp_price) {
+            //     redemp_price = Math.trunc(Number(redemp_price) / 1.11); // Membulatkan hasil pembagian ke bilangan bulat
+            //     form.redemp_price = redemp_price; // Update nilai redemp_price di form
+            // }
 
             // Hitung basePrice tanpa PPN
             const basePrice =
@@ -834,6 +838,26 @@ export default defineComponent({
                 form.restaurant_price = null as unknown as number; // Kosongkan harga grosir
                 form.price_3 = null as unknown as number; // Kosongkan harga end user
             }
+        }
+
+        function calculateExcludePpnRedempPrice() {
+            let redemp_price = form.redemp_price;
+
+            if(!redemp_price) {
+                notification.error({
+                    title: "Masukan harga sebelum kalkulasi!",
+                    duration: 3000,
+                    closable: false,
+                });
+                return;
+            }
+
+            if (redemp_price) {
+                redemp_price = Math.trunc(Number(redemp_price) / 1.11); // Membulatkan hasil pembagian ke bilangan bulat
+                form.redemp_price = redemp_price; // Update nilai redemp_price di form
+            }
+
+            hasExluded.value = true;
         }
 
         function calculateRoundedPrice() {
@@ -985,6 +1009,7 @@ export default defineComponent({
             columns: createColumns(),
             calculateRedempPrice,
             calculateRoundedPrice,
+            calculateExcludePpnRedempPrice,
             showDetail,
             showPrice,
             showPriceDetail,
@@ -996,6 +1021,7 @@ export default defineComponent({
             currentPage,
             unitOptions,
             productTypeOptions,
+            hasExluded,
             productSubTypeOptions,
             selectedData,
             categoryProductOptions,
