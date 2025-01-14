@@ -222,8 +222,25 @@ class DashboardController extends Controller
         )
         ->where('tx.created_by', $user_id)
         ->get();
+        $target_margin = DB::table('report_marketing')
+            ->selectRaw('MONTH(created_at) as month, YEAR(created_at) as year, SUM(total_nett_margin) as amount_sales')
+            ->whereYear('created_at',Carbon::now()->year)
+            ->where('created_by', $user_id)
+            ->groupBy(DB::raw('YEAR(created_at), MONTH(created_at)'))
+            ->orderByRaw('YEAR(created_at), MONTH(created_at)')
+            ->get();
+        $total_margin = DB::table('report_marketing')
+            ->whereYear('created_at', Carbon::now()->year) // Filter tahun berjalan
+            ->sum('total_nett_margin'); // Hitung total kolom
+        $shortfall = max(0, $target->annual_target - $total_margin);
 
-        return Inertia::render('Sales/Dashboard', compact('target', 'sales'));
+        return Inertia::render('Sales/Dashboard', compact(
+            'target',
+            'sales',
+            'target_margin',
+            'total_margin',
+            'shortfall'
+        ));
     }
 
     public function indexMarketingDashboard(): Response

@@ -29,7 +29,6 @@
                             <div class="card-content mb-3">
                                 <span class="fs-3 fw-medium">{{ formatRupiah($page.props.target.annual_target) }}</span>
                             </div>
-                            <span>BULAN SEPTEMBER 2024</span>
                         </div>
 
                     </div>
@@ -44,9 +43,8 @@
                                 <span class="fw-semibold">TOTAL PENJUALAN</span>
                             </div>
                             <div class="card-content mb-3">
-                                <span class="fs-3 fw-medium">Rp 1.000.000.000</span>
+                                <span class="fs-3 fw-medium">{{ formatRupiah($page.props.total_margin) }}</span>
                             </div>
-                            <span>BULAN SEPTEMBER 2024</span>
                         </div>
 
                     </div>
@@ -61,9 +59,8 @@
                                 <span class="fw-semibold">KEKURANGAN TARGET PENJUALAN</span>
                             </div>
                             <div class="card-content mb-3">
-                                <span class="fs-3 fw-medium">Rp 1.000.000.000</span>
+                                <span class="fs-3 fw-medium">{{ formatRupiah($page.props.shortfall) }}</span>
                             </div>
-                            <span>BULAN SEPTEMBER 2024</span>
                         </div>
 
                     </div>

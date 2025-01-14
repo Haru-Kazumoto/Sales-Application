@@ -8,20 +8,30 @@
 import { ref, defineProps, computed } from 'vue';
 import ApexCharts from 'vue3-apexcharts';
 import { formatRupiah } from '../Utils/options-input.utils';
+import { usePage } from '@inertiajs/vue3';
 
 // Define props
 const props = defineProps({
-    target: Number
+    target: Number,
 });
 
+const page = usePage();
+
 // Data series (reactive with computed)
-const series = computed(() => [{
-    name: 'Total penjualan',
-    data: [7600000, 8500000, 101000, 98000, 870000, 1050000, 910000, 1140000, 9400000]
-}, {
-    name: 'Target penjualan',
-    data: Array(12).fill(props.target) // Menggunakan target prop untuk semua nilai
-}]);
+const series = computed(() => {
+    const sales = page.props.target_margin;
+
+    return [
+        {
+            name: 'Total Penjualan',
+            data: sales.map((data) => data.amount_sales)
+        },
+        {
+            name: 'Target Penjualan',
+            data: Array(12).fill(props.target) // Target untuk 12 bulan
+        }
+    ];
+});
 
 const chartOptions = ref({
     chart: {
@@ -54,12 +64,8 @@ const chartOptions = ref({
         categories: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
         labels: {
             formatter: function (val) {
-                if (val >= 1000000000) {
-                    return "Rp " + (val / 1000000000) + " M";
-                } else if (val >= 1000000) {
-                    return "Rp " + (val / 1000000) + " Jt";
-                }
-                return "Rp " + val.toLocaleString();
+                // Format angka ke Rupiah dengan toLocaleString
+                return val.toLocaleString('id-ID');
             }
         }
     },
@@ -84,12 +90,8 @@ const chartOptions = ref({
     tooltip: {
         y: {
             formatter: function (val) {
-                if (val >= 1000000000) {
-                    return "Rp " + (val / 1000000000).toFixed(2) + " M";
-                } else if (val >= 1000000) {
-                    return "Rp " + (val / 1000000) + " Jt";
-                }
-                return "Rp " + val.toLocaleString();
+                // Format angka ke Rupiah dengan toLocaleString
+                return "Rp " + val.toLocaleString('id-ID');
             }
         }
     },
