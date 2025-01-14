@@ -14,12 +14,12 @@
                 <div class="card-body">
                     <div class="card-title d-flex align-items-center w-100">
                         <span class="fs-5">Setting Target</span>
-                        <div class="d-flex align-items-center ms-auto gap-2">
+                        <!-- <div class="d-flex align-items-center ms-auto gap-2">
                             <span>Periode</span>
                             <n-date-picker v-model:formatted-value="targetForm.period" type="year" value-format="yyyy"
                                 clearable style="flex-grow: 1; min-width: 150px;" placeholder="Tahun Periode"
                                 @update:value="updateYear" />
-                        </div>
+                        </div> -->
                     </div>
 
                     <n-divider>Informasi Salesman</n-divider>

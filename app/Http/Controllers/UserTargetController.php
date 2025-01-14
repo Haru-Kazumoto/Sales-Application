@@ -31,9 +31,9 @@ class UserTargetController extends Controller
     public function update(Request $request, User $user)
     {
         $request->validate([
-            'annual_target' => 'required|numeric',
-            'monthly_target' => 'required|numeric',
-            'period' => 'required',
+            'annual_target' => 'nullable|numeric',
+            'monthly_target' => 'nullable|numeric',
+            'period' => 'nullable',
         ]);
 
         DB::transaction(function () use ($request, $user) {

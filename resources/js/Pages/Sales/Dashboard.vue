@@ -74,7 +74,8 @@
             <div class="col-12 col-lg-8 d-flex flex-column gap-4 mb-3">
                 <div class="card flex-grow-1" style="border: none;">
                     <div class="card-body d-flex flex-column h-100">
-                        <ChartSales class="h-100 w-100" :target="$page.props.target.annual_target" />
+                        <ChartSales class="h-100 w-100" :target="$page.props.target.annual_target" 
+                            :total_target="total_targets"/>
                     </div>
                 </div>
             </div>
@@ -200,6 +201,11 @@ export default defineComponent({
             pageSize: 5
         });
 
+        //total target sales
+        const total_targets = computed(() => {
+            return page.props.target_margin.map((data) => data.amount_sales);
+        })
+
         // Menghitung page count untuk Sales
         const pageCountSales = computed(() => {
             return Math.ceil(page.props.sales.length / paginationSales.value.pageSize);
@@ -251,6 +257,7 @@ export default defineComponent({
             pageCountAging,
             paginatedAgingData,
             handlePageChangeAging,
+            total_targets
         }
     },
     components: {

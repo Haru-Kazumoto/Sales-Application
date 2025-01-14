@@ -13,18 +13,16 @@ import { usePage } from '@inertiajs/vue3';
 // Define props
 const props = defineProps({
     target: Number,
+    total_target: [],
 });
-
-const page = usePage();
 
 // Data series (reactive with computed)
 const series = computed(() => {
-    const sales = page.props.target_margin;
 
     return [
         {
             name: 'Total Penjualan',
-            data: sales.map((data) => data.amount_sales)
+            data: props.total_target
         },
         {
             name: 'Target Penjualan',
