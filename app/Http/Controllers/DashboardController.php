@@ -230,6 +230,7 @@ class DashboardController extends Controller
             ->orderByRaw('YEAR(created_at), MONTH(created_at)')
             ->get();
         $total_margin = DB::table('report_marketing')
+            ->where('created_by', $user_id)
             ->whereYear('created_at', Carbon::now()->year) // Filter tahun berjalan
             ->sum('total_nett_margin'); // Hitung total kolom
         $shortfall = max(0, $target->annual_target - $total_margin);
@@ -245,7 +246,41 @@ class DashboardController extends Controller
 
     public function indexMarketingDashboard(): Response
     {
-        return Inertia::render('Marketing/Dashboard');
+        $user_id = Auth::user()->id;
+        $totalSalesMargin = DB::table('report_marketing')
+            ->join('users', 'report_marketing.created_by', '=', 'users.id')
+            ->join('divisions', 'users.division_id', '=', 'divisions.id')
+            ->where('divisions.division_name', 'SALES')
+            ->sum('report_marketing.total_nett_margin');
+        $target = UserTarget::where('user_id', $user_id)->first();
+        $total_margin = DB::table('report_marketing')
+            ->where('created_by', $user_id)
+            ->whereYear('created_at', Carbon::now()->year) // Filter tahun berjalan
+            ->sum('total_nett_margin'); // Hitung total kolom
+        $total_with_sales = max(0, $totalSalesMargin + $total_margin);
+        $shortfall = max(0, $target->annual_target - $total_with_sales);
+        $target_margin = DB::table('report_marketing')
+            ->selectRaw('
+                MONTH(created_at) as month, 
+                YEAR(created_at) as year, 
+                SUM(total_nett_margin) as amount_sales, 
+                (SUM(total_nett_margin) + ?) as amount_sales
+            ', [$total_with_sales])
+            ->whereYear('created_at', Carbon::now()->year)
+            ->where('created_by', $user_id)
+            ->groupBy(DB::raw('YEAR(created_at), MONTH(created_at)'))
+            ->orderByRaw('YEAR(created_at), MONTH(created_at)')
+            ->get();
+        
+
+        return Inertia::render('Marketing/Dashboard',compact(
+            'totalSalesMargin',
+            'target',
+            'total_margin',
+            'shortfall',
+            'target_margin',
+            'total_with_sales'
+        ));
     }
 
     public function indexCashierDashboard(): Response

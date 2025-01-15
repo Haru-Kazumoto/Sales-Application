@@ -51,7 +51,7 @@ export default defineComponent({
                     key: "monthly_target",
                     width: 150,
                     render(row) {
-                        return formatRupiah(row.user_target.monthly_target);
+                        return formatRupiah(row.user_target.monthly_target) ?? 0;
                     }
                 },
                 {
@@ -59,7 +59,7 @@ export default defineComponent({
                     key: "annual_target",
                     width: 150,
                     render(row) {
-                        return formatRupiah(row.user_target.annual_target);
+                        return formatRupiah(row.user_target.annual_target) ?? 0;
                     }
                 },
                 {

@@ -20,10 +20,11 @@ class UserTargetController extends Controller
     public function index()
     {
         $salesman = User::whereHas('division', function($query) {
-            $query->where('division_name', 'SALES');
+            $query->whereIn('division_name', ['SALES','MARKETING']);
         })
             ->with('division', 'userTarget')
             ->get();
+        // dd($salesman->toArray());
 
         return Inertia::render('Marketing/SalesmanTarget', compact('salesman'));
     }

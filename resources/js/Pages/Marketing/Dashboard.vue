@@ -28,7 +28,7 @@
                     <div class="card-body">
                         <div class="card-title">TARGET PENJUALAN</div>
                         <div class="card-content">
-                            <span class="fs-3 fw-medium">Rp 1.000.000.000</span>
+                            <span class="fs-4 fw-medium">{{ formatRupiah($page.props.target.annual_target) }}</span>
                         </div>
                     </div>
                 </div>
@@ -36,9 +36,9 @@
             <div class="col-12 col-md-6 col-lg-3 mb-3">
                 <div class="card shadow-sm border-0">
                     <div class="card-body">
-                        <div class="card-title">POTENSI PENJUALAN</div>
+                        <div class="card-title">TOTAL PENJUALAN SALES</div>
                         <div class="card-content ">
-                            <span class="fs-3 fw-medium">Rp 80.000.000</span>
+                            <span class="fs-4 fw-medium">{{ formatRupiah($page.props.totalSalesMargin) }}</span>
                         </div>
                     </div>
                 </div>
@@ -46,9 +46,9 @@
             <div class="col-12 col-md-6 col-lg-3 mb-3">
                 <div class="card shadow-sm border-0">
                     <div class="card-body">
-                        <div class="card-title">KONVERSI PEMBAYARAN</div>
+                        <div class="card-title">TOTAL PENJUALAN</div>
                         <div class="card-content">
-                            <span class="fs-3 fw-medium">Rp 60.000.000</span>
+                            <span class="fs-4 fw-medium">{{ formatRupiah($page.props.total_with_sales) }}</span>
                         </div>
                     </div>
                 </div>
@@ -58,7 +58,7 @@
                     <div class="card-body">
                         <div class="card-title">KEKURANGAN TARGET</div>
                         <div class="card-content">
-                            <span class="fs-3 fw-medium">Rp 40.000.000</span>
+                            <span class="fs-4 fw-medium">{{ formatRupiah($page.props.shortfall) }}</span>
                         </div>
                     </div>
                 </div>
@@ -72,16 +72,15 @@
                         <div class="row g-2 ms-2 my-2">
                             <div class="col-12 col-lg-6 d-flex flex-column">
                                 <span class="fs-3 fw-medium">TARGET PENJUALAN</span>
-                                <span>Target summary April 2024</span>
+                                <span>Target summary 2025</span>
                             </div>
                             <div class="col-12 col-lg-6 d-flex flex-column align-items-lg-end">
                                 <span class="fs-3 fw-medium">Rp 1.000.000.000</span>
-                                <span>Kurang <span class="text-red">Rp 100.000.000</span> dari target tahunan
-                                    2024</span>
+                                <span>Kurang <span class="text-red">{{ formatRupiah($page.props.shortfall) }}</span> dari target 2025</span>
                             </div>
                         </div>
                         <n-divider></n-divider>
-                        <ChartSales />
+                        <ChartSales :target="$page.props.target.annual_target" :total_target="total_targets" />
                     </div>
                 </div>
             </div>
@@ -161,8 +160,8 @@
 </style>
 
 <script lang="ts">
-import { Head, Link } from '@inertiajs/vue3';
-import { defineComponent, h } from 'vue';
+import { Head, Link, usePage } from '@inertiajs/vue3';
+import { computed, defineComponent, h } from 'vue';
 import TitlePage from "../../Components/TitlePage.vue";
 import ChartSales from '../../Components/ChartSales.vue';
 import { DataTableColumns, NBadge } from 'naive-ui';
@@ -320,10 +319,17 @@ function createRunningBillColumn(): DataTableColumns<RowDataRunningBill> {
 
 export default defineComponent({
     setup() {
+        const page = usePage();
+
+        const total_targets = computed(() => {
+            return page.props.target_margin.map((data) => data.amount_sales);
+        });
 
         return {
             salesmanPerformColumn: createSalesmanPerformColumn(),
             runningBillColumn: createRunningBillColumn(),
+            formatRupiah,
+            total_targets
         }
     },
     components: {
