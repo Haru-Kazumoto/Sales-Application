@@ -13,8 +13,9 @@ class UserTargetController extends Controller
     public function create(User $user)
     {
         $salesman = $user->load('division', 'userTarget');
+        $targets = UserTarget::where('user_id', $user->id)->get();
 
-        return Inertia::render('Marketing/SalesmanTargetCreate', compact('salesman'));
+        return Inertia::render('Marketing/SalesmanTargetCreate', compact('salesman','targets'));
     }
 
     public function index()
@@ -31,34 +32,33 @@ class UserTargetController extends Controller
 
     public function update(Request $request, User $user)
     {
+        // dd($request->all(), $user->id);
         $request->validate([
             'annual_target' => 'nullable|numeric',
-            'monthly_target' => 'nullable|numeric',
-            'period' => 'nullable',
+            'monthly_targets' => 'nullable|array',
+            'monthly_targets.*.month' => 'required|numeric|min:1|max:12', // Validasi bulan
+            'monthly_targets.*.target' => 'nullable|numeric', // Validasi target per bulan
         ]);
 
         DB::transaction(function () use ($request, $user) {
-            // Cari apakah user sudah memiliki UserTarget
-            $sales_target = $user->userTarget; // Pastikan ada relasi 'userTarget' di model User
-
-            if ($sales_target) {
-                // Jika ada, lakukan update
-                $sales_target->update([
-                    'annual_target' => $request->annual_target,
-                    'monthly_target' => $request->monthly_target,
-                    'period' => $request->period,
-                ]);
-            } else {
-                // Jika tidak ada, buat entri baru
-                $sales_target = new UserTarget([
-                    'annual_target' => $request->annual_target,
-                    'monthly_target' => $request->monthly_target,
-                    'period' => $request->period,
-                ]);
-
-                // Associate dengan user dan simpan
-                $sales_target->user()->associate($user);
-                $sales_target->save();
+            // Update annual target di tabel User
+            $user->update([
+                'annual_target' => $request->annual_target,
+            ]);
+    
+            // Hapus monthly targets lama
+            $user->userTarget()->delete();
+    
+            // Jika ada monthly_targets, simpan data baru
+            if ($request->has('monthly_targets') && is_array($request->monthly_targets)) {
+                foreach ($request->monthly_targets as $monthly_target) {
+                    // Simpan setiap target bulanan
+                    UserTarget::create([
+                        'user_id' => $user->id,
+                        'at_month' => $monthly_target['month'],
+                        'monthly_target' => $monthly_target['target'],
+                    ]);
+                }
             }
         });
 

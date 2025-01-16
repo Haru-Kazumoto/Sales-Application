@@ -24,10 +24,12 @@
                                 <n-icon-wrapper :size="40" :border-radius="10" color="#dfd4fa">
                                     <n-icon :size="18" :component="BarChart" color="#8c5cff" />
                                 </n-icon-wrapper>
-                                <span class="fw-semibold">TARGET PENJUALAN</span>
+                                <span class="fw-semibold">TARGET PENJUALAN BULAN INI</span>
                             </div>
                             <div class="card-content mb-3">
-                                <span class="fs-3 fw-medium">{{ formatRupiah($page.props.target.annual_target) }}</span>
+                                <span class="fs-3 fw-medium">{{ $page.props.target && $page.props.target.monthly_target
+                                    ?
+                                    formatRupiah($page.props.target.monthly_target) : formatRupiah(0) }}</span>
                             </div>
                         </div>
 
@@ -74,8 +76,7 @@
             <div class="col-12 col-lg-8 d-flex flex-column gap-4 mb-3">
                 <div class="card flex-grow-1" style="border: none;">
                     <div class="card-body d-flex flex-column h-100">
-                        <ChartSales class="h-100 w-100" :target="$page.props.target.annual_target" 
-                            :total_target="total_targets"/>
+                        <ChartSales :target="$page.props.targets" :total_target="total_targets" />
                     </div>
                 </div>
             </div>
@@ -98,8 +99,8 @@
                     <n-tab-pane name="Aging" tab="Aging">
                         <div class="card shadow h-100" style="border: none;">
                             <div class="card-body d-flex flex-column gap-3">
-                                <n-data-table :bordered="false" :columns="columnsAging" size="small" :data="$page.props.sales"
-                                    :rows="paginatedAgingData" :pagination="paginationAging"
+                                <n-data-table :bordered="false" :columns="columnsAging" size="small"
+                                    :data="$page.props.sales" :rows="paginatedAgingData" :pagination="paginationAging"
                                     v-model:page="paginationAging.page" :page-size="paginationAging.pageSize"
                                     :page-count="pageCountAging" @update:page="handlePageChangeAging" />
                             </div>

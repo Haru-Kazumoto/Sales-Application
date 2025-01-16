@@ -209,34 +209,43 @@ class DashboardController extends Controller
 
     public function indexSalesDashboard(): Response
     {
-        $user_id = Auth::user()->id;
-        $target = UserTarget::where('user_id', $user_id)->first();
+        $user = Auth::user();
+        $month = Carbon::now()->month; // Mendapatkan bulan saat ini
+        $year = Carbon::now()->year;  // Mendapatkan tahun saat ini
+        $target = UserTarget::where('user_id', $user->id)
+            ->where('at_month', $month)  // Memfilter berdasarkan bulan saat ini
+            // ->whereYear('at_month', $year)    // Memfilter berdasarkan tahun saat ini
+            ->first();  // Mengambil target bulan ini
+        $targets = UserTarget::where('user_id', $user->id)
+            // ->where('at_month', $month) // Menentukan tahun sekarang
+            ->get(); // Mengambil seluruh data target bulanan untuk tahun ini
         $sales = DB::table('transactions as tx')
-        ->select(
-            'tx.id',
-            DB::raw("(
-                SELECT value FROM transaction_details td WHERE td.category = 'Customer' LIMIT 1
-            ) AS customer_name"),
-            'tx.total',
-            DB::raw("DATE_FORMAT(tx.due_date, '%d %M %Y') AS due_date")
-        )
-        ->where('tx.created_by', $user_id)
-        ->get();
+            ->select(
+                'tx.id',
+                DB::raw("(
+                    SELECT value FROM transaction_details td WHERE td.category = 'Customer' LIMIT 1
+                ) AS customer_name"),
+                'tx.total',
+                DB::raw("DATE_FORMAT(tx.due_date, '%d %M %Y') AS due_date")
+            )
+            ->where('tx.created_by', $user->id)
+            ->get();
         $target_margin = DB::table('report_marketing')
             ->selectRaw('MONTH(created_at) as month, YEAR(created_at) as year, SUM(total_nett_margin) as amount_sales')
             ->whereYear('created_at',Carbon::now()->year)
-            ->where('created_by', $user_id)
+            ->where('created_by', $user->id)
             ->groupBy(DB::raw('YEAR(created_at), MONTH(created_at)'))
             ->orderByRaw('YEAR(created_at), MONTH(created_at)')
             ->get();
         $total_margin = DB::table('report_marketing')
-            ->where('created_by', $user_id)
+            ->where('created_by', $user->id)
             ->whereYear('created_at', Carbon::now()->year) // Filter tahun berjalan
             ->sum('total_nett_margin'); // Hitung total kolom
-        $shortfall = max(0, $target->annual_target - $total_margin);
+        $shortfall = max(0, $user->annual_target - $total_margin);
 
         return Inertia::render('Sales/Dashboard', compact(
             'target',
+            'targets',
             'sales',
             'target_margin',
             'total_margin',
@@ -246,19 +255,35 @@ class DashboardController extends Controller
 
     public function indexMarketingDashboard(): Response
     {
-        $user_id = Auth::user()->id;
+        $user = Auth::user();
+
         $totalSalesMargin = DB::table('report_marketing')
             ->join('users', 'report_marketing.created_by', '=', 'users.id')
             ->join('divisions', 'users.division_id', '=', 'divisions.id')
             ->where('divisions.division_name', 'SALES')
             ->sum('report_marketing.total_nett_margin');
-        $target = UserTarget::where('user_id', $user_id)->first();
+
+        $month = Carbon::now()->month; // Mendapatkan bulan saat ini
+        $year = Carbon::now()->year;  // Mendapatkan tahun saat ini
+        
+        $target = UserTarget::where('user_id', $user->id)
+            ->where('at_month', $month)  // Memfilter berdasarkan bulan saat ini
+            // ->whereYear('at_month', $year)    // Memfilter berdasarkan tahun saat ini
+            ->first();  // Mengambil target bulan ini
+        $targets = UserTarget::where('user_id', $user->id)
+            // ->where('at_month', $month) // Menentukan tahun sekarang
+            ->get(); // Mengambil seluruh data target bulanan untuk tahun ini
+
         $total_margin = DB::table('report_marketing')
-            ->where('created_by', $user_id)
+            ->where('created_by', $user->id)
             ->whereYear('created_at', Carbon::now()->year) // Filter tahun berjalan
             ->sum('total_nett_margin'); // Hitung total kolom
+
         $total_with_sales = max(0, $totalSalesMargin + $total_margin);
-        $shortfall = max(0, $target->annual_target - $total_with_sales);
+
+        $shortfall = $target ? max(0, $target->monthly_target - $total_with_sales) : 0;
+        $annual_shortfall = max(0, $user->annual_target - $total_with_sales);
+
         $target_margin = DB::table('report_marketing')
             ->selectRaw('
                 MONTH(created_at) as month, 
@@ -267,19 +292,20 @@ class DashboardController extends Controller
                 (SUM(total_nett_margin) + ?) as amount_sales
             ', [$total_with_sales])
             ->whereYear('created_at', Carbon::now()->year)
-            ->where('created_by', $user_id)
+            ->where('created_by', $user->id)
             ->groupBy(DB::raw('YEAR(created_at), MONTH(created_at)'))
             ->orderByRaw('YEAR(created_at), MONTH(created_at)')
             ->get();
-        
 
         return Inertia::render('Marketing/Dashboard',compact(
             'totalSalesMargin',
             'target',
+            'targets',
             'total_margin',
             'shortfall',
             'target_margin',
-            'total_with_sales'
+            'total_with_sales',
+            'annual_shortfall'
         ));
     }
 

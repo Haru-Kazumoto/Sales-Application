@@ -12,7 +12,7 @@ class UserTarget extends Model
 
     protected $table = 'user_target';
 
-    protected $fillable = ['annual_target', 'period','monthly_target','user_id'];
+    protected $fillable = ['annual_target', 'period','monthly_target','user_id','at_month'];
 
     public function user(): BelongsTo
     {

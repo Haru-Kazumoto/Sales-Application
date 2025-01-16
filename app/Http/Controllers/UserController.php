@@ -80,20 +80,24 @@ class UserController extends Controller
                 'division_id' => $request->input('division_id'),
             ]);
 
-            // Cek apakah divisi user adalah "SALES"
+            // Cek apakah divisi user adalah "SALES" atau "MARKETING"
             $division = Division::find($request->input('division_id'));
-            if ($division && $division->division_name === 'SALES') {
-                // Buat UserTarget kosong untuk user SALES
-                $userTarget = new UserTarget([
-                    'annual_target' => 0,
-                    'monthly_target' => 0,
-                    'period' => now()->year,
-                ]);
+            if ($division && ($division->division_name === 'SALES' || $division->division_name === 'MARKETING')) {
+                // Loop untuk membuat UserTarget untuk 12 bulan
+                for ($month = 1; $month <= 12; $month++) {
+                    // Buat UserTarget kosong untuk setiap bulan
+                    $userTarget = new UserTarget([
+                        'monthly_target' => 0, // Atau nilai default lain yang sesuai
+                        'period' => now()->year, // Set period berdasarkan tahun sekarang
+                        'at_month' => $month, // Set bulan
+                    ]);
 
-                // Associate UserTarget dengan User dan simpan
-                $userTarget->user()->associate($user);
-                $userTarget->save();
+                    // Associate UserTarget dengan User dan simpan
+                    $userTarget->user()->associate($user);
+                    $userTarget->save();
+                }
             }
+
 
             DB::commit();
 

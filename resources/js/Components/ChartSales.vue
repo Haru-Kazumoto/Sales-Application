@@ -12,7 +12,7 @@ import { usePage } from '@inertiajs/vue3';
 
 // Define props
 const props = defineProps({
-    target: Number,
+    target: Array,
     total_target: [],
 });
 
@@ -26,8 +26,8 @@ const series = computed(() => {
         },
         {
             name: 'Target Penjualan',
-            data: Array(12).fill(props.target) // Target untuk 12 bulan
-        }
+            data: props.target.map((data) => data.monthly_target) // Target untuk 12 bulan
+        },
     ];
 });
 
@@ -71,16 +71,6 @@ const chartOptions = ref({
         title: {
             text: 'Rp (RUPIAH)'
         },
-        // labels: {
-        //     formatter: function (val) {
-        //         if (val >= 1000000000) {
-        //             return "Rp " + (val / 1000000000) + " M";
-        //         } else if (val >= 1000000) {
-        //             return "Rp " + (val / 1000000) + " Jt";
-        //         }
-        //         return "Rp " + val.toLocaleString();
-        //     }
-        // }
     },
     fill: {
         opacity: 1

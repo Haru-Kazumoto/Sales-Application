@@ -15,7 +15,7 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $fillable = ['fullname','phone', 'username', 'email', 'password', 'role_id', 'user_uid','division_id','is_active'];
+    protected $fillable = ['fullname','phone', 'username', 'email', 'password', 'role_id', 'user_uid','division_id','is_active','annual_target'];
 
     protected $hidden = [
         'password',
@@ -54,9 +54,9 @@ class User extends Authenticatable
         return $this->hasMany(Parties::class, 'users_id');
     }
 
-    public function userTarget(): HasOne
+    public function userTarget(): HasMany
     {
-        return $this->hasOne(UserTarget::class, 'user_id');
+        return $this->hasMany(UserTarget::class, 'user_id');
     }
 
 }

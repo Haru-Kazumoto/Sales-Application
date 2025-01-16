@@ -26,9 +26,12 @@
             <div class="col-12 col-md-6 col-lg-3 mb-3">
                 <div class="card shadow-sm border-0">
                     <div class="card-body">
-                        <div class="card-title">TARGET PENJUALAN</div>
+                        <div class="card-title">TARGET PENJUALAN BULAN INI</div>
                         <div class="card-content">
-                            <span class="fs-4 fw-medium">{{ formatRupiah($page.props.target.annual_target) }}</span>
+                            <span class="fs-4 fw-medium">
+                                {{ $page.props.target && $page.props.target.monthly_target ?
+                                    formatRupiah($page.props.target.monthly_target) : formatRupiah(0) }}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -71,22 +74,24 @@
                     <div class="card-body">
                         <div class="row g-2 ms-2 my-2">
                             <div class="col-12 col-lg-6 d-flex flex-column">
-                                <span class="fs-3 fw-medium">TARGET PENJUALAN</span>
+                                <span class="fs-3 fw-medium">TARGET PENJUALAN TAHUN INI</span>
                                 <span>Target summary 2025</span>
                             </div>
                             <div class="col-12 col-lg-6 d-flex flex-column align-items-lg-end">
-                                <span class="fs-3 fw-medium">Rp 1.000.000.000</span>
-                                <span>Kurang <span class="text-red">{{ formatRupiah($page.props.shortfall) }}</span> dari target 2025</span>
+                                <span class="fs-3 fw-medium">{{ formatRupiah($page.props.auth.user.annual_target)
+                                    }}</span>
+                                <span>Kurang <span class="text-red">{{ formatRupiah($page.props.annual_shortfall)
+                                        }}</span> dari target 2025</span>
                             </div>
                         </div>
                         <n-divider></n-divider>
-                        <ChartSales :target="$page.props.target.annual_target" :total_target="total_targets" />
+                        <ChartSales :target="$page.props.targets" :total_target="total_targets" />
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="card shadow-sm border-0">
+        <div class="card shadow-sm border-0 mb-4">
             <div class="card-body">
                 <div class="d-flex">
                     <span class="fw-medium">PERFORMA SALESMAN</span>
@@ -95,7 +100,7 @@
             </div>
         </div>
 
-        <div class="card shadow-sm border-0">
+        <!-- <div class="card shadow-sm border-0">
             <div class="card-body">
                 <div class="row g-2">
                     <div class="col-12 col-lg-5">
@@ -110,7 +115,7 @@
                 </div>
                 <n-data-table :bordered="false" :columns="runningBillColumn" />
             </div>
-        </div>
+        </div> -->
     </div>
 </template>
 

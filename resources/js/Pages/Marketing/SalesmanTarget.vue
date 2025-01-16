@@ -46,22 +46,22 @@ export default defineComponent({
                     key: "fullname",
                     width: 160,
                 },
-                {
-                    title: "TARGET BULANAN",
-                    key: "monthly_target",
-                    width: 150,
-                    render(row) {
-                        return formatRupiah(row.user_target.monthly_target) ?? 0;
-                    }
-                },
-                {
-                    title: "TARGET TAHUNAN",
-                    key: "annual_target",
-                    width: 150,
-                    render(row) {
-                        return formatRupiah(row.user_target.annual_target) ?? 0;
-                    }
-                },
+                // {
+                //     title: "TARGET BULANAN",
+                //     key: "monthly_target",
+                //     width: 150,
+                //     // render(row) {
+                //     //     return formatRupiah(row.user_target.monthly_target) ?? 0;
+                //     // }
+                // },
+                // {
+                //     title: "TARGET TAHUNAN",
+                //     key: "annual_target",
+                //     width: 150,
+                //     // render(row) {
+                //     //     return formatRupiah(row.user_target.annual_target) ?? 0;
+                //     // }
+                // },
                 {
                     title: "AKSI",
                     key: "action",
