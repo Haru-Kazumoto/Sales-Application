@@ -135,6 +135,37 @@
                                 v-model:value="transaction_details.submission_discount" />
                         </div>
                     </div>
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-9">
+                        <div class="d-flex flex-column gap-1">
+                            <label for="">Syarat Pembayaran</label>
+                        </div>
+                        <n-space item-style="display: flex;" align="center">
+                            <n-checkbox size="large" label="Invoice" v-model:checked="condition_payment.invoice"/>
+                            <n-checkbox size="large" label="Surat Jalan Asli PO/CO" v-model:checked="condition_payment.travel_document"/>
+                            <n-checkbox size="large" label="Faktur Pajak" v-model:checked="condition_payment.tax_invoice"/>
+                            <n-checkbox size="large" label="Kwitansi" v-model:checked="condition_payment.receipt"/>
+                            <n-checkbox size="large" label="Surat Penerimaan Barang Asli" v-model:checked="condition_payment.items_receipt"/>
+                        </n-space>
+                        <!-- <n-checkbox-group v-model:value="transaction_details.condition_checked">
+                            <n-grid :y-gap="8" :cols="2">
+                                <n-gi>
+                                    <n-checkbox value="1" label="Invoice" />
+                                </n-gi>
+                                <n-gi>
+                                    <n-checkbox value="2" label="Surat Jalan Asli PO/CO" />
+                                </n-gi>
+                                <n-gi>
+                                    <n-checkbox value="3" label="Faktur Pajak" />
+                                </n-gi>
+                                <n-gi>
+                                    <n-checkbox value="4" label="Kwitansi" />
+                                </n-gi>
+                                <n-gi>
+                                    <n-checkbox value="5" label="Surat Penerimaan Barang Asli" />
+                                </n-gi>
+                            </n-grid>
+                        </n-checkbox-group> -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -490,7 +521,17 @@ export default defineComponent({
             segment_customer: null as any,
             use_tax: false,
             submission_discount: "NOT SUBMIT",
+            condition_checked: [] as any[]
         });
+
+        const condition_payment = ref({
+            invoice: null as unknown as any, // Untuk value 1
+            tax_invoice: null as unknown as any, // Untuk value 3
+            travel_document: null as unknown as any, // Untuk value 2
+            receipt: null as unknown as any, // Untuk value 4
+            items_receipt: null as unknown as any, // Untuk value 5
+        });
+
 
 
         const products = ref({
@@ -1270,6 +1311,36 @@ export default defineComponent({
                     category: "Taxes",
                     value: String(transaction_details.value.use_tax),
                     data_type: "boolean",
+                },
+                {
+                    name: "Invoice",
+                    category: "Condition Invoice",
+                    value: String(condition_payment.value.invoice ?? "false"),
+                    data_type: "string",
+                },
+                {
+                    name: "Travel Document",
+                    category: "Condition Travel Document",
+                    value: String(condition_payment.value.travel_document ?? "false"),
+                    data_type: "string",
+                },
+                {
+                    name: "Tax Invoice",
+                    category: "Condition Tax Invoice",
+                    value: String(condition_payment.value.tax_invoice ?? "false"),
+                    data_type: "string",
+                },
+                {
+                    name: "Receipt",
+                    category: "Condition Receipt",
+                    value: String(condition_payment.value.receipt ?? "false"),
+                    data_type: "string",
+                },
+                {
+                    name: "Item Receipt",
+                    category: "Condition Item Receipt",
+                    value: String(condition_payment.value.items_receipt ?? "false"),
+                    data_type: "string"
                 }
             ];
 
@@ -1427,6 +1498,7 @@ export default defineComponent({
             productMasters,
             discountSubmission,
             availableProducts,
+            condition_payment,
             handleSearchCustomer: (query: string) => {
                 if (!query.length) {
                     customerOptionsRef.value = []

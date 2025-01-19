@@ -267,8 +267,7 @@ class CustomerOrdersController extends Controller
      * Store a newly created resource in storage.
      */
     public function storeDnp(Request $request)
-    {
-
+    {  
         // Validasi input request
         $request->validate([
             'document_code' => 'required|string',
@@ -745,6 +744,69 @@ class CustomerOrdersController extends Controller
         });
 
         return redirect()->route('warehouse.travel-document')->with('success', 'Surat jalan berhasil dibuat!');
+    }
+
+    public function generateConfirmationOrder(Transactions $transactions) 
+    {
+        $transactions->load([
+            'transactionDetails',
+            'transactionItems'
+        ]);
+
+        $document_info = DB::table('transactions as tx')
+            ->select([
+                'tx.document_code',
+                'tx.created_at',
+                'cs.name',
+                'cs.address',
+                'cs.phone',
+                'cs.fax',
+                DB::raw("(SELECT VALUE FROM transaction_details td WHERE td.category = 'Condition Invoice' AND td.transactions_id = tx.id) AS invoice"),
+                DB::raw("(SELECT VALUE FROM transaction_details td WHERE td.category = 'Condition Travel Document' AND td.transactions_id = tx.id) AS travel_document"),
+                DB::raw("(SELECT VALUE FROM transaction_details td WHERE td.category = 'Condition Tax Invoice' AND td.transactions_id = tx.id) AS tax_invoice"),
+                DB::raw("(SELECT VALUE FROM transaction_details td WHERE td.category = 'Condition Receipt' AND td.transactions_id = tx.id) AS receipt"),
+                DB::raw("(SELECT VALUE FROM transaction_details td WHERE td.category = 'Condition Item Receipt' AND td.transactions_id = tx.id) AS items_receipt"),
+            ])
+            ->join('parties as cs', 'tx.customer_id', '=', 'cs.id')
+            ->where('tx.id', $transactions->id)
+            ->limit(1)
+            ->first(); // Gunakan ->first() untuk mendapatkan satu baris data
+        $document_items = DB::table('transactions as tx')
+            ->select([
+                'p.name',
+                'ti.amount',
+                'ti.quantity',
+                DB::raw("
+                    CASE 
+                        WHEN ti.discount_3 IS NOT NULL AND ti.discount_3 != 0 THEN ti.discount_3
+                        WHEN ti.discount_2 IS NOT NULL AND ti.discount_2 != 0 THEN ti.discount_2
+                        WHEN ti.discount_1 IS NOT NULL AND ti.discount_1 != 0 THEN ti.discount_1
+                        ELSE 0
+                    END AS discount
+                "),
+                'ti.total_price',
+            ])
+            ->join('transaction_items as ti', 'ti.transactions_id', '=', 'tx.id')
+            ->join('products as p', 'ti.product_id', '=', 'p.id')
+            ->where('tx.id', $transactions->id)
+            ->get(); // Mengambil semua hasil dalam bentuk koleksi
+
+        $result = DB::table('transactions as tx')
+            ->join('transaction_items as ti', 'ti.transactions_id', '=', 'tx.id')
+            ->where('tx.id', 35)
+            ->selectRaw('SUM(ti.quantity) AS total_all, SUM(ti.total_price) AS total_all_price')
+            ->first();
+
+        $data = [
+            'document_info' => $document_info,
+            'date' => Carbon::now()->addDays($document_info->created_at)->format('d F Y'),
+            'document_items' => $document_items,
+            'result' => $result,
+        ];
+
+        $pdf = Pdf::loadView('documents.confirmation-order', $data);
+
+        return $pdf->stream('confirmation_order_' . rand(10000, 90000) . '.pdf');
     }
 
     public function generateTravelDocument(Transactions $transactions)

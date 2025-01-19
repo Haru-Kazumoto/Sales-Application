@@ -271,6 +271,10 @@
             <n-button type="error" size="large" @click="handleProcessCO('false')">REJECT</n-button>
             <n-button type="primary" size="large" @click="handleProcessCO('true')">APPROVE</n-button>
         </div>
+
+        <div class="d-flex" v-if="customer_order.status === 'APPROVE'">
+            <n-button class="ms-auto mb-3" type="primary" size="large" @click="handleGenerateConfirmationOrderDocument">Preview Confirmation Order</n-button>
+        </div>
     </div>
 </template>
 
@@ -693,8 +697,13 @@ export default defineComponent({
             });
         }
 
+        function handleGenerateConfirmationOrderDocument() {
+            window.open(route('sales.preview-confirmation-order', customer_order.id), '_blank');
+        }
+
         return {
             columns: createColumns(),
+            handleGenerateConfirmationOrderDocument,
             handleOpenDiscountModal,
             handleApprovingCO,
             handleSubmitDiscount,

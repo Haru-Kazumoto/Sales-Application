@@ -309,6 +309,8 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
             Route::get('', [App\Http\Controllers\BookingOrderController::class, 'indexOrderDku'])->name('index-booking-dku');
             Route::get('/create', [App\Http\Controllers\BookingOrderController::class, 'createBookingDku'])->name('create-booking-dku');
         });
+
+        Route::get('/generate-confirmation-order/{transactions}', [App\Http\Controllers\CustomerOrdersController::class, 'generateConfirmationOrder'])->name('preview-confirmation-order');
     });
 
     Route::name('marketing.')->group(function() {
