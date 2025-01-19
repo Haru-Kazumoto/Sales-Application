@@ -41,28 +41,25 @@
         }
 
         .main-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 15px;
-        }
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 15px;
+        border: 1px solid #000; /* Garis border utama */
+    }
 
-        .main-table th,
-        .main-table td {
-            border: 1px solid #ddd;
-            padding: 6px;
-            text-align: left;
-        }
+    .main-table th,
+    .main-table td {
+        border: 1px solid #000; /* Garis antar sel */
+        padding: 6px;
+        text-align: left;
+    }
 
-        .main-table th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 10px;
-        }
-
-        .main-table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
+    .main-table th {
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 10px;
+        text-align: center;
+    }
 
         .text-right {
             text-align: right;
@@ -82,7 +79,7 @@
             font-weight: bold;
             margin-bottom: 10px;
             text-decoration: underline;
-            color: #444;
+            color: black;
         }
 
         .summary-table {
@@ -97,13 +94,13 @@
         }
 
         .summary-label {
-            font-weight: bold;
-            color: #666;
-            font-size: 10px;
+            font-weight: bolder;
+            color: black;
+            font-size: 11px;
         }
 
         .summary-value {
-            color: #333;
+            color: black;
             font-size: 11px;
         }
 
@@ -186,7 +183,7 @@
             <!-- Kolom Kiri -->
             <td align="left" style="width: 33%; vertical-align: top;">
                 <div>
-                    <h5>Kepada: </h5>
+                    <h5>KEPADA: </h5>
                     <span>
                         {{ $supplier }}<br>
                         Gedung Menara 165 Unit A&B lt8 Jl TB<br>
@@ -202,13 +199,13 @@
 
             <!-- Kolom Kanan -->
             <td align="left" style="width: 27%; vertical-align: top; line-height: 1.4;">
-                <div>
-                    <h5>
+                <div class="font-size: 13px; font-weight: bolder;">
+                    <h3>
                         No. PO : {{ $purchase_order->document_code }}<br>
                         Tanggal : {{ $purchase_order_date }}<br>
                         No SO<br>
                         CC<br>
-                    </h5>
+                    </h3>
                 </div>
             </td>
         </tr>
@@ -299,7 +296,7 @@
                     <div class="summary-label">6. Faktur Pajak / NPWP</div>
                 </td>
                 <td width="40%">
-                    <div class="summary-label">: Perlu NPWP : 01.2345.239423.234</div>
+                    <div class="summary-label">: Perlu NPWP : <span style="font-weight: bold; text-decoration: underline">01.2345.239423.234</span></div>
                 </td>
             </tr>
             <tr>

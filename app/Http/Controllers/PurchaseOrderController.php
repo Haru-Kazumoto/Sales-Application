@@ -18,6 +18,7 @@ use App\Models\Transactions;
 use App\Models\TransactionType;
 use App\Utils\DocumentNumberGenerator;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -286,7 +287,7 @@ class PurchaseOrderController extends Controller
             'supplier' => $supplier,
             'storehouse' => $storehouse,
             'located' => $located,
-            'purchase_order_date' => $purchase_order_date,
+            'purchase_order_date' => Carbon::now()->addDays($purchase_order_date)->format('d F Y'),
             'send_date' => $send_date,
             'transportation' => $transportation,
             'sender' => $sender,
