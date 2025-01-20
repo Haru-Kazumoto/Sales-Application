@@ -22,6 +22,9 @@ class ImportProductMaster extends Controller
 
     public function importCustomer(Request $request) 
     {
-        Excel::import(new CustomerImport, $request->attachment);
+        $import = new CustomerImport();
+        Excel::import($import, $request->attachment);
+
+        return back()->with('success', $import->dataReceived);
     }
 }

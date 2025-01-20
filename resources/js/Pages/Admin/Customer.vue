@@ -51,7 +51,10 @@
                                     <small class="text-muted">
                                         Hanya file Excel (.xlsx) yang diperbolehkan.
                                     </small>
-                                    <n-button type="primary" class="mt-3 w-25" @click="handleImportProducts">Import</n-button>
+                                    <div class="d-flex mt-2 gap-3">
+                                        <n-button type="primary" class="" @click="handleImportProducts">Import Data</n-button>
+                                        <n-button type="info" class="" @click="handleDownloadTemplateExcel">Download Template</n-button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -436,7 +439,7 @@ export default defineComponent({
                 onSuccess: (page) => {
                     Swal.fire({
                         title: 'Berhasil memasukan data!',
-                        text: 'Silahkan cek list data',
+                        text: `Data yang diterima ${page.props.flash.success}`,
                         icon: 'success'
                     });
                 },
@@ -444,6 +447,12 @@ export default defineComponent({
                     Swal.fire('Gagal memasukan data!', 'Silahkan lapor developer', 'error');
                 }
             });
+        }
+
+        function handleDownloadTemplateExcel(){
+            const url = route('admin.customer.download-template');
+
+            window.location.href = url;
         }
 
         // Function to handle page change
@@ -515,6 +524,7 @@ export default defineComponent({
             file,
             handleChangeFile,
             handleImportProducts,
+            handleDownloadTemplateExcel,
         }
     },
     components: {

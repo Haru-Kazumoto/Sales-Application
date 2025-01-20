@@ -78,6 +78,7 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
             Route::delete('/delete-customer/{parties}', [App\Http\Controllers\PartiesController::class, 'destroyCustomer'])->name('parties.customer.delete');
 
             Route::post('/import-customer', [App\Http\Controllers\ImportProductMaster::class, 'importCustomer'])->name('customer.import');
+            Route::get('/export-customer-template', [App\Http\Controllers\PartiesController::class,'exportTemplateExcel'])->name('customer.download-template');
         });
 
         Route::prefix('supplier-management')->group(function() {

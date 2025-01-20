@@ -12,6 +12,7 @@ use Maatwebsite\Excel\Concerns\WithStartRow;
 
 class CustomerImport implements ToCollection, WithStartRow, WithMultipleSheets
 {
+    public $dataReceived = 0;
 
     public function sheets(): array
     {
@@ -28,7 +29,7 @@ class CustomerImport implements ToCollection, WithStartRow, WithMultipleSheets
      */
     public function startRow(): int
     {
-        return 2; // Data mulai dari baris ke-3
+        return 2;
     }
 
     /**
@@ -37,7 +38,8 @@ class CustomerImport implements ToCollection, WithStartRow, WithMultipleSheets
     public function collection(Collection $collection)
     {
         $type = PartiesGroup::where('name', 'Others')->first();
-        DB::transaction(function() use ($collection, $type) {
+        $dataReceived = 0;
+        DB::transaction(function() use ($collection, $type, $dataReceived) {
             foreach ($collection as $row) {
                 // Cek apakah kode sudah ada di database
                 $existingParty = Parties::where('code', $row[2])->first();
@@ -67,7 +69,11 @@ class CustomerImport implements ToCollection, WithStartRow, WithMultipleSheets
                     'return_address' => $row[11],
                     // 'segment_customer' => $row[13],
                 ]);
+
+                $dataReceived++;
             }
         });
+
+        $this->dataReceived = $dataReceived;
     }
 }

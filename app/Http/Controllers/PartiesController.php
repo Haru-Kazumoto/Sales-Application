@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\CustomerTemplate;
 use App\Models\Lookup;
 use App\Models\Parties;
 use App\Models\PartiesGroup;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PartiesController extends Controller
 {
@@ -333,5 +336,10 @@ class PartiesController extends Controller
         $parties->delete();
 
         return redirect()->route('admin.parties.supplier')->with('success', 'Supplier berhasil dihapus!');
+    }
+
+    public function exportTemplateExcel()
+    {
+        return Excel::download(new CustomerTemplate(), 'new_customer_data_'.Carbon::now()->year.'.xlsx');
     }
 }
