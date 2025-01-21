@@ -228,6 +228,7 @@ class DashboardController extends Controller
                 'tx.total',
                 DB::raw("DATE_FORMAT(tx.due_date, '%d %M %Y') AS due_date")
             )
+            ->where('tx.transaction_type_id', 8)
             ->where('tx.created_by', $user->id)
             ->get();
         $target_margin = DB::table('report_marketing')
