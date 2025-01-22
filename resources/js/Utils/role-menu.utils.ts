@@ -529,6 +529,26 @@ export const roleMenus = {
             icon: renderIcon(LogoWhatsapp),
             href: "/whatsapp-message"
         },
+        //FAKTURIS
+        { key: 'role-label', label: "FAKTURIS", disabled: true },
+        {
+            label: "Faktur DNP",
+            key: "invoice-dnp",
+            href: '/invoice-dnp',
+            icon: renderIcon(ReceiptOutline),
+        },
+        {
+            label: "Faktur DKU",
+            key: "invoice-dku",
+            href: '/invoice-dku',
+            icon: renderIcon(ReceiptOutline),
+        },
+        {
+            label: "List Faktur",
+            key: "list-invoice",
+            href: '/list-invoices',
+            icon: renderIcon(ReceiptCube24Regular),
+        },
         //SALES
         { key: 'role-label', label: "SALES", disabled: true },
         {
