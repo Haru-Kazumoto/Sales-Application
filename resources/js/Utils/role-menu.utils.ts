@@ -532,6 +532,17 @@ export const roleMenus = {
         //FAKTURIS
         { key: 'role-label', label: "FAKTURIS", disabled: true },
         {
+            key: 'divider-1',
+            type: 'divider',
+            props: {
+                style: {
+                    paddingTop: '2px',
+                    borderRadius: '10px',
+                    backgroundColor: '#cccccc',
+                }
+            }
+        },
+        {
             label: "Faktur DNP",
             key: "invoice-dnp",
             href: '/invoice-dnp',
