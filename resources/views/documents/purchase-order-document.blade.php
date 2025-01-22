@@ -41,25 +41,25 @@
         }
 
         .main-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 15px;
-        border: 1px solid #000; /* Garis border utama */
-    }
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            border: 1px solid #000; /* Garis border utama */
+        }
 
-    .main-table th,
-    .main-table td {
-        border: 1px solid #000; /* Garis antar sel */
-        padding: 6px;
-        text-align: left;
-    }
+        .main-table th,
+        .main-table td {
+            border: 1px solid #000; /* Garis antar sel */
+            padding: 6px;
+            text-align: left;
+        }
 
-    .main-table th {
-        font-weight: bold;
-        text-transform: uppercase;
-        font-size: 10px;
-        text-align: center;
-    }
+        .main-table th {
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 10px;
+            text-align: center;
+        }
 
         .text-right {
             text-align: right;

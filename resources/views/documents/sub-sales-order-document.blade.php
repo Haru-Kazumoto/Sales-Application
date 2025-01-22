@@ -69,24 +69,21 @@
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 15px;
+            border: 1px solid #000; /* Garis border utama */
         }
 
         .main-table th,
         .main-table td {
-            border: 1px solid #ddd;
+            border: 1px solid #000; /* Garis antar sel */
             padding: 6px;
             text-align: left;
         }
 
         .main-table th {
-            background-color: #f2f2f2;
             font-weight: bold;
             text-transform: uppercase;
             font-size: 10px;
-        }
-
-        .main-table tr:nth-child(even) {
-            background-color: #f9f9f9;
+            text-align: center;
         }
 
         .text-right {
