@@ -30,6 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withSchedule(function($schedule) {
         $schedule
             ->command('transaction:increment-age')
-            ->daily(); // every day on 00:00
+            ->everySecond(); // every second
+            // ->daily(); // every day on 00:00
     })
     ->create();

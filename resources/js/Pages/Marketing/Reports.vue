@@ -159,7 +159,7 @@ export default defineComponent({
                     width: 100,
                 },
                 {
-                    title: "Surplus",
+                    title: "Surplus/Defisit",
                     key: "surplus",
                     width: 200,
                 },
