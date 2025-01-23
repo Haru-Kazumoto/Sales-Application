@@ -167,7 +167,7 @@
                             </label>
                             <n-input size="large" id="product_price" placeholder="" :value="transaction_items.amount"
                                 @input="(value) => {
-                                    transaction_items.amount = value.replace(/\./g, ',');
+                                    transaction_items.amount = value.replace(/\./g, '').replace(',', '.');
                                 }">
                                 <template #prefix>Rp </template>
                             </n-input>
