@@ -396,10 +396,10 @@ export default defineComponent({
 
             // Kalkulasi redemp_price dengan faktor 1.11
             let redemp_price = form.redemp_price;
-            if (redemp_price) {
-                redemp_price = Math.trunc(Number(redemp_price) / 1.11); // Membulatkan hasil pembagian ke bilangan bulat
-                form.redemp_price = redemp_price; // Update nilai redemp_price di form
-            }
+            // if (redemp_price) {
+            //     redemp_price = Math.trunc(Number(redemp_price) / 1.11); // Membulatkan hasil pembagian ke bilangan bulat
+            //     form.redemp_price = redemp_price; // Update nilai redemp_price di form
+            // }
 
             // Hitung basePrice tanpa PPN
             const basePrice =
