@@ -44,7 +44,7 @@
                                     <RequiredMark />
                                 </label>
                                 <n-select size="large" placeholder="" :options="productTypeOptions"
-                                    v-model:value="form.product_type_id" />
+                                    v-model:value="form.product_type_id" filterable />
                             </div>
                             <div class="col-12 col-lg-4 d-flex flex-column">
                                 <label for="">Pemasok
@@ -84,7 +84,7 @@
                                     <RequiredMark />
                                 </label>
                                 <n-select size="large" placeholder="" :options="productSubTypeOptions"
-                                    v-model:value="form.product_sub_type_id" />
+                                    v-model:value="form.product_sub_type_id" filterable />
                             </div>
                             <n-divider></n-divider>
                             <h4>Kalkulasi Harga</h4>
