@@ -18,7 +18,7 @@ class CustomerImport implements ToCollection, WithStartRow, WithMultipleSheets
     {
         return [
             // 'VENDOR' => new VendorImport(),
-            'DATABASE 2025' => new CustomerImport(),
+            'VALID DATABASE 2025' => new CustomerImport(),
         ];
     }
 
