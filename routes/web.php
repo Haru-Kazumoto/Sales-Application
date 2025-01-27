@@ -159,6 +159,9 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
 
             Route::patch('/shutdown-promo/{tradePromo}', [App\Http\Controllers\TradePromoController::class, 'shutdownPromo'])->name('trade-promo.shutdown');
             Route::patch('/add-quota', [App\Http\Controllers\TradePromoController::class, 'addQuotaPromo'])->name('trade-promo.add-quota');
+
+            Route::patch('/assign/product/{tradePromo}',[App\Http\Controllers\TradePromoController::class,'assignProduct'])->name('trade-promo.assign-product');
+            Route::patch('/unassign/product/{tradePromo}',[App\Http\Controllers\TradePromoController::class,'unassignProduct'])->name('trade-promo.unassign-product');
         });
 
         Route::prefix('customer-region')->group(function() {

@@ -19,6 +19,13 @@ class TradePromo extends Model
         'is_active',
     ];
 
+    public function products()
+    {
+        return $this->belongsToMany(Products::class, 'product_trade_promo', 'trade_promo_id', 'product_id')
+            ->withTimestamps();
+    }
+
+
     public function transactionItems(): HasMany
     {
         return $this->hasMany(TransactionItem::class);

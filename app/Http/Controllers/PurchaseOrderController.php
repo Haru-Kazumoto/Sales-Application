@@ -114,7 +114,7 @@ class PurchaseOrderController extends Controller
             ->where('type_parties', "VENDOR")
             ->get();
 
-        $products = Products::all();
+        $products = Products::with('tradePromos')->get();
         $units = $this->lookupService->getAllLookupBy('category', 'UNIT');
         $transports = $this->partiesService->getPartiesByGroupAndType('VENDOR', 'Angkutan');
         $tax = Tax::all();
@@ -124,7 +124,6 @@ class PurchaseOrderController extends Controller
             'document_code',
             4
         );
-        $trade_promos = TradePromo::where('is_active', true)->get();
 
         return Inertia::render('Procurement/Purchase/CreatePurchaseOrder', [
             'po_number' => $po_number,
@@ -136,7 +135,6 @@ class PurchaseOrderController extends Controller
             'units' => $units,
             'suppliers' => $suppliers,
             'transports' => $transports,
-            'trade_promos' => $trade_promos,
         ]);
     }
 

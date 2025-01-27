@@ -146,7 +146,7 @@
                             <n-select size="large" placeholder="" v-model:value="products.name" filterable
                                 :options="productOptions" :loading="loading" />
                         </div>
-                        <div class="col-12 col-md-6 col-lg-4">
+                        <div class="col-12 col-md-6 col-lg-4" v-if="tradePromoOptions.length > 0">
                             <label for="grosir_account">Akun Grosir</label>
                             <n-select size="large" placeholder="" filterable clearable :options="tradePromoOptions"
                                 v-model:value="transaction_items.trade_promo_id" />
@@ -305,23 +305,27 @@ export default defineComponent({
             trade_promo_id: null as unknown as number,
         });
 
-        const tradePromoOptions = (page.props.trade_promos as any[]).map((data) => ({
-            label: data.grosir_account,
-            value: data.id,
-            id: data.id,
-            price: data.discount_price,
-            quota: data.quota
-        }));
+        // const tradePromoOptions = (page.props.trade_promos as any[]).map((data) => ({
+        //     label: data.grosir_account,
+        //     value: data.id,
+        //     id: data.id,
+        //     price: data.discount_price,
+        //     quota: data.quota
+        // }));
+
+        const tradePromoOptions = ref([]);
         const quotaTradePromo = ref(null as unknown as number);
 
         // Watcher untuk akun grosir
         watch(() => transaction_items.value.trade_promo_id, (id) => {
-            const selectedTradePromo = tradePromoOptions.find(data => data.id === id);
+            const selectedTradePromo: any = tradePromoOptions.value.find((data: any) => data.value === id);
 
             if (selectedTradePromo) {
-                quotaTradePromo.value = selectedTradePromo.quota;
+                quotaTradePromo.value = selectedTradePromo.quota
                 transaction_items.value.amount_discount = selectedTradePromo.price;
             } else {
+                quotaTradePromo.value = null as unknown as number;
+                transaction_items.value.trade_promo_id = null as unknown as number;
                 transaction_items.value.amount_discount = null as unknown as number;
             }
         }, { deep: true, immediate: true });
@@ -340,23 +344,41 @@ export default defineComponent({
         })
 
         // Watcher untuk memantau perubahan pada 'products.name'
-        watch(() => products.value.name, (newName) => {
-            // Cari produk yang cocok berdasarkan nama produk yang dipilih
-            const selectedProduct = productOptions.find(product => product.label === newName);
+        watch(
+            () => products.value.name,
+            (newName) => {
+                const selectedProduct = productOptions.find((product) => product.label === newName);
 
-            // Jika produk ditemukan, isi 'products.code' dan 'transaction_items.product_id' secara otomatis
-            if (selectedProduct) {
-                // console.log(selectedProduct.redemp_price.replace(/\./g, ','));
-                products.value.code = selectedProduct.code; // Set 'code' produk
-                transaction_items.value.product_id = selectedProduct.id ?? 0; // Set 'product_id' dari produk yang dipilih
-                transaction_items.value.unit = selectedProduct.unit;
-                transaction_items.value.amount = selectedProduct.redemp_price;
-            } else {
-                products.value.code = ''; // Reset 'code' jika produk tidak ditemukan
-                transaction_items.value.product_id = null as unknown as number; // Reset 'product_id' jika produk tidak ditemukan
-                transaction_items.value.unit = "";
+                if (selectedProduct) {
+                    products.value.code = selectedProduct.code;
+                    transaction_items.value.product_id = selectedProduct.id;
+                    transaction_items.value.unit = selectedProduct.unit;
+                    transaction_items.value.amount = selectedProduct.retail_price;
+
+                    // Jika produk memiliki lebih dari 1 trade promo, siapkan opsi untuk select
+                    if (selectedProduct.trade_promos.length > 0) {
+                        tradePromoOptions.value = selectedProduct.trade_promos.map((promo) => ({
+                            label: promo.grosir_account,
+                            value: promo.id,
+                            price: promo.discount_price,
+                            quota: promo.quota,
+                            is_active: promo.is_active
+                        }));
+                    } else {
+                        quotaTradePromo.value = null as unknown as number;
+                        tradePromoOptions.value = [];
+                        transaction_items.value.trade_promo_id = null as unknown as number;
+                    }
+                } else {
+                    quotaTradePromo.value = null as unknown as number;
+                    transaction_items.value.trade_promo_id = null as unknown as number;
+                    products.value.code = "";
+                    transaction_items.value.product_id = null as unknown as number;
+                    transaction_items.value.unit = "";
+                    tradePromoOptions.value = [];
+                }
             }
-        });
+        );
 
         // Watcher untuk memantau perubahan pada purchase_order_date
         watch(
@@ -440,7 +462,7 @@ export default defineComponent({
             transaction_items.value.amount = null as unknown as number;
             transaction_items.value.tax_id = null as unknown as number;
             transaction_items.value.trade_promo_id = null as unknown as number;
-            quotaTradePromo.value = null as unknown as number;
+            // quotaTradePromo.value = null as unknown as number;
 
             notification.success({
                 title: 'Berhasil',
@@ -786,8 +808,10 @@ export default defineComponent({
             retail_price: data.retail_price,
             restaurant_price: data.restaurant_price,
             all_segment_price: data.all_segment_price,
+            trade_promos: data.trade_promos,
         }));
 
+        
         const pemasokOptions = (page.props.suppliers as Parties[]).map((data) => ({
             label: data.name,
             value: data.name,

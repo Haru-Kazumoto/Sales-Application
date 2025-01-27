@@ -38,8 +38,15 @@ class Products extends Model
         'margin_retail',
         'margin_end_user',
         'margin_grosir',
-        'discount_vendor'
+        'discount_vendor',
     ];
+
+    public function tradePromos()
+    {
+        return $this->belongsToMany(TradePromo::class, 'product_trade_promo', 'product_id', 'trade_promo_id')
+            ->withTimestamps();
+    }
+
 
     public function tax(): BelongsTo
     {

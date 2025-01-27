@@ -163,7 +163,7 @@ export default defineComponent({
                                     size: "medium",
                                     disabled: row.is_active === 0,
                                     onClick: () => {
-                                        handleUpdate(row);
+                                        router.visit(route('admin.trade-promo.edit', row.id));
                                     }
                                 },
                                 {
