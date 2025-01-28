@@ -231,13 +231,21 @@
                     <td class="text-center">{{ $index + 1 }}</td>
                     <td>{{ $txItem->product->code }} - {{ $txItem->product->name }}</td>
                     <td>{{ $txItem->quantity }}</td>
-                    <td>Rp {{ number_format($txItem->amount, 0, ',', '.') }}</td>
+                    
+                    <!-- Harga barang setelah exclude PPN -->
+                    <td>Rp {{ number_format(round($txItem->amount / 1.11), 0, ',', '.') }}</td>
+                    
                     <td class="text-center"></td>
                     <td class="text-right"></td>
-                    <td class="text-center">Rp {{ number_format($txItem->amount, 0, ',', '.') }}</td>
+
+                    <!-- Total harga tanpa PPN setelah kalkulasi -->
+                    <td class="text-center">Rp {{ number_format(round(($txItem->amount / 1.11) * $txItem->quantity), 0, ',', '.') }}</td>
+                    
+                    <!-- Harga total yang sudah termasuk PPN -->
                     <td class="text-center">Rp {{ number_format($txItem->total_price, 0, ',', '.') }}</td>
                 </tr>
             @endforeach
+
         </tbody>
     </table>
 
