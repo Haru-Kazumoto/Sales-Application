@@ -316,6 +316,12 @@ export const roleMenus = {
             icon: PeopleTeam28Regular,
             href: '/customer-management',
         },
+        {
+            label: "Transports",
+            key: 'transports',
+            icon: VehicleTruckProfile20Regular,
+            href: '/transport-management',
+        },
     ],
     WAREHOUSE: [
         {
