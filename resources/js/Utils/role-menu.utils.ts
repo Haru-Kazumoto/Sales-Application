@@ -128,7 +128,7 @@ export const roleMenus = {
             href: "/promo-program",
         },
         {
-            label: "Program Promo Beli",
+            label: "Program Alokasi SFM",
             key: "promo-program-purchase",
             icon: DocumentTextToolbox24Regular,
             href: "/trade-promo",
@@ -305,7 +305,7 @@ export const roleMenus = {
             ]
         },
         {
-            label: "Program Promo Beli",
+            label: "Program Alokasi SFM",
             key: "promo-program-purchase",
             icon: DocumentTextToolbox24Regular,
             href: "/trade-promo",

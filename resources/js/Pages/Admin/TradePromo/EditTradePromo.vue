@@ -5,7 +5,7 @@
         <div class="d-flex flex-column gap-3">
             <TitlePage title="Program Promo Beli" />
             <n-button text class="justify-content-start w-25 " size="large"
-                @click="router.visit(route('admin.trade-promo.create'), { method: 'get' })">
+                @click="router.visit(route('admin.trade-promo.index'), { method: 'get' })">
                 <n-icon :component="ArrowBack" style="margin-right: 5px;" />
                 Kembali
             </n-button>
@@ -44,8 +44,7 @@
                     </div>
                 </div>
 
-                <n-button class="ms-auto" type="primary" size="large" @click="">Update Promo
-                    beli</n-button>
+                <n-button class="ms-auto" type="primary" size="large" @click="handleUpdateTradePromo">Update Promo beli</n-button>
             </div>
         </div>
 
@@ -181,6 +180,25 @@ export default defineComponent({
             }
         );
 
+        function handleUpdateTradePromo() {
+            Swal.fire({
+                title: `Update trade promo ${trade_promo.grosir_account}?`,
+                icon: 'question',
+                showCancelButton: true,
+            }).then((result) => {
+                if(result.isConfirmed) {
+                    form.put(route('admin.trade-promo.update', trade_promo.id), {
+                        onSuccess: (page) => {
+                            Swal.fire((page.props.flash as Flash).success, '', 'success');
+                        },
+                        onError: () => {
+                            Swal.fire((page.props.flash as Flash).failed, '', 'error');
+                        }
+                    });
+                }
+            });
+        }
+
         function assignProduct() {
             if(formAssignProducts.product_id === null) {
                 Swal.fire('Harap memilih produk', '', 'error');
@@ -229,6 +247,7 @@ export default defineComponent({
 
         return {
             columns: createColumns(),
+            handleUpdateTradePromo,
             ArrowBack,
             router,
             trade_promo,

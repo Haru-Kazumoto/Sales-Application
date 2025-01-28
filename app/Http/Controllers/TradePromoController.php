@@ -15,14 +15,20 @@ class TradePromoController extends Controller
         //
     }
 
-    public function create()
+    public function index()
     {
         $data = TradePromo::query()
             ->selectRaw("*")
             ->orderByRaw("is_active DESC, created_at DESC")
             ->paginate(10);
 
-        return Inertia::render('Admin/TradePromo/CreateTradePromo', compact('data'));
+        return Inertia::render('Admin/TradePromo/TradePromo', compact('data'));
+    }
+
+    public function create() 
+    {
+        $products = DB::table('products')->get();
+        return Inertia::render('Admin/TradePromo/CreateTradePromo', compact('products'));
     }
 
     public function store(Request $request)
@@ -31,18 +37,25 @@ class TradePromoController extends Controller
             'grosir_account' => 'string|required',
             'discount_price' => 'numeric|required',
             'quota' => 'numeric|required',
+            'products' => 'array|nullable',
         ]);
-
+        
         DB::transaction(function () use ($request) {
-            TradePromo::create([
+            $tradePromo = TradePromo::create([
                 'grosir_account' => $request->grosir_account,
                 'discount_price' => $request->discount_price,
                 'quota' => $request->quota,
                 'is_active' => true,
             ]);
+
+            if ($request->has('products') && !empty($request->products) && is_array($request->products)) {
+                foreach ($request->products as $product) {
+                    $tradePromo->products()->attach($product['id']);
+                }
+            }
         });
 
-        return back()->with('success', 'Promo beli berhasil dibuat!');
+        return redirect()->route('admin.trade-promo.index')->with('success', 'Promo beli berhasil dibuat!');
     }
 
     public function edit(TradePromo $tradePromo)
@@ -92,12 +105,17 @@ class TradePromoController extends Controller
             ]);
         });
 
-        return back()->with('success', 'Promo beli berhasil diupdate!');
+        return redirect()->route('admin.trade-promo.index')->with('success', 'Promo beli berhasil diupdate!');
     }
 
-    public function deletePromo()
+    public function deletePromo(TradePromo $tradePromo)
     {
-        //
+        DB::transaction(function() use ($tradePromo) {
+            $tradePromo->products()->detach();
+            $tradePromo->delete();
+        });
+
+        return back()->with('success', 'Promo beli berhasil dihapus!');
     }
 
     public function shutdownPromo(TradePromo $tradePromo)

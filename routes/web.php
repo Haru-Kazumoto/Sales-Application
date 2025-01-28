@@ -149,7 +149,8 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         });
 
         Route::prefix('trade-promo')->group(function() {
-            Route::get('', [App\Http\Controllers\TradePromoController::class, 'create'])->name('trade-promo.create');
+            Route::get('', [App\Http\Controllers\TradePromoController::class, 'index'])->name('trade-promo.index');
+            Route::get('/create', [App\Http\Controllers\TradePromoController::class, 'create'])->name('trade-promo.create');
             Route::post('/post', [App\Http\Controllers\TradePromoController::class, 'store'])->name('trade-promo.store');
             Route::get('/edit/{tradePromo}', [App\Http\Controllers\TradePromoController::class, 'edit'])->name('trade-promo.edit');
             Route::put('/update/{tradePromo}', [App\Http\Controllers\TradePromoController::class, 'update'])->name('trade-promo.update');

@@ -357,7 +357,7 @@ export default defineComponent({
 
                     // Jika produk memiliki lebih dari 1 trade promo, siapkan opsi untuk select
                     if (selectedProduct.trade_promos.length > 0) {
-                        tradePromoOptions.value = selectedProduct.trade_promos.map((promo) => ({
+                        tradePromoOptions.value = selectedProduct.trade_promos.map((promo: { grosir_account: string, id: number, discount_price: number, quota: number, is_active: number }) => ({
                             label: promo.grosir_account,
                             value: promo.id,
                             price: promo.discount_price,
@@ -420,7 +420,9 @@ export default defineComponent({
 
             // Parsing amount yang sudah diformat ke angka desimal
             let productPrice = parseFloat(formattedAmount);
-            productPrice = productPrice * 1.11; // inc ppn
+
+            // productPrice = productPrice * 1.11; // inc ppn
+            
             if (isNaN(productPrice)) {
                 notification.error({
                     title: 'Nilai jumlah produk tidak valid',
@@ -811,7 +813,7 @@ export default defineComponent({
             trade_promos: data.trade_promos,
         }));
 
-        
+
         const pemasokOptions = (page.props.suppliers as Parties[]).map((data) => ({
             label: data.name,
             value: data.name,
