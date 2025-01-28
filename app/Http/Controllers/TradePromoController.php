@@ -20,7 +20,7 @@ class TradePromoController extends Controller
         $data = TradePromo::query()
             ->selectRaw("*")
             ->orderByRaw("is_active DESC, created_at DESC")
-            ->paginate(10);
+            ->get();
 
         return Inertia::render('Admin/TradePromo/TradePromo', compact('data'));
     }

@@ -150,6 +150,7 @@
                             <label for="grosir_account">Akun Grosir</label>
                             <n-select size="large" placeholder="" filterable clearable :options="tradePromoOptions"
                                 v-model:value="transaction_items.trade_promo_id" />
+                            <span class="text-muted">Kuota tersisa: {{ quotaTradePromo }}</span>
                         </div>
                         <div class="col-12 col-md-6 col-lg-4">
                             <label for="amount">
@@ -871,6 +872,7 @@ export default defineComponent({
             productOptions,
             pemasokOptions,
             tradePromoOptions,
+            quotaTradePromo,
             handleSearch: (query: string) => {
                 if (!query.length) {
                     optionsRef.value = []
