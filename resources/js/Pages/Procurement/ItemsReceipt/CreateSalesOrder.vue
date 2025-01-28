@@ -247,7 +247,8 @@ export default defineComponent({
                     key: 'amount',
                     width: 200,
                     render(row) {
-                        return formatRupiah(row.amount ?? 0);
+                        const excludeAmount = Math.round(row.amount / 1.11);
+                        return formatRupiah(excludeAmount ?? 0);
                     }
                 },
                 {
@@ -255,7 +256,9 @@ export default defineComponent({
                     key: 'total_price',
                     width: 200,
                     render(row) {
-                        return formatRupiah((row.total_price ?? 0));
+                        const excludeAmount = Math.round(row.amount / 1.11);
+                        const totalPrice = excludeAmount * row.quantity;
+                        return formatRupiah((totalPrice ?? 0));
                     }
                 },
                 {
@@ -522,12 +525,13 @@ export default defineComponent({
 
         const totalPPN = computed(() => {
             // Menghitung subtotal dari semua produk tanpa mengalikan quantity
-            const subtotal = form.transaction_items.reduce((total, item) => {
-                return total + Number(item.total_price ?? 0); // Konversi amount ke number
+            const subtotalExcludingTax = form.transaction_items.reduce((total, item) => {
+                const priceExcludingTax = (Number(item.total_price ?? 0)) / 1.11;
+                return total + priceExcludingTax;
             }, 0);
 
-            // Menghitung PPN 11%
-            const ppn = subtotal * 0.11;
+            // Menghitung PPN 11% dari subtotal sebelum PPN
+            const ppn = subtotalExcludingTax * 0.11;
 
             // Membulatkan PPN sesuai aturan yang kamu inginkan
             const roundedPPN = Math.round(ppn);
@@ -536,48 +540,44 @@ export default defineComponent({
             form.tax_amount = roundedPPN;
 
             // Mengembalikan nilai PPN yang diformat
-            // return roundedPPN;
             return formatRupiah(roundedPPN);
         });
 
 
+
         const subtotal = computed(() => {
-            // Menghitung subtotal dari semua produk tanpa mengalikan quantity
+            // Menghitung subtotal dengan harga sebelum PPN
             const total = form.transaction_items.reduce((total, item) => {
-                return total + Number(item.total_price ?? 0); // Konversi amount ke number
+                // Harga sebelum PPN = harga termasuk PPN / 1.11
+                const priceExcludingTax = (Number(item.total_price ?? 0)) / 1.11;
+                return total + priceExcludingTax; // Menjumlahkan harga yang sudah di-exclude PPN
             }, 0);
 
             // Menyimpan subtotal ke dalam form
             form.sub_total = total;
 
             // Mengembalikan subtotal yang diformat
-            // return total;
             return formatRupiah(total);
         });
 
+
         const totalPrice = computed(() => {
-            // Menghitung subtotal dari semua produk tanpa mengalikan quantity
-            const subtotal = form.transaction_items.reduce((total, item) => {
-                return total + Number(item.total_price ?? 0); // Konversi amount ke number
+            // Menghitung subtotal tanpa PPN, kemudian dikali quantity
+            const subtotalExcludingTax = form.transaction_items.reduce((total, item) => {
+                const priceExcludingTax = (Number(item.total_price ?? 0)) / 1.11;
+                return total + priceExcludingTax;
             }, 0);
 
-            // Menghitung total harga termasuk PPN 11%
-            let total = null as unknown as number;
-
-            if (transaction_details.value.use_tax) {
-                total = subtotal + (subtotal * 0.11);
-            } else {
-                total = subtotal;
-            }
+            // Menghitung total harga yang termasuk PPN
+            let grandTotal = subtotalExcludingTax * 1.11; // Mengembalikan harga total yang termasuk PPN
 
             // Menyimpan total ke dalam form
-            const roundedTotalWithPpn = Math.round(total);
+            const roundedTotalWithPpn = Math.round(grandTotal);
 
             form.total = roundedTotalWithPpn;
 
             // Mengembalikan total harga yang diformat
-            // return roundedTotalWithPpn;
-            return formatRupiah(total);
+            return formatRupiah(grandTotal);
         });
 
         const angkutanOptions = (page.props.parties as Parties[]).map(data => ({

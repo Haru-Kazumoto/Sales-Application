@@ -256,7 +256,7 @@
         </h4>
     </div>
 
-    <div class="summary-section">
+    <div class="summary-section" style="margin-top: 0; padding-top: 0;">
         <h3 class="summary-title">Syarat-syarat</h3>
         <table class="summary-table">
             <tr>

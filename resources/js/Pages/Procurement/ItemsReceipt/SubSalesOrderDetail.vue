@@ -192,7 +192,8 @@ function createColumns(): DataTableColumns<TransactionItems> {
             key: 'amount',
             width: 200,
             render(row) {
-                return formatRupiah(row.amount ?? 0);
+                const excludeAmount = Math.round(row.amount / 1.11);
+                return formatRupiah(excludeAmount ?? 0);
             }
         },
         {
@@ -200,7 +201,9 @@ function createColumns(): DataTableColumns<TransactionItems> {
             key: 'total_price',
             width: 200,
             render(row) {
-                return formatRupiah((row.total_price ?? 0));
+                const excludeAmount = Math.round(row.amount / 1.11);
+                const totalPrice = excludeAmount * row.quantity;
+                return formatRupiah((totalPrice ?? 0));
             }
         },
     ];
