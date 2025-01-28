@@ -82,7 +82,7 @@
         <n-button class="ms-auto" type="primary" size="large" @click="router.visit(route('admin.trade-promo.create'))">BUAT TRADE PROMO BARU</n-button>
         <div class="card shadow-sm border-0">
             <div class="card-body d-flex">
-                <n-data-table :bordered="false" :columns :data="$page.props.data.data" />
+                <n-data-table :bordered="false" :columns :data="$page.props.data" />
             </div>
         </div>
     </div>
