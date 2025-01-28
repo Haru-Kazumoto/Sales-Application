@@ -17,9 +17,9 @@ class TradePromoController extends Controller
 
     public function index()
     {
-        $data = TradePromo::query()
-            ->selectRaw("*")
-            ->orderByRaw("is_active DESC, created_at DESC")
+        $data = TradePromo::with('products')
+            ->orderBy('is_active', 'desc')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return Inertia::render('Admin/TradePromo/TradePromo', compact('data'));

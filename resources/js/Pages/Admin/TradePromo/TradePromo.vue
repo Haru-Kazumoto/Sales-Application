@@ -22,22 +22,22 @@
                         <n-input size="large" placeholder="" v-model:value="form.discount_price"
                             @input="(value) => form.discount_price = value.replace(/\D/g, '')">
                             <template #prefix>Rp</template>
-                        </n-input>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-4 d-flex flex-column gap-1">
-                        <label for="grosir_account">
-                            JUMLAH KUOTA
-                            <RequiredMark />
-                        </label>
-                        <n-input size="large" placeholder="" v-model:value="form.quota"
-                            @input="(value) => form.quota = value.replace(/\D/g, '')" />
-                    </div>
-                </div>
+</n-input>
+</div>
+<div class="col-12 col-md-6 col-lg-4 d-flex flex-column gap-1">
+    <label for="grosir_account">
+        JUMLAH KUOTA
+        <RequiredMark />
+    </label>
+    <n-input size="large" placeholder="" v-model:value="form.quota"
+        @input="(value) => form.quota = value.replace(/\D/g, '')" />
+</div>
+</div>
 
-                <n-button class="ms-auto" type="primary" size="large" @click="handleSubmitTradePromo">Tambah promo
-                    beli</n-button>
-            </div>
-        </div> -->
+<n-button class="ms-auto" type="primary" size="large" @click="handleSubmitTradePromo">Tambah promo
+    beli</n-button>
+</div>
+</div> -->
 
         <n-modal v-model:show="modalOpen" :mask-closable="false" class="d-flex" preset="card" :style="bodyStyle"
             title="UPDATE PROMO BELI" :bordered="false" size="huge" :segmented="segmented">
@@ -79,10 +79,78 @@
             </template>
         </n-modal>
 
-        <n-button class="ms-auto" type="primary" size="large" @click="router.visit(route('admin.trade-promo.create'))">BUAT TRADE PROMO BARU</n-button>
+        <n-button class="ms-auto" type="primary" size="large"
+            @click="router.visit(route('admin.trade-promo.create'))">BUAT
+            TRADE PROMO BARU</n-button>
         <div class="card shadow-sm border-0">
             <div class="card-body d-flex">
                 <n-data-table :bordered="false" :columns :data="$page.props.data" />
+            </div>
+        </div>
+
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Detail Trade Promo</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <td><strong>NAMA PELANGGAN</strong></td>
+                                    <td>:</td>
+                                    <td>{{ selectedData.grosir_account }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>HARGA SETELAH DISKON</strong></td>
+                                    <td>:</td>
+                                    <td>{{ formatRupiah(selectedData.discount_price) }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>JUMLAH KUOTA</strong></td>
+                                    <td>:</td>
+                                    <td>{{ selectedData.quota }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>STATUS AKTIF</strong></td>
+                                    <td>:</td>
+                                    <td>{{ selectedData.is_active ? "AKTIF" : "NON AKTIF"  }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <n-divider>BARANG BARANG</n-divider>
+                        <table class="table table-borderless">
+                            <tbody v-for="(item, index) in selectedData.products" :key="item.id">
+                                <tr>
+                                    <td><strong>NAMA BARANG</strong></td>
+                                    <td>:</td>
+                                    <td>{{ item.name }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>KODE BARANG</strong></td>
+                                    <td>:</td>
+                                    <td>{{ item.code }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>UNIT BARANG</strong></td>
+                                    <td>:</td>
+                                    <td>{{ item.unit }}</td>
+                                </tr>
+                                <tr v-if="index < selectedData.products.length - 1">
+                                    <td colspan="3">
+                                        <hr>
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">TUTUP</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -109,6 +177,20 @@ export default defineComponent({
                     width: 60,
                     render(row, index) {
                         return index + 1;
+                    }
+                },
+                {
+                    title: "DETAIL",
+                    key: "detail",
+                    width: 70,
+                    render(row) {
+                        return h(NButton, {
+                            type: 'info',
+                            size: 'medium',
+                            onClick: () => {
+                                openDetail(row);
+                            }
+                        }, { default: () => "DETAIL" });
                     }
                 },
                 {
@@ -188,6 +270,7 @@ export default defineComponent({
             ]
         }
 
+        const selectedData = ref({});
         const form = useForm({
             grosir_account: null as unknown as string,
             quota: null as unknown as number,
@@ -208,6 +291,16 @@ export default defineComponent({
             updateForm.quota = row.quota;
             updateForm.discount_price = row.discount_price;
             modalOpen.value = true;
+        }
+
+        function openDetail(row) {
+            selectedData.value = row;
+
+            const modal = new bootstrap.Modal(document.getElementById('exampleModal'));
+
+            modal.show();
+
+            console.log(selectedData.value);
         }
 
         function handleDeleteTradePromo(trade_promo_id) {
@@ -314,7 +407,9 @@ export default defineComponent({
             modalOpen,
             idTradePromo,
             updateForm,
-            router
+            router,
+            selectedData,
+            formatRupiah
         }
     },
     components: {
