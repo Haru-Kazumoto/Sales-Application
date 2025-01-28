@@ -267,25 +267,60 @@ export default defineComponent({
 
         // Menghitung subtotal dari semua produk tanpa PPN
         const totalPPN = computed(() => {
-            const data = form.transaction_items.reduce((total, item) => {
-                return total + (item.total_price ?? 0);
+            // Menghitung subtotal dari semua produk tanpa mengalikan quantity
+            const subtotalExcludingTax = form.transaction_items.reduce((total, item) => {
+                const priceExcludingTax = (Number(item.total_price ?? 0)) / 1.11;
+                return total + priceExcludingTax;
             }, 0);
-            return formatRupiah(data * 0.11); // Menggunakan formatRupiah untuk PPN
+
+            // Menghitung PPN 11% dari subtotal sebelum PPN
+            const ppn = subtotalExcludingTax * 0.11;
+
+            // Membulatkan PPN sesuai aturan yang kamu inginkan
+            const roundedPPN = Math.round(ppn);
+
+            // Menyimpan PPN yang sudah dibulatkan ke dalam form
+            form.tax_amount = roundedPPN;
+
+            // Mengembalikan nilai PPN yang diformat
+            return formatRupiah(roundedPPN);
         });
+
+
 
         const subtotal = computed(() => {
-            const data = form.transaction_items.reduce((total, item) => {
-                return total + (item.total_price ?? 0);
+            // Menghitung subtotal dengan harga sebelum PPN
+            const total = form.transaction_items.reduce((total, item) => {
+                // Harga sebelum PPN = harga termasuk PPN / 1.11
+                const priceExcludingTax = (Number(item.total_price ?? 0)) / 1.11;
+                return total + priceExcludingTax; // Menjumlahkan harga yang sudah di-exclude PPN
             }, 0);
-            return formatRupiah(data);
+
+            // Menyimpan subtotal ke dalam form
+            form.sub_total = total;
+
+            // Mengembalikan subtotal yang diformat
+            return formatRupiah(total);
         });
 
+
         const totalPrice = computed(() => {
-            const productPrice = form.transaction_items.reduce((total, item) => {
-                return total + (item.total_price ?? 0);
+            // Menghitung subtotal tanpa PPN, kemudian dikali quantity
+            const subtotalExcludingTax = form.transaction_items.reduce((total, item) => {
+                const priceExcludingTax = (Number(item.total_price ?? 0)) / 1.11;
+                return total + priceExcludingTax;
             }, 0);
-            const afterPpnPrice = productPrice * 0.11;
-            return formatRupiah(productPrice + afterPpnPrice);
+
+            // Menghitung total harga yang termasuk PPN
+            let grandTotal = subtotalExcludingTax * 1.11; // Mengembalikan harga total yang termasuk PPN
+
+            // Menyimpan total ke dalam form
+            const roundedTotalWithPpn = Math.round(grandTotal);
+
+            form.total = roundedTotalWithPpn;
+
+            // Mengembalikan total harga yang diformat
+            return formatRupiah(grandTotal);
         });
 
         function handleGenerateDocument() {
