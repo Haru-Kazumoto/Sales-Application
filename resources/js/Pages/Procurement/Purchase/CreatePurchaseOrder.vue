@@ -147,7 +147,7 @@
                                 :options="productOptions" :loading="loading" />
                         </div>
                         <div class="col-12 col-md-6 col-lg-4" v-if="tradePromoOptions.length > 0">
-                            <label for="grosir_account">Akun Grosir</label>
+                            <label for="grosir_account">Pelanggan</label>
                             <n-select size="large" placeholder="" filterable clearable :options="tradePromoOptions"
                                 v-model:value="transaction_items.trade_promo_id" />
                             <span class="text-muted">Kuota tersisa: {{ quotaTradePromo }}</span>
@@ -395,7 +395,11 @@ export default defineComponent({
 
         function addProduct() {
             // Validasi input
-            if (!products.value.name || !transaction_items.value.quantity || !transaction_items.value.amount) {
+            if (
+                !products.value.name ||
+                !transaction_items.value.quantity ||
+                (!transaction_items.value.amount && !transaction_items.value.discount_amount)
+            ) {
                 notification.error({
                     title: 'Form barang harus diisi',
                     closable: true,
@@ -404,6 +408,7 @@ export default defineComponent({
                 });
                 return;
             }
+
 
             // Ambil persentase PPN dari tax_id yang dipilih
             const selectedTax = ppnOptions.find(tax => tax.value === transaction_items.value.tax_id);

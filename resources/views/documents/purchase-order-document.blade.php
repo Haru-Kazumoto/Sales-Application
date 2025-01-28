@@ -43,7 +43,7 @@
         .main-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 15px;
+            /* margin-bottom: 15px; */
             border: 1px solid #000; /* Garis border utama */
         }
 
@@ -71,7 +71,7 @@
 
         .summary-section {
             /* margin-top: 20px; */
-            padding-top: 15px;
+            /* padding-top: 15px; */
         }
 
         .summary-title {
