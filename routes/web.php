@@ -177,6 +177,9 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
             Route::get('',[App\Http\Controllers\RegionDeliveryController::class, 'index'])->name('region-delivery.index');
             Route::get('/create', [App\Http\Controllers\RegionDeliveryController::class, 'create'])->name('region-delivery.create');
             Route::post('/store', [App\Http\Controllers\RegionDeliveryController::class, 'store'])->name('region-delivery.store');
+            Route::get('/edit/{regionDelivery}', [App\Http\Controllers\RegionDeliveryController::class, 'edit'])->name('region-delivery.edit');
+            Route::put('/update/{regionDelivery}', [App\Http\Controllers\RegionDeliveryController::class, 'update'])->name('region-delivery.update');
+            Route::delete('/delete/{regionDelivery}', [App\Http\Controllers\RegionDeliveryController::class, 'delete'])->name('region-delivery.delete');
         });
     });
 

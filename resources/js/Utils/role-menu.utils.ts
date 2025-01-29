@@ -112,10 +112,23 @@ export const roleMenus = {
             href: '/transport-management',
         },
         {
-            label: "Harga Wilayah Pengiriman",
-            key: "shipping-price",
-            icon: VehicleTruckBag20Regular,
-            href: '/region-delivery'
+            label: "Komponen Harga",
+            key: 'price-component',
+            icon: DocumentTextOutline,
+            children: [
+                {
+                    label: "Harga Wilayah Pengiriman",
+                    key: "shipping-price",
+                    icon: renderIcon(VehicleTruckBag20Regular),
+                    href: '/region-delivery'
+                },
+                {
+                    label: "Unsur Harga Tetap"  ,
+                    key: "fixed-price",
+                    icon: renderIcon(DocumentTextOutline),
+                    href: '/fixed-price'
+                }
+            ]
         },
         {
             label: "Driver",

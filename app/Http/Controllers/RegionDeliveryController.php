@@ -38,4 +38,37 @@ class RegionDeliveryController extends Controller
 
         return redirect()->route('admin.region-delivery.index')->with('success', 'Harga perwilayah berhasil dibuat');
     }
+
+    public function edit(RegionDelivery $regionDelivery)
+    {
+        return Inertia::render('Admin/EditRegionDelivery', compact('regionDelivery'));
+    }
+
+    public function update(Request $request, RegionDelivery $regionDelivery)
+    {
+        $request->validate([
+            'region_name' => 'required|string',
+            'region_code' => 'required|string',
+            'region_price' => 'required|numeric',
+        ]);
+
+        DB::transaction(function() use ($request, $regionDelivery) {
+            $regionDelivery->update([
+                'region_name' => $request->region_name,
+                'region_code' => $request->region_code,
+                'region_price' => $request->region_price,
+            ]);
+        });
+
+        return redirect()->route('admin.region-delivery.index')->with('success', 'Harga perwilayah berhasil diubah!');
+    }
+
+    public function delete(RegionDelivery $regionDelivery)
+    {
+        DB::transaction(function() use ($regionDelivery) {
+            $regionDelivery->delete();
+        });
+
+        return redirect()->route('admin.region-delivery.index')->with('success', 'Harga perwilayah berhasil dihapus!');
+    }
 }

@@ -20,6 +20,8 @@ import { Head } from '@inertiajs/vue3';
 import TitlePage from '../../Components/TitlePage.vue';
 import { formatRupiah } from '../../Utils/options-input.utils';
 import { router } from '@inertiajs/vue3';
+import { NButton } from 'naive-ui';
+import Swal from 'sweetalert2';
 
 export default defineComponent({
     setup () {
@@ -57,12 +59,43 @@ export default defineComponent({
                     width: 150,
                     render(row) {
                         return h('div',{class: "d-flex gap-2"}, [
-                            h('n-button', { type: 'primary', size: 'small' }, 'Edit'),
-                            h('n-button', { type: 'danger', size: 'small' }, 'Hapus'),
+                            h(NButton, {
+                                type: 'info',
+                                size: 'medium',
+                                onClick: () => {
+                                    router.visit(route('admin.region-delivery.edit', row.id));
+                                }
+                            }, {default: () => 'Update'}),
+                            h(NButton, {
+                                type: 'error',
+                                size: 'medium',
+                                onClick: () => {
+                                    handleDelete(row.id, row.region_name);
+                                }
+                            }, {default: () => 'Hapus'}),
                         ]);
                     }
                 }
             ]
+        }
+
+        function handleDelete(id: number, name: string) {
+            Swal.fire({
+                title: `Hapus wilayah ${name}?`,
+                icon: "question",
+                showCancelButton: true,
+            }).then(result => {
+                if (result.isConfirmed) {
+                    router.delete(route('admin.region-delivery.delete', id), {
+                        onSuccess: (page) => {
+                            Swal.fire(page.props.flash.success, '', 'success');
+                        },
+                        onError: () => {
+                            Swal.fire('Gagal menghapus data', '', 'error');
+                        }
+                    });
+                }
+            });
         }
 
         return {
