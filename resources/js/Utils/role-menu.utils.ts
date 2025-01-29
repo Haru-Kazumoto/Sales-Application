@@ -123,10 +123,16 @@ export const roleMenus = {
                     href: '/region-delivery'
                 },
                 {
-                    label: "Unsur Harga Tetap"  ,
+                    label: "Unsur Harga Tetap",
                     key: "fixed-price",
                     icon: renderIcon(DocumentTextOutline),
-                    href: '/fixed-price'
+                    href: '/global-element-prices'
+                },
+                {
+                    label: "Harga Dimensi Produk",
+                    key: "overhead-price",
+                    icon: renderIcon(DocumentTextOutline),
+                    href: '/overhead-price'
                 }
             ]
         },

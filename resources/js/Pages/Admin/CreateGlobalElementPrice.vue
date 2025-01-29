@@ -1,9 +1,9 @@
 <template>
     <div class="d-flex flex-column gap-4">
         <div class="d-flex flex-column gap-3">
-            <TitlePage title="Buat Harga Per-Wilayah Baru" />
+            <TitlePage title="Buat Unsur Harga Baru" />
             <n-button text class="justify-content-start w-25 " size="large"
-                @click="router.visit(route('admin.region-delivery.index'), { method: 'get' })">
+                @click="router.visit(route('admin.global-element-prices.index'), { method: 'get' })">
                 <n-icon :component="ArrowBack" style="margin-right: 5px;" />
                 Kembali
             </n-button>
@@ -12,23 +12,19 @@
         <div class="card shadow-sm border-0">
             <div class="card-body">
                 <div class="row g-2 mb-2">
-                    <div class="col-12 col-lg-4 d-flex flex-column gap-1">
-                        <label for="">NAMA WILAYAH</label>
-                        <n-input placeholder="" size="large" v-model:value="form.region_name" @input="(value) => form.region_name = value.toUpperCase()"></n-input>
+                    <div class="col-12 col-lg-6 d-flex flex-column gap-1">
+                        <label for="">NAMA ELEMEN</label>
+                        <n-input placeholder="" size="large" v-model:value="form.name_element" @input="(value) => form.name_element = value.toUpperCase()"></n-input>
                     </div>
-                    <div class="col-12 col-lg-4 d-flex flex-column gap-1">
-                        <label for="">KODE WILAYAH</label>
-                        <n-input placeholder="" size="large" v-model:value="form.region_code" @input="(value) => form.region_code = value.toUpperCase()"></n-input>
-                    </div>
-                    <div class="col-12 col-lg-4 d-flex flex-column gap-1">
-                        <label for="">HARGA PER-WILAYAH</label>
-                        <n-input placeholder="" size="large" v-model:value="form.region_price" @input="(value) => form.region_price = value.replace(/\D/g,'')">
+                    <div class="col-12 col-lg-6 d-flex flex-column gap-1">
+                        <label for="">HARGA ELEMEN</label>
+                        <n-input placeholder="" size="large" v-model:value="form.price_element" @input="(value) => form.price_element = value.replace(/\D/g,'')">
                             <template #prefix>Rp</template>
                         </n-input>
                     </div>
                 </div>
                 <div class="d-flex">
-                    <n-button class="ms-auto" type="primary" size="large" @click="handleSubmit">BUAT WILAYAH</n-button>
+                    <n-button class="ms-auto" type="primary" size="large" @click="handleSubmit">BUAT ELEMEN BARU</n-button>
                 </div>
             </div>
         </div>
@@ -47,13 +43,12 @@ import Swal from 'sweetalert2';
 export default defineComponent({
     setup () {
         const form = useForm({
-            region_name: '',
-            region_code: '',
-            region_price: ''
+            name_element: null as unknown as number,
+            price_element: null as unknown as number
         });
 
         function handleSubmit() {
-            form.post(route('admin.region-delivery.store'), {
+            form.post(route('admin.global-element-prices.store'), {
                 onSuccess: (page) => {
                     Swal.fire(page.props.flash.success,'','success');
                 },

@@ -181,6 +181,15 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
             Route::put('/update/{regionDelivery}', [App\Http\Controllers\RegionDeliveryController::class, 'update'])->name('region-delivery.update');
             Route::delete('/delete/{regionDelivery}', [App\Http\Controllers\RegionDeliveryController::class, 'delete'])->name('region-delivery.delete');
         });
+
+        Route::prefix('global-element-prices')->group(function() {
+            Route::get('', [App\Http\Controllers\GlobalElementPriceController::class, 'index'])->name('global-element-prices.index');
+            Route::get('/create', [App\Http\Controllers\GlobalElementPriceController::class, 'create'])->name('global-element-prices.create');
+            Route::post('/post', [App\Http\Controllers\GlobalElementPriceController::class, 'store'])->name('global-element-prices.store');
+            Route::get('/edit/{globalElementPrice}', [App\Http\Controllers\GlobalElementPriceController::class, 'edit'])->name('global-element-prices.edit');
+            Route::put('/update/{globalElementPrice}', [App\Http\Controllers\GlobalElementPriceController::class, 'update'])->name('global-element-prices.update');
+            Route::delete('/delete/{globalElementPrice}', [App\Http\Controllers\GlobalElementPriceController::class, 'destroy'])->name('global-element-prices.destroy');
+        });
     });
 
     // Procurement Routes
