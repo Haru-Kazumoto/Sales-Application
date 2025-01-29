@@ -39,6 +39,14 @@
                                 placeholder="" />
                         </div>
                     </div>
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-4" v-if="transaction_details.delivery === 'DIRECT'">
+                        <div class="d-flex flex-column gap-1">
+                            <label for="">WILAYAH DISTRIBUSI
+                                <RequiredMark />
+                            </label>
+                            <n-select size="large" :options="sendType" placeholder="" />
+                        </div>
+                    </div>
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">BADAN USAHA</label>

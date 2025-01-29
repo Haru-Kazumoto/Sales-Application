@@ -20,7 +20,8 @@ import {
     DocumentBulletListMultiple24Regular,
     TrayItemRemove24Regular,
     Map24Regular,
-    BoxArrowUp20Regular
+    BoxArrowUp20Regular,
+    VehicleTruckBag20Regular
 } from '@vicons/fluent';
 import {
     CartOutline,
@@ -111,6 +112,12 @@ export const roleMenus = {
             href: '/transport-management',
         },
         {
+            label: "Harga Wilayah Pengiriman",
+            key: "shipping-price",
+            icon: VehicleTruckBag20Regular,
+            href: '/region-delivery'
+        },
+        {
             label: "Driver",
             key: "drivers",
             icon: PersonAccounts24Regular,
@@ -145,7 +152,8 @@ export const roleMenus = {
             key: "customer-region",
             icon: Map24Regular,
             href: "/customer-region",
-        }
+        },
+        
     ],
     FINANCE: [
         {

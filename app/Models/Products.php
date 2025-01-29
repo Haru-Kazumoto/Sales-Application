@@ -39,6 +39,7 @@ class Products extends Model
         'margin_end_user',
         'margin_grosir',
         'discount_vendor',
+        'region_delivery_id'
     ];
 
     public function tradePromos()
@@ -81,5 +82,10 @@ class Products extends Model
     public function productJournals(): HasMany
     {
         return $this->hasMany(ProductJournal::class, 'product_id');
+    }
+
+    public function regionDelivery(): BelongsTo
+    {
+        return $this->belongsTo(RegionDelivery::class, 'region_delivery_id');
     }
 }

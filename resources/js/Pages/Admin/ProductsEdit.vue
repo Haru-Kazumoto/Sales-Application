@@ -75,10 +75,10 @@
                     </div>
                     <n-divider></n-divider>
                     <h4>Kalkulasi Harga</h4>
-                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    <!-- <div class="alert alert-info alert-dismissible fade show" role="alert">
                         <span>Harga tebus sudah otomatis exclude 1.11</span>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
+                    </div> -->
                     <div class="col-12 col-lg-2 d-flex flex-column">
                         <label for="">Harga Tebus
                             <RequiredMark />
@@ -430,7 +430,7 @@ export default defineComponent({
                 form.price_3 = Math.ceil(basePrice + resultPpn); // End User
                 form.all_segment_price = null as unknown as number; // Kosongkan harga all segment
             } else {
-                form.all_segment_price = Math.ceil(basePrice + resultPpn); // All Segment
+                form.all_segment_price = basePrice; // All Segment
                 form.retail_price = null as unknown as number; // Kosongkan harga retail
                 form.restaurant_price = null as unknown as number; // Kosongkan harga grosir
                 form.price_3 = null as unknown as number; // Kosongkan harga end user

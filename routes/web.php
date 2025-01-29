@@ -172,6 +172,12 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
             Route::patch('/region/{customerRegion}/assign-customers', [App\Http\Controllers\CustomerRegionController::class, 'assignCustomers'])->name('customer-region.assign-all');
             Route::patch('/customer/{customer}/unassign', [App\Http\Controllers\CustomerRegionController::class, 'unassignCustomer'])->name('customer-region.unassign');
         });
+
+        Route::prefix('region-delivery')->group(function() {
+            Route::get('',[App\Http\Controllers\RegionDeliveryController::class, 'index'])->name('region-delivery.index');
+            Route::get('/create', [App\Http\Controllers\RegionDeliveryController::class, 'create'])->name('region-delivery.create');
+            Route::post('/store', [App\Http\Controllers\RegionDeliveryController::class, 'store'])->name('region-delivery.store');
+        });
     });
 
     // Procurement Routes
