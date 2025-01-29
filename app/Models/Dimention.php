@@ -15,5 +15,6 @@ class Dimention extends Model
         'dimention_name', // string
         'min_value', // integer
         'max_value', // integer
+        'price_dimention', // float
     ];
 }

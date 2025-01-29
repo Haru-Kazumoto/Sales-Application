@@ -51,6 +51,14 @@ export default defineComponent({
                     width: 150,
                 },
                 {
+                    title: "HARGA DIMENSI",
+                    key: "price_dimention",
+                    width: 200,
+                    render(row) {
+                        return formatRupiah(row.price_dimention);
+                    }
+                },
+                {
                     title: "ACTION",
                     key: "action",
                     width: 150,

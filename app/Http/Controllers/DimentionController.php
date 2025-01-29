@@ -27,6 +27,7 @@ class DimentionController extends Controller
             'dimention_name' => 'required|string|max:255',
             'min_value' => 'required|integer',
             'max_value' => 'required|integer|gte:min_value',
+            'price_dimention' => 'required|numeric',
         ]);
 
         Dimention::create($validated);
@@ -46,6 +47,7 @@ class DimentionController extends Controller
             'dimention_name' => 'required|string|max:255',
             'min_value' => 'required|integer',
             'max_value' => 'required|integer|gte:min_value',
+            'price_dimention' => 'required|numeric',
         ]);
 
         $dimention->update($validated);

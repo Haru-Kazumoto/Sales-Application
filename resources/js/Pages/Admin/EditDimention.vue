@@ -28,6 +28,12 @@
                             <template #prefix>MAX</template>
                         </n-input>
                     </div>
+                    <div class="col-12 col-lg-4 d-flex flex-column gap-1">
+                        <label for="">HARGA DIMENSI</label>
+                        <n-input placeholder="" size="large" v-model:value="form.price_dimention" @input="(value) => form.price_dimention = value.replace(/\D/g,'')">
+                            <template #prefix>Rp</template>
+                        </n-input>
+                    </div>
                 </div>
                 <div class="d-flex">
                     <n-button class="ms-auto" type="primary" size="large" @click="handleSubmit">UPDATE DIMENSI</n-button>
@@ -55,6 +61,7 @@ export default defineComponent({
             dimention_name: dimention.dimention_name,
             min_value: dimention.min_value,
             max_value: dimention.max_value,
+            price_dimention: dimention.price_dimention
         });
 
         function handleSubmit() {
