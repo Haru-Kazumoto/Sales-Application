@@ -190,6 +190,15 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
             Route::put('/update/{globalElementPrice}', [App\Http\Controllers\GlobalElementPriceController::class, 'update'])->name('global-element-prices.update');
             Route::delete('/delete/{globalElementPrice}', [App\Http\Controllers\GlobalElementPriceController::class, 'destroy'])->name('global-element-prices.destroy');
         });
+
+        Route::prefix('dimentions')->group(function() {
+            Route::get('/', [App\Http\Controllers\DimentionController::class, 'index'])->name('dimentions.index');
+            Route::get('/create', [App\Http\Controllers\DimentionController::class, 'create'])->name('dimentions.create');
+            Route::post('/', [App\Http\Controllers\DimentionController::class, 'store'])->name('dimentions.store');
+            Route::get('/{dimention}/edit', [App\Http\Controllers\DimentionController::class, 'edit'])->name('dimentions.edit');
+            Route::put('/{dimention}', [App\Http\Controllers\DimentionController::class, 'update'])->name('dimentions.update');
+            Route::delete('/{dimention}', [App\Http\Controllers\DimentionController::class, 'destroy'])->name('dimentions.destroy');
+        });
     });
 
     // Procurement Routes

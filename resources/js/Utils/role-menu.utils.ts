@@ -132,7 +132,7 @@ export const roleMenus = {
                     label: "Harga Dimensi Produk",
                     key: "overhead-price",
                     icon: renderIcon(DocumentTextOutline),
-                    href: '/overhead-price'
+                    href: '/dimentions'
                 }
             ]
         },
