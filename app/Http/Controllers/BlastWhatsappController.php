@@ -109,5 +109,82 @@ class BlastWhatsappController extends Controller
         return back()->with('success', 'Pesan terkirim ke semua supplier!');
     }
 
+    public function sendMessageNoticeProductsToSalesmanAndPrincipal()
+    {
+        $stagnation_products = DB::table('product_journal as pj')
+            ->join('products as p', 'p.id', '=', 'pj.product_id')
+            ->join('warehouse as w', 'w.id', '=', 'pj.warehouse_id')
+            ->join('parties as pt', 'pt.id', '=', 'p.supplier_id')
+            ->select([
+                'pj.id',
+                'p.name',
+                'p.code',
+                'p.unit',
+                'pj.batch_code',
+                DB::raw('MAX(DATE_FORMAT(pj.expiry_date, "%Y-%m")) AS expiry_date'), // Ambil expiry_date terbaru
+                'w.name as warehouse_name',
+                DB::raw('SUM(CASE WHEN pj.action = "IN" THEN pj.quantity ELSE 0 END) - 
+                        SUM(CASE WHEN pj.action = "OUT" THEN pj.quantity ELSE 0 END) AS last_stock'),
+                'pt.name as supplier_name',
+                'pt.phone as supplier_phone',
+                DB::raw('DATEDIFF(pj.stagnation_limit_date, 
+                        (SELECT CAST(value AS DATE) 
+                        FROM transaction_details 
+                        WHERE transaction_details.category = "Delivery Date" 
+                        AND transaction_details.transactions_id = pj.transactions_id
+                        LIMIT 1)) AS jumlah_hari')
+            ])
+            ->whereRaw('DATE(pj.stagnation_limit_date) > CURRENT_TIMESTAMP()')
+            ->groupBy(
+                'pj.id', 
+                'p.name', 
+                'p.code', 
+                'p.unit', 
+                'pj.batch_code', 
+                'w.name', 
+                'pt.name', 
+                'pt.phone', 
+                'pj.stagnation_limit_date'
+            )
+            ->get();
+
+        $salesman_numbers = DB::table('users as u')
+            ->join('divisions as d', 'd.id', '=', 'u.division_id')  // Join dengan tabel divisions
+            ->select('u.phone')
+            ->where('d.division_name', 'SALES')  // Pastikan division_name adalah 'SALESMAN'
+            ->get()
+            ->pluck('phone');
+
+        // Kirim pesan ke Principal (tanpa duplikasi nomor)
+        $principal_phones = $stagnation_products->pluck('supplier_phone')->unique();
+
+        foreach ($principal_phones as $principalPhone) {
+            if (!$principalPhone) continue; // Lewati jika tidak ada nomor principal
+
+            $chat_message = "Hi, Principal. Berikut adalah daftar barang yang slow living, tolong dikeluarkan:\n";
+
+            foreach ($stagnation_products as $product) {
+                if ($product->supplier_phone == $principalPhone) {
+                    $chat_message .= "{$product->name} : {$product->last_stock} {$product->unit} ({$product->jumlah_hari} hari) - Expiry Date: {$product->expiry_date}\n";
+                }
+            }
+
+            $this->whatsappService->sendMessage($principalPhone, $chat_message);
+        }
+
+        // Kirim pesan ke semua Salesman
+        $salesman_message = "Hi, Salesman. Berikut adalah daftar barang yang slow living, tolong dikeluarkan:\n";
+        foreach ($stagnation_products as $product) {
+            $salesman_message .= "{$product->name} : {$product->last_stock} {$product->unit} ({$product->jumlah_hari} hari) - Expiry Date: {$product->expiry_date}\n";
+        }
+
+        foreach ($salesman_numbers as $salesmanPhone) {
+            $this->whatsappService->sendMessage($salesmanPhone, $salesman_message);
+        }
+
+        return back()->with('success', 'Pesan terkirim ke Principal dan Salesman!');
+    }
+
+
 
 }

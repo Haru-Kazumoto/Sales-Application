@@ -483,7 +483,35 @@ class ProductsController extends Controller
             ")
             // ->orderByDesc('created_at')
             ->paginate(15);
-        $product_stagnations = $this->productServices->getStockProductsWithBatchCode(null, null, null, 20, true);
+        $product_stagnations = DB::table('product_journal as pj')
+            ->join('products as p', 'p.id', '=', 'pj.product_id')
+            ->join('warehouse as w', 'w.id', '=', 'pj.warehouse_id')
+            ->select([
+                'pj.id',
+                'p.name',
+                'p.code',
+                'pj.batch_code',
+                'p.unit',
+                'w.name as warehouse', // Alias untuk menghindari bentrok nama
+                DB::raw('SUM(CASE WHEN pj.action = "IN" THEN pj.quantity ELSE 0 END) - 
+                        SUM(CASE WHEN pj.action = "OUT" THEN pj.quantity ELSE 0 END) AS last_stock'),
+                DB::raw('
+                    CASE 
+                        WHEN (SUM(CASE WHEN pj.action = "IN" THEN pj.quantity ELSE 0 END) - 
+                            SUM(CASE WHEN pj.action = "OUT" THEN pj.quantity ELSE 0 END)) > 20 
+                        THEN "TERSEDIA"
+                        WHEN (SUM(CASE WHEN pj.action = "IN" THEN pj.quantity ELSE 0 END) - 
+                            SUM(CASE WHEN pj.action = "OUT" THEN pj.quantity ELSE 0 END)) >= 10 
+                        THEN "PERLU TAMBAH"
+                        WHEN (SUM(CASE WHEN pj.action = "IN" THEN pj.quantity ELSE 0 END) - 
+                            SUM(CASE WHEN pj.action = "OUT" THEN pj.quantity ELSE 0 END)) <= 0 
+                        THEN "HABIS"
+                    END AS status
+                ')
+            ])
+            ->whereRaw('DATE(pj.stagnation_limit_date) > CURRENT_TIMESTAMP()')
+            ->groupBy('pj.id', 'p.name', 'p.code', 'pj.batch_code', 'p.unit', 'w.name')
+            ->get();
 
         return Inertia::render('Warehouse/StockItems', compact('products', 'products_batch', 'products_gap', 'product_stagnations'));
     }

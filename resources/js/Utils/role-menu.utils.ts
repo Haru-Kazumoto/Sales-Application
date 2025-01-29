@@ -240,6 +240,12 @@ export const roleMenus = {
             icon: PeopleTeam28Regular,
             href: '/customer-management',
         },
+        {
+            label: "Customer sales",
+            key: "customer-sales",
+            icon: PeopleList24Regular,
+            href: "/customer-sales"
+        },
         // {
         //     label: "Test Setting Pesan WA",
         //     key: 'whatsapp_reminder_test',

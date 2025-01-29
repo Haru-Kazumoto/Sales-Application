@@ -130,13 +130,13 @@
                                 <n-input placeholder="Cari Produk" />
                             </div>
                             <div class="col-12 col-lg-2 d-flex gap-3 ">
-                                <n-input placeholder="Cari Produk" />
+                                <n-button type="primary" size="large" @click="handleNoticeProduk">Report Notice Product</n-button>
                             </div>
                         </div>
                         <div class="card shadow" style="border: none;">
                             <div class="card-body">
                                 <n-data-table :columns="batchColumns"
-                                    :data="($page.props.product_stagnations as any).data" :bordered="false" size="small"
+                                    :data="($page.props.product_stagnations as any)" :bordered="false" size="small"
                                     pagination-behavior-on-filter="first" />
                             </div>
                         </div>
@@ -266,7 +266,7 @@ export default defineComponent({
                     width: 100,
                 },
                 {
-                    title: 'STOK',
+                    title: 'STOK GUDANG',
                     key: 'last_stock',
                     width: 100,
                 },
@@ -547,12 +547,43 @@ export default defineComponent({
         }
 
         function handleSendMessage() {
-            router.post(route('warehouse.send-message-supplier'),{
+            router.post(route('warehouse.send-message-supplier'),{},{
                 onSuccess: (page) => {
                     Swal.fire(page.props.flash.success, '', 'success');
                 },
                 onError: () => {
                     Swal.fire('Oops, server sedang sibuk :(', 'Tunggu sebentar atau lapor developer segera', 'error');
+                }
+            });
+        }
+
+        function handleNoticeProduk() {
+            Swal.fire({
+                title: "Report Barang Stagnasi?",
+                text: "Teks whatsapp akan terkirim ke principal terkait dan seluruh salesman",
+                icon: "warning",
+                showCancelButton: true,
+            }).then((result) => {
+
+                if(result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Mengirim pesan...',
+                        text: 'Tunggu sekejap',
+                        icon: 'info',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    
+                    router.post(route('warehouse.send-notice-products-report'),{},{
+                        onSuccess: (page) => {
+                            Swal.fire(page.props.flash.success, '', 'success');
+                        },
+                        onError: () => {
+                            Swal.fire('Pesan gagal tekirim','Silahkan lapor developer','error');
+                        }
+                    });
                 }
             });
         }
@@ -568,6 +599,7 @@ export default defineComponent({
             columns: createColumns(),
             batchColumns: createColumnsBatch(),
             gapColumns: createColumnGapProducts(),
+            handleNoticeProduk,
             handleOpenModal,
             addFormProductJournal,
             handleCloseModal,
