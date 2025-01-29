@@ -14,7 +14,7 @@
                             <label for="field1">
                                 No SSO
                             </label>
-                            <n-input placeholder="" id="field1" size="large" v-model:value="form.document_code" />
+                            <n-input placeholder="" id="field1" size="large" v-model:value="form.document_code" @input="(value) => form.document_code = value.toUpperCase()" />
                         </div>
                         <div class="col-lg-2 col-6 d-flex align-items-end">
                             <n-button class="w-100" size="large" strong secondary type="primary"
@@ -149,15 +149,15 @@
         </n-modal>
 
         <n-modal v-model:show="modalGapOpen" class="custom-card" preset="card" :style="bodyStyle"
-            title="Informasi selisih barang" :bordered="false" size="huge" :segmented="segmented">
+            title="Informasi kekurangan barang" :bordered="false" size="huge" :segmented="segmented">
 
             <div class="d-flex flex-column gap-2">
                 <div class="d-flex flex-column gap-1">
-                    <label for="" style="font-size: 16px;">Jumlah selisih</label>
+                    <label for="" style="font-size: 16px;">Jumlah Kekurangan Barang</label>
                     <n-input size="large" placeholder=""></n-input>
                 </div>
                 <div class="d-flex flex-column gap-1">
-                    <label for="" style="font-size: 16px;">Deskripsi selisih</label>
+                    <label for="" style="font-size: 16px;">Deskripsi Kekurangan Barang</label>
                     <n-input size="large" placeholder="" type="textarea"></n-input>
                 </div>
             </div>
@@ -291,7 +291,7 @@ export default defineComponent({
                     width: 200,
                 },
                 {
-                    title: "SELISIH",
+                    title: "KEKURANGAN BARANG",
                     key: 'difference',
                     width: 150,
                     render(row) {
@@ -299,7 +299,7 @@ export default defineComponent({
                     }
                 },
                 {
-                    title: "STATUS SELISIH",
+                    title: "STATUS KEKURANGAN BARANG",
                     key: "gap_status",
                     width: 150,
                     render(row) {
@@ -335,7 +335,7 @@ export default defineComponent({
                                     size: 'medium',
                                     onClick: () => handleOpenModal(row)
                                 },
-                                { default: () => 'Info Selisih' }
+                                { default: () => 'Info Kekurangan Barang' }
                             ),
                             h(
                                 NButton,
@@ -383,10 +383,10 @@ export default defineComponent({
 
         function handleOpenModal(row: TransactionItems) {
             Swal.fire({
-                title: 'Informasi selisih',
+                title: 'Informasi Kekurangan',
                 html: `
                     <div class="mb-3">
-                        <input id="item_gap" class="form-control" type="number" placeholder="Selisih" value="${row.item_gap || ''}">
+                        <input id="item_gap" class="form-control" type="number" placeholder="Kekurangan" value="${row.item_gap || ''}">
                     </div>
                     <div class="mb-3">
                         <input id="gap_description" class="form-control" type="text" placeholder="Keterangan" value="${row.gap_description || ''}">

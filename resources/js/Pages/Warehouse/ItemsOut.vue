@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex flex-column gap-4">
-        <TitlePage title="DAFTAR PRODUK KELUAR" />
+        <TitlePage title="DAFTAR PRODUK CO APPROVE" />
         <div class="d-flex flex-column gap-2">
             <div class="card shadow" style="border: none;">
                 <div class="card-body">

@@ -19,7 +19,8 @@ import {
     DocumentTextToolbox24Regular,
     DocumentBulletListMultiple24Regular,
     TrayItemRemove24Regular,
-    Map24Regular
+    Map24Regular,
+    BoxArrowUp20Regular
 } from '@vicons/fluent';
 import {
     CartOutline,
@@ -233,6 +234,12 @@ export const roleMenus = {
             icon: renderIcon(LogoWhatsapp),
             href: "/whatsapp-message"
         },
+        {
+            label: "Customer",
+            key: 'customer',
+            icon: PeopleTeam28Regular,
+            href: '/customer-management',
+        },
         // {
         //     label: "Test Setting Pesan WA",
         //     key: 'whatsapp_reminder_test',
@@ -310,17 +317,24 @@ export const roleMenus = {
             icon: DocumentTextToolbox24Regular,
             href: "/trade-promo",
         },
-        {
-            label: "Customer",
-            key: 'customer',
-            icon: PeopleTeam28Regular,
-            href: '/customer-management',
-        },
+        
         {
             label: "Transports",
             key: 'transports',
             icon: VehicleTruckProfile20Regular,
             href: '/transport-management',
+        },
+        // {
+        //     label: "Pengiriman Barang Bertahap",
+        //     key: 'gradual-delivery',
+        //     icon: BoxArrowUp20Regular,
+        //     href: "/gradual-delivery",
+        // },
+        {
+            label: "Stok Gudang Bekasi",
+            icon: BoxMultiple20Regular,
+            key: 'stock-goods',
+            href: '/stock-goods'
         },
     ],
     WAREHOUSE: [

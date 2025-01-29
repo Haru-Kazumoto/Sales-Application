@@ -1,6 +1,12 @@
 <template>
     <div class="d-flex flex-column gap-4">
         <TitlePage title="Pengiriman Barang Bertahap" />
+        <div class="d-flex">
+            <div class="d-flex ms-auto gap-3">
+                <n-input placeholder="Cari Nama Produk" size="large" />
+                <n-button type="primary" size="large" @click="handleSendMessage">Report Ke Supplier</n-button>
+            </div>
+        </div>
         <div class="card shadow-sm border-0">
             <div class="card-body">
                 <n-data-table :bordered="false" :columns="columns" :data="($page.props.gradual_products as any).data" />
@@ -94,7 +100,7 @@ export default defineComponent({
                     }
                 },
                 {
-                    title: "SELISIH",
+                    title: "KEKURANGAN PRODUK",
                     key: "gap",
                     width: 150,
                     render(row) {
@@ -102,7 +108,7 @@ export default defineComponent({
                     }
                 },
                 {
-                    title: "DESKRIPSI SELISIH",
+                    title: "DESKRIPSI KEKURANGAN PRODUK",
                     key: "description",
                     width: 250,
                     render(row) {
@@ -234,9 +240,52 @@ export default defineComponent({
             });
         }
 
+        function handleSendMessage() {
+            // Swal.fire({
+            //     title: 'Kirim Pesan Ke Supplier',
+            //     input: 'textarea',
+            //     inputLabel: 'Pesan',
+            //     inputPlaceholder: 'Tulis pesan disini...',
+            //     inputAttributes: {
+            //         'aria-label': 'Type your message here'
+            //     },
+            //     showCancelButton: true,
+            //     confirmButtonText: 'Kirim',
+            //     cancelButtonText: 'Batal',
+            //     showLoaderOnConfirm: true,
+            //     preConfirm: (message) => {
+            //         return router.post(route('warehouse.send-message-supplier'), {
+            //             message
+            //         });
+            //     },
+            //     allowOutsideClick: () => !Swal.isLoading()
+            // }).then((result) => {
+            //     if (result.isConfirmed) {
+            //         Swal.fire('Pesan Terkirim!', '', 'success');
+            //     }
+            // });
+            Swal.fire({
+                title: 'Kirim Pesan Ke Supplier?',
+                icon: "question",
+                showCancelButton: true,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    router.post(route('warehouse.send-message-supplier'),{},{
+                        onSuccess: (page) => {
+                            Swal.fire(page.props.flash.success, '', 'success');
+                        },
+                        onError: () => {
+                            Swal.fire('Oops, server sedang sibuk :(', 'Tunggu sebentar atau lapor developer segera', 'error');
+                        }
+                    });
+                }
+            });
+            
+        }
 
         return {
             columns: createColumns(),
+            handleSendMessage,
             handleOpenModal,
             addFormProductJournal,
             handleCloseModal,

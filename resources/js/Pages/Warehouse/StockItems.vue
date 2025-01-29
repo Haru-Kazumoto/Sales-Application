@@ -52,17 +52,17 @@
                         </div>
                     </div>
                 </n-tab-pane>
-                <n-tab-pane name="gap-products" tab="Selisih produk">
+                <n-tab-pane name="gap-products" tab="Kekurangan produk">
                     <div class="d-flex flex-column gap-2">
                         <div class="row ">
                             <div class="col-12 col-lg-7">
-                                <span class="fs-4">Daftar Selisih Produk</span>
+                                <span class="fs-4">Daftar Kekurangan Produk</span>
+                            </div>
+                            <div class="col-3 col-lg-2" v-if="$page.props.auth.user.division.division_name === 'PROCUREMENT'">
+                                <n-button type="primary" size="large" @click="handleSendMessage">Report Ke Supplier</n-button>
                             </div>
                             <div class="col-12 col-lg-3 d-flex gap-3 ">
                                 <n-input placeholder="Cari Nama Produk" size="large" />
-                            </div>
-                            <div class="col-3 col-lg-2">
-                                <n-button type="primary" size="large" @click="handleSendMessage">Report Ke Supplier</n-button>
                             </div>
                         </div>
                         <div class="card shadow" style="border: none;">
@@ -349,7 +349,7 @@ export default defineComponent({
                     }
                 },
                 {
-                    title: "SELISIH",
+                    title: "KEKURANGAN BARANG",
                     key: "gap",
                     width: 150,
                     render(row) {
@@ -357,7 +357,7 @@ export default defineComponent({
                     }
                 },
                 {
-                    title: "STATUS SELISIH",
+                    title: "STATUS KEKURANGAN BARANG",
                     key: "gap_status",
                     width: 250,
                     render(row) {
@@ -388,7 +388,7 @@ export default defineComponent({
                     }
                 },
                 {
-                    title: "DESKRIPSI SELISIH",
+                    title: "DESKRIPSI KEKURANGAN BARANG",
                     key: "description",
                     width: 250,
                     render(row) {
