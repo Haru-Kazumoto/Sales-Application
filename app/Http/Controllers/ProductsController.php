@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Exports\ProductJournalExport;
 use App\Http\Services\ProductServices;
+use App\Models\Dimention;
+use App\Models\GlobalElementPrice;
 use App\Models\Lookup;
 use App\Models\Parties;
 use App\Models\ProductJournal;
 use App\Models\Products;
 use App\Models\ProductSubType;
 use App\Models\ProductType;
+use App\Models\RegionDelivery;
 use App\Models\TransactionDetail;
 use App\Models\TransactionItem;
 use App\Models\Transactions;
@@ -183,13 +186,19 @@ class ProductsController extends Controller
             })
             ->get();  
         $product_sub_type = ProductSubType::all();
+        $dimention = Dimention::all();
+        $global_element = GlobalElementPrice::all();
+        $delivery_region = RegionDelivery::all();
 
         return Inertia::render('Admin/ProductsEdit', compact(
             'product_type',
             'units',
             'product',
             'suppliers',
-            'product_sub_type'
+            'product_sub_type',
+            'dimention',
+            'global_element',
+            'delivery_region'
         ));
     }
 
