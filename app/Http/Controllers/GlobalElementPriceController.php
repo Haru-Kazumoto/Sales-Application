@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\UpdateProductsByElementPrice;
 use App\Models\GlobalElementPrice;
+use App\Models\Products;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -50,10 +52,34 @@ class GlobalElementPriceController extends Controller
         ]);
 
         DB::transaction(function() use ($request, $globalElementPrice) {
+            $oldPrice = $globalElementPrice->price_element;
+
             $globalElementPrice->update([
                 'name_element' => $request->name_element,
                 'price_element' => $request->price_element,
             ]);
+
+            $column = match ($request->name_element) {
+                'BUDGET MARKETING' => 'saving_marketing',
+                'BAD DEBT' => 'bad_debt_dd',
+                default => null
+            };
+
+            // Check if the element name is 'BUDGET MARKETING' or 'BAD DEBT'
+            if($globalElementPrice->wasChanged('price_element')) {
+                // Update the products based on the element price since the price_element is changed
+                // UpdateProductsByElementPrice::dispatch($column, $request->price_element);
+                Products::query()
+                    ->when($column, function($query) use ($column, $request) {
+                        $query->chunkById(1000, function($products) use ($column, $request) {
+                            $products->each(function($product) use ($column, $request) {
+                                $product->update([
+                                    $column => $request->price_element
+                                ]);
+                            });
+                        });
+                    });
+            }
         });
 
         return redirect()->route('admin.global-element-prices.index')->with('success', 'Data berhasil diperbarui!');

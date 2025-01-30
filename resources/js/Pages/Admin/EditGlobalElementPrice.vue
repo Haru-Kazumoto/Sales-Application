@@ -52,6 +52,16 @@ export default defineComponent({
         });
 
         function handleSubmit() {
+            Swal.fire({
+                title: 'Mengubah data unsur harga..',
+                text: 'Menyingkronkan data produk dengan unsur harga baru..',
+                icon: 'info',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+        
             form.put(route('admin.global-element-prices.update', element.id), {
                 onSuccess: (page) => {
                     Swal.fire(page.props.flash.success,'','success');
