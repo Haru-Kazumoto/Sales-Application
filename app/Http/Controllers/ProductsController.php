@@ -83,13 +83,21 @@ class ProductsController extends Controller
             })
             ->get();    
         $product_sub_type = ProductSubType::all();
+        $dimention = Dimention::all();
+        $global_element = GlobalElementPrice::all();
+        $delivery_region = RegionDelivery::all();
+        $percentage = Lookup::where('category', 'PERCENTAGE')->get();
 
         return Inertia::render('Admin/Products', compact(
             'products',
             'product_type',
             'units',
             'suppliers',
-            'product_sub_type'
+            'product_sub_type',
+            'percentage',
+            'global_element',
+            'delivery_region',
+            'dimention'
         ));
     }
 
@@ -105,6 +113,7 @@ class ProductsController extends Controller
             'unit' => 'required|string',
             'name' => 'required|string',
             'category' => 'required|string',
+            'percentage' => 'required',
             // 'package' => 'required|string',
             'redemp_price' => 'nullable',
             'retail_price' => 'nullable|numeric',
@@ -155,6 +164,7 @@ class ProductsController extends Controller
             $product->margin_end_user = $request->input('margin_end_user');
             $product->discount_vendor = $request->input('discount_vendor');
             $product->product_sub_type_id = $request->input('product_sub_type_id');
+            $product->percentage = $request->input('percentage');
 
             // Simpan produk
             $product->save();
@@ -189,6 +199,7 @@ class ProductsController extends Controller
         $dimention = Dimention::all();
         $global_element = GlobalElementPrice::all();
         $delivery_region = RegionDelivery::all();
+        $percentage = Lookup::where('category', 'PERCENTAGE')->get();
 
         return Inertia::render('Admin/ProductsEdit', compact(
             'product_type',
@@ -198,7 +209,8 @@ class ProductsController extends Controller
             'product_sub_type',
             'dimention',
             'global_element',
-            'delivery_region'
+            'delivery_region',
+            'percentage'
         ));
     }
 
@@ -213,6 +225,7 @@ class ProductsController extends Controller
             'unit' => 'required|string',
             'name' => 'required|string',
             'category' => 'required|string',
+            'percentage' => 'required',
             // 'package' => 'required|string',
             'redemp_price' => 'nullable',
             'retail_price' => 'nullable|numeric',
@@ -260,6 +273,7 @@ class ProductsController extends Controller
                 'margin_end_user' => $request->input('margin_end_user'),
                 'discount_vendor' => $request->input('discount_vendor'),
                 'product_sub_type_id' => $request->input('product_sub_type_id'),
+                'percentage' => $request->input('percentage')
             ]);
         });
 
