@@ -280,7 +280,7 @@
                                         </template>
                                     </n-input>
                                 </div>
-                                
+
                                 <div class="col-12 col-lg-3 d-flex flex-column">
                                     <label for="">Harga End User
                                         <RequiredMark />
@@ -758,8 +758,12 @@ export default defineComponent({
         function calculateFromSellingPrice(entry_price: number, percentage: number) {
             const convertPercentage = Number(percentage);
 
-            // Menghitung harga tebus setelah dikurangi 7.5%
-            const redemp_price = Math.round(entry_price - (entry_price * convertPercentage));
+            // Menghitung harga tebus berdasarkan aturan persentase
+            const redemp_price = Math.round(
+                convertPercentage === 0.075
+                    ? entry_price - (entry_price * convertPercentage)  // Jika 7.5%, dikurangi
+                    : entry_price + (entry_price * convertPercentage)  // Selain itu, ditambah
+            );
 
             // Menghitung selisih antara harga jual dan harga tebus
             const marginAmount = entry_price - redemp_price;
@@ -775,6 +779,7 @@ export default defineComponent({
             form.redemp_price = redemp_price;
             form.normal_margin = normal_margin;
         }
+
 
 
         type SellingPrice = {
