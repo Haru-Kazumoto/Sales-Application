@@ -272,6 +272,7 @@ class ProductsController extends Controller
                 'transportation_cost' => $request->input('transportation_cost'),
                 'margin_retail' => $request->input('margin_retail'),
                 'margin_end_user' => $request->input('margin_end_user'),
+                'margin_grosir' => $request->margin_grosir,
                 'discount_vendor' => $request->input('discount_vendor'),
                 'product_sub_type_id' => $request->input('product_sub_type_id'),
                 'percentage' => $request->input('percentage')
