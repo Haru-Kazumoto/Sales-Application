@@ -791,10 +791,9 @@ class CustomerOrdersController extends Controller
             ->where('tx.id', $transactions->id)
             ->get(); // Mengambil semua hasil dalam bentuk koleksi
 
-        $result = DB::table('transactions as tx')
-            ->join('transaction_items as ti', 'ti.transactions_id', '=', 'tx.id')
-            ->where('tx.id', 35)
-            ->selectRaw('SUM(ti.quantity) AS total_all, SUM(ti.total_price) AS total_all_price')
+        $result = DB::table('transaction_items as ti')
+            ->where('ti.transactions_id', $transactions->id)
+            ->selectRaw('SUM(ti.total_price) AS total_all_price')
             ->first();
 
         $data = [

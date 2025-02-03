@@ -306,13 +306,13 @@
         <!-- CALCULATION RESULT -->
         <div class="card shadow border-0 mb-4">
             <div class="card-body d-flex flex-column">
-                <div class="d-flex justify-content-between py-2">
-                    <span>Sub Total</span>
-                    <span>{{ formatRupiah(subtotal) }}</span>
-                </div>
                 <div class="d-flex justify-content-between py-2" v-if="totalDiscounts > 0">
                     <span>Diskon</span>
                     <span>{{ formatRupiah(totalDiscounts) }}</span>
+                </div>
+                <!-- <div class="d-flex justify-content-between py-2">
+                    <span>Sub Total</span>
+                    <span>{{ formatRupiah(subtotal) }}</span>
                 </div>
                 <div class="d-flex justify-content-between py-2 fw-bold border-top border-bottom">
                     <span>Total harga</span>
@@ -321,7 +321,7 @@
                 <div class="d-flex justify-content-between py-2" v-if="transaction_details.use_tax === true">
                     <span>PPN 11%</span>
                     <span>{{ formatRupiah(totalPPN) }}</span>
-                </div>
+                </div> -->
                 <div class="d-flex justify-content-between py-2 fw-bold border-top border-bottom">
                     <span>Total Tagihan</span>
                     <span>{{ formatRupiah(grandTotal) }}</span>
@@ -1016,13 +1016,13 @@ export default defineComponent({
         });
 
         const grandTotal = computed(() => {
-            let grandTotal = null as unknown as number;
+            let grandTotal = totalPrice.value;
 
-            if (transaction_details.value.use_tax) {
-                grandTotal = totalPrice.value + totalPPN.value
-            } else {
-                grandTotal = totalPrice.value;
-            }
+            // if (transaction_details.value.use_tax) {
+            //     grandTotal = totalPrice.value + totalPPN.value
+            // } else {
+            //     grandTotal = totalPrice.value;
+            // }
 
             form.total = grandTotal;
 

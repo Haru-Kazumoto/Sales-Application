@@ -739,9 +739,9 @@ export default defineComponent({
                 if (result.isConfirmed) {
                     // zeelandia
                     if (Number(form.percentage) === 0.075) {
-                        calculateFromSellingPrice(Number(form.all_segment_price), form.percentage);
+                        calculateFromSellingPrice(Number(form.all_segment_price), Number(form.percentage));
                     } else { // non zeelandia
-                        calculateFromSellingPrice(form.redemp_price, form.percentage);
+                        calculateFromSellingPrice(Number(form.redemp_price), Number(form.percentage));
                     }
                 }
 

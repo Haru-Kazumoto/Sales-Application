@@ -183,23 +183,23 @@
         <!-- CALCULATION RESULT -->
         <div class="card shadow border-0 mb-3">
             <div class="card-body d-flex flex-column">
-                <div class="d-flex justify-content-between py-2">
+                <!-- <div class="d-flex justify-content-between py-2">
                     <span>Sub Total</span>
                     <span>{{ formatRupiah(customer_order.sub_total) }}</span>
-                </div>
+                </div> -->
                 <div class="d-flex justify-content-between py-2"
                     v-if="customer_order.total_discount !== undefined || customer_order.total_discount !== 0">
                     <span>Diskon</span>
                     <span>{{ formatRupiah(customer_order.total_discount) }}</span>
                 </div>
-                <div class="d-flex justify-content-between py-2 fw-bold border-top border-bottom">
+                <!-- <div class="d-flex justify-content-between py-2 fw-bold border-top border-bottom">
                     <span>Total harga</span>
                     <span>{{ formatRupiah(totalPrice) }}</span>
                 </div>
                 <div class="d-flex justify-content-between py-2" v-if="transaction_details.use_tax === 'PPN'">
                     <span>PPN 11%</span>
                     <span>{{ formatRupiah(customer_order.tax_amount) }}</span>
-                </div>
+                </div> -->
                 <div class="d-flex justify-content-between py-2 fw-bold border-top border-bottom">
                     <span>Total Tagihan</span>
                     <span>{{ formatRupiah(customer_order.total) }}</span>
