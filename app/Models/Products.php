@@ -40,7 +40,8 @@ class Products extends Model
         'margin_grosir',
         'discount_vendor',
         'region_delivery_id',
-        'precentage'
+        'precentage',
+        'rounded_all_segment_price',
     ];
 
     public function tradePromos()

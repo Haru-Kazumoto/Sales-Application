@@ -434,7 +434,7 @@
                             </template>
                         </n-input>
                     </div>
-                    <div class="col-12 col-lg-3 d-flex flex-column">
+                    <!-- <div class="col-12 col-lg-3 d-flex flex-column">
                         <label for="">Pembulatan Harga Jual Grosir
 
                         </label>
@@ -466,7 +466,7 @@
                                 Rp
                             </template>
                         </n-input>
-                    </div>
+                    </div> -->
                     <div class="d-flex">
                         <n-button type="primary" class="ms-auto" @click="calculateRoundedPrice">Kalkulasi
                             pembulatan</n-button>
@@ -672,6 +672,7 @@ export default defineComponent({
                 price_3,
                 retail_price,
                 restaurant_price,
+                normal_margin,
                 rounded_all_segment_price,
                 rounded_price_3,
                 rounded_retail_price,
@@ -680,6 +681,7 @@ export default defineComponent({
 
             // Perbarui harga berdasarkan nilai pembulatan yang dimasukkan oleh pengguna
             form.all_segment_price = Number(all_segment_price) + (Number(rounded_all_segment_price) || 0);
+            form.normal_margin = Number(normal_margin) + (Number(rounded_all_segment_price) || 0);
             form.price_3 = Number(price_3) + (Number(rounded_price_3) || 0);
             form.retail_price = Number(retail_price) + (Number(rounded_retail_price) || 0);
             form.restaurant_price = Number(restaurant_price) + (Number(rounded_restaurant_price) || 0);
@@ -787,10 +789,6 @@ export default defineComponent({
             form.all_segment_price = all_segment_price; // Jika selain Zeelandia, harga all segment yang dihitung
             form.normal_margin = normal_margin;
         }
-
-
-
-
 
         type SellingPrice = {
             // all_segment: number;

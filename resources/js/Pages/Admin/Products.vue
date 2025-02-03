@@ -697,6 +697,11 @@
                                             <td>:</td>
                                             <td>{{ formatRupiah(selectedData.margin_end_user) }}</td>
                                         </tr>
+                                        <tr>
+                                            <td><strong>Pembulatan All Segment</strong></td>
+                                            <td>:</td>
+                                            <td>{{ formatRupiah(selectedData.rounded_all_segment_price) }}</td>
+                                        </tr>
                                     </tbody>
 
                                 </table>

@@ -165,6 +165,7 @@ class ProductsController extends Controller
             $product->discount_vendor = $request->input('discount_vendor');
             $product->product_sub_type_id = $request->input('product_sub_type_id');
             $product->percentage = $request->input('percentage');
+            $product->rounded_all_segment_price = $request->rounded_all_segment_price;
 
             // Simpan produk
             $product->save();
@@ -275,7 +276,8 @@ class ProductsController extends Controller
                 'margin_grosir' => $request->margin_grosir,
                 'discount_vendor' => $request->input('discount_vendor'),
                 'product_sub_type_id' => $request->input('product_sub_type_id'),
-                'percentage' => $request->input('percentage')
+                'percentage' => $request->input('percentage'),
+                'rounded_all_segment_price' => $request->rounded_all_segment_price,
             ]);
         });
 
