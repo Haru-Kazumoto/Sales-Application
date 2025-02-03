@@ -30,12 +30,14 @@ class ProductsAllImports implements ToCollection, WithStartRow
     */
     public function collection(Collection $collection)
     {
-        // dd($collection);
+        // dd($collection[348]);
 
         DB::transaction(function() use ($collection) {
             foreach ($collection as $index => $row) {
                 try {
                     $supplier = Parties::where('name', $row[2])->first();
+                    // dd($row[2]);
+                    // dd($supplier);
                     $product_type = ProductType::where('name', $row[7])->first();
                     $product_sub_type = ProductSubType::where('name', $row[6])->first();
                     $existingProduct = Products::where('code', $row[3])->first(); // Cek kode produk

@@ -757,28 +757,38 @@ export default defineComponent({
 
         function calculateFromSellingPrice(entry_price: number, percentage: number) {
             const convertPercentage = Number(percentage);
+            let redemp_price: number;
+            let all_segment_price: number;
+            let marginAmount: number;
+            let deductions: number;
+            let normal_margin: number;
 
-            // Menghitung harga tebus berdasarkan aturan persentase
-            const redemp_price = Math.round(
-                convertPercentage === 0.075
-                    ? entry_price - (entry_price * convertPercentage)  // Jika 7.5%, dikurangi
-                    : entry_price + (entry_price * convertPercentage)  // Selain itu, ditambah
-            );
-
-            // Menghitung selisih antara harga jual dan harga tebus
-            const marginAmount = entry_price - redemp_price;
+            if (convertPercentage === 0.075) {
+                // Zeelandia: Hitung harga tebus
+                redemp_price = Math.round(entry_price - (entry_price * convertPercentage)); // Harga tebus dihitung
+                all_segment_price = entry_price; // Harga jual tetap sebagai entry price
+                marginAmount = entry_price - redemp_price; // Selisih harga jual - harga tebus
+            } else {
+                // Selain Zeelandia: Hitung harga all segment
+                redemp_price = entry_price; // Harga tebus tetap sebagai entry price
+                all_segment_price = Math.round(entry_price + (entry_price * convertPercentage)); // Harga all segment dihitung
+                marginAmount = all_segment_price - entry_price; // Selisih harga all segment - harga tebus
+            }
 
             // Menghitung total biaya deductions
-            const deductions = form.bad_debt_dd + form.saving_marketing + form.saving
+            deductions = form.bad_debt_dd + form.saving_marketing + form.saving
                 + form.oh_depo + form.transportation_cost;
 
             // Menghitung normal margin setelah dikurangi biaya
-            const normal_margin = Math.round(marginAmount - deductions);
+            normal_margin = Math.round(marginAmount - deductions);
 
             // Menyimpan hasil ke dalam form
-            form.redemp_price = redemp_price;
+            form.redemp_price = redemp_price; // Jika Zeelandia, harga tebus yang dihitung
+            form.all_segment_price = all_segment_price; // Jika selain Zeelandia, harga all segment yang dihitung
             form.normal_margin = normal_margin;
         }
+
+
 
 
 
