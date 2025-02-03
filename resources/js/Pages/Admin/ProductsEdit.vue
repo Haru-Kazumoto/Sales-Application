@@ -747,9 +747,9 @@ export default defineComponent({
                 if (result.isDismissed) {
                     calculateFromRedempPrice(form.redemp_price, {
                         // all_segment: form.all_segment_price,
-                        grosir: form.restaurant_price,
-                        retail: form.retail_price,
                         end_user: form.price_3,
+                        retail: form.retail_price,
+                        grosir: form.restaurant_price,
                     });
                 }
             });
