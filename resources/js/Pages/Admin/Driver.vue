@@ -18,6 +18,12 @@
                         </label>
                         <n-input size="large" placeholder="" v-model:value="form.name" @input="(value) => form.name = value.toUpperCase()"/>
                     </div>
+                    <div class="col-12 col-md-6 col-lg-6 d-flex flex-column">
+                        <label for="">Nomor Telepon Driver
+                            <RequiredMark />
+                        </label>
+                        <n-input size="large" placeholder="" v-model:value="form.name" @input="(value) => form.name = value.toUpperCase()"/>
+                    </div>
                 </div>
 
                 <div class="d-flex mt-3">

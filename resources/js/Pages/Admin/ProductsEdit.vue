@@ -258,20 +258,8 @@
                                         </template>
                                     </n-input>
                                 </div>
-                                
                                 <div class="col-12 col-lg-3 d-flex flex-column">
                                     <label for="">Harga Jual Grosir
-                                        <RequiredMark />
-                                    </label>
-                                    <n-input size="large" placeholder="" v-model:value="form.retail_price"
-                                        @input="(value) => form.retail_price = value.replace(/\D/g, '')">
-                                        <template #prefix>
-                                            Rp
-                                        </template>
-                                    </n-input>
-                                </div>
-                                <div class="col-12 col-lg-3 d-flex flex-column">
-                                    <label for="">Harga Jual Retail
                                         <RequiredMark />
                                     </label>
                                     <n-input size="large" placeholder="" v-model:value="form.restaurant_price"
@@ -281,6 +269,18 @@
                                         </template>
                                     </n-input>
                                 </div>
+                                <div class="col-12 col-lg-3 d-flex flex-column">
+                                    <label for="">Harga Jual Retail
+                                        <RequiredMark />
+                                    </label>
+                                    <n-input size="large" placeholder="" v-model:value="form.retail_price"
+                                        @input="(value) => form.retail_price = value.replace(/\D/g, '')">
+                                        <template #prefix>
+                                            Rp
+                                        </template>
+                                    </n-input>
+                                </div>
+                                
                                 <div class="col-12 col-lg-3 d-flex flex-column">
                                     <label for="">Harga End User
                                         <RequiredMark />
@@ -785,6 +785,10 @@ export default defineComponent({
         };
 
         function calculateFromRedempPrice(redemp_price: number, selling_price: SellingPrice) {
+            console.log("Harga Jual yang Dikirim:");
+            console.log("End User:", selling_price.end_user);
+            console.log("Retail:", selling_price.retail);
+            console.log("Grosir:", selling_price.grosir); // Periksa apakah ini benar
 
             // Biaya yang dikurangkan untuk menghitung margin
             const deductions = form.oh_depo + form.saving_marketing + form.saving + form.transportation_cost + form.bad_debt_dd;
@@ -792,10 +796,12 @@ export default defineComponent({
             // Menghitung selisih harga tebus dengan masing-masing harga jual
             const margin = {
                 // all_segment: Math.round((selling_price.all_segment ?? 0) - redemp_price - deductions),
-                grosir: Math.round((selling_price.grosir ?? 0) - redemp_price - deductions),
-                retail: Math.round((selling_price.retail ?? 0) - redemp_price - deductions),
                 end_user: Math.round((selling_price.end_user ?? 0) - redemp_price - deductions),
+                retail: Math.round((selling_price.retail ?? 0) - redemp_price - deductions),
+                grosir: Math.round((selling_price.grosir ?? 0) - redemp_price - deductions),
             };
+
+
 
             // Menyimpan hasil margin ke dalam form
             // form.normal_margin = margin.all_segment;
