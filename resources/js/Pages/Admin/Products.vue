@@ -791,6 +791,48 @@ export default defineComponent({
                     }
                 },
                 {
+                    title: 'ACTION',
+                    key: "action",
+                    width: 100,
+                    render(row) {
+                        return h('div', { class: "d-flex gap-2" }, [
+                            h(
+                                NButton, {
+                                type: 'info',
+                                onClick() {
+                                    router.get(route('admin.products.edit', row.id));
+                                },
+                            },
+                                { default: () => 'UPDATE' }
+                            ),
+                            h(
+                                NButton, {
+                                type: 'error',
+                                onClick() {
+                                    Swal.fire({
+                                        icon: 'question',
+                                        title: `Hapus barang ${row.name} ? `,
+                                        showCancelButton: true,
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            router.delete(route('admin.products.delete', row.id), {
+                                                onSuccess: () => {
+                                                    notification.success({
+                                                        title: "Barang berhasil dihapus",
+                                                        duration: 1500,
+                                                        closable: false,
+                                                    })
+                                                }
+                                            });
+                                        }
+                                    })
+                                }
+                            }, { default: () => "HAPUS" }
+                            )
+                        ]);
+                    }
+                },
+                {
                     title: "DETAIL",
                     key: 'detail',
                     width: 80,
@@ -958,48 +1000,7 @@ export default defineComponent({
                         return formatRupiah(row.saving_marketing);
                     }
                 },
-                {
-                    title: 'ACTION',
-                    key: "action",
-                    width: 100,
-                    render(row) {
-                        return h('div', { class: "d-flex gap-2" }, [
-                            h(
-                                NButton, {
-                                type: 'info',
-                                onClick() {
-                                    router.get(route('admin.products.edit', row.id));
-                                },
-                            },
-                                { default: () => 'UPDATE' }
-                            ),
-                            h(
-                                NButton, {
-                                type: 'error',
-                                onClick() {
-                                    Swal.fire({
-                                        icon: 'question',
-                                        title: `Hapus barang ${row.name} ? `,
-                                        showCancelButton: true,
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            router.delete(route('admin.products.delete', row.id), {
-                                                onSuccess: () => {
-                                                    notification.success({
-                                                        title: "Barang berhasil dihapus",
-                                                        duration: 1500,
-                                                        closable: false,
-                                                    })
-                                                }
-                                            });
-                                        }
-                                    })
-                                }
-                            }, { default: () => "HAPUS" }
-                            )
-                        ]);
-                    }
-                }
+                
             ]
         }
 

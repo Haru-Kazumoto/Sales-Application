@@ -793,7 +793,7 @@ class CustomerOrdersController extends Controller
 
         $result = DB::table('transaction_items as ti')
             ->where('ti.transactions_id', $transactions->id)
-            ->selectRaw('SUM(ti.total_price) AS total_all_price')
+            ->selectRaw('SUM(ti.total_price) AS total_all_price, SUM(ti.quantity) AS total_all')
             ->first();
 
         $data = [

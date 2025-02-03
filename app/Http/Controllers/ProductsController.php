@@ -219,6 +219,7 @@ class ProductsController extends Controller
      */
     public function update(Request $request, Products $product)
     {
+        dd($request->all());
         // Validasi input
         $request->validate([
             'code' => 'required|string',

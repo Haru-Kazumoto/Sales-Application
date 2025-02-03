@@ -303,7 +303,7 @@
                     <div class="summary-label">Harga</div>
                 </td>
                 <td width="40%">
-                    <div class="summary-label">: Sudah Termasuk PPN 0%</div>
+                    <div class="summary-label">: Sudah Termasuk PPN</div>
                 </td>
             </tr>
             <tr>
