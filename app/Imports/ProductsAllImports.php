@@ -9,6 +9,7 @@ use App\Models\ProductType;
 use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
@@ -30,20 +31,24 @@ class ProductsAllImports implements ToCollection, WithStartRow
     public function collection(Collection $collection)
     {
         // dd($collection);
-        DB::transaction(function() use ($collection)
-            {
-                foreach($collection as $row) 
-                {
+
+        DB::transaction(function() use ($collection) {
+            foreach ($collection as $index => $row) {
+                try {
                     $supplier = Parties::where('name', $row[2])->first();
                     $product_type = ProductType::where('name', $row[7])->first();
                     $product_sub_type = ProductSubType::where('name', $row[6])->first();
 
                     if (!$supplier) {
-                        throw new Exception("Supplier with name {$row[2]} not found.");
+                        throw new Exception("Supplier with name {$row[2]} not found at row {$index}");
                     }
 
                     if (!$product_type) {
-                        throw new Exception("Product type with name {$row[7]} not found.");
+                        throw new Exception("Product type with name {$row[7]} not found at row {$index}");
+                    }
+
+                    if (!$product_sub_type) {
+                        throw new Exception("Product sub type with name {$row[6]} not found at row {$index}");
                     }
 
                     Products::create([
@@ -57,9 +62,12 @@ class ProductsAllImports implements ToCollection, WithStartRow
                         'product_sub_type_id' => $product_sub_type->id,
                         'supplier_id' => $supplier->id,
                     ]);
+                } catch (Exception $e) {
+                    Log::error("Error processing row {$index}: " . json_encode($row) . " | Error: " . $e->getMessage());
+                    throw $e; // Lempar error agar transaksi dibatalkan
                 }
-
             }
-        );
+        });
+
     }
 }
