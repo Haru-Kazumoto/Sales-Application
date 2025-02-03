@@ -251,8 +251,7 @@
                                     <label for="">Harga All Segment
                                         <RequiredMark />
                                     </label>
-                                    <n-input size="large" placeholder=""
-                                        v-model:value="form.all_segment_price"
+                                    <n-input size="large" placeholder="" v-model:value="form.all_segment_price"
                                         @input="(value) => form.all_segment_price = value.replace(/\D/g, '')">
                                         <template #prefix>
                                             Rp
@@ -263,8 +262,7 @@
                                     <label for="">Harga Retail
                                         <RequiredMark />
                                     </label>
-                                    <n-input size="large" placeholder=""
-                                        v-model:value="form.restaurant_price"
+                                    <n-input size="large" placeholder="" v-model:value="form.restaurant_price"
                                         @input="(value) => form.restaurant_price = value.replace(/\D/g, '')">
                                         <template #prefix>
                                             Rp
@@ -747,7 +745,7 @@ export default defineComponent({
 
                 if (result.isDismissed) {
                     calculateFromRedempPrice(form.redemp_price, {
-                        all_segment: form.all_segment_price,
+                        // all_segment: form.all_segment_price,
                         end_user: form.price_3,
                         retail: form.retail_price,
                         grosir: form.restaurant_price,
@@ -758,38 +756,28 @@ export default defineComponent({
 
         function calculateFromSellingPrice(entry_price: number, percentage: number) {
             const convertPercentage = Number(percentage);
-            let resultAmount: number;
-            let roundedResult: number;
-            let differenceAmount: number;
-            let amountAfterDeduction: number;
 
-            if (convertPercentage === 0.075) {
-                // Zeelandia: Mengurangi harga tebus dengan persentase
-                resultAmount = entry_price - (entry_price * convertPercentage);
-            } else {
-                // Non-Zeelandia: Menambah harga tebus dengan persentase
-                resultAmount = entry_price + (entry_price * convertPercentage);
-            }
+            // Menghitung harga tebus setelah dikurangi 7.5%
+            const redemp_price = Math.round(entry_price - (entry_price * convertPercentage));
 
-            // Pembulatan hasil harga all segment
-            roundedResult = Math.round(resultAmount);
+            // Menghitung selisih antara harga jual dan harga tebus
+            const marginAmount = entry_price - redemp_price;
 
-            // Menghitung selisih harga
-            differenceAmount = entry_price - roundedResult;
+            // Menghitung total biaya deductions
+            const deductions = form.bad_debt_dd + form.saving_marketing + form.saving
+                + form.oh_depo + form.transportation_cost;
 
-            // Menghitung normal margin setelah pengurangan biaya-biaya terkait
-            amountAfterDeduction = Math.round(
-                differenceAmount - form.bad_debt_dd - form.saving_marketing - form.saving
-                - form.oh_depo - form.transportation_cost
-            );
+            // Menghitung normal margin setelah dikurangi biaya
+            const normal_margin = Math.round(marginAmount - deductions);
 
             // Menyimpan hasil ke dalam form
-            form.redemp_price = roundedResult;
-            form.normal_margin = amountAfterDeduction;
+            form.redemp_price = redemp_price;
+            form.normal_margin = normal_margin;
         }
 
+
         type SellingPrice = {
-            all_segment: number;
+            // all_segment: number;
             end_user: number;
             retail: number;
             grosir: number;
@@ -802,14 +790,14 @@ export default defineComponent({
 
             // Menghitung selisih harga tebus dengan masing-masing harga jual
             const margin = {
-                all_segment: Math.round((redemp_price - (selling_price.all_segment ?? 0)) - deductions) ,
-                end_user: Math.round((redemp_price - (selling_price.end_user ?? 0)) - deductions) ,
-                retail: Math.round((redemp_price - (selling_price.retail ?? 0)) - deductions) ,
-                grosir: Math.round((redemp_price - (selling_price.grosir ?? 0)) - deductions) ,
+                // all_segment: Math.round((selling_price.all_segment ?? 0) - redemp_price - deductions),
+                end_user: Math.round((selling_price.end_user ?? 0) - redemp_price - deductions),
+                retail: Math.round((selling_price.retail ?? 0) - redemp_price - deductions),
+                grosir: Math.round((selling_price.grosir ?? 0) - redemp_price - deductions),
             };
 
             // Menyimpan hasil margin ke dalam form
-            form.normal_margin = margin.all_segment;
+            // form.normal_margin = margin.all_segment;
             form.margin_end_user = margin.end_user;
             form.margin_retail = margin.retail;
             form.margin_grosir = margin.grosir;
