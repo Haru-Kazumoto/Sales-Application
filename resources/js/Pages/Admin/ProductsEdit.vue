@@ -258,23 +258,24 @@
                                         </template>
                                     </n-input>
                                 </div>
-                                <div class="col-12 col-lg-3 d-flex flex-column">
-                                    <label for="">Harga Retail
-                                        <RequiredMark />
-                                    </label>
-                                    <n-input size="large" placeholder="" v-model:value="form.restaurant_price"
-                                        @input="(value) => form.restaurant_price = value.replace(/\D/g, '')">
-                                        <template #prefix>
-                                            Rp
-                                        </template>
-                                    </n-input>
-                                </div>
+                                
                                 <div class="col-12 col-lg-3 d-flex flex-column">
                                     <label for="">Harga Jual Grosir
                                         <RequiredMark />
                                     </label>
                                     <n-input size="large" placeholder="" v-model:value="form.retail_price"
                                         @input="(value) => form.retail_price = value.replace(/\D/g, '')">
+                                        <template #prefix>
+                                            Rp
+                                        </template>
+                                    </n-input>
+                                </div>
+                                <div class="col-12 col-lg-3 d-flex flex-column">
+                                    <label for="">Harga Jual Retail
+                                        <RequiredMark />
+                                    </label>
+                                    <n-input size="large" placeholder="" v-model:value="form.restaurant_price"
+                                        @input="(value) => form.restaurant_price = value.replace(/\D/g, '')">
                                         <template #prefix>
                                             Rp
                                         </template>
@@ -296,7 +297,7 @@
                                 <n-divider></n-divider>
 
                                 <div class="col-12 col-lg-4 d-flex flex-column">
-                                    <label for="">Harga Jual
+                                    <label for="">Harga Trucking
                                         <RequiredMark />
                                     </label>
                                     <n-select :options="deliveryRegionOptions" v-model:value="form.transportation_cost"
@@ -373,11 +374,11 @@
                                 </div>
 
                                 <div class="col-12 col-lg-3 d-flex flex-column">
-                                    <label for="">Margin Retail
+                                    <label for="">Margin Grosir
                                         <RequiredMark />
                                     </label>
-                                    <n-input size="large" placeholder="" v-model:value="form.margin_retail"
-                                        @input="(value) => form.margin_retail = value.replace(/\D/g, '')">
+                                    <n-input size="large" placeholder="" v-model:value="form.margin_grosir"
+                                        @input="(value) => form.margin_grosir = value.replace(/\D/g, '')">
                                         <template #prefix>
                                             Rp
                                         </template>
@@ -385,11 +386,11 @@
                                 </div>
 
                                 <div class="col-12 col-lg-3 d-flex flex-column">
-                                    <label for="">Margin Grosir
+                                    <label for="">Margin Retail
                                         <RequiredMark />
                                     </label>
-                                    <n-input size="large" placeholder="" v-model:value="form.margin_grosir"
-                                        @input="(value) => form.margin_grosir = value.replace(/\D/g, '')">
+                                    <n-input size="large" placeholder="" v-model:value="form.margin_retail"
+                                        @input="(value) => form.margin_retail = value.replace(/\D/g, '')">
                                         <template #prefix>
                                             Rp
                                         </template>
@@ -746,9 +747,9 @@ export default defineComponent({
                 if (result.isDismissed) {
                     calculateFromRedempPrice(form.redemp_price, {
                         // all_segment: form.all_segment_price,
-                        end_user: form.price_3,
-                        retail: form.retail_price,
                         grosir: form.restaurant_price,
+                        retail: form.retail_price,
+                        end_user: form.price_3,
                     });
                 }
             });
@@ -791,16 +792,16 @@ export default defineComponent({
             // Menghitung selisih harga tebus dengan masing-masing harga jual
             const margin = {
                 // all_segment: Math.round((selling_price.all_segment ?? 0) - redemp_price - deductions),
-                end_user: Math.round((selling_price.end_user ?? 0) - redemp_price - deductions),
-                retail: Math.round((selling_price.retail ?? 0) - redemp_price - deductions),
                 grosir: Math.round((selling_price.grosir ?? 0) - redemp_price - deductions),
+                retail: Math.round((selling_price.retail ?? 0) - redemp_price - deductions),
+                end_user: Math.round((selling_price.end_user ?? 0) - redemp_price - deductions),
             };
 
             // Menyimpan hasil margin ke dalam form
             // form.normal_margin = margin.all_segment;
-            form.margin_end_user = margin.end_user;
-            form.margin_retail = margin.retail;
             form.margin_grosir = margin.grosir;
+            form.margin_retail = margin.retail;
+            form.margin_end_user = margin.end_user;
         }
 
         function calculatePercentagePrice() {
