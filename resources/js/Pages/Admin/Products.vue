@@ -683,14 +683,14 @@
                                             <td>{{ formatRupiah(selectedData.normal_margin) }}</td>
                                         </tr>
                                         <tr>
-                                            <td><strong>Margin Retail</strong></td>
-                                            <td>:</td>
-                                            <td>{{ formatRupiah(selectedData.margin_retail) }}</td>
-                                        </tr>
-                                        <tr>
                                             <td><strong>Margin Grosir</strong></td>
                                             <td>:</td>
                                             <td>{{ formatRupiah(selectedData.margin_grosir) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Margin Retail</strong></td>
+                                            <td>:</td>
+                                            <td>{{ formatRupiah(selectedData.margin_retail) }}</td>
                                         </tr>
                                         <tr>
                                             <td><strong>Margin End user</strong></td>
