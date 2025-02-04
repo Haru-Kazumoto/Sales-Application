@@ -767,10 +767,33 @@ export default defineComponent({
             let normal_margin: number;
 
             if (convertPercentage === 0.075) {
+                Swal.fire({
+                    title: "Rumus perhitungan",
+                    icon: "question",
+                    showCancelButton: true,
+                    showDenyButton: true,
+                    confirmButtonText: "TAMBAH 7.5%",
+                    denyButtonText: "CANCEL",
+                    cancelButtonText: "DIKURANG 7.5%",
+                    cancelButtonColor: "green",
+                    confirmButtonColor: "blue"
+                }).then((result) => {
+                    if(result.isConfirmed) {
+                        // Hitung harga tebus
+                        redemp_price = Math.round(entry_price + (entry_price * convertPercentage)); // Harga tebus dihitung
+                        all_segment_price = entry_price; // Harga jual tetap sebagai entry price
+                        marginAmount = redemp_price - entry_price; // Selisih harga tebus - harga jual
+                    } else if(result.isDenied) {
+                        // Hitung harga tebus
+                        redemp_price = Math.round(entry_price - (entry_price * convertPercentage)); // Harga tebus dihitung
+                        all_segment_price = entry_price; // Harga jual tetap sebagai entry price
+                        marginAmount = entry_price - redemp_price; // Selisih harga jual - harga tebus
+                    }
+                });
                 // Zeelandia: Hitung harga tebus
-                redemp_price = Math.round(entry_price - (entry_price * convertPercentage)); // Harga tebus dihitung
-                all_segment_price = entry_price; // Harga jual tetap sebagai entry price
-                marginAmount = entry_price - redemp_price; // Selisih harga jual - harga tebus
+                // redemp_price = Math.round(entry_price - (entry_price * convertPercentage)); // Harga tebus dihitung
+                // all_segment_price = entry_price; // Harga jual tetap sebagai entry price
+                // marginAmount = entry_price - redemp_price; // Selisih harga jual - harga tebus
             } else {
                 // Selain Zeelandia: Hitung harga all segment
                 redemp_price = entry_price; // Harga tebus tetap sebagai entry price
@@ -799,11 +822,6 @@ export default defineComponent({
         };
 
         function calculateFromRedempPrice(redemp_price: number, selling_price: SellingPrice) {
-            console.log("Harga Jual yang Dikirim:");
-            console.log("End User:", selling_price.end_user);
-            console.log("Retail:", selling_price.retail);
-            console.log("Grosir:", selling_price.grosir); // Periksa apakah ini benar
-
             // Biaya yang dikurangkan untuk menghitung margin
             const deductions = form.oh_depo + form.saving_marketing + form.saving + form.transportation_cost + form.bad_debt_dd;
 
@@ -844,10 +862,6 @@ export default defineComponent({
 
             // Kurangkan dari harga awal
             const result = Math.round(redemp_price - discountAmount);
-
-            console.log("Persentase:", percentage);
-            console.log("Harga awal:", redemp_price);
-            console.log("Hasil perhitungan:", result);
         }
 
         const unitOptions = (page.props.units as Lookup[]).map((data) => ({
