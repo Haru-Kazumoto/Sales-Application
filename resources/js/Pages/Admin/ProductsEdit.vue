@@ -543,6 +543,7 @@ import { router, useForm, usePage } from '@inertiajs/vue3';
 import { Lookup, Products } from '../../types/model';
 import { ArrowBack } from '@vicons/ionicons5';
 import Swal from 'sweetalert2';
+import { formatRupiah } from '../../Utils/options-input.utils';
 
 type TabThemeOverrides = NonNullable<TabsProps['themeOverrides']>;
 
@@ -875,14 +876,14 @@ export default defineComponent({
         }));
 
         const deliveryRegionOptions = (page.props.delivery_region as any[]).map((data) => ({
-            label: data.region_name,
+            label: `${data.region_name} - ${formatRupiah(data.region_price)}`,
             value: data.region_price,
             region_price: data.region_price,
             region_code: data.region_code
         }));
 
         const dimentionOptions = (page.props.dimention as any[]).map((data) => ({
-            label: data.dimention_name,
+            label: `${data.dimention_name}-(${formatRupiah(data.price_dimention)})`,
             value: data.price_dimention,
             max_value: data.max_value,
             min_value: data.min_value
