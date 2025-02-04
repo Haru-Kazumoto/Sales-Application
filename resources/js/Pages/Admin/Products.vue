@@ -258,10 +258,10 @@
                                             <n-select size="large" placeholder="" v-model:value="form.percentage"
                                                 :options="percentageOptions" />
                                         </div>
-                                        <div class="col-12 col-lg-2 d-flex flex-column justify-content-end">
+                                        <!-- <div class="col-12 col-lg-2 d-flex flex-column justify-content-end">
                                             <n-button secondary type="primary" size="large"
                                                 @click="calculatePercentagePrice">Kalkulasi</n-button>
-                                        </div>
+                                        </div> -->
                                         <n-divider></n-divider>
                                         <div class="col-12 col-lg-3 d-flex flex-column" v-if="showPrice">
                                             <label for="">Harga All Segment
@@ -312,7 +312,7 @@
                                         <n-divider></n-divider>
 
                                         <div class="col-12 col-lg-4 d-flex flex-column">
-                                            <label for="">Harga Jual
+                                            <label for="">Harga Trucking
                                                 <RequiredMark />
                                             </label>
                                             <n-select :options="deliveryRegionOptions"
@@ -450,7 +450,7 @@
                                     </template>
                                 </n-input>
                             </div>
-                            <div class="col-12 col-lg-3 d-flex flex-column">
+                            <!-- <div class="col-12 col-lg-3 d-flex flex-column">
                                 <label for="">Pembulatan Harga Jual Grosir
 
                                 </label>
@@ -482,7 +482,7 @@
                                         Rp
                                     </template>
                                 </n-input>
-                            </div>
+                            </div> -->
                             <div class="d-flex">
                                 <n-button type="primary" class="ms-auto" @click="calculateRoundedPrice">Kalkulasi
                                     pembulatan</n-button>
@@ -1005,7 +1005,7 @@ export default defineComponent({
                         return formatRupiah(row.saving_marketing);
                     }
                 },
-                
+
             ]
         }
 
@@ -1026,23 +1026,40 @@ export default defineComponent({
                 title: "Pilih cara perhitungan harga",
                 icon: "question",
                 showCancelButton: true,
-                showDenyButton: true,
+                showDenyButton: false, // Tidak ada tombol deny
                 confirmButtonText: "HARGA TEBUS",
                 cancelButtonText: "HARGA JUAL",
                 cancelButtonColor: "#17a2b8",
             }).then((result) => {
-                if (result.isConfirmed) {
-                    // zeelandia
-                    if (Number(form.percentage) === 0.075) {
-                        calculateFromSellingPrice(Number(form.all_segment_price), form.percentage);
-                    } else { // non zeelandia
-                        calculateFromSellingPrice(form.redemp_price, form.percentage);
-                    }
-                }
+                const percentage = Number(form.percentage); // Pastikan angka valid
+                const allSegmentPrice = Number(form.all_segment_price);
+                const redempPrice = Number(form.redemp_price);
 
-                if (result.isDismissed) {
-                    calculateFromRedempPrice(form.redemp_price, {
-                        all_segment: form.all_segment_price,
+                if (result.isConfirmed) {
+                    if (percentage === 0.075) {
+                        // Jika persentase 0.075, tanyakan apakah ingin "Tambah" atau "Kurang"
+                        Swal.fire({
+                            title: "Pilih metode perhitungan",
+                            icon: "question",
+                            showCancelButton: true,
+                            confirmButtonText: "Tambah",
+                            cancelButtonText: "Kurang",
+                            cancelButtonColor: "#dc3545",
+                        }).then((subResult) => {
+                            if (subResult.isConfirmed) {
+                                // Jika memilih "Tambah", gunakan metode selain Zeelandia
+                                calculateFromSellingPrice(redempPrice, percentage, true);
+                            } else {
+                                // Jika memilih "Kurang", gunakan metode normal Zeelandia
+                                calculateFromSellingPrice(allSegmentPrice, percentage, false);
+                            }
+                        });
+                    } else {
+                        // Jika bukan 0.075, jalankan rumus biasa
+                        calculateFromSellingPrice(redempPrice, percentage, false);
+                    }
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    calculateFromRedempPrice(redempPrice, {
                         end_user: form.price_3,
                         retail: form.retail_price,
                         grosir: form.restaurant_price,
@@ -1051,36 +1068,37 @@ export default defineComponent({
             });
         }
 
-        function calculateFromSellingPrice(entry_price: number, percentage: number) {
+        function calculateFromSellingPrice(entry_price: number, percentage: number, isAdd: boolean) {
             const convertPercentage = Number(percentage);
-            let resultAmount: number;
-            let roundedResult: number;
-            let differenceAmount: number;
-            let amountAfterDeduction: number;
+            let redemp_price: number;
+            let all_segment_price: number;
+            let marginAmount: number;
+            let deductions: number;
+            let normal_margin: number;
 
-            if (convertPercentage === 0.075) {
-                // Zeelandia: Mengurangi harga tebus dengan persentase
-                resultAmount = entry_price - (entry_price * convertPercentage);
+            if (convertPercentage === 0.075 && !isAdd) {
+                // Zeelandia (Kurang)
+                redemp_price = Math.round(entry_price - (entry_price * convertPercentage));
+                all_segment_price = entry_price;
+                marginAmount = entry_price - redemp_price;
             } else {
-                // Non-Zeelandia: Menambah harga tebus dengan persentase
-                resultAmount = entry_price + (entry_price * convertPercentage);
+                // Selain Zeelandia atau 0.075 dengan Tambah
+                redemp_price = entry_price;
+                all_segment_price = Math.round(entry_price + (entry_price * convertPercentage));
+                marginAmount = all_segment_price - entry_price;
             }
 
-            // Pembulatan hasil harga all segment
-            roundedResult = Math.round(resultAmount);
+            // Menghitung total biaya deductions
+            deductions = form.bad_debt_dd + form.saving_marketing + form.saving
+                + form.oh_depo + form.transportation_cost;
 
-            // Menghitung selisih harga
-            differenceAmount = entry_price - roundedResult;
-
-            // Menghitung normal margin setelah pengurangan biaya-biaya terkait
-            amountAfterDeduction = Math.round(
-                differenceAmount - form.bad_debt_dd - form.saving_marketing - form.saving
-                - form.oh_depo - form.transportation_cost
-            );
+            // Menghitung normal margin setelah dikurangi biaya
+            normal_margin = Math.round(marginAmount - deductions);
 
             // Menyimpan hasil ke dalam form
-            form.redemp_price = roundedResult;
-            form.normal_margin = amountAfterDeduction;
+            form.redemp_price = redemp_price;
+            form.all_segment_price = all_segment_price;
+            form.normal_margin = normal_margin;
         }
 
         type SellingPrice = {
@@ -1120,7 +1138,7 @@ export default defineComponent({
                 return;
             }
 
-            calculateFromSellingPrice(form.redemp_price, form.percentage);
+            // calculateFromSellingPrice(form.redemp_price, form.percentage);
 
             // do calculate
             const percentage = Number(form.percentage);
@@ -1226,6 +1244,7 @@ export default defineComponent({
                 price_3,
                 retail_price,
                 restaurant_price,
+                normal_margin,
                 rounded_all_segment_price,
                 rounded_price_3,
                 rounded_retail_price,
@@ -1234,6 +1253,7 @@ export default defineComponent({
 
             // Perbarui harga berdasarkan nilai pembulatan yang dimasukkan oleh pengguna
             form.all_segment_price = Number(all_segment_price) + (Number(rounded_all_segment_price) || 0);
+            form.normal_margin = Number(normal_margin) + (Number(rounded_all_segment_price) || 0);
             form.price_3 = Number(price_3) + (Number(rounded_price_3) || 0);
             form.retail_price = Number(retail_price) + (Number(rounded_retail_price) || 0);
             form.restaurant_price = Number(restaurant_price) + (Number(rounded_restaurant_price) || 0);

@@ -242,10 +242,10 @@
                                     <n-select size="large" placeholder="" v-model:value="form.percentage"
                                         :options="percentageOptions" />
                                 </div>
-                                <div class="col-12 col-lg-2 d-flex flex-column justify-content-end">
+                                <!-- <div class="col-12 col-lg-2 d-flex flex-column justify-content-end">
                                     <n-button secondary type="primary" size="large"
                                         @click="calculatePercentagePrice">Kalkulasi</n-button>
-                                </div>
+                                </div> -->
                                 <n-divider></n-divider>
                                 <div class="col-12 col-lg-3 d-flex flex-column" v-if="showPrice">
                                     <label for="">Harga All Segment
