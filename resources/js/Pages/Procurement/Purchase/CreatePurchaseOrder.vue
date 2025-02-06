@@ -466,6 +466,7 @@ export default defineComponent({
             });
 
             // Clear form 
+            showPrice.value = true;
             products.value.name = "";
             transaction_items.value.quantity = null as unknown as number;
             transaction_items.value.amount = null as unknown as number;
@@ -480,6 +481,7 @@ export default defineComponent({
                 keepAliveOnHover: false,
                 duration: 2000,
             });
+
         }
 
 
