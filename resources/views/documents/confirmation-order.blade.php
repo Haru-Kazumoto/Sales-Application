@@ -319,7 +319,12 @@
                     <div class="summary-label">Pembayaran Ditransfer ke</div>
                 </td>
                 <td width="40%">
-                    <div class="summary-label">: PT.Danitama Niaga Prima <br>Bank BCA Cab. Hasanudin - Jakarta</div>
+                    <div class="summary-label">: PT.Danitama Niaga Prima 
+                        <br>-Bank Mandiri Cab. Komsen Jati Asih - Bekasi
+                        <br>A/C NO.167-000-221-69-91
+                        <br>-Bank BCA Cab Jati Asih
+                        <br>A/C 6755.303.449
+                    </div>
                 </td>
             </tr>
             <tr>
