@@ -879,6 +879,9 @@ export default defineComponent({
                     title: "JENIS PRODUK",
                     key: "type",
                     width: 150,
+                    render(row) {
+                        return row.product_sub_type?.name
+                    }
                 },
                 {
                     title: "SEGMENT PRODUK",

@@ -47,10 +47,11 @@ class ProductsController extends Controller
      */
     public function createProduct(Request $request)
     {
-        $query = Products::with(['productType', 'parties'])
+        $query = Products::with(['productType', 'parties','productSubType'])
             ->select([
                 'products.*', // Pilih semua kolom dari tabel products
                 'product_type as type', // Berikan alias untuk field product_type
+                // 'product_sub_type as sub_type'
             ]);
 
         // Filter berdasarkan field dan query yang diterima dari request
@@ -87,6 +88,8 @@ class ProductsController extends Controller
         $global_element = GlobalElementPrice::all();
         $delivery_region = RegionDelivery::all();
         $percentage = Lookup::where('category', 'PERCENTAGE')->get();
+
+        // dd($products);
 
         return Inertia::render('Admin/Products', compact(
             'products',
