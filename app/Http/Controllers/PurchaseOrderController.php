@@ -116,7 +116,22 @@ class PurchaseOrderController extends Controller
 
         $products = Products::with('tradePromos')->get();
         $units = $this->lookupService->getAllLookupBy('category', 'UNIT');
-        $transports = $this->partiesService->getPartiesByGroupAndType('VENDOR', 'Angkutan');
+        // $transports = $this->partiesService->getPartiesByGroupAndType('VENDOR', 'Angkutan');
+        $transports = DB::table('parties as transport')
+            ->join('parties_groups as group', 'transport.parties_group_id', '=', 'group.id')
+            ->select([
+                'transport.id',
+                'transport.name',
+                'transport.code',
+                'transport.address',
+                'transport.pic',
+                'transport.pic_2',
+                'transport.phone',
+                'transport.phone_2'
+            ])
+            ->where('transport.type_parties','=','EXTERNAL_TRANSPORTATION')
+            ->where('group.name','=','Angkutan')
+            ->get();
         $tax = Tax::all();
         $po_number = DocumentNumberGenerator::generate(
             'PO-',
