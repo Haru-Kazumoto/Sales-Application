@@ -103,11 +103,14 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         });
 
         Route::prefix('transport-management')->group(function() {
-            Route::get('', [App\Http\Controllers\TransportController::class, 'createTransport'])->name('create-transports');
+            Route::get('', [App\Http\Controllers\TransportController::class, 'index'])->name('index-transports');
+            Route::get('/create',[App\Http\Controllers\TransportController::class, 'create'])->name('create-transports');
             Route::post('/post', [App\Http\Controllers\TransportController::class, 'storeTransport'])->name('transport.post');
             Route::get('/edit/{parties}', [App\Http\Controllers\TransportController::class, 'update'])->name('transport.edit');
             Route::patch('/update/{parties}', [App\Http\Controllers\TransportController::class, 'edit'])->name('transport.update');
             Route::delete('/delete/{parties}', [App\Http\Controllers\TransportController::class, 'destroy'])->name('transport.delete');
+
+            Route::post('/import-transport', [App\Http\Controllers\TransportController::class,'importTransports'])->name('transport.import');
         }); 
 
         Route::prefix('unit-management')->group(function() {

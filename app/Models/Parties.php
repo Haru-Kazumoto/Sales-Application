@@ -43,6 +43,8 @@ class Parties extends Model
         'return_address',
         'owner',
         'pic',
+        'pic_2',
+        'phone_2'
     ];
 
     public function partiesGroup(): BelongsTo

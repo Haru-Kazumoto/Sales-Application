@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateTransportRequest;
+use App\Imports\TransportImport;
 use App\Models\Parties;
 use App\Models\PartiesGroup;
 use Illuminate\Http\RedirectResponse;
@@ -10,15 +11,27 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TransportController extends Controller
 {
-    public function createTransport(Request $request): Response
+    public function index(Request $request): Response
     {
-        $query = Parties::with('partiesGroup')
-            ->whereHas('partiesGroup', function($query) {
-                $query->where('name', 'ANGKUTAN');
-            });
+        $query = DB::table('parties as transport')
+            ->join('parties_groups as group', 'transport.parties_group_id', '=', 'group.id')
+            ->select([
+                'transport.id',
+                'transport.name',
+                'transport.code',
+                'transport.address',
+                'transport.pic',
+                'transport.pic_2',
+                'transport.phone',
+                'transport.phone_2'
+            ])
+            ->where('transport.type_parties','=','EXTERNAL_TRANSPORTATION')
+            ->where('group.name','=','Angkutan');
+            // ->paginate();
 
         // Filter berdasarkan field dan query yang diterima dari request
         if($request->filled('filter_field') && $request->filled('filter_query')) {
@@ -30,7 +43,7 @@ class TransportController extends Controller
         }
 
         // Urutkan berdasarkan created_at dan paginasi data
-        $transports = $query->orderBy('created_at', 'desc')->paginate(500);
+        $transports = $query->orderBy('transport.created_at', 'desc')->paginate(500);
 
         // Pastikan total item sesuai dengan hasil yang difilter
         $transports->appends($request->only('filter_field', 'filter_query'));
@@ -38,11 +51,16 @@ class TransportController extends Controller
         return Inertia::render('Admin/Transports', compact('transports'));
     }
 
+    public function create(): Response
+    {
+        return Inertia::render('Admin/TransportCreate', [
+            'transport_code' => "TRN-".rand(100000,999999)
+        ]);
+    }
+
     public function storeTransport(CreateTransportRequest $request): RedirectResponse
     {
-        // dd($request->all());
         $data = $request->validated();
-        // dd($data['number_plate']);
 
         DB::transaction(function() use ($data) {
             $partiesGroup = PartiesGroup::where('name', 'Angkutan')->first();
@@ -50,22 +68,21 @@ class TransportController extends Controller
             Parties::create([
                 'name' => $data['name'],
                 'code' => $data['code'],
-                'number_plate' => $data['number_plate'],
-                'type_parties' => $data['type'],
+                'type_parties' => 'EXTERNAL_TRANSPORTATION',
+                'pic' => $data['pic'],
                 'phone' => $data['phone'],
-                'city' => $data['city'],
+                'pic_2' => $data['pic_2'],
+                'phone_2' => $data['phone_2'],
                 'address' => $data['address'],
                 'parties_group_id' => $partiesGroup->id,
             ]);
         });
 
-        return redirect()->route('admin.create-transports')->with('success', 'Transport berhasil ditambah!');
+        return redirect()->route('admin.index-transports')->with('success', 'Transport berhasil ditambah!');
     }
 
     public function update(Parties $parties) 
     {
-        $parties->load('partiesGroup');
-
         return Inertia::render('Admin/TransportsEdit', compact('parties'));
     }
 
@@ -79,16 +96,17 @@ class TransportController extends Controller
             $parties->update([
                 'name' => $data['name'],
                 'code' => $data['code'],
-                'number_plate' => $data['number_plate'],
-                'type_parties' => $data['type'],
+                'type_parties' => 'EXTERNAL_TRANSPORTATION',
+                'pic' => $data['pic'],
                 'phone' => $data['phone'],
-                'city' => $data['city'],
+                'pic_2' => $data['pic_2'],
+                'phone_2' => $data['phone_2'],
                 'address' => $data['address'],
                 'parties_group_id' => $partiesGroup->id,
             ]);
         });
 
-        return redirect()->route('admin.create-transports')->with('success', 'Berhasil mengupdate data transport!');
+        return redirect()->route('admin.index-transports')->with('success', 'Berhasil mengupdate data transport!');
     }
 
     public function destroy(Parties $parties): RedirectResponse
@@ -97,7 +115,12 @@ class TransportController extends Controller
             $parties->delete();
         });
 
-        return redirect()->route('admin.create-transports')->with('success', 'Transport berhasil dihapus!');
+        return back()->with('success', 'Ekspedisi berhasil dihapus!');
+    }
+
+    public function importTransports(Request $request)
+    {
+        Excel::import(new TransportImport, $request->attachment);
     }
 
 }

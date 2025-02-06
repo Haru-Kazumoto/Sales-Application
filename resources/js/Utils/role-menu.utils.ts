@@ -352,7 +352,7 @@ export const roleMenus = {
         },
         
         {
-            label: "Transports",
+            label: "Ekspedisi Eksternal",
             key: 'transports',
             icon: VehicleTruckProfile20Regular,
             href: '/transport-management',

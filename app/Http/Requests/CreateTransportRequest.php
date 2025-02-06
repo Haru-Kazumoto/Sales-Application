@@ -24,10 +24,10 @@ class CreateTransportRequest extends FormRequest
         return [
             'code' => 'required|string',
             'name' => 'required|string',
-            'number_plate' => 'required|string',
-            'type' => 'required|string',
+            'pic' => 'required|string',
+            'pic_2' => 'nullable|string',
             'phone' => 'nullable|string',
-            'city' => 'nullable|string',
+            'phone_2' => 'nullable|string',
             'address' => 'nullable|string',
         ];
     }

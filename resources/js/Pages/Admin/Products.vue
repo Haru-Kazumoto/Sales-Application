@@ -1320,36 +1320,36 @@ export default defineComponent({
             file.attachment = event.target.files[0];
         }
 
-        function handleImportProducts() {
-            if (file.attachment === null) {
-                Swal.fire('File belum di pilih!', 'Silahkan pilih file excel terlebih dahulu', 'error');
-                return;
+            function handleImportProducts() {
+                if (file.attachment === null) {
+                    Swal.fire('File belum di pilih!', 'Silahkan pilih file excel terlebih dahulu', 'error');
+                    return;
+                }
+
+                // Show loading notification
+                Swal.fire({
+                    title: 'Importing data...',
+                    text: 'Please wait while we import the data.',
+                    icon: 'info',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                file.post(route('admin.products.import'), {
+                    onSuccess: () => {
+                        Swal.fire({
+                            title: 'Berhasil memasukan data!',
+                            text: 'Silahkan cek list data',
+                            icon: 'success'
+                        });
+                    },
+                    onError: () => {
+                        Swal.fire('Gagal memasukan data!', 'Silahkan lapor developer', 'error');
+                    }
+                });
             }
-
-            // Show loading notification
-            Swal.fire({
-                title: 'Importing data...',
-                text: 'Please wait while we import the data.',
-                icon: 'info',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-
-            file.post(route('admin.products.import'), {
-                onSuccess: () => {
-                    Swal.fire({
-                        title: 'Berhasil memasukan data!',
-                        text: 'Silahkan cek list data',
-                        icon: 'success'
-                    });
-                },
-                onError: () => {
-                    Swal.fire('Gagal memasukan data!', 'Silahkan lapor developer', 'error');
-                }
-            });
-        }
 
         const pagination = reactive({
             current_page: (page.props.products as any).current_page,

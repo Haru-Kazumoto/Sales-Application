@@ -1,62 +1,9 @@
 <template>
     <div class="d-flex flex-column gap-4">
-        <TitlePage title="Buat Transport" />
-        <div class="card border-0 shdaow-sm">
-            <div class="card-body">
-                <div class="row g-3">
-                    <!-- First row -->
-                    <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
-                        <label for="">Kode Transportasi
-                            <RequiredMark />
-                        </label>
-                        <n-input size="large" placeholder="" v-model:value="form.code" />
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
-                        <label for="">Nama Transportasi
-                            <RequiredMark />
-                        </label>
-                        <n-input size="large" placeholder="" v-model:value="form.name" />
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
-                        <label for="">Nomor Polisi
-                            <RequiredMark />
-                        </label>
-                        <n-input size="large" placeholder="" v-model:value="form.number_plate" />
-                    </div>
-
-                    <!-- Second row -->
-                    <!-- <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
-                        <label for="">Tipe
-                            <RequiredMark />
-                        </label>
-                        <n-input size="large" placeholder="" v-model:value="form.type" />
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
-                        <label for="">Kelompok
-                            <RequiredMark />
-                        </label>
-                        <n-input size="large" placeholder="" v-model:value="form.group_name" disabled />
-                    </div> -->
-                    <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
-                        <label for="">Nomor Telepon</label>
-                        <n-input size="large" placeholder="" v-model:value="form.phone" />
-                    </div>
-
-                    <!-- Third row -->
-                    <!-- <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
-                        <label for="">Kota</label>
-                        <n-input size="large" placeholder="" v-model:value="form.city" />
-                    </div> -->
-                    <div class="col-12 col-md-6 col-lg-8 d-flex flex-column">
-                        <label for="">Alamat</label>
-                        <n-input size="large" placeholder="" type="textarea" v-model:value="form.address" />
-                    </div>
-                </div>
-
-                <div class="d-flex mt-3">
-                    <n-button class="ms-auto" type="primary" @click="handleSubmitTransport">Tambah data</n-button>
-                </div>
-            </div>
+        <TitlePage title="Ekspedisi Eksternal" />
+        
+        <div class="d-flex">
+            <n-button type="primary" size="large" class="ms-auto" @click="router.visit(route('admin.create-transports'))">Buat Data Baru</n-button>
         </div>
 
         <div class="row g-3">
@@ -74,7 +21,7 @@
                         { label: 'Nama', value: 'name' },
                         { label: 'Nomor Polisi', value: 'number_plate'}
                     ]" />
-                    <n-input class="w-50" placeholder="" @input="handleSearch" v-model:value="filterQuery" />
+                    <n-input class="w-50" placeholder="" @keyup.enter="handleSearch" v-model:value="filterQuery" />
                 </div>
             </div>
         </div>
@@ -130,33 +77,25 @@ export default defineComponent({
                     width: 200,
                 },
                 {
-                    title: "NOMOR POLISI",
-                    key: "number_plate",
-                    width: 170,
+                    title: "NAMA PIC 1",
+                    key: "pic",
+                    width: 200,
                 },
-                // {
-                //     title: "TIPE",
-                //     key: "type_parties",
-                //     width: 100,
-                // },
-                // {
-                //     title: "KELOMPOK",
-                //     key: "group_name",
-                //     width: 150,
-                //     render(row) {
-                //         return row.parties_group.name;
-                //     }
-                // },
                 {
-                    title: "NOMOR TELEPON",
+                    title: "NOMOR PIC 1",
                     key: "phone",
                     width: 200,
                 },
-                // {
-                //     title: "KOTA",
-                //     key: "city",
-                //     width: 150,
-                // },
+                {
+                    title: "NAMA PIC 2",
+                    key: "pic_2",
+                    width: 200,
+                },
+                {
+                    title: "NOMOR PIC 2",
+                    key: "phone_2",
+                    width: 200,
+                },
                 {
                     title: "ALAMAT",
                     key: "address",
@@ -238,7 +177,7 @@ export default defineComponent({
 
         // Fungsi untuk meng-handle pencarian
         const handleSearch = () => {
-            router.get(route('admin.create-transports'), {
+            router.get(route('admin.index-transports'), {
                 page: pagination.current_page,
                 filter_field: filterField.value,
                 filter_query: filterQuery.value
@@ -250,7 +189,7 @@ export default defineComponent({
 
         // Function to handle page change
         function handlePageChange(page: number) {
-            router.get(route('admin.create-transports'), {
+            router.get(route('admin.index-transports'), {
                 page,
                 filter_field: filterField.value,
                 filter_query: filterQuery.value
@@ -290,6 +229,7 @@ export default defineComponent({
             filterField,
             filterQuery,
             pagination,
+            router
         }
     },
     components: {

@@ -12,7 +12,22 @@
             </Link>
         </div>
 
-        
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <div class="row g-2">
+                    <div class="col-12 col-md-6 col-lg-4 d-flex flex-column">
+                        <h4>Tambah data dari excel</h4>
+                        <n-divider></n-divider>
+                        <label for="file-upload" class="form-label">Upload File Excel</label>
+                        <input type="file" id="file-upload" accept=".xlsx" class="form-control"   @change="handleChangeFile"/>
+                        <small class="text-muted">
+                            Hanya file Excel (.xlsx) yang diperbolehkan.
+                        </small>
+                        <n-button type="primary" class="mt-3 w-25" @click="handleImportProducts">Import</n-button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="card border-0 shdaow-sm">
             <div class="card-body">
@@ -59,7 +74,7 @@
                 </div>
 
                 <div class="d-flex mt-3">
-                    <n-button class="ms-auto" type="primary" @click="handleUpdateTransport" size="large">Update
+                    <n-button class="ms-auto" type="primary" @click="handleSubmitTransport" size="large">Tambah
                         data</n-button>
                 </div>
             </div>
@@ -72,6 +87,8 @@
 import { defineComponent, h } from 'vue';
 import TitlePage from '../../Components/TitlePage.vue';
 import RequiredMark from '../../Components/RequiredMark.vue';
+import { DataTableColumns, NButton, useNotification } from 'naive-ui';
+import { Flash, Parties } from '../../types/model';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
 import { ArrowBack } from "@vicons/ionicons5";
@@ -80,21 +97,60 @@ export default defineComponent({
     setup() {
         const page = usePage();
         const form = useForm({
-            code: (page.props.parties as any).code,
-            name: (page.props.parties as any).name,
-            address: (page.props.parties as any).address,
-            phone: (page.props.parties as any).phone,
-            phone_2: (page.props.parties as any).phone_2,
-            pic: (page.props.parties as any).pic,
-            pic_2: (page.props.parties as any).pic_2
+            code: page.props.transport_code,
+            name: '',
+            address: '',
+            phone: '',
+            phone_2: '',
+            pic: '',
+            pic_2: ''
         });
 
-        function handleUpdateTransport() {
-            form.patch(route('admin.transport.update', (page.props.parties as any).id), {
+        const file = useForm({
+            attachment: null as unknown as any,
+        });
+
+        function handleChangeFile(event) {
+            file.attachment = event.target.files[0];
+        }
+
+        function handleImportProducts() {
+            if (file.attachment === null) {
+                Swal.fire('File belum di pilih!', 'Silahkan pilih file excel terlebih dahulu', 'error');
+                return;
+            }
+
+            // Show loading notification
+            Swal.fire({
+                title: 'Importing data...',
+                text: 'Tunggu sistem mengimport data.',
+                icon: 'info',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            file.post(route('admin.transport.import'), {
+                onSuccess: () => {
+                    Swal.fire({
+                        title: 'Berhasil memasukan data!',
+                        text: 'Silahkan cek list data',
+                        icon: 'success'
+                    });
+                },
+                onError: () => {
+                    Swal.fire('Gagal memasukan data!', 'Silahkan lapor developer', 'error');
+                }
+            });
+        }
+
+        function handleSubmitTransport() {
+            form.post(route('admin.transport.post'), {
                 preserveScroll: true,
                 onSuccess: (page) => {
                     Swal.fire({
-                        title: (page.props.flash as any).success,
+                        title: page.props.flash.success,
                         icon: "success",
                         timer: 2000,
                         timerProgressBar: true,
@@ -114,8 +170,10 @@ export default defineComponent({
 
         return {
             form,
-            handleUpdateTransport,
-            ArrowBack
+            handleSubmitTransport,
+            ArrowBack,
+            handleChangeFile,
+            handleImportProducts
         }
     },
     components: {
