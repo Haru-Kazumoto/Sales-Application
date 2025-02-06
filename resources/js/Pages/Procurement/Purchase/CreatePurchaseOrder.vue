@@ -162,7 +162,7 @@
                         </div>
 
                         <!-- Baris Kedua -->
-                        <div class="col-md-6">
+                        <div class="col-md-6" v-if="showPrice === true">
                             <label for="product_price">
                                 Harga Barang
                             </label>
@@ -178,7 +178,7 @@
 
                         <div class="col-md-6" v-if="transaction_items.trade_promo_id !== null">
                             <label for="ppn">
-                                Harga Setelah Diskon
+                                Harga Trade Promo
                             </label>
                             <n-input size="large" id="product_price" placeholder=""
                                 v-model:value="transaction_items.amount_discount" disabled>
@@ -260,6 +260,7 @@ export default defineComponent({
         const loadingRef = ref(false);
         const optionsRef = ref<SelectOption[]>([]);
         const pemasokOptionsRef = ref<SelectOption[]>([]);
+        const showPrice = ref(true);
 
         const form = useForm({
             document_code: (page.props.po_number as string),
@@ -349,7 +350,6 @@ export default defineComponent({
             () => products.value.name,
             (newName) => {
                 const selectedProduct = productOptions.find((product) => product.label === newName);
-                console.log(selectedProduct);
 
                 if (selectedProduct) {
                     products.value.code = selectedProduct.code;
@@ -359,6 +359,7 @@ export default defineComponent({
 
                     // Jika produk memiliki lebih dari 1 trade promo, siapkan opsi untuk select
                     if (selectedProduct.trade_promos.length > 0) {
+                        showPrice.value = false;
                         tradePromoOptions.value = selectedProduct.trade_promos.map((promo: { grosir_account: string, id: number, discount_price: number, quota: number, is_active: number }) => ({
                             label: promo.grosir_account,
                             value: promo.id,
@@ -397,9 +398,8 @@ export default defineComponent({
         function addProduct() {
             // Validasi input
             if (
-                !products.value.name ||
-                !transaction_items.value.quantity ||
-                (!transaction_items.value.amount && !transaction_items.value.discount_amount)
+                !products.value.name || !transaction_items.value.quantity
+                // ( !transaction_items.value.discount_amount)
             ) {
                 notification.error({
                     title: 'Form barang harus diisi',
@@ -879,6 +879,7 @@ export default defineComponent({
             pemasokOptions,
             tradePromoOptions,
             quotaTradePromo,
+            showPrice,
             handleSearch: (query: string) => {
                 if (!query.length) {
                     optionsRef.value = []
