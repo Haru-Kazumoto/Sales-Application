@@ -286,20 +286,21 @@
             </tr>
             <tr>
                 <td width="10%">
-                    <div class="summary-label">4. Harga</div>
-                </td>
-                <td width="40%">
-                    <div class="summary-label">: Termasuk PPN 11%</div>
-                </td>
-            </tr>
-            <tr>
-                <td width="10%">
-                    <div class="summary-label">5. Cara Pembayaran</div>
+                    <div class="summary-label">4. Cara Pembayaran</div>
                 </td>
                 <td width="40%">
                     <div class="summary-label">: 30/45/60 hari setelah barang diterima</div>
                 </td>
             </tr>
+            <tr>
+                <td width="10%">
+                    <div class="summary-label">5. Harga</div>
+                </td>
+                <td width="40%">
+                    <div class="summary-label">: Termasuk PPN 11%</div>
+                </td>
+            </tr>
+            
             <tr>
                 <td width="10%">
                     <div class="summary-label">6. Faktur Pajak / NPWP</div>
@@ -310,26 +311,33 @@
             </tr>
             <tr>
                 <td width="10%">
-                    <div class="summary-label">7. Ongkos Angkut</div>
+                    <div class="summary-label">7. Masa Berlaku DO</div>
                 </td>
                 <td width="40%">
-                    <div class="summary-label">: -</div>
+                    <div class="summary-label">: ..........................hari dari Tanggal Terbit DO</div>
                 </td>
             </tr>
             <tr>
                 <td width="10%">
-                    <div class="summary-label">8. Catatan</div>
+                    <div class="summary-label">8. Ongkos Angkut</div>
                 </td>
                 <td width="40%">
-                    <div class="summary-label">: Beban Pabrik</div>
+                    <div class="summary-label">: Beban PT {{ $located === 'DNP' ? 'DNP' : 'DKU' }} - / BKS Beban Principle (*coret yang tidak berlaku)</div>
                 </td>
             </tr>
             <tr>
                 <td width="10%">
-                    <div class="summary-label">9. Keterangan</div>
+                    <div class="summary-label">9. Catatan</div>
                 </td>
                 <td width="40%">
-                    <div class="summary-label">: PO-123-123</div>
+                    <div class="summary-label">: {{ $purchase_order->description }}</div>
+                </td>
+            </tr>
+            <tr>
+                <td width="10%">
+                    <div class="summary-label">10. Keterangan</div>
+                </td>
+                <td width="40%">
                     <div class="summary-label">: PO dan syarat syarat tersebut didalamnya merupakan kontrak jual
                         beli<br>
                         dan mengikat kedua belah pihak

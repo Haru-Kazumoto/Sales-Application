@@ -278,6 +278,7 @@ class PurchaseOrderController extends Controller
         $transportation = $transactions->transactionDetails->firstWhere('category', 'Transportation')->value ?? '';
         $sender = $transactions->transactionDetails->firstWhere('category', 'Sender')->value ?? '';
         $delivery_type = $transactions->transactionDetails->firstWhere('category', 'Delivery Type')->value ?? '';
+        // $note = $transactions->transactionDetails->firstWhere('')
 
         // Data yang akan dikirimkan ke view PDF
         $data = [
