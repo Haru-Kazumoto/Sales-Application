@@ -163,7 +163,8 @@
     <table class="header" cellpadding="0" cellspacing="0">
         <tr>
             <td>
-                <img src="{{ public_path('images/dnp_hd.png') }}" alt="Logo Perusahaan" class="logo">
+                <img src="{{ $located === 'DNP' ? public_path('images/dnp_hd.png') : public_path('images/PT DKU.png') }}" 
+                alt="Logo Perusahaan" class="logo">
             </td>
             <td>
                 <div class="company-address">
@@ -344,10 +345,10 @@
                 <td width="40%">
                     <div style="display: flex; flex-direction: column; gap: 7px; align-items: center;">
                         <div style="font-size: medium;">Hormat kami,</div>
-                        <div style="font-weight: bold; font-size: 13px; margin-bottom: 100px;">PT DANITAMA NIAGAPRIMA
+                        <div style="font-weight: bold; font-size: 13px; margin-bottom: 100px;">{{ $located === 'DNP' ? 'PT DANITAMA NIAGAPRIMA' : 'PT DUTA KOMODITI UTAMA' }}
                         </div>
-                        <div style="font-weight: medium; font-size: 13px;">Rochtji Thaher</div>
-                        <div style="font-weight: bold; font-size: 11px; ">PT DANITAMA NIAGAPRIMA</div>
+                        <div style="font-weight: medium; font-size: 13px;">{{ $located === 'DNP' ? 'Rechtji Thaher' : 'Robi Agus Prasetya' }}</div>
+                        <div style="font-weight: bold; font-size: 11px; ">{{ $located === 'DNP' ? 'PT DANITAMA NIAGAPRIMA' : 'PT DUTA KOMODITI UTAMA' }}</div>
                     </div>
                 </td>
                 <td width="40%">
