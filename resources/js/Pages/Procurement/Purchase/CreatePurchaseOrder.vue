@@ -349,12 +349,13 @@ export default defineComponent({
             () => products.value.name,
             (newName) => {
                 const selectedProduct = productOptions.find((product) => product.label === newName);
+                console.log(selectedProduct);
 
                 if (selectedProduct) {
                     products.value.code = selectedProduct.code;
                     transaction_items.value.product_id = selectedProduct.id;
                     transaction_items.value.unit = selectedProduct.unit;
-                    transaction_items.value.amount = selectedProduct.retail_price;
+                    transaction_items.value.amount = selectedProduct.redemp_price;
 
                     // Jika produk memiliki lebih dari 1 trade promo, siapkan opsi untuk select
                     if (selectedProduct.trade_promos.length > 0) {
