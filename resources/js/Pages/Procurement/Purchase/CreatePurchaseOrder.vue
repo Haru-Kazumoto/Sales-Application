@@ -138,7 +138,7 @@
                     <span class="fs-4 fw-semibold ">Penginputan Barang</span>
                     <form @submit.prevent="addProduct" class="row g-3 mt-2">
                         <!-- Baris Pertama -->
-                        <div class="col-12 col-md-6 col-lg-4">
+                        <div class="col-12 col-md-6 col-lg-8">
                             <label for="product_name">
                                 Nama Barang
                                 <RequiredMark />
@@ -679,7 +679,7 @@ export default defineComponent({
                 {
                     name: 'Transportasi',
                     category: 'Transportation',
-                    value: transaction_details.value.transportation,
+                    value: transaction_details.value.transportation || 'non-transport',
                     data_type: 'string',
                 },
                 {
