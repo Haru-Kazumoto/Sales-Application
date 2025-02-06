@@ -265,7 +265,7 @@
                     <div class="summary-label">1. Nama Pembeli</div>
                 </td>
                 <td width="40%">
-                    <div class="summary-label">: PT DANITAMA NIAGAPRIMA</div>
+                    <div class="summary-label">: {{ $located === 'DNP' ? 'PT DANITAMA NIAGAPRIMA' : 'PT DUTA KOMODITI UTAMA' }}</div>
                 </td>
             </tr>
             <tr>
@@ -347,8 +347,8 @@
                         <div style="font-size: medium;">Hormat kami,</div>
                         <div style="font-weight: bold; font-size: 13px; margin-bottom: 100px;">{{ $located === 'DNP' ? 'PT DANITAMA NIAGAPRIMA' : 'PT DUTA KOMODITI UTAMA' }}
                         </div>
-                        <div style="font-weight: medium; font-size: 13px;">{{ $located === 'DNP' ? 'Rechtji Thaher' : 'Robi Agus Prasetya' }}</div>
-                        <div style="font-weight: bold; font-size: 11px; ">{{ $located === 'DNP' ? 'PT DANITAMA NIAGAPRIMA' : 'PT DUTA KOMODITI UTAMA' }}</div>
+                        <div style="font-weight: bold; font-size: 13px;">{{ $located === 'DNP' ? 'Rechtji Thaher' : 'Robi Agus Prasetya' }}</div>
+                        <div style="font-weight: medium; font-size: 11px; ">DIREKTUR</div>
                     </div>
                 </td>
                 <td width="40%">
