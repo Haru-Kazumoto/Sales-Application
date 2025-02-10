@@ -300,7 +300,7 @@ export default defineComponent({
 
             modal.show();
 
-            console.log(selectedData.value);
+            (selectedData.value);
         }
 
         function handleDeleteTradePromo(trade_promo_id) {

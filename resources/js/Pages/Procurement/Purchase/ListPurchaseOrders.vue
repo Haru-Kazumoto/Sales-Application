@@ -14,7 +14,8 @@
                 <n-data-table :columns="columns" :bordered="false" :data="($page.props.transactions as any).data" />
                 <div class="d-flex mt-3">
                     <n-pagination class="ms-auto" v-model:page="pagination.current_page"
-                        :page-count="pagination.last_page" :page-size="pagination.per_page" @update:page="handlePageChange"
+                        :page-count="pagination.last_page" :page-size="pagination.per_page"
+                        @update:page="handlePageChange"
                         @update:page-count="pagination.last_page = ($page.props.transactions as any).last_page" />
                 </div>
             </div>
@@ -33,6 +34,45 @@ import { Transactions } from '../../../types/model';
 
 export default defineComponent({
     setup() {
+
+
+        const page = usePage();
+
+        const filterField = ref('document_code');
+        const filterQuery = ref('');
+        const dateRange = ref(null);
+
+        const pagination = reactive({
+            current_page: (page.props.transactions as any).current_page,
+            per_page: (page.props.transactions as any).per_page,
+            total: (page.props.transactions as any).total,
+            last_page: (page.props.transactions as any).last_page,
+        });
+
+        function handlePageChange(page: number) {
+            // currentPage.value = page;
+            router.get(route('procurement.purchase-order-list'), {
+                page,
+                filter_field: filterField.value,
+                filter_query: filterQuery.value,
+                date_range: dateRange.value, // Kirim nilai dateRange
+            }, { preserveState: true, replace: true,onSuccess: () => {pagination.current_page = page} }); // Request data for the selected page
+        }
+
+        const handleSearch = () => {
+            router.get(route('procurement.purchase-order-list'), {
+                page: pagination.current_page,
+                filter_field: filterField.value,
+                filter_query: filterQuery.value,
+                date_range: dateRange.value, // Kirim nilai dateRange
+            }, {
+                preserveState: true,
+                replace: true
+            });
+        };
+
+        
+
         function createColumns(): DataTableColumns<Transactions> {
             return [
                 {
@@ -40,7 +80,7 @@ export default defineComponent({
                     key: 'index',
                     width: 60,
                     render(rowData, rowIndex) {
-                        return rowIndex + 1;  // Menghitung nomor urut
+                        return (pagination.current_page - 1) * pagination.per_page + rowIndex + 1;
                     },
                 },
                 {
@@ -121,55 +161,32 @@ export default defineComponent({
                     key: 'action',
                     width: 100,
                     render(row) {
-                        return h(
-                            NButton,
-                            {
-                                type: "primary",
-                                onClick: () => {
-                                    router.get(route('procurement.purchase-order.detail', row.id));
-                                }
-                            },
-                            { default: () => 'Detail' }
-                        );
+                        return h('div', { class: "d-flex gap-2" }, [
+                            h(
+                                NButton,
+                                {
+                                    type: "primary",
+                                    onClick: () => {
+                                        router.get(route('procurement.purchase-order.detail', row.id));
+                                    }
+                                },
+                                { default: () => 'Detail' }
+                            ),
+                            h(
+                                NButton,
+                                {
+                                    type: "info",
+                                    onClick: () => {
+                                        router.get(route('procurement.purchase-order.edit', row.id));
+                                    }
+                                },
+                                { default: () => 'Update' }
+                            )
+                        ]);
                     }
                 }
             ];
         }
-
-        const page = usePage();
-
-        const filterField = ref('document_code');
-        const filterQuery = ref('');
-        const dateRange = ref(null);
-
-        function handlePageChange(page: number) {
-            // currentPage.value = page;
-            router.get(route('procurement.purchase-order-list'), {
-                page,
-                filter_field: filterField.value,
-                filter_query: filterQuery.value,
-                date_range: dateRange.value, // Kirim nilai dateRange
-            }, { preserveState: true, replace: true }); // Request data for the selected page
-        }
-
-        const handleSearch = () => {
-            router.get(route('procurement.purchase-order-list'), {
-                page: pagination.current_page,
-                filter_field: filterField.value,
-                filter_query: filterQuery.value,
-                date_range: dateRange.value, // Kirim nilai dateRange
-            }, {
-                preserveState: true,
-                replace: true
-            });
-        };
-
-        const pagination = reactive({
-            current_page: (page.props.transactions as any).current_page,
-            per_page: (page.props.transactions as any).per_page,
-            total: (page.props.transactions as any).total,
-            last_page: (page.props.transactions as any).last_page,
-        });
 
         //options
         const dateOptions = [

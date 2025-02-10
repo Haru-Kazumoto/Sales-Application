@@ -214,6 +214,8 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         Route::patch('/set-number-plate', [App\Http\Controllers\PurchaseOrderController::class, 'updateNumberPlate'])->name('update-number-plate');
         Route::get('/purchase-order/detail/{transaction}', [App\Http\Controllers\PurchaseOrderController::class, 'show'])->name('purchase-order.detail');
         Route::get('/generate-po-document/{transactions}', [App\Http\Controllers\PurchaseOrderController::class, 'generatePurchaseOrderDocument'])->name('generate-po-document');
+        Route::get('/purchase-order/edit/{transaction}', [App\Http\Controllers\PurchaseOrderController::class,'edit'])->name('purchase-order.edit');
+        Route::put('/purchase-order/update/{transaction}', [App\Http\Controllers\PurchaseOrderController::class,'update'])->name('purchase-order.update');
 
         //Sub sales Order
         Route::get('/sub-sales-order', [App\Http\Controllers\SubSalesOrderController::class, 'create'])->name('sales-order');

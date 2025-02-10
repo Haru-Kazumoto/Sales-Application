@@ -215,7 +215,6 @@ export default defineComponent({
 
                 form.file_attachment = file; // Simpan file ke form.file_attachment
 
-                console.log("File attached:", file);
             }
         }
 

@@ -179,7 +179,6 @@ export default defineComponent({
         );
 
         function addProduct() {
-            console.log(form.products);
             if (assignProducts.value.product_id === null) {
                 notification.warning({
                     title: "Harap memilih produk terlebih dahulu",
@@ -198,8 +197,6 @@ export default defineComponent({
                 Swal.fire('Produk sudah ada di daftar', '', 'warning');
                 return;
             }
-
-            console.log(assignProducts.value);
 
             form.products.push({
                 id: assignProducts.value.product_id,

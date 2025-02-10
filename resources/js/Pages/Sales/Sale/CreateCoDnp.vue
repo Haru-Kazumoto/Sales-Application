@@ -1354,7 +1354,6 @@ export default defineComponent({
 
             //replace real amount of product to amount after discount
             // form.transaction_items.forEach((item) => {
-            //     console.log(item);
             //     const { amount, amount_after_discount, quantity } = item;
 
             //     if (amount_after_discount && amount_after_discount < amount) {

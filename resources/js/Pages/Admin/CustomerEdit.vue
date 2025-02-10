@@ -146,8 +146,6 @@ export default defineComponent({
             const file = event.target.files[0]; // Ambil file pertama yang dipilih
             if (file) {
                 this.form[field] = file; // Simpan file ke field terkait di form
-                console.log(form.npwp_image);
-                console.log(form);
             } else {
                 this.form[field] = null; // Hapus jika tidak ada file
             }

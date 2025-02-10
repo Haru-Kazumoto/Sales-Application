@@ -2,7 +2,14 @@
 
     <Head title="Purchase Order" />
     <div class="d-flex flex-column gap-4">
-        <TitlePage title="Purchase Order" />
+        <div class="d-flex flex-column gap-3">
+            <TitlePage title="Edit Purchase Order" />
+            <n-button text class="justify-content-start w-25 " size="large"
+                @click="router.visit(route('procurement.purchase-order-list'), { method: 'get' })">
+                <n-icon :component="ArrowBack" style="margin-right: 5px;" />
+                Kembali
+            </n-button>
+        </div>
         <div class="d-flex flex-column gap-3">
             <!-- Form pertama -->
             <div class="card shadow" style="border: none">
@@ -234,7 +241,7 @@
                 </div>
             </div>
 
-            <n-button type="primary" class="d-flex ms-auto w-md-25 mb-4" @click="handleSubmit">SUBMIT PO</n-button>
+            <n-button type="info" class="d-flex ms-auto w-md-25 mb-4" @click="handleSubmit">UPDATE PO</n-button>
         </div>
     </div>
 </template>
@@ -247,9 +254,10 @@ import Swal from 'sweetalert2';
 import RequiredMark from '../../../Components/RequiredMark.vue';
 import TitlePage from '../../../Components/TitlePage.vue';
 import { Head, router, useForm, usePage } from '@inertiajs/vue3';
-import { formatRupiah, capitalize } from '../../../Utils/options-input.utils';
+import { formatRupiah, capitalize, findDetailByCategory } from '../../../Utils/options-input.utils';
 import dayjs from 'dayjs';
 import 'dayjs/locale/id'; // Import locale Indonesia
+import { ArrowBack } from '@vicons/ionicons5';
 
 dayjs.locale('id'); // Set locale to Indonesian
 
@@ -262,38 +270,60 @@ export default defineComponent({
         const pemasokOptionsRef = ref<SelectOption[]>([]);
         const showPrice = ref(true);
 
+        //entry data
+        const purchase_order = page.props.transaction as unknown as any;
+
         const form = useForm({
-            document_code: (page.props.po_number as string),
-            term_of_payment: 45,
-            due_date: null as unknown as string,
-            description: '',
-            sub_total: null as unknown as number,
-            total: null as unknown as number,
-            tax_amount: null as unknown as number,
+            document_code: purchase_order.document_code,
+            term_of_payment: purchase_order.term_of_payment,
+            due_date: purchase_order.due_date,
+            description: purchase_order.description,
+            sub_total: purchase_order.sub_total,
+            total: purchase_order.total,
+            tax_amount: purchase_order.tax_amount,
             transaction_details: [] as TransactionDetail[],
-            transaction_items: [] as TransactionItems[],
+            transaction_items: purchase_order.transaction_items.map((item: any) => ({
+                unit: item.unit ?? '',
+                quantity: item.quantity ?? null,
+                tax_amount: item.tax_amount ?? 0,
+                amount: item.amount ?? null,
+                amount_discount: item.amount_discount ?? null,
+                product_id: item.product_id ?? null,
+                tax_id: item.tax_id ?? null,
+                tax_value: item.tax_value ?? null,
+                trade_promo_id: item.trade_promo_id ?? null,
+                total_price: item.total_price ?? 0,
+                product: {
+                    code: item.product?.code ?? '',
+                    unit: item.product?.unit ?? '',
+                    name: item.product?.name ?? '',
+                }
+            })) as TransactionItems[],
         });
 
         const transaction_details = ref({
-            supplier: '',
+            supplier: findDetailByCategory(purchase_order.transaction_details, 'Supplier'),
             storehouse: '',
-            located: '',
-            purchase_order_date: null as string | null,
-            send_date: null as string | null,
-            transportation: '-',
-            sender: '',
-            delivery_type: '',
-            employee_name: (page.props.auth.user as User).fullname,
-            transportation_cost: null as unknown as string,
-            use_tax: false,
+            located: findDetailByCategory(purchase_order.transaction_details, 'Allocation'),
+            purchase_order_date: findDetailByCategory(purchase_order.transaction_details, 'PO Date'),
+            send_date: findDetailByCategory(purchase_order.transaction_details, 'Delivery Date'),
+            transportation: findDetailByCategory(purchase_order.transaction_details, 'Transportation'),
+            sender: findDetailByCategory(purchase_order.transaction_details, 'Sender'),
+            delivery_type: findDetailByCategory(purchase_order.transaction_details, 'Delivery Type'),
+            employee_name: findDetailByCategory(purchase_order.transaction_details, 'Employee'),
+            transportation_cost: findDetailByCategory(purchase_order.transaction_details, 'Transportation Cost'),
+            use_tax: Boolean(findDetailByCategory(purchase_order.transaction_details, 'Use Tax')),
         });
 
-        const products = ref({
-            code: '',
-            unit: '',
-            name: '',
-            transaction_items: [] as TransactionItems[],
-        });
+        const products = ref(
+            purchase_order.transaction_items.map((item: any) => ({
+                code: item.product?.code ?? '',
+                unit: item.product?.unit ?? '',
+                name: item.product?.name ?? '',
+                transaction_items: item, // menyimpan transaksi terkait produk ini
+            }))
+        );
+
 
         const transaction_items = ref({
             unit: '',
@@ -643,8 +673,8 @@ export default defineComponent({
 
         function handleSubmit() {
             Swal.fire({
-                title: 'Sedang Memproses PO...',
-                text: 'Mohon tunggu sebentar',
+                title: 'Sedang Mengupdate PO...',
+                text: 'Mohon tunggu saat pengupdate-an PO',
                 icon: 'info',
                 allowOutsideClick: false,
                 didOpen: () => {
@@ -715,7 +745,7 @@ export default defineComponent({
                 }
             ];
 
-            form.post(route('procurement.create-po'), {
+            form.put(route('procurement.purchase-order.update', purchase_order.id), {
                 preserveScroll: true,
                 onError: (error) => {
                     if (error !== null) {
@@ -732,49 +762,9 @@ export default defineComponent({
                     }
                 },
                 onSuccess: (page) => {
-                    // Reset form dengan nilai awal
-                    form.document_code = (page.props.po_number as string);
-                    form.due_date = null as unknown as string;
-                    form.description = '';
-                    form.sub_total = null as unknown as number;
-                    form.total = null as unknown as number;
-                    form.tax_amount = null as unknown as number;
-                    form.transaction_details = [];
-                    form.transaction_items = [];
-
-                    // Kosongkan objek yang menggunakan ref
-                    transaction_details.value = {
-                        supplier: '',
-                        storehouse: '',
-                        located: '',
-                        purchase_order_date: null,
-                        send_date: null,
-                        transportation: '-',
-                        sender: '',
-                        delivery_type: '',
-                        employee_name: (page.props.auth.user as User).fullname,
-                    };
-
-                    products.value = {
-                        code: '',
-                        unit: '',
-                        name: '',
-                        transaction_items: [],
-                    };
-
-                    transaction_items.value = {
-                        unit: '',
-                        quantity: null as unknown as number,
-                        tax_amount: null as unknown as number,
-                        amount: null as unknown as number,
-                        product_id: null as unknown as number,
-                        tax_id: null as unknown as number,
-                    };
-                    form.transaction_items.splice(0, form.transaction_items.length);
-
                     Swal.fire({
                         icon: 'success',
-                        title: page.props.flash.success,
+                        title: (page.props.flash as any).success,
                         showConfirmButton: false,
                         timer: 1800,
                         timerProgressBar: true,
@@ -907,7 +897,8 @@ export default defineComponent({
                     loadingRef.value = false
                 }, 1000)
             },
-
+            router,
+            ArrowBack
         }
     },
     components: {

@@ -65,7 +65,7 @@ class PurchaseOrderController extends Controller
         return Inertia::render('Procurement/Purchase/ListPurchaseOrders', compact('transactions'));
     }
 
-    function generatePONumber()
+    private function generatePONumber()
     {
         // Ambil tahun dan bulan sekarang
         $yearMonth = date('ym'); // '2411' untuk November 2024
@@ -247,7 +247,7 @@ class PurchaseOrderController extends Controller
             }
         });
         
-        return redirect()->route('procurement.purchase-order')->with('success', 'Purchase Order Berhasil Tersubmit!');
+        return redirect()->route('procurement.purchase-order')->with('success', 'Purchase Order Berhasil Diupdate!');
     }
 
     /**
@@ -260,6 +260,184 @@ class PurchaseOrderController extends Controller
 
         // Mengembalikan view dengan data transaksi
         return Inertia::render('Procurement/Purchase/PurchaseOrderDetail', compact('transaction'));
+    }
+
+    public function update(Request $request, Transactions $transaction): RedirectResponse
+    {
+        $request->validate([
+            'document_code' => 'required|string',
+            'term_of_payment' => 'required|numeric',
+            'due_date' => 'required',
+            'description' => 'nullable|string',
+            'sub_total' => 'required|numeric',
+            'total' => 'required|numeric',
+            'tax_amount' => 'nullable|numeric',
+            'transaction_details' => 'required|array',
+            'transaction_details.*.name' => 'required|string',
+            'transaction_details.*.category' => 'required|string',
+            'transaction_details.*.value' => 'required|string',
+            'transaction_details.*.data_type' => 'required|string',
+            'transaction_items' => 'required|array',
+            'transaction_items.*.unit' => 'required|string',
+            'transaction_items.*.quantity' => 'required|numeric',
+            'transaction_items.*.tax_amount' => 'nullable|numeric',
+            'transaction_items.*.amount' => 'required|numeric',
+            'transaction_items.*.tax_id' => 'nullable|numeric',
+            'transaction_items.*.product_id' => 'required|numeric',
+            'transaction_items.*.total_price' => 'required|numeric',
+        ]);
+
+        DB::transaction(function () use ($request, $transaction) {
+            // Update transaksi utama
+            $transaction->update([
+                'document_code' => $request->input('document_code'),
+                'term_of_payment' => $request->input('term_of_payment'),
+                'due_date' => $request->input('due_date'),
+                'description' => $request->input('description'),
+                'sub_total' => $request->input('sub_total'),
+                'total' => $request->input('total'),
+                'tax_amount' => $request->input('tax_amount'),
+            ]);
+
+            // **Update transaction details**
+            $existingDetails = $transaction->transactionDetails->keyBy('id');
+
+            foreach ($request->input('transaction_details') as $detail) {
+                if (isset($detail['id']) && $existingDetails->has($detail['id'])) {
+                    // Jika detail sudah ada, update
+                    $existingDetails[$detail['id']]->update([
+                        'name' => $detail['name'],
+                        'category' => $detail['category'],
+                        'value' => $detail['value'],
+                        'data_type' => $detail['data_type'],
+                    ]);
+                    $existingDetails->forget($detail['id']);
+                } else {
+                    // Jika detail baru, buat baru
+                    TransactionDetail::create([
+                        'transactions_id' => $transaction->id,
+                        'name' => $detail['name'],
+                        'category' => $detail['category'],
+                        'value' => $detail['value'],
+                        'data_type' => $detail['data_type'],
+                    ]);
+                }
+            }
+
+            // Hapus detail yang tidak ada di request
+            TransactionDetail::whereIn('id', $existingDetails->keys())->delete();
+
+            // **Update transaction items**
+            $existingItems = $transaction->transactionItems->keyBy('id');
+
+            foreach ($request->input('transaction_items') as $txItem) {
+                if (isset($txItem['trade_promo_id']) && !is_null($txItem['trade_promo_id'])) {
+                    $tradePromo = TradePromo::find($txItem['trade_promo_id']);
+                    if ($tradePromo) {
+                        $tradePromo->quota -= $txItem['quantity'];
+                        $tradePromo->save();
+                    }
+                }
+
+                $product = Products::find($txItem['product_id']);
+                if (!$product) {
+                    return back()->with('failed', 'Produk tidak ditemukan');
+                }
+
+                if (isset($txItem['id']) && $existingItems->has($txItem['id'])) {
+                    // Jika item sudah ada, update
+                    $existingItems[$txItem['id']]->update([
+                        'total_price' => $txItem['total_price'],
+                        'unit' => $txItem['unit'],
+                        'quantity' => $txItem['quantity'],
+                        'tax_amount' => $txItem['tax_amount'] ?? 0,
+                        'amount' => $txItem['amount'],
+                        'tax_id' => $txItem['tax_id'] ?? null,
+                        'product_id' => $product->id,
+                    ]);
+                    $existingItems->forget($txItem['id']);
+                } else {
+                    // Jika item baru, buat baru
+                    TransactionItem::create([
+                        'transactions_id' => $transaction->id,
+                        'total_price' => $txItem['total_price'],
+                        'unit' => $txItem['unit'],
+                        'quantity' => $txItem['quantity'],
+                        'tax_amount' => $txItem['tax_amount'] ?? 0,
+                        'amount' => $txItem['amount'],
+                        'tax_id' => $txItem['tax_id'] ?? null,
+                        'product_id' => $product->id,
+                    ]);
+                }
+            }
+
+            // Hapus items yang tidak ada di request
+            TransactionItem::whereIn('id', $existingItems->keys())->delete();
+        });
+
+        return redirect()->route('procurement.purchase-order-list')->with('success', 'Purchase Order Berhasil Diperbarui!');
+    }
+
+
+    public function edit(Transactions $transaction)
+    {
+        $transaction->load([
+            'transactionItems.product',
+            'transactionDetails'
+        ]);
+        $payment_terms = $this->lookupService->getAllLookupBy('category', 'PAYMENT_TERM');
+        $store_locations = $this->lookupService->getAllLookupBy('category', 'STORE_LOCATION');
+
+        $type_parties = DB::table('parties_groups as pg')
+            ->where('pg.name', '=', 'Angkutan')
+            ->first();
+
+        // Ambil data Parties dengan eager loading untuk relasi partiesGroup
+        $suppliers = Parties::with('partiesGroup')
+            ->whereHas('partiesGroup', function($query) use ($type_parties) {
+                $query->where('id','<>', $type_parties->id);
+            })
+            ->where('type_parties', "VENDOR")
+            ->get();
+
+        $products = Products::with('tradePromos')->get();
+        $units = $this->lookupService->getAllLookupBy('category', 'UNIT');
+        // $transports = $this->partiesService->getPartiesByGroupAndType('VENDOR', 'Angkutan');
+        $transports = DB::table('parties as transport')
+            ->join('parties_groups as group', 'transport.parties_group_id', '=', 'group.id')
+            ->select([
+                'transport.id',
+                'transport.name',
+                'transport.code',
+                'transport.address',
+                'transport.pic',
+                'transport.pic_2',
+                'transport.phone',
+                'transport.phone_2'
+            ])
+            ->where('transport.type_parties','=','EXTERNAL_TRANSPORTATION')
+            ->where('group.name','=','Angkutan')
+            ->get();
+        $tax = Tax::all();
+        $po_number = DocumentNumberGenerator::generate(
+            'PO-',
+            'transactions',
+            'document_code',
+            4
+        );
+
+        return Inertia::render('Procurement/Purchase/UpdatePurchaseOrder', [
+            'transaction' => $transaction,
+            'po_number' => $po_number,
+            'storehouses' => StoreHouse::all(),
+            'payment_terms' => $payment_terms,
+            'store_locations' => $store_locations,
+            'tax' => $tax,
+            'products' => $products,
+            'units' => $units,
+            'suppliers' => $suppliers,
+            'transports' => $transports,
+        ]);
     }
 
     public function getDataByPoNumber(string $po_number)

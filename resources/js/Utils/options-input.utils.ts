@@ -28,3 +28,11 @@ export const capitalize = (value): string => {
 export const onlyNumber = (value) => {
     return value.replace(/\D/g, '');
 }
+
+export const findDetailByCategory = (data: any[], category: string) => {
+    const objectData = data.find((value: {category: string}) => {
+        return value.category === category;
+    });
+
+    return objectData.value;
+}

@@ -92,7 +92,6 @@ function createColumns() {
                     {
                         type: "error",
                         onClick: () => {
-                            console.log(rowData);
                         }
                     },
                     { default: () => 'PROCESS' }

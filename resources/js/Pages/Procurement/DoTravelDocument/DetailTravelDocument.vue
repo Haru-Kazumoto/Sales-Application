@@ -164,7 +164,6 @@ export default defineComponent({
     setup() {
         const page = usePage();
         const travel_document = page.props.travel_document as Transactions;
-        console.log(travel_document)
 
         const form = useForm({
             document_code: travel_document.document_code,

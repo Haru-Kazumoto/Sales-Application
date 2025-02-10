@@ -625,22 +625,22 @@
                                         <tr>
                                             <td><strong>Harga Jual Grosir</strong></td>
                                             <td>:</td>
-                                            <td>{{ formatRupiah(selectedData.retail_price) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Harga Retail</strong></td>
-                                            <td>:</td>
                                             <td>{{ formatRupiah(selectedData.restaurant_price) }}</td>
                                         </tr>
                                         <tr>
-                                            <td><strong>Harga All Segment</strong></td>
+                                            <td><strong>Harga Jual Retail</strong></td>
                                             <td>:</td>
-                                            <td>{{ formatRupiah(selectedData.all_segment_price) }}</td>
+                                            <td>{{ formatRupiah(selectedData.retail_price) }}</td>
                                         </tr>
                                         <tr>
                                             <td><strong>Harga End User</strong></td>
                                             <td>:</td>
                                             <td>{{ formatRupiah(selectedData.price_3) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Harga All Segment</strong></td>
+                                            <td>:</td>
+                                            <td>{{ formatRupiah(selectedData.all_segment_price) }}</td>
                                         </tr>
                                         <!-- <tr>
                                             <td><strong>Margin All Segment</strong></td>
@@ -917,7 +917,7 @@ export default defineComponent({
                     key: "retail_selling_price",
                     width: 200,
                     render(row) {
-                        return formatRupiah(row.retail_price);
+                        return formatRupiah(row.restaurant_price);
                     }
                 },
                 {
@@ -925,7 +925,7 @@ export default defineComponent({
                     key: "selling_price",
                     width: 200,
                     render(row) {
-                        return formatRupiah(row.restaurant_price);
+                        return formatRupiah(row.retail_price);
                     }
                 },
                 {
@@ -1152,9 +1152,6 @@ export default defineComponent({
             // Kurangkan dari harga awal
             const result = Math.round(redemp_price - discountAmount);
 
-            console.log("Persentase:", percentage);
-            console.log("Harga awal:", redemp_price);
-            console.log("Hasil perhitungan:", result);
         }
 
 
@@ -1275,7 +1272,6 @@ export default defineComponent({
 
             modal.show();
 
-            console.log(selectedData.value);
         }
 
         // Fungsi untuk meng-handle pencarian

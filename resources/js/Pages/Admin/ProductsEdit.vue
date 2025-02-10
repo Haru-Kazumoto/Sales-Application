@@ -247,7 +247,7 @@
                                         @click="calculatePercentagePrice">Kalkulasi</n-button>
                                 </div> -->
                                 <n-divider></n-divider>
-                                <div class="col-12 col-lg-3 d-flex flex-column" v-if="showPrice">
+                                <div class="col-12 col-lg-3 d-flex flex-column" >
                                     <label for="">Harga All Segment
                                         <RequiredMark />
                                     </label>
