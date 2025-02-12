@@ -36,3 +36,11 @@ export const findDetailByCategory = (data: any[], category: string) => {
 
     return objectData.value;
 }
+
+export const findValueGlobalElement = (data: any[], name_element: string) => {
+    const objectData: {price_element: number} = data.find((value: {name_element: any}) => {
+        return value.name_element === name_element;
+    });
+
+    return objectData.price_element;
+}

@@ -62,16 +62,6 @@
                                 <n-input size="large" placeholder="" v-model:value="form.unit"
                                     @input="(value) => form.unit = value.toUpperCase()" />
                             </div>
-                            <!-- <div class="col-12 col-lg-4 d-flex flex-column">
-                                <label for="">Harga Vendor
-                                    <RequiredMark />
-                                </label>
-                                <n-input size="large" placeholder="" v-model:value="form.discount_vendor">
-                                    <template #prefix>
-                                        Rp
-                                    </template>
-</n-input>
-</div> -->
                             <div class="col-12 col-lg-4 d-flex flex-column">
                                 <label for="">Kategori Produk
                                     <RequiredMark />
@@ -112,14 +102,8 @@
                                             <label for="">Harga Trucking
                                                 <RequiredMark />
                                             </label>
-                                            <n-select :options="deliveryRegionOptions"
+                                            <n-select :options="deliveryRegionOptions" placeholder=""
                                                 v-model:value="form.transportation_cost" size="large"></n-select>
-                                            <!-- <n-input size="large" placeholder="" v-model:value="form.transportation_cost"
-                            @input="(value) => form.transportation_cost = value.replace(/\D/g, '')">
-                            <template #prefix>
-                                Rp
-                            </template>
-                        </n-input> -->
                                         </div>
 
                                         <!-- THIRD ROW -->
@@ -127,14 +111,8 @@
                                             <label for="">OH Depo
                                                 <RequiredMark />
                                             </label>
-                                            <n-select :options="dimentionOptions" v-model:value="form.oh_depo"
+                                            <n-select :options="dimentionOptions" v-model:value="form.oh_depo" placeholder=""
                                                 size="large"></n-select>
-                                            <!-- <n-input size="large" placeholder="" v-model:value="form.oh_depo"
-                            @input="(value) => form.oh_depo = value.replace(/\D/g, '')">
-                            <template #prefix>
-                                Rp
-                            </template>
-                        </n-input> -->
                                         </div>
                                         <div class="col-12 col-lg-4 d-flex flex-column">
                                             <label for="">Bad Debt
@@ -275,7 +253,7 @@
                                             </n-input>
                                         </div>
                                         <div class="col-12 col-lg-3 d-flex flex-column">
-                                            <label for="">Harga Retail
+                                            <label for="">Harga Jual Grosir
                                                 <RequiredMark />
                                             </label>
                                             <n-input size="large" placeholder="" v-model:value="form.restaurant_price"
@@ -286,7 +264,7 @@
                                             </n-input>
                                         </div>
                                         <div class="col-12 col-lg-3 d-flex flex-column">
-                                            <label for="">Harga Jual Grosir
+                                            <label for="">Harga Jual Retail
                                                 <RequiredMark />
                                             </label>
                                             <n-input size="large" placeholder="" v-model:value="form.retail_price"
@@ -315,7 +293,7 @@
                                             <label for="">Harga Trucking
                                                 <RequiredMark />
                                             </label>
-                                            <n-select :options="deliveryRegionOptions"
+                                            <n-select :options="deliveryRegionOptions" placeholder=""
                                                 v-model:value="form.transportation_cost" size="large"></n-select>
                                             <!-- <n-input size="large" placeholder="" v-model:value="form.transportation_cost"
                             @input="(value) => form.transportation_cost = value.replace(/\D/g, '')">
@@ -330,7 +308,7 @@
                                             <label for="">OH Depo
                                                 <RequiredMark />
                                             </label>
-                                            <n-select :options="dimentionOptions" v-model:value="form.oh_depo"
+                                            <n-select :options="dimentionOptions" v-model:value="form.oh_depo" placeholder=""
                                                 size="large"></n-select>
                                             <!-- <n-input size="large" placeholder="" v-model:value="form.oh_depo"
                             @input="(value) => form.oh_depo = value.replace(/\D/g, '')">
@@ -450,80 +428,11 @@
                                     </template>
                                 </n-input>
                             </div>
-                            <!-- <div class="col-12 col-lg-3 d-flex flex-column">
-                                <label for="">Pembulatan Harga Jual Grosir
-
-                                </label>
-                                <n-input size="large" placeholder="" v-model:value="form.rounded_retail_price"
-                                    @input="(value) => form.rounded_retail_price = value.replace(/\D/g, '')">
-                                    <template #prefix>
-                                        Rp
-                                    </template>
-                                </n-input>
-                            </div>
-                            <div class="col-12 col-lg-3 d-flex flex-column">
-                                <label for="">Pembulatan Harga Retail
-
-                                </label>
-                                <n-input size="large" placeholder="" v-model:value="form.rounded_restaurant_price"
-                                    @input="(value) => form.rounded_restaurant_price = value.replace(/\D/g, '')">
-                                    <template #prefix>
-                                        Rp
-                                    </template>
-                                </n-input>
-                            </div>
-                            <div class="col-12 col-lg-3 d-flex flex-column">
-                                <label for="">Pembulatan Harga End User
-
-                                </label>
-                                <n-input size="large" placeholder="" v-model:value="form.rounded_price_3"
-                                    @input="(value) => form.rounded_price_3 = value.replace(/\D/g, '')">
-                                    <template #prefix>
-                                        Rp
-                                    </template>
-                                </n-input>
-                            </div> -->
                             <div class="d-flex">
                                 <n-button type="primary" class="ms-auto" @click="calculateRoundedPrice">Kalkulasi
                                     pembulatan</n-button>
                             </div>
                             <n-divider></n-divider>
-
-
-
-                            <!-- <div class="col-12 col-lg-4 d-flex flex-column">
-                                <label for="">Margin End User
-                                    <RequiredMark />
-                                </label>
-                                <n-input size="large" placeholder="" v-model:value="form.margin_end_user"
-                                    @input="(value) => form.margin_end_user = value.replace(/\D/g, '')">
-                                    <template #prefix>
-                                        Rp
-                                    </template>
-                                </n-input>
-                            </div>
-                            <div class="col-12 col-lg-4 d-flex flex-column">
-                                <label for="">Margin Retail
-                                    <RequiredMark />
-                                </label>
-                                <n-input size="large" placeholder="" v-model:value="form.margin_retail"
-                                    @input="(value) => form.margin_retail = value.replace(/\D/g, '')">
-                                    <template #prefix>
-                                        Rp
-                                    </template>
-                                </n-input>
-                            </div>
-                            <div class="col-12 col-lg-4 d-flex flex-column">
-                                <label for="">Margin Grosir
-                                    <RequiredMark />
-                                </label>
-                                <n-input size="large" placeholder="" v-model:value="form.margin_grosir"
-                                    @input="(value) => form.margin_grosir = value.replace(/\D/g, '')">
-                                    <template #prefix>
-                                        Rp
-                                    </template>
-                                </n-input>
-                            </div> -->
 
                             <div class="d-flex">
                                 <div class="ms-auto d-flex gap-3">
@@ -728,7 +637,7 @@ import RequiredMark from '../../Components/RequiredMark.vue';
 import { DataTableColumns, NButton, NIcon, SelectOption, TabsProps, useNotification } from 'naive-ui';
 import { router, useForm, usePage } from '@inertiajs/vue3';
 import { Flash, Lookup, Products } from '../../types/model';
-import { formatRupiah } from '../../Utils/options-input.utils';
+import { findValueGlobalElement, formatRupiah } from '../../Utils/options-input.utils';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import { ClipboardBulletListLtr20Regular } from '@vicons/fluent';
@@ -767,8 +676,8 @@ export default defineComponent({
             normal_margin: null as unknown as number,
             oh_depo: null as unknown as number,
             saving: null as unknown as number,
-            bad_debt_dd: page.props.global_element.find((data) => data.name_element === 'BAD DEBT')?.price_element || null as unknown as number,
-            saving_marketing: page.props.global_element.find((data) => data.name_element === 'BUDGET MARKETING')?.price_element || null as unknown as number,
+            bad_debt_dd: findValueGlobalElement((page.props.global_element as any[]), 'BAD DEBT'),
+            saving_marketing: findValueGlobalElement((page.props.global_element as any[]), 'BUDGET MARKETING'),
             product_type_id: null as unknown as number,
             product_sub_type_id: null as unknown as number,
             supplier_id: null as unknown as number,
@@ -777,7 +686,6 @@ export default defineComponent({
             margin_end_user: null as unknown as number,
             margin_grosir: null as unknown as number,
             percentage: null as unknown as number,
-
             rounded_all_segment_price: null as unknown as number,
             rounded_retail_price: null as unknown as number,
             rounded_restaurant_price: null as unknown as number,
@@ -1105,30 +1013,31 @@ export default defineComponent({
         }
 
         type SellingPrice = {
-            all_segment: number;
+            // all_segment: number;
             end_user: number;
             retail: number;
             grosir: number;
         };
 
         function calculateFromRedempPrice(redemp_price: number, selling_price: SellingPrice) {
-
             // Biaya yang dikurangkan untuk menghitung margin
             const deductions = form.oh_depo + form.saving_marketing + form.saving + form.transportation_cost + form.bad_debt_dd;
 
             // Menghitung selisih harga tebus dengan masing-masing harga jual
             const margin = {
-                all_segment: Math.round((redemp_price - (selling_price.all_segment ?? 0)) - deductions),
-                end_user: Math.round((redemp_price - (selling_price.end_user ?? 0)) - deductions),
-                retail: Math.round((redemp_price - (selling_price.retail ?? 0)) - deductions),
-                grosir: Math.round((redemp_price - (selling_price.grosir ?? 0)) - deductions),
+                // all_segment: Math.round((selling_price.all_segment ?? 0) - redemp_price - deductions),
+                end_user: Math.round((selling_price.end_user ?? 0) - redemp_price - deductions),
+                retail: Math.round((selling_price.retail ?? 0) - redemp_price - deductions),
+                grosir: Math.round((selling_price.grosir ?? 0) - redemp_price - deductions),
             };
 
+
+
             // Menyimpan hasil margin ke dalam form
-            form.normal_margin = margin.all_segment;
-            form.margin_end_user = margin.end_user;
-            form.margin_retail = margin.retail;
+            // form.normal_margin = margin.all_segment;
             form.margin_grosir = margin.grosir;
+            form.margin_retail = margin.retail;
+            form.margin_end_user = margin.end_user;
         }
 
         function calculatePercentagePrice() {
@@ -1165,6 +1074,7 @@ export default defineComponent({
                 saving, // saving
                 normal_margin, // margin normal
             } = form;
+
             // Pembulatan redemp_price ke ratusan ribu tanpa koma/desimal
             if (form.redemp_price) {
                 form.redemp_price = Math.round(Number(form.redemp_price)); // Pembulatan ke bilangan bulat
@@ -1211,7 +1121,7 @@ export default defineComponent({
                 form.price_3 = Math.ceil(basePrice + resultPpn); // End User
                 form.all_segment_price = null as unknown as number; // Kosongkan harga all segment
             } else {
-                form.all_segment_price = Math.ceil(basePrice + resultPpn); // All Segment
+                form.all_segment_price = basePrice; // All Segment
                 form.retail_price = null as unknown as number; // Kosongkan harga retail
                 form.restaurant_price = null as unknown as number; // Kosongkan harga grosir
                 form.price_3 = null as unknown as number; // Kosongkan harga end user
@@ -1383,7 +1293,7 @@ export default defineComponent({
         }));
 
         const dimentionOptions = (page.props.dimention as any[]).map((data) => ({
-            label: data.dimention_name,
+            label: `${data.dimention_name} - ${formatRupiah(data.price_dimention)}`,
             value: data.price_dimention,
             max_value: data.max_value,
             min_value: data.min_value
@@ -1395,7 +1305,7 @@ export default defineComponent({
         }));
 
         const deliveryRegionOptions = (page.props.delivery_region as any[]).map((data) => ({
-            label: data.region_name,
+            label: `${data.region_name} - ${formatRupiah(data.region_price)}`,
             value: data.region_price,
             region_price: data.region_price,
             region_code: data.region_code

@@ -97,7 +97,7 @@
                                     <label for="">Harga Trucking
                                         <RequiredMark />
                                     </label>
-                                    <n-select :options="deliveryRegionOptions" v-model:value="form.transportation_cost"
+                                    <n-select :options="deliveryRegionOptions" v-model:value="form.transportation_cost" placeholder=""
                                         size="large"></n-select>
                                     <!-- <n-input size="large" placeholder="" v-model:value="form.transportation_cost"
                             @input="(value) => form.transportation_cost = value.replace(/\D/g, '')">
@@ -112,7 +112,7 @@
                                     <label for="">OH Depo
                                         <RequiredMark />
                                     </label>
-                                    <n-select :options="dimentionOptions" v-model:value="form.oh_depo"
+                                    <n-select :options="dimentionOptions" v-model:value="form.oh_depo" placeholder=""
                                         size="large"></n-select>
                                     <!-- <n-input size="large" placeholder="" v-model:value="form.oh_depo"
                             @input="(value) => form.oh_depo = value.replace(/\D/g, '')">
@@ -300,14 +300,8 @@
                                     <label for="">Harga Trucking
                                         <RequiredMark />
                                     </label>
-                                    <n-select :options="deliveryRegionOptions" v-model:value="form.transportation_cost"
+                                    <n-select :options="deliveryRegionOptions" v-model:value="form.transportation_cost" placeholder=""
                                         size="large"></n-select>
-                                    <!-- <n-input size="large" placeholder="" v-model:value="form.transportation_cost"
-                            @input="(value) => form.transportation_cost = value.replace(/\D/g, '')">
-                            <template #prefix>
-                                Rp
-                            </template>
-                        </n-input> -->
                                 </div>
 
                                 <!-- THIRD ROW -->
@@ -315,14 +309,8 @@
                                     <label for="">OH Depo
                                         <RequiredMark />
                                     </label>
-                                    <n-select :options="dimentionOptions" v-model:value="form.oh_depo"
+                                    <n-select :options="dimentionOptions" v-model:value="form.oh_depo" placeholder=""
                                         size="large"></n-select>
-                                    <!-- <n-input size="large" placeholder="" v-model:value="form.oh_depo"
-                            @input="(value) => form.oh_depo = value.replace(/\D/g, '')">
-                            <template #prefix>
-                                Rp
-                            </template>
-                        </n-input> -->
                                 </div>
                                 <div class="col-12 col-lg-4 d-flex flex-column">
                                     <label for="">Bad Debt
@@ -543,7 +531,7 @@ import { router, useForm, usePage } from '@inertiajs/vue3';
 import { Lookup, Products } from '../../types/model';
 import { ArrowBack } from '@vicons/ionicons5';
 import Swal from 'sweetalert2';
-import { formatRupiah } from '../../Utils/options-input.utils';
+import { findValueGlobalElement, formatRupiah } from '../../Utils/options-input.utils';
 
 type TabThemeOverrides = NonNullable<TabsProps['themeOverrides']>;
 
@@ -575,8 +563,8 @@ export default defineComponent({
             normal_margin: product.normal_margin || null as unknown as number,
             oh_depo: product.oh_depo || null as unknown as number,
             saving: product.saving || null as unknown as number,
-            bad_debt_dd: page.props.global_element.find((data) => data.name_element === 'BAD DEBT')?.price_element || null as unknown as number,
-            saving_marketing: page.props.global_element.find((data) => data.name_element === 'BUDGET MARKETING')?.price_element || null as unknown as number,
+            bad_debt_dd: findValueGlobalElement((page.props.global_element as any[]), 'BAD DEBT'),
+            saving_marketing: findValueGlobalElement((page.props.global_element as any[]), 'BUDGET MARKETING'),
             product_type_id: product.product_type_id || null as unknown as number,
             product_sub_type_id: product.product_sub_type_id || null as unknown as number,
             all_segment_price: product.all_segment_price || null as unknown as number,
@@ -911,7 +899,7 @@ export default defineComponent({
                 return;
             }
 
-            calculateFromSellingPrice(form.redemp_price, form.percentage);
+            // calculateFromSellingPrice(form.redemp_price, form.percentage);
 
             // do calculate
             const percentage = Number(form.percentage);
