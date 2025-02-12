@@ -116,7 +116,7 @@ class ProductsController extends Controller
             'unit' => 'required|string',
             'name' => 'required|string',
             'category' => 'required|string',
-            'percentage' => 'required',
+            'percentage' => 'nullable',
             // 'package' => 'required|string',
             'redemp_price' => 'nullable',
             'retail_price' => 'nullable|numeric',
