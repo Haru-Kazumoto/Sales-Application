@@ -34,18 +34,37 @@ class ProductsController extends Controller
         $this->productServices = $productServices;
     }
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function create()
     {
-        //
+        $product_type = ProductType::all();
+        $units = Lookup::where('category', 'UNIT')->get();
+        $suppliers = Parties::where('type_parties', "VENDOR")
+            ->whereHas('partiesGroup', function($q) {
+                $q->where('name', '<>','Angkutan');
+            })
+            ->get();
+        $product_sub_type = ProductSubType::all();
+        $dimention = Dimention::all();
+        $global_element = GlobalElementPrice::all();
+        $delivery_region = RegionDelivery::all();
+        $percentage = Lookup::where('category', 'PERCENTAGE')->get();
+
+        return Inertia::render('Admin/ProductManagement/ProductCreate', compact(
+            'product_type',
+            'units',
+            'suppliers',
+            'product_sub_type',
+            'percentage',
+            'global_element',
+            'delivery_region',
+            'dimention'
+        ));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function createProduct(Request $request)
+    public function index(Request $request)
     {
         $query = Products::with(['productType', 'parties','productSubType'])
             ->select([
@@ -91,7 +110,7 @@ class ProductsController extends Controller
 
         // dd($products);
 
-        return Inertia::render('Admin/Products', compact(
+        return Inertia::render('Admin/ProductManagement/Products', compact(
             'products',
             'product_type',
             'units',
@@ -205,7 +224,7 @@ class ProductsController extends Controller
         $delivery_region = RegionDelivery::all();
         $percentage = Lookup::where('category', 'PERCENTAGE')->get();
 
-        return Inertia::render('Admin/ProductsEdit', compact(
+        return Inertia::render('Admin/ProductManagement/ProductsEdit', compact(
             'product_type',
             'units',
             'product',

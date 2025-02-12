@@ -47,16 +47,6 @@
                         <n-input size="large" placeholder="" v-model:value="form.unit"
                             @input="(value) => form.unit = value.toUpperCase()" />
                     </div>
-                    <!-- <div class="col-12 col-lg-4 d-flex flex-column">
-                                <label for="">Harga Vendor
-                                    <RequiredMark />
-                                </label>
-                                <n-input size="large" placeholder="" v-model:value="form.discount_vendor">
-                                    <template #prefix>
-                                        Rp
-                                    </template>
-</n-input>
-</div> -->
                     <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">Kategori Produk
                             <RequiredMark />
@@ -78,15 +68,8 @@
                         <n-tab-pane name="forward-calculation" tab="PERHITUNGAN MAJU">
                             <div class="row g-2">
                                 <div class="col-12 col-lg-2 d-flex flex-column">
-                                    <label for="">Harga Tebus
-                                        <RequiredMark />
-                                    </label>
-                                    <n-input size="large" placeholder="" v-model:value="form.redemp_price"
-                                        @input="(value) => form.redemp_price = value.replace(/\./g, '').replace(',', '.')">
-                                        <template #prefix>
-                                            Rp
-                                        </template>
-                                    </n-input>
+                                    <CurrencyInput v-model:modelValue="form.redemp_price" label="Harga Tebus"
+                                        :required="true" />
                                 </div>
                                 <div class="col-12 col-lg-2 d-flex flex-column justify-content-end">
                                     <n-button secondary type="primary" size="large"
@@ -97,14 +80,8 @@
                                     <label for="">Harga Trucking
                                         <RequiredMark />
                                     </label>
-                                    <n-select :options="deliveryRegionOptions" v-model:value="form.transportation_cost" placeholder=""
-                                        size="large"></n-select>
-                                    <!-- <n-input size="large" placeholder="" v-model:value="form.transportation_cost"
-                            @input="(value) => form.transportation_cost = value.replace(/\D/g, '')">
-                            <template #prefix>
-                                Rp
-                            </template>
-                        </n-input> -->
+                                    <n-select :options="deliveryRegionOptions" placeholder=""
+                                        v-model:value="form.transportation_cost" size="large"></n-select>
                                 </div>
 
                                 <!-- THIRD ROW -->
@@ -114,59 +91,24 @@
                                     </label>
                                     <n-select :options="dimentionOptions" v-model:value="form.oh_depo" placeholder=""
                                         size="large"></n-select>
-                                    <!-- <n-input size="large" placeholder="" v-model:value="form.oh_depo"
-                            @input="(value) => form.oh_depo = value.replace(/\D/g, '')">
-                            <template #prefix>
-                                Rp
-                            </template>
-                        </n-input> -->
                                 </div>
                                 <div class="col-12 col-lg-4 d-flex flex-column">
-                                    <label for="">Bad Debt
-                                        <RequiredMark />
-                                    </label>
-                                    <n-input size="large" placeholder="" v-model:value="form.bad_debt_dd"
-                                        @input="(value) => form.bad_debt_dd = value.replace(/\D/g, '')">
-                                        <template #prefix>
-                                            Rp
-                                        </template>
-                                    </n-input>
+                                    <CurrencyInput v-model:modelValue="form.bad_debt_dd" label="Bad Debt"
+                                        :required="true" />
                                 </div>
                                 <div class="col-12 col-lg-4 d-flex flex-column">
-                                    <label for="">Budget Marketing
-                                        <RequiredMark />
-                                    </label>
-                                    <n-input size="large" placeholder="" v-model:value="form.saving_marketing"
-                                        @input="(value) => form.saving_marketing = value.replace(/\D/g, '')">
-                                        <template #prefix>
-                                            Rp
-                                        </template>
-                                    </n-input>
+                                    <CurrencyInput v-model:modelValue="form.saving_marketing" label="Budget Marketing"
+                                        :required="true" />
                                 </div>
                                 <div class="col-12 col-lg-4 d-flex flex-column">
-                                    <label for="">Margin All Segment
-                                        <RequiredMark />
-                                    </label>
-                                    <n-input size="large" placeholder="" v-model:value="form.normal_margin"
-                                        @input="(value) => form.normal_margin = value.replace(/\D/g, '')">
-                                        <template #prefix>
-                                            Rp
-                                        </template>
-                                    </n-input>
+                                    <CurrencyInput v-model:modelValue="form.normal_margin" label="Margin Normal"
+                                        :required="true" />
                                 </div>
                                 <div class="col-12 col-lg-4 d-flex flex-column">
-                                    <label for="">Saving
-                                        <RequiredMark />
-                                    </label>
-                                    <n-input size="large" placeholder="" v-model:value="form.saving"
-                                        @input="(value) => form.saving = value.replace(/\D/g, '')">
-                                        <template #prefix>
-                                            Rp
-                                        </template>
-                                    </n-input>
+                                    <CurrencyInput v-model:modelValue="form.saving" label="Saving" :required="true" />
                                 </div>
                                 <div class="d-flex">
-                                    <n-button type="primary" class="ms-auto" @click="calculateRedempPrice">Kalkulasi
+                                    <n-button type="info" class="ms-auto" @click="calculateRedempPrice">Kalkulasi
                                         Harga</n-button>
                                 </div>
 
@@ -175,48 +117,20 @@
 
                                 <!-- FOURTH ROW -->
                                 <div class="col-12 col-lg-3 d-flex flex-column" v-if="showPrice">
-                                    <label for="">Harga All Segment
-                                        <RequiredMark />
-                                    </label>
-                                    <n-input size="large" placeholder="" v-model:value="form.all_segment_price"
-                                        @input="(value) => form.all_segment_price = value.replace(/\D/g, '')">
-                                        <template #prefix>
-                                            Rp
-                                        </template>
-                                    </n-input>
+                                    <CurrencyInput v-model:modelValue="form.all_segment_price" label="Harga All Segment"
+                                        :required="true" />
                                 </div>
                                 <div class="col-12 col-lg-3 d-flex flex-column">
-                                    <label for="">Harga Jual Grosir
-                                        <RequiredMark />
-                                    </label>
-                                    <n-input size="large" placeholder="" v-model:value="form.retail_price"
-                                        @input="(value) => form.retail_price = value.replace(/\D/g, '')">
-                                        <template #prefix>
-                                            Rp
-                                        </template>
-                                    </n-input>
+                                    <CurrencyInput v-model:modelValue="form.restaurant_price" label="Harga Jual Grosir"
+                                        :required="true" />
                                 </div>
                                 <div class="col-12 col-lg-3 d-flex flex-column">
-                                    <label for="">Harga Retail
-                                        <RequiredMark />
-                                    </label>
-                                    <n-input size="large" placeholder="" v-model:value="form.restaurant_price"
-                                        @input="(value) => form.restaurant_price = value.replace(/\D/g, '')">
-                                        <template #prefix>
-                                            Rp
-                                        </template>
-                                    </n-input>
+                                    <CurrencyInput v-model:modelValue="form.retail_price" label="Harga Jual Retail"
+                                        :required="true" />
                                 </div>
                                 <div class="col-12 col-lg-3 d-flex flex-column">
-                                    <label for="">Harga End User
-                                        <RequiredMark />
-                                    </label>
-                                    <n-input size="large" placeholder="" v-model:value="form.price_3"
-                                        @input="(value) => form.price_3 = value.replace(/\D/g, '')">
-                                        <template #prefix>
-                                            Rp
-                                        </template>
-                                    </n-input>
+                                    <CurrencyInput v-model:modelValue="form.price_3" label="Harga Jual End User"
+                                        :required="true" />
                                 </div>
                                 <n-divider></n-divider>
                             </div>
@@ -225,15 +139,8 @@
                         <n-tab-pane name="reverse-calculation" tab="PERHITUNGAN MUNDUR">
                             <div class="row g-2">
                                 <div class="col-12 col-lg-4 d-flex flex-column">
-                                    <label for="">Harga Tebus
-                                        <RequiredMark />
-                                    </label>
-                                    <n-input size="large" placeholder="" v-model:value="form.redemp_price"
-                                        @input="(value) => form.redemp_price = value.replace(/\./g, '').replace(',', '.')">
-                                        <template #prefix>
-                                            Rp
-                                        </template>
-                                    </n-input>
+                                    <CurrencyInput v-model:modelValue="form.redemp_price" label="Harga Tebus"
+                                        :required="true" />
                                 </div>
                                 <div class="col-12 col-lg-4 d-flex flex-column">
                                     <label for="">Persentase Harga
@@ -242,55 +149,22 @@
                                     <n-select size="large" placeholder="" v-model:value="form.percentage"
                                         :options="percentageOptions" />
                                 </div>
-                                <!-- <div class="col-12 col-lg-2 d-flex flex-column justify-content-end">
-                                    <n-button secondary type="primary" size="large"
-                                        @click="calculatePercentagePrice">Kalkulasi</n-button>
-                                </div> -->
                                 <n-divider></n-divider>
-                                <div class="col-12 col-lg-3 d-flex flex-column" >
-                                    <label for="">Harga All Segment
-                                        <RequiredMark />
-                                    </label>
-                                    <n-input size="large" placeholder="" v-model:value="form.all_segment_price"
-                                        @input="(value) => form.all_segment_price = value.replace(/\D/g, '')">
-                                        <template #prefix>
-                                            Rp
-                                        </template>
-                                    </n-input>
+                                <div class="col-12 col-lg-3 d-flex flex-column" v-if="showPrice">
+                                    <CurrencyInput v-model:modelValue="form.all_segment_price"
+                                        label="Harga Jual All Segment" :required="true" />
                                 </div>
                                 <div class="col-12 col-lg-3 d-flex flex-column">
-                                    <label for="">Harga Jual Grosir
-                                        <RequiredMark />
-                                    </label>
-                                    <n-input size="large" placeholder="" v-model:value="form.restaurant_price"
-                                        @input="(value) => form.restaurant_price = value.replace(/\D/g, '')">
-                                        <template #prefix>
-                                            Rp
-                                        </template>
-                                    </n-input>
+                                    <CurrencyInput v-model:modelValue="form.restaurant_price" label="Harga Jual Grosir"
+                                        :required="true" />
                                 </div>
                                 <div class="col-12 col-lg-3 d-flex flex-column">
-                                    <label for="">Harga Jual Retail
-                                        <RequiredMark />
-                                    </label>
-                                    <n-input size="large" placeholder="" v-model:value="form.retail_price"
-                                        @input="(value) => form.retail_price = value.replace(/\D/g, '')">
-                                        <template #prefix>
-                                            Rp
-                                        </template>
-                                    </n-input>
+                                    <CurrencyInput v-model:modelValue="form.retail_price" label="Harga Jual Retail"
+                                        :required="true" />
                                 </div>
-
                                 <div class="col-12 col-lg-3 d-flex flex-column">
-                                    <label for="">Harga End User
-                                        <RequiredMark />
-                                    </label>
-                                    <n-input size="large" placeholder="" v-model:value="form.price_3"
-                                        @input="(value) => form.price_3 = value.replace(/\D/g, '')">
-                                        <template #prefix>
-                                            Rp
-                                        </template>
-                                    </n-input>
+                                    <CurrencyInput v-model:modelValue="form.price_3" label="Harga Jual End User"
+                                        :required="true" />
                                 </div>
 
                                 <!-- FOURTH ROW -->
@@ -300,8 +174,8 @@
                                     <label for="">Harga Trucking
                                         <RequiredMark />
                                     </label>
-                                    <n-select :options="deliveryRegionOptions" v-model:value="form.transportation_cost" placeholder=""
-                                        size="large"></n-select>
+                                    <n-select :options="deliveryRegionOptions" placeholder=""
+                                        v-model:value="form.transportation_cost" size="large"></n-select>
                                 </div>
 
                                 <!-- THIRD ROW -->
@@ -313,100 +187,46 @@
                                         size="large"></n-select>
                                 </div>
                                 <div class="col-12 col-lg-4 d-flex flex-column">
-                                    <label for="">Bad Debt
-                                        <RequiredMark />
-                                    </label>
-                                    <n-input size="large" placeholder="" v-model:value="form.bad_debt_dd"
-                                        @input="(value) => form.bad_debt_dd = value.replace(/\D/g, '')">
-                                        <template #prefix>
-                                            Rp
-                                        </template>
-                                    </n-input>
+                                    <CurrencyInput v-model:modelValue="form.bad_debt_dd" label="Bad Debt"
+                                        :required="true" />
                                 </div>
                                 <div class="col-12 col-lg-4 d-flex flex-column">
-                                    <label for="">Budget Marketing
-                                        <RequiredMark />
-                                    </label>
-                                    <n-input size="large" placeholder="" v-model:value="form.saving_marketing"
-                                        @input="(value) => form.saving_marketing = value.replace(/\D/g, '')">
-                                        <template #prefix>
-                                            Rp
-                                        </template>
-                                    </n-input>
+                                    <CurrencyInput v-model:modelValue="form.saving_marketing" label="Budget Marketing"
+                                        :required="true" />
                                 </div>
 
                                 <div class="col-12 col-lg-4 d-flex flex-column">
-                                    <label for="">Saving
-                                        <RequiredMark />
-                                    </label>
-                                    <n-input size="large" placeholder="" v-model:value="form.saving"
-                                        @input="(value) => form.saving = value.replace(/\D/g, '')">
-                                        <template #prefix>
-                                            Rp
-                                        </template>
-                                    </n-input>
+                                    <CurrencyInput v-model:modelValue="form.saving" label="Saving" :required="true" />
                                 </div>
 
                                 <n-divider></n-divider>
 
                                 <div class="col-12 col-lg-3 d-flex flex-column">
-                                    <label for="">Margin All Segment
-                                        <RequiredMark />
-                                    </label>
-                                    <n-input size="large" placeholder="" v-model:value="form.normal_margin"
-                                        @input="(value) => form.normal_margin = value.replace(/\D/g, '')">
-                                        <template #prefix>
-                                            Rp
-                                        </template>
-                                    </n-input>
+                                    <CurrencyInput v-model:modelValue="form.normal_margin" label="Margin All Segment"
+                                        :required="true" />
                                 </div>
 
                                 <div class="col-12 col-lg-3 d-flex flex-column">
-                                    <label for="">Margin Grosir
-                                        <RequiredMark />
-                                    </label>
-                                    <n-input size="large" placeholder="" v-model:value="form.margin_grosir"
-                                        @input="(value) => form.margin_grosir = value.replace(/\D/g, '')">
-                                        <template #prefix>
-                                            Rp
-                                        </template>
-                                    </n-input>
+                                    <CurrencyInput v-model:modelValue="form.margin_grosir" label="Margin Grosir"
+                                        :required="true" />
                                 </div>
 
                                 <div class="col-12 col-lg-3 d-flex flex-column">
-                                    <label for="">Margin Retail
-                                        <RequiredMark />
-                                    </label>
-                                    <n-input size="large" placeholder="" v-model:value="form.margin_retail"
-                                        @input="(value) => form.margin_retail = value.replace(/\D/g, '')">
-                                        <template #prefix>
-                                            Rp
-                                        </template>
-                                    </n-input>
+                                    <CurrencyInput v-model:modelValue="form.margin_retail" label="Margin Retail"
+                                        :required="true" />
                                 </div>
 
                                 <div class="col-12 col-lg-3 d-flex flex-column">
-                                    <label for="">Margin End User
-                                        <RequiredMark />
-                                    </label>
-                                    <n-input size="large" placeholder="" v-model:value="form.margin_end_user"
-                                        @input="(value) => form.margin_end_user = value.replace(/\D/g, '')">
-                                        <template #prefix>
-                                            Rp
-                                        </template>
-                                    </n-input>
+                                    <CurrencyInput v-model:modelValue="form.margin_end_user" label="Margin End User"
+                                        :required="true" />
                                 </div>
                             </div>
                             <div class="d-flex mt-3">
-                                <n-button type="primary" class="ms-auto" @click="calculateReversePrice">Kalkulasi
+                                <n-button type="info" class="ms-auto" @click="calculateReversePrice">Kalkulasi
                                     Harga</n-button>
                             </div>
                         </n-tab-pane>
                     </n-tabs>
-                    <!-- <div class="alert alert-info alert-dismissible fade show" role="alert">
-                        <span>Harga tebus sudah otomatis exclude 1.11</span>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div> -->
 
 
 
@@ -422,80 +242,11 @@
                             </template>
                         </n-input>
                     </div>
-                    <!-- <div class="col-12 col-lg-3 d-flex flex-column">
-                        <label for="">Pembulatan Harga Jual Grosir
-
-                        </label>
-                        <n-input size="large" placeholder="" v-model:value="form.rounded_retail_price"
-                            @input="(value) => form.rounded_retail_price = value.replace(/\D/g, '')">
-                            <template #prefix>
-                                Rp
-                            </template>
-                        </n-input>
-                    </div>
-                    <div class="col-12 col-lg-3 d-flex flex-column">
-                        <label for="">Pembulatan Harga Retail
-
-                        </label>
-                        <n-input size="large" placeholder="" v-model:value="form.rounded_restaurant_price"
-                            @input="(value) => form.rounded_restaurant_price = value.replace(/\D/g, '')">
-                            <template #prefix>
-                                Rp
-                            </template>
-                        </n-input>
-                    </div>
-                    <div class="col-12 col-lg-3 d-flex flex-column">
-                        <label for="">Pembulatan Harga End User
-
-                        </label>
-                        <n-input size="large" placeholder="" v-model:value="form.rounded_price_3"
-                            @input="(value) => form.rounded_price_3 = value.replace(/\D/g, '')">
-                            <template #prefix>
-                                Rp
-                            </template>
-                        </n-input>
-                    </div> -->
                     <div class="d-flex">
                         <n-button type="primary" class="ms-auto" @click="calculateRoundedPrice">Kalkulasi
                             pembulatan</n-button>
                     </div>
                     <n-divider></n-divider>
-
-
-
-                    <!-- <div class="col-12 col-lg-4 d-flex flex-column">
-                                <label for="">Margin End User
-                                    <RequiredMark />
-                                </label>
-                                <n-input size="large" placeholder="" v-model:value="form.margin_end_user"
-                                    @input="(value) => form.margin_end_user = value.replace(/\D/g, '')">
-                                    <template #prefix>
-                                        Rp
-                                    </template>
-                                </n-input>
-                            </div>
-                            <div class="col-12 col-lg-4 d-flex flex-column">
-                                <label for="">Margin Retail
-                                    <RequiredMark />
-                                </label>
-                                <n-input size="large" placeholder="" v-model:value="form.margin_retail"
-                                    @input="(value) => form.margin_retail = value.replace(/\D/g, '')">
-                                    <template #prefix>
-                                        Rp
-                                    </template>
-                                </n-input>
-                            </div>
-                            <div class="col-12 col-lg-4 d-flex flex-column">
-                                <label for="">Margin Grosir
-                                    <RequiredMark />
-                                </label>
-                                <n-input size="large" placeholder="" v-model:value="form.margin_grosir"
-                                    @input="(value) => form.margin_grosir = value.replace(/\D/g, '')">
-                                    <template #prefix>
-                                        Rp
-                                    </template>
-                                </n-input>
-                            </div> -->
 
                     <div class="d-flex">
                         <div class="ms-auto d-flex gap-3">
@@ -505,33 +256,20 @@
                 </form>
             </div>
         </div>
-
-        <!-- <n-modal v-model:show="showModal" class="custom-card" preset="card" :style="bodyStyle" title="PILIH CARA PENENTUAN HARGA"
-            :bordered="false" size="huge" :segmented="segmented">
-            <div class="d-flex justify-content-center">
-                <span class="fw-bold">HARGA AKAN DIHITUNG DARI CARA YANG DIPILIH</span>
-            </div>
-            <template #footer>
-                <div class="d-flex gap-2 justify-content-center">
-                    <n-button type="primary" size="medium">HITUNG DARI HARGA JUAL</n-button>
-                    <n-button type="info" size="medium">HITUNG DARI HARGA TEBUS</n-button>
-                </div>
-            </template>
-        </n-modal> -->
-
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, h, ref, computed } from 'vue';
-import TitlePage from '../../Components/TitlePage.vue';
-import RequiredMark from '../../Components/RequiredMark.vue';
+import TitlePage from '../../../Components/TitlePage.vue';
+import RequiredMark from '../../../Components/RequiredMark.vue';
 import { NButton, TabsProps, useNotification } from 'naive-ui';
 import { router, useForm, usePage } from '@inertiajs/vue3';
-import { Lookup, Products } from '../../types/model';
+import { Lookup, Products } from '../../../types/model';
 import { ArrowBack } from '@vicons/ionicons5';
 import Swal from 'sweetalert2';
-import { findValueGlobalElement, formatRupiah } from '../../Utils/options-input.utils';
+import { findValueGlobalElement, formatRupiah } from '../../../Utils/options-input.utils';
+import CurrencyInput from '../../../Components/CurrencyInput.vue';
 
 type TabThemeOverrides = NonNullable<TabsProps['themeOverrides']>;
 
@@ -993,7 +731,8 @@ export default defineComponent({
     },
     components: {
         TitlePage,
-        RequiredMark
+        RequiredMark,
+        CurrencyInput
     }
 })
 </script>

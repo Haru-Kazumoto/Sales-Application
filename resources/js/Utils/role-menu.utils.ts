@@ -21,7 +21,10 @@ import {
     TrayItemRemove24Regular,
     Map24Regular,
     BoxArrowUp20Regular,
-    VehicleTruckBag20Regular
+    VehicleTruckBag20Regular,
+    MoneyCalculator20Regular,
+    BoxToolbox20Regular,
+    CircleSmall24Regular
 } from '@vicons/fluent';
 import {
     CartOutline,
@@ -100,10 +103,49 @@ export const roleMenus = {
         //     href: '/unit-management',
         // },
         {
-            label: "Products",
-            key: 'products',
-            icon: CartOutline,
-            href: '/product-management',
+            label: "Product Management",
+            key: 'product-management',
+            icon: BoxToolbox20Regular,
+            children: [
+                {
+                    label: "Products",
+                    key: 'products',
+                    icon: renderIcon(CartOutline),
+                    href: '/product-management',
+                },
+                {
+                    label: "Penghargaan Produk",
+                    key: "pricing-products",
+                    icon: renderIcon(MoneyCalculator20Regular),
+                    href: '#',
+                    children: [
+                        {
+                            label: "DEPO",
+                            key: 'depo',
+                            href: "#",
+                            icon: renderIcon(CircleSmall24Regular)
+                        },
+                        {
+                            label: "DIRECT DEPO",
+                            key: 'direct-depo',
+                            href: "#",
+                            icon: renderIcon(CircleSmall24Regular)
+                        },
+                        {
+                            label: "DIRECT",
+                            key: 'direct',
+                            href: "#",
+                            icon: renderIcon(CircleSmall24Regular)
+                        },
+                        {
+                            label: "DO",
+                            key: 'do', 
+                            href: "#",
+                            icon: renderIcon(CircleSmall24Regular)
+                        }
+                    ]
+                },
+            ]
         },
         {
             label: "Transports",

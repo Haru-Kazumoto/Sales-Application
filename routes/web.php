@@ -92,11 +92,12 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         });
 
         Route::prefix('product-management')->group(function () {
-            Route::get('', [App\Http\Controllers\ProductsController::class, 'createProduct'])->name('products');
-            Route::post('/create-product', [App\Http\Controllers\ProductsController::class, 'store'])->name('products.post');
-            Route::get('/edit-product/{product}', [App\Http\Controllers\ProductsController::class, 'edit'])->name('products.edit');
-            Route::patch('/update-product/{product}', [App\Http\Controllers\ProductsController::class, 'update'])->name('products.update');
-            Route::delete('/delete-product/{product}', [App\Http\Controllers\ProductsController::class, 'destroy'])->name('products.delete');
+            Route::get('', [App\Http\Controllers\ProductsController::class, 'index'])->name('products');
+            Route::get('/create', [App\Http\Controllers\ProductsController::class, 'create'])->name('products.create');
+            Route::post('/post-product', [App\Http\Controllers\ProductsController::class, 'store'])->name('products.post');
+            Route::get('/edit/{product}', [App\Http\Controllers\ProductsController::class, 'edit'])->name('products.edit');
+            Route::patch('/update/{product}', [App\Http\Controllers\ProductsController::class, 'update'])->name('products.update');
+            Route::delete('/delete/{product}', [App\Http\Controllers\ProductsController::class, 'destroy'])->name('products.delete');
 
             //IMPORT
             Route::post('/import-products', [App\Http\Controllers\ImportProductMaster::class, 'importProducts'])->name('products.import');
