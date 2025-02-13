@@ -222,7 +222,7 @@
                                 </div>
                             </div>
                             <div class="d-flex mt-3">
-                                <n-button type="info" class="ms-auto" @click="calculateReversePrice">Kalkulasi
+                                <n-button type="info" class="ms-auto" @click="calculateReversePrice" >Kalkulasi
                                     Harga</n-button>
                             </div>
                         </n-tab-pane>
@@ -243,7 +243,7 @@
                         </n-input>
                     </div>
                     <div class="d-flex">
-                        <n-button type="primary" class="ms-auto" @click="calculateRoundedPrice">Kalkulasi
+                        <n-button type="info" class="ms-auto" @click="calculateRoundedPrice" :disabled="hasRounded">Kalkulasi
                             pembulatan</n-button>
                     </div>
                     <n-divider></n-divider>
@@ -284,6 +284,7 @@ export default defineComponent({
         const page = usePage();
         const notification = useNotification();
         const hasExluded = ref(false);
+        const hasRounded = ref(false);
 
         const product = page.props.product as any;
 
@@ -412,6 +413,8 @@ export default defineComponent({
             form.price_3 = Number(price_3) + (Number(rounded_price_3) || 0);
             form.retail_price = Number(retail_price) + (Number(rounded_retail_price) || 0);
             form.restaurant_price = Number(restaurant_price) + (Number(rounded_restaurant_price) || 0);
+
+            hasRounded.value = true;
         }
 
         function calculateExcludePpnRedempPrice() {
@@ -726,7 +729,8 @@ export default defineComponent({
             } as const,
             showModal: ref(false),
             showSecondModal: ref(false),
-            showThirdModal: ref(false)
+            showThirdModal: ref(false),
+            hasRounded
         }
     },
     components: {
