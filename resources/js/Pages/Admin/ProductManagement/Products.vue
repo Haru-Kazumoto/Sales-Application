@@ -322,11 +322,6 @@ export default defineComponent({
                     }
                 },
                 {
-                    title: "KODE BARANG",
-                    key: "code",
-                    width: 150
-                },
-                {
                     title: "NAMA BARANG",
                     key: 'name',
                     width: 200,
@@ -335,6 +330,11 @@ export default defineComponent({
                     title: "KEMASAN",
                     key: 'unit',
                     width: 100,
+                },
+                {
+                    title: "KODE BARANG",
+                    key: "code",
+                    width: 150
                 },
                 {
                     title: "JENIS PRODUK",

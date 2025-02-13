@@ -120,8 +120,8 @@ export const roleMenus = {
                     href: '#',
                     children: [
                         {
-                            label: "DEPO",
-                            key: 'depo',
+                            label: "DIRECT",
+                            key: 'direct',
                             href: "#",
                             icon: renderIcon(CircleSmall24Regular)
                         },
@@ -132,8 +132,8 @@ export const roleMenus = {
                             icon: renderIcon(CircleSmall24Regular)
                         },
                         {
-                            label: "DIRECT",
-                            key: 'direct',
+                            label: "DEPO",
+                            key: 'depo',
                             href: "#",
                             icon: renderIcon(CircleSmall24Regular)
                         },
