@@ -20,7 +20,6 @@ import {
     DocumentBulletListMultiple24Regular,
     TrayItemRemove24Regular,
     Map24Regular,
-    BoxArrowUp20Regular,
     VehicleTruckBag20Regular,
     MoneyCalculator20Regular,
     BoxToolbox20Regular,
@@ -42,7 +41,7 @@ import {
     Close,
 } from '@vicons/ionicons5';
 import { WarehouseOutlined } from '@vicons/material';
-import { iconDark, NIcon } from 'naive-ui';
+import { NIcon } from 'naive-ui';
 import { h } from 'vue';
 
 // Utility function to render icons safely (without wrapping twice)
@@ -133,7 +132,7 @@ export const roleMenus = {
                         {
                             label: "DEPO",
                             key: 'depo',
-                            href: "#",
+                            href: "/product-pricing/depo",
                             icon: renderIcon(CircleSmall24Regular)
                         },
                         {

@@ -106,12 +106,19 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
 
         // pricing products
         Route::prefix('product-pricing')->name('pricing.')->group(function() {
+            // DO Delivery
             Route::get('/do',[App\Http\Controllers\ProductPricingController::class, 'indexDO'])->name('do');
             Route::get('/do/create', [App\Http\Controllers\ProductPricingController::class, 'createDOPrice'])->name('do.create');
             Route::post('/do/post',[App\Http\Controllers\ProductPricingController::class,'storeDOPrice'])->name('do.post');
             Route::get('/do/edit/{productPrice}',[App\Http\Controllers\ProductPricingController::class,'editDOPrice'])->name('do.edit');
             Route::put('/do/update/{productPrice}', [App\Http\Controllers\ProductPricingController::class,'updateDOPrice'])->name('do.update');
             Route::delete('/do/delete/{productPrice}', [App\Http\Controllers\ProductPricingController::class, 'deleteDOPrice'])->name('do.delete');
+
+            // DEPO Delivery
+            Route::get('/depo', [App\Http\Controllers\ShippingController::class, 'indexDepoShipping'])->name('depo');
+            
+            // SUB DELIVERY
+            Route::post('/create/sub-delivery', [App\Http\Controllers\SubShippingController::class, 'store'])->name('sub-shipping.store');
         });
 
         Route::prefix('transport-management')->group(function() {

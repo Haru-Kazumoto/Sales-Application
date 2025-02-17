@@ -9,7 +9,7 @@
 
                 <!-- Logo and Company Name, hidden on small screens -->
                 <div class="d-flex align-items-center">
-                    <n-image width="50" src="/images/company_logo.png" preview-disabled
+                    <n-image width="100" src="/images/company_logo.png" preview-disabled
                         class="my-1 d-none d-md-block" />
                     <span class="mx-4 fs-5 text-white d-none d-md-block">
                         PT DANITAMA NIAGAPRIMA

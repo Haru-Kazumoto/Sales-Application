@@ -2,17 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\ShippingServices;
 use App\Models\Shipping;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class ShippingController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    private $shippingServices;
+
+    public function __construct(ShippingServices $shippingServices)
+    {   
+        $this->shippingServices = $shippingServices;
+    }
+    
+    public function indexDepoShipping()
     {
-        //
+        $shipping_name = "DEPO";
+        $subShippings = $this->shippingServices->indexSubShippingByName($shipping_name);
+        $countSubShipping = $this->shippingServices->countSubShippingByName($shipping_name);
+
+        return Inertia::render('Admin/ProductManagement/ProductPricing/DEPO', compact('subShippings','countSubShipping'));
     }
 
     /**

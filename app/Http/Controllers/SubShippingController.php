@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Shipping;
 use App\Models\SubShipping;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SubShippingController extends Controller
 {
@@ -28,7 +30,16 @@ class SubShippingController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $shipping = Shipping::where('name', $request->shipping_name)->first();
+
+        DB::transaction(function() use ($request, $shipping) {
+            SubShipping::create([
+                'name' => str_replace(' ','_', $request->name),
+                'shipping_id' => $shipping->id
+            ]);
+        });
+
+        return back()->with('success', 'Berhasil membuat sub delivery!');
     }
 
     /**

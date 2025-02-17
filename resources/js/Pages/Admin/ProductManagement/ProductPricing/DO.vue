@@ -51,7 +51,7 @@ import Swal from 'sweetalert2';
 export default defineComponent({
     props: {
         product_prices: {
-            type: Object,
+            type: Array,
             required: true
         }
     },
