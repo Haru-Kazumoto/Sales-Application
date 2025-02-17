@@ -117,7 +117,6 @@ export const roleMenus = {
                     label: "Penghargaan Produk",
                     key: "pricing-products",
                     icon: renderIcon(MoneyCalculator20Regular),
-                    href: '#',
                     children: [
                         {
                             label: "DIRECT",
@@ -140,7 +139,7 @@ export const roleMenus = {
                         {
                             label: "DO",
                             key: 'do', 
-                            href: "#",
+                            href: "/product-pricing/do",
                             icon: renderIcon(CircleSmall24Regular)
                         }
                     ]

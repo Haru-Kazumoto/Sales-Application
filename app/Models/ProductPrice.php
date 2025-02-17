@@ -38,4 +38,14 @@ class ProductPrice extends Model
     {
         return $this->belongsTo(Products::class, 'product_id');
     }
+
+    public function shipping(): BelongsTo
+    {
+        return $this->belongsTo(Shipping::class, 'shipping_id');
+    }
+
+    public function subShipping(): BelongsTo
+    {
+        return $this->belongsTo(SubShipping::class, 'sub_shipping_id');
+    }
 }

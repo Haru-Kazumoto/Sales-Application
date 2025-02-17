@@ -1,5 +1,6 @@
  <?php
 
+use App\Http\Controllers\ProductPricingController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -102,6 +103,13 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
             //IMPORT
             Route::post('/import-products', [App\Http\Controllers\ImportProductMaster::class, 'importProducts'])->name('products.import');
         });
+
+        // pricing products
+            Route::prefix('product-pricing')->name('pricing.')->group(function() {
+                Route::get('/do',[App\Http\Controllers\ProductPricingController::class, 'indexDO'])->name('do');
+                Route::get('/do/create', [App\Http\Controllers\ProductPricingController::class, 'createDOPrice'])->name('do.create');
+                Route::post('/do/post',[App\Http\Controllers\ProductPricingController::class,'storeDOPrice'])->name('do.post');
+            });
 
         Route::prefix('transport-management')->group(function() {
             Route::get('', [App\Http\Controllers\TransportController::class, 'index'])->name('index-transports');

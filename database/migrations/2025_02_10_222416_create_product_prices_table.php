@@ -24,11 +24,11 @@ return new class extends Migration
             $table->float('budget_marketing')->nullable()->comment('budget marketing is one of main element of calculate pricing');
             $table->float('bad_debt')->nullable()->comment('bad debt is one of main element of calculate pricing');
             $table->float('saving')->nullable()->comment('saving is one of main element of calculate pricing');
-            $table->float('margin_retail')->comment('nett margin of retail price');
-            $table->float('margin_grosir')->comment('nett margin of grosir price');
-            $table->float('margin_end_user')->comment('nett margin of end user price');
-            $table->float('margin_all_segment')->comment('nett margin of all segment price');
-            $table->float('rounded_all_segment_price')->comment('rounded value of all segment price including to margin');
+            $table->float('margin_retail')->nullable()->comment('nett margin of retail price');
+            $table->float('margin_grosir')->nullable()->comment('nett margin of grosir price');
+            $table->float('margin_end_user')->nullable()->comment('nett margin of end user price');
+            $table->float('margin_all_segment')->nullable()->comment('nett margin of all segment price');
+            $table->float('rounded_all_segment_price')->nullable()->comment('rounded value of all segment price including to margin');
 
             $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
             $table->foreignId('shipping_id')->nullable()->constrained('shipping')->nullOnDelete();

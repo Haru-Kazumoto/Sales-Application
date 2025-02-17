@@ -5,6 +5,8 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { route, ZiggyVue } from '../../vendor/tightenco/ziggy/dist';
 import ApexCharts from 'vue3-apexcharts';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { NConfigProvider } from 'naive-ui';
+import { themeConfig } from './Utils/theme-config.utils';
 
 createInertiaApp({
     resolve: name => {

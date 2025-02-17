@@ -18,4 +18,9 @@ class Shipping extends Model
     {
         return $this->hasMany(SubShipping::class);
     }
+
+    public function productPrices(): HasMany
+    {
+        return $this->hasMany(ProductPrice::class);
+    }
 }
