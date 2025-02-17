@@ -45,7 +45,8 @@ class ProductPricingController extends Controller
         $products = DB::table('products as p')
             ->select(['p.id', 'p.name', 'p.unit', 'p.code'])
             ->whereNotExists(function ($query) {
-                $query->from('product_prices as price')
+                $query->select(DB::raw(1))
+                    ->from('product_prices as price')
                     ->join('shipping', 'shipping.id', '=', 'price.shipping_id')
                     ->whereColumn('price.product_id', '=', 'p.id')
                     ->where('shipping.name', '=','DO');
