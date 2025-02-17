@@ -16,7 +16,8 @@
                             </n-input>
                             <n-tooltip trigger="hover">
                                 <template #trigger>
-                                    <n-button type="primary" color="#006B3F" strong @click="router.visit(route('admin.pricing.do.create'))">
+                                    <n-button type="primary" color="#006B3F" strong
+                                        @click="router.visit(route('admin.pricing.do.create'))">
                                         <template #icon>
                                             <n-icon :component="Add16Filled" />
                                         </template>
@@ -45,6 +46,7 @@ import { Head, router } from '@inertiajs/vue3';
 import { Search24Filled, Add16Filled, BoxSearch20Regular } from '@vicons/fluent';
 import { NButton, NIcon } from 'naive-ui';
 import DetailProduct from '../../../../Components/DetailProduct.vue';
+import Swal from 'sweetalert2';
 
 export default defineComponent({
     props: {
@@ -75,10 +77,10 @@ export default defineComponent({
                                 }
                             },
                             {
-                                icon: () => 
+                                icon: () =>
                                     h(
                                         NIcon,
-                                        {},{default: () => h(BoxSearch20Regular)}
+                                        {}, { default: () => h(BoxSearch20Regular) }
                                     )
                             }
                         )
@@ -104,17 +106,51 @@ export default defineComponent({
                     key: "action",
                     width: 100,
                     render(row) {
-                        return h(
-                            NButton,
-                            {
-                                strong: true,
-                                size: "medium",
-                                type: "primary",
-                            },
-                            {
-                                default: () => "Edit"
-                            }
-                        );
+                        return h('div', { class: 'd-flex gap-2' }, [
+                            h(
+                                NButton,
+                                {
+                                    strong: true,
+                                    size: "medium",
+                                    type: "primary",
+                                    onClick() {
+                                        router.visit(route('admin.pricing.do.edit', row.id));
+                                    }
+                                },
+                                {
+                                    default: () => "Edit"
+                                }
+                            ),
+                            h(
+                                NButton,
+                                {
+                                    strong: true,
+                                    size: "medium",
+                                    type: "error",
+                                    onClick() {
+                                        Swal.fire({
+                                            title: "Hapus harga dari produk ini?",
+                                            text: "Anda tidak dapat mengembalikan data yang telah dihapus",
+                                            icon: "warning",
+                                            showCancelButton: true,
+                                            confirmButtonText: "Hapus",
+                                            confirmButtonColor: 'red',
+                                        }).then((result) => {
+                                            if(result.isConfirmed) {
+                                                router.delete(route('admin.pricing.do.delete', row.id), {
+                                                    onSuccess: (page) => {
+                                                        Swal.fire(page.props.flash.success,'','success');
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                },
+                                {
+                                    default: () => "Hapus"
+                                }
+                            )
+                        ]);
                     }
                 }
             ]

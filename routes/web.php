@@ -105,11 +105,14 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         });
 
         // pricing products
-            Route::prefix('product-pricing')->name('pricing.')->group(function() {
-                Route::get('/do',[App\Http\Controllers\ProductPricingController::class, 'indexDO'])->name('do');
-                Route::get('/do/create', [App\Http\Controllers\ProductPricingController::class, 'createDOPrice'])->name('do.create');
-                Route::post('/do/post',[App\Http\Controllers\ProductPricingController::class,'storeDOPrice'])->name('do.post');
-            });
+        Route::prefix('product-pricing')->name('pricing.')->group(function() {
+            Route::get('/do',[App\Http\Controllers\ProductPricingController::class, 'indexDO'])->name('do');
+            Route::get('/do/create', [App\Http\Controllers\ProductPricingController::class, 'createDOPrice'])->name('do.create');
+            Route::post('/do/post',[App\Http\Controllers\ProductPricingController::class,'storeDOPrice'])->name('do.post');
+            Route::get('/do/edit/{productPrice}',[App\Http\Controllers\ProductPricingController::class,'editDOPrice'])->name('do.edit');
+            Route::put('/do/update/{productPrice}', [App\Http\Controllers\ProductPricingController::class,'updateDOPrice'])->name('do.update');
+            Route::delete('/do/delete/{productPrice}', [App\Http\Controllers\ProductPricingController::class, 'deleteDOPrice'])->name('do.delete');
+        });
 
         Route::prefix('transport-management')->group(function() {
             Route::get('', [App\Http\Controllers\TransportController::class, 'index'])->name('index-transports');
