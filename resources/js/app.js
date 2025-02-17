@@ -5,8 +5,82 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { route, ZiggyVue } from '../../vendor/tightenco/ziggy/dist';
 import ApexCharts from 'vue3-apexcharts';
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { NConfigProvider } from 'naive-ui';
-import { themeConfig } from './Utils/theme-config.utils';
+import {
+    // create naive ui
+    create,
+    // component
+    NButton,
+    NSelect,
+    NInput,
+    NLayout,
+    NLayoutContent,
+    NIcon,
+    NImage,
+    NFlex,
+    NGrid,
+    NMenu,
+    NModal,
+    NBadge,
+    NTab,
+    NDataTable,
+    NAvatar,
+    NCard,
+    NDrawer,
+    NDrawerContent,
+    NDatePicker,
+    NTooltip,
+    NTag,
+    NPagination,
+    NForm,
+    NFormItem,
+    NLayoutSider,
+    NLayoutHeader,
+    NTabPane,
+    NNotificationProvider,
+    NModalProvider,
+    NConfigProvider,
+    NMessageProvider,
+    NDropdown,
+    NIconWrapper
+} from 'naive-ui';
+
+const naive = create({
+    components: [
+        NButton,
+        NSelect,
+        NInput,
+        NLayout,
+        NLayoutContent,
+        NIcon,
+        NImage,
+        NFlex,
+        NGrid,
+        NMenu,
+        NModal,
+        NBadge,
+        NTab,
+        NDataTable,
+        NAvatar,
+        NCard,
+        NDrawer,
+        NDrawerContent,
+        NDatePicker,
+        NTooltip,
+        NTag,
+        NPagination,
+        NForm,
+        NFormItem,
+        NLayoutSider,
+        NLayoutHeader,
+        NTabPane,
+        NNotificationProvider,
+        NModalProvider,
+        NConfigProvider,
+        NMessageProvider,
+        NDropdown,
+        NIconWrapper
+    ]
+});
 
 createInertiaApp({
     resolve: name => {
@@ -24,6 +98,7 @@ createInertiaApp({
         createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue)
+            .use(naive)
             .component('apexchart', ApexCharts)
             .mount(el)
     },

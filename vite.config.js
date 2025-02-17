@@ -32,9 +32,9 @@ export default defineConfig({
                 }
             ]
         }),
-        Components({
-            resolvers: [NaiveUiResolver()]
-        }),
+        // Components({
+        //     resolvers: [NaiveUiResolver()]
+        // }),
     ],
     resolve: name => {
         const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
