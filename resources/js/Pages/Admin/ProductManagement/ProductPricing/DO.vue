@@ -30,7 +30,7 @@
                     </div>
                 </div>
             </div>
-            <n-data-table :columns :bordered="false" :data="product_prices.data" size="small" />
+            <n-data-table :columns :bordered="false" :data="product_prices" size="small" />
 
             <!-- drawer detail -->
             <DetailProduct v-model:active="active" :dataProduct />

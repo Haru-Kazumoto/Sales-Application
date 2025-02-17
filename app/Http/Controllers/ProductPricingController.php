@@ -29,7 +29,8 @@ class ProductPricingController extends Controller
                 'pr.*',
                 'sp.name'
             ])
-            ->paginate(20);
+            ->get();
+            // ->paginate(20);
 
         return Inertia::render(self::$VIEW_PATH . '/DO',[
             'product_prices' => $product_prices
