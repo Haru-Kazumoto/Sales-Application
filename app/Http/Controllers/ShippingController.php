@@ -53,13 +53,13 @@ class ShippingController extends Controller
         $region_delivery = DB::table('region_delivery')->get();
         $products = DB::table('products as p')
             ->select(['p.id', 'p.name', 'p.unit', 'p.code'])
-            ->whereNotExists(function ($query) {
-                $query->select(DB::raw(1))
-                    ->from('product_prices as price')
-                    ->join('shipping', 'shipping.id', '=', 'price.shipping_id')
-                    ->whereColumn('price.product_id', '=', 'p.id')
-                    ->where('shipping.name', '=','DO');
-            })
+            // ->whereNotExists(function ($query) {
+            //     $query->select(DB::raw(1))
+            //         ->from('product_prices as price')
+            //         ->join('shipping', 'shipping.id', '=', 'price.shipping_id')
+            //         ->whereColumn('price.product_id', '=', 'p.id')
+            //         ->where('shipping.name', '=','DO');
+            // })
             ->get();
 
         return Inertia::render('Admin/ProductManagement/ProductPricing/Pricing/PricingDO',[
@@ -113,13 +113,13 @@ class ShippingController extends Controller
         $percentages = Lookup::where('category', 'PERCENTAGE')->get();
         $products = DB::table('products as p')
             ->select(['p.id', 'p.name', 'p.unit', 'p.code'])
-            ->whereNotExists(function ($query) use ($subShipping) {
-                $query->select(DB::raw(1))
-                    ->from('product_prices as price')
-                    ->join('sub_shipping as ss', 'ss.id', '=', 'price.shipping_id')
-                    ->whereColumn('price.product_id', '=', 'p.id')
-                    ->where('ss.name', '=',$subShipping->name);
-            })
+            // ->whereNotExists(function ($query) use ($subShipping) {
+            //     $query->select(DB::raw(1))
+            //         ->from('product_prices as price')
+            //         ->join('sub_shipping as ss', 'ss.id', '=', 'price.shipping_id')
+            //         ->whereColumn('price.product_id', '=', 'p.id')
+            //         ->where('ss.name', '=',$subShipping->name);
+            // })
             ->get();
 
         return Inertia::render('Admin/ProductManagement/ProductPricing/Pricing/PricingDEPO', [
