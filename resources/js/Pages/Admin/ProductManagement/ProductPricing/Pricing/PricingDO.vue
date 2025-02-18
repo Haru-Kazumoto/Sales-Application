@@ -30,7 +30,7 @@
                     <div class="col-12 col-lg-4 d-flex flex-column">
                         <CurrencyInput v-model:modelValue="form.redemp_price" label="Harga Tebus" :required="true" />
                     </div>
-                    <div class="col-12 col-lg-4 d-flex flex-column">
+                    <!-- <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">Harga Trucking
                             <RequiredMark />
                         </label>
@@ -38,14 +38,13 @@
                             size="large"></n-select>
                     </div>
         
-                    <!-- THIRD ROW -->
                     <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">OH Depo
                             <RequiredMark />
                         </label>
                         <n-select :options="dimensionOptions" v-model:value="form.oh_depo" placeholder=""
                             size="large"></n-select>
-                    </div>
+                    </div> -->
                     <div class="col-12 col-lg-4 d-flex flex-column">
                         <CurrencyInput v-model:modelValue="form.bad_debt" label="Bad Debt" :required="true" />
                     </div>
@@ -71,6 +70,14 @@
                     <!-- FOURTH ROW -->
                     <div class="col-12 col-lg-3 d-flex flex-column">
                         <CurrencyInput v-model:modelValue="form.all_segment_price" label="Harga All Segment" :required="true" />
+                    </div>
+                    <n-divider></n-divider>
+                    <div class="col-12 col-lg-3 d-flex flex-column">
+                        <CurrencyInput v-model:modelValue="form.rounded_all_segment_price" label="Pembulatan Harga All Segment" :required="true" />
+                    </div>
+                    <div class="d-flex">
+                        <n-button type="info" class="ms-auto" @click="calculateRoundedPrice" :disabled="hasRounded">Kalkulasi
+                            pembulatan</n-button>
                     </div>
                 </div>
             </div>
@@ -130,6 +137,7 @@ export default defineComponent({
             delivery_type: 'DO',
             product_id: null as unknown as number,
         });
+        const hasRounded = ref(false);
 
         watch(() => form.product_id, (id) => {
             const selectedProduct = productOptions.find(data => data.value === id);
@@ -141,6 +149,23 @@ export default defineComponent({
 
         function clearPricing() {
             form.reset();
+        }
+
+        function calculateRoundedPrice() {
+            const {
+                all_segment_price,
+                end_user_price,
+                retail_price,
+                grosir_price,
+                margin_all_segment,
+                rounded_all_segment_price,
+            } = form;
+
+            // Perbarui harga berdasarkan nilai pembulatan yang dimasukkan oleh pengguna
+            form.all_segment_price = Number(all_segment_price) + (Number(rounded_all_segment_price) || 0);
+            form.margin_all_segment = Number(margin_all_segment) + (Number(rounded_all_segment_price) || 0);
+
+            hasRounded.value = true;
         }
 
         function calculateRedempPrice() {
@@ -238,7 +263,9 @@ export default defineComponent({
             productOptions,
             calculateRedempPrice,
             clearPricing,
-            handleSubmitPricing
+            handleSubmitPricing,
+            calculateRoundedPrice,
+            hasRounded
         }
     },
     components: {
