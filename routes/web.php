@@ -107,8 +107,8 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         // pricing products
         Route::prefix('product-pricing')->name('pricing.')->group(function() {
             // DO Delivery
-            Route::get('/do',[App\Http\Controllers\ProductPricingController::class, 'indexDO'])->name('do');
-            Route::get('/do/create', [App\Http\Controllers\ProductPricingController::class, 'createDOPrice'])->name('do.create');
+            Route::get('/do',[App\Http\Controllers\ShippingController::class, 'indexDoShipping'])->name('do');
+            Route::get('/do/create', [App\Http\Controllers\ShippingController::class, 'createDoPricing'])->name('do.create');
             Route::post('/do/post',[App\Http\Controllers\ProductPricingController::class,'storeDOPrice'])->name('do.post');
             Route::get('/do/edit/{productPrice}',[App\Http\Controllers\ProductPricingController::class,'editDOPrice'])->name('do.edit');
             Route::put('/do/update/{productPrice}', [App\Http\Controllers\ProductPricingController::class,'updateDOPrice'])->name('do.update');
@@ -116,6 +116,8 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
 
             // DEPO Delivery
             Route::get('/depo', [App\Http\Controllers\ShippingController::class, 'indexDepoShipping'])->name('depo');
+            Route::get('/depo/assign-products/sub-shipping/{subShipping}', [App\Http\Controllers\ShippingController::class, 'indexProductsDepo'])->name('depo.index.products');
+            Route::get('/depo/create/{subShipping}', [App\Http\Controllers\ShippingController::class, 'createDepoPricing'])->name('depo.create');
             
             // SUB DELIVERY
             Route::post('/create/sub-delivery', [App\Http\Controllers\SubShippingController::class, 'store'])->name('sub-shipping.store');

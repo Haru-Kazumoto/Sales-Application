@@ -38,7 +38,6 @@
                         <ErrorInput :error="$page.props.errors['password']" />
                     </div>
 
-                    <n-checkbox size="large" label="Remember me" />
                 </div>
                 <n-button attr-type="submit" type="primary" class="w-100" :render-icon="renderIcon" size="large">
                     Login

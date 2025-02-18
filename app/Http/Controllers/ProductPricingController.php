@@ -15,53 +15,7 @@ class ProductPricingController extends Controller
 
     private static string $VIEW_PATH = 'Admin/ProductManagement/ProductPricing';
     
-    public function indexDO()
-    {
-        $product_prices = DB::table('product_prices as pr')
-            ->join('products as p','p.id','=','pr.product_id')
-            ->join('shipping as sp','sp.id','=','pr.shipping_id')
-            ->where('sp.name','=','DO')
-            ->select([
-                'p.id as product_id',
-                'p.name as product_name',
-                'p.unit',
-                'p.code',
-                'pr.*',
-                'sp.name'
-            ])
-            ->get();
-            // ->paginate(20);
-
-        return Inertia::render(self::$VIEW_PATH . '/DO',[
-            'product_prices' => $product_prices
-        ]);
-    }
-
-    public function createDOPrice()
-    {
-        $dimensions = DB::table('dimention')->get();
-        $global_element = DB::table('global_element_price')->get();
-        $region_delivery = DB::table('region_delivery')->get();
-        $products = DB::table('products as p')
-            ->select(['p.id', 'p.name', 'p.unit', 'p.code'])
-            ->whereNotExists(function ($query) {
-                $query->select(DB::raw(1))
-                    ->from('product_prices as price')
-                    ->join('shipping', 'shipping.id', '=', 'price.shipping_id')
-                    ->whereColumn('price.product_id', '=', 'p.id')
-                    ->where('shipping.name', '=','DO');
-            })
-            ->get();
-
-        return Inertia::render(self::$VIEW_PATH . '/Pricing/PricingDO',[
-            'products' => $products,
-            'utils' => [
-                'dimensions' => $dimensions,
-                'global_element' => $global_element,
-                'region_delivery' => $region_delivery
-            ]
-        ]);
-    }
+    
 
     public function storeDOPrice(ProductPriceRequest $request)
     {
@@ -115,7 +69,7 @@ class ProductPricingController extends Controller
             ->where('pp.id', $productPrice->id)
             ->first();
 
-        return Inertia::render(self::$VIEW_PATH . '/Pricing/EditDO',[
+        return Inertia::render('Admin/ProductManagement/ProductPricing/Pricing/EditDO',[
             'data' => $prices,
             'utils' => [
                 'dimensions' => $dimensions,

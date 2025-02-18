@@ -41,7 +41,9 @@ import {
     NConfigProvider,
     NMessageProvider,
     NDropdown,
-    NIconWrapper
+    NIconWrapper,
+    NTabs,
+    NDivider
 } from 'naive-ui';
 
 const naive = create({
@@ -78,7 +80,9 @@ const naive = create({
         NConfigProvider,
         NMessageProvider,
         NDropdown,
-        NIconWrapper
+        NIconWrapper,
+        NTabs,
+        NDivider
     ]
 });
 

@@ -1,6 +1,6 @@
 <template>
 
-    <Head title="Harga Pengiriman DO"></Head>
+    <Head title="Harga Pengiriman DEPO"></Head>
     <div class="d-flex flex-column gap-3 pb-3">
         <TitlePage title="Pengiriman DEPO" subTitle="Daftar sub delivery dari delivery DEPO" />
 
@@ -109,7 +109,7 @@ export default defineComponent({
                                 size: "medium",
                                 type: "info",
                                 onClick() {
-                                    // router.visit(route('admin.pricing.do.edit', row.id));
+                                    router.visit(route('admin.pricing.depo.index.products', row.id));
                                 }
                             },
                             {
