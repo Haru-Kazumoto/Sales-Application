@@ -29,7 +29,7 @@
 
         <div class="card shadow-sm border border-success-subtle mb-3">
             <div class="card-body">
-                <form class="row g-3" @submit.prevent="">
+                <form class="row g-3" @submit.prevent="handleSubmitPricing">
                     <n-tabs type="segment" animated size="large" :theme-overrides="menuTheme">
                         <n-tab-pane name="forward-calculation" tab="PERHITUNGAN MAJU">
                             <div class="row g-2">
@@ -229,6 +229,10 @@ export default defineComponent({
         },
         products: {
             type: Array,
+            required: true,
+        },
+        subShipping: {
+            type: Object,
             required: true,
         }
     },
@@ -455,7 +459,8 @@ export default defineComponent({
         }
 
         function handleSubmitPricing() {
-            form.post(route('admin.pricing.do.post'), {
+            console.log(props.subShipping.id);
+            form.post(route('admin.pricing.depo.post', props.subShipping.id), {
                 onSuccess: (page) => {
                     Swal.fire({
                         icon: "success",

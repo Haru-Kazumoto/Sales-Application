@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProductPriceRequest;
 use App\Models\ProductPrice;
 use App\Models\Products;
+use App\Models\SubShipping;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -106,6 +107,36 @@ class ProductPricingController extends Controller
         });
 
         return back()->with('success', 'Harga produk berhasil dihapus!');
+    }
+
+    public function storeDepoPrices(Request $request, SubShipping $subShipping)
+    {
+        // dd($request->all());
+        DB::transaction(function() use ($request, $subShipping) {
+            ProductPrice::create([
+                'redemp_price' => $request->redemp_price,
+                'retail_price' => $request->retail_price,
+                'grosir_price' => $request->grosir_price,
+                'end_user_price' => $request->end_user_price,
+                'all_segment_price' => $request->all_segment_price,
+                'percentage' => $request->percentage,
+                'transportation_cost' => $request->transportation_cost,
+                'oh_depo' => $request->oh_depo,
+                'budget_marketing' => $request->budget_marketing,
+                'bad_debt' => $request->bad_debt,
+                'saving' => $request->saving,
+                'margin_retail' => $request->margin_retail,
+                'margin_grosir' => $request->margin_grosir,
+                'margin_end_user' => $request->margin_end_user,
+                'margin_all_segment' => $request->margin_all_segment,
+                'rounded_all_segment_price' => $request->rounded_all_segment_price,
+                'product_id' => $request->product_id,
+                'shipping_id' => $subShipping->shipping_id,
+                'sub_shipping_id' => $subShipping->id
+            ]);
+        });
+
+        return redirect()->route('admin.pricing.depo')->with('success','Berhasil membuat barang!');
     }
 
     public function indexDEPO()

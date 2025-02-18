@@ -118,6 +118,7 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
             Route::get('/depo', [App\Http\Controllers\ShippingController::class, 'indexDepoShipping'])->name('depo');
             Route::get('/depo/assign-products/sub-shipping/{subShipping}', [App\Http\Controllers\ShippingController::class, 'indexProductsDepo'])->name('depo.index.products');
             Route::get('/depo/create/{subShipping}', [App\Http\Controllers\ShippingController::class, 'createDepoPricing'])->name('depo.create');
+            Route::post('/depo/post/{subShipping}', [App\Http\Controllers\ProductPricingController::class, 'storeDepoPrices'])->name('depo.post');
             
             // SUB DELIVERY
             Route::post('/create/sub-delivery', [App\Http\Controllers\SubShippingController::class, 'store'])->name('sub-shipping.store');

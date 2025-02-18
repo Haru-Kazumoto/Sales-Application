@@ -113,13 +113,13 @@ class ShippingController extends Controller
         $percentages = Lookup::where('category', 'PERCENTAGE')->get();
         $products = DB::table('products as p')
             ->select(['p.id', 'p.name', 'p.unit', 'p.code'])
-            // ->whereNotExists(function ($query) use ($subShipping) {
-            //     $query->select(DB::raw(1))
-            //         ->from('product_prices as price')
-            //         ->join('sub_shipping as ss', 'ss.id', '=', 'price.shipping_id')
-            //         ->whereColumn('price.product_id', '=', 'p.id')
-            //         ->where('ss.name', '=',$subShipping->name);
-            // })
+            ->whereNotExists(function ($query) use ($subShipping) {
+                $query->select(DB::raw(1))
+                    ->from('product_prices as price')
+                    ->join('sub_shipping as ss', 'ss.id', '=', 'price.shipping_id')
+                    ->whereColumn('price.product_id', '=', 'p.id')
+                    ->where('ss.name', '=',$subShipping->name);
+            })
             ->get();
 
         return Inertia::render('Admin/ProductManagement/ProductPricing/Pricing/PricingDEPO', [
