@@ -32,11 +32,14 @@ class ShippingController extends Controller
 
     public function indexDoShipping(Request $request)
     {
-        $search_product = $request->query('search_product');
+        $search_product = $request->query('search_product','');
         $product_prices = $this->productPriceService->getProductPricesFromSubShippingId(null,$search_product, 15);
 
         return Inertia::render("Admin/ProductManagement/ProductPricing/DO",[
-            'product_prices' => $product_prices
+            'product_prices' => $product_prices,
+            'filters' => [
+                'search_product' => $search_product
+            ]
         ]);
     }
 
@@ -59,9 +62,10 @@ class ShippingController extends Controller
         ]);
     }
     
-    public function indexDepoShipping()
+    public function indexDepoShipping(Request $request)
     {
         $shipping_name = "DEPO";
+        $search_product = $request->query('search_product','');
         $subShippings = $this->shippingServices->indexSubShippingByName($shipping_name);
         $countSubShipping = $this->shippingServices->countSubShippingByName($shipping_name);
 
@@ -88,23 +92,29 @@ class ShippingController extends Controller
 
     public function indexProductsDepo(Request $request, SubShipping $subShipping)
     {
-        $search_product = $request->query('search_product');
+        $search_product = $request->query('search_product','');
         $product_prices = $this->productPriceService->getProductPricesFromSubShippingId($subShipping->id,$search_product, 15);
 
         return Inertia::render('Admin/ProductManagement/ProductPricing/Pricing/IndexProductsDEPO', [
             'product_prices' => $product_prices,
-            'subShipping' => $subShipping
+            'subShipping' => $subShipping,
+            'filters' => [
+                'search_product' => $search_product
+            ]
         ]);
     }
 
     public function indexProductsDirectDepo(Request $request, SubShipping $subShipping)
     {
-        $search_product = $request->query('search_product');
+        $search_product = $request->query('search_product','');
         $product_prices = $this->productPriceService->getProductPricesFromSubShippingId($subShipping->id,$search_product, 15);
 
         return Inertia::render('Admin/ProductManagement/ProductPricing/Pricing/IndexProductsDIRECT_DEPO', [
             'product_prices' => $product_prices,
-            'subShipping' => $subShipping
+            'subShipping' => $subShipping,
+            'filters' => [
+                'search_product' => $search_product
+            ]
         ]);
     }
 
@@ -115,7 +125,10 @@ class ShippingController extends Controller
 
         return Inertia::render('Admin/ProductManagement/ProductPricing/Pricing/IndexProductsDIRECT', [
             'product_prices' => $product_prices,
-            'subShipping' => $subShipping
+            'subShipping' => $subShipping,
+            'filters' => [
+                'search_product' => $search_product
+            ]
         ]);
     }
 

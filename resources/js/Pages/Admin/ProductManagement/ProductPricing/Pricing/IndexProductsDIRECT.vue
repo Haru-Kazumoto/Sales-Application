@@ -11,7 +11,7 @@
                 <div class="d-flex ms-auto">
                     <div class="row">
                         <div class="col-12 d-flex gap-2">
-                            <n-input size="medium" placeholder="Nama Barang">
+                            <n-input size="medium" placeholder="Nama Barang" v-model:value="filterProduct.search" @keyup.enter="handleFilter">
                                 <template #prefix>
                                     <n-icon :component="Search24Filled" />
                                 </template>
@@ -19,7 +19,7 @@
                             <n-tooltip trigger="hover">
                                 <template #trigger>
                                     <n-button type="primary" color="#006B3F" strong
-                                    @click="router.visit(route('admin.pricing.direct.create', { subShipping: subShipping.id }))">
+                                        @click="router.visit(route('admin.pricing.direct.create', { subShipping: subShipping.id }))">
                                         <template #icon>
                                             <n-icon :component="Add16Filled" />
                                         </template>
@@ -32,7 +32,14 @@
                     </div>
                 </div>
             </div>
-            <n-data-table :columns :bordered="false" :data="product_prices.data" size="small" />
+            <div class="card shadow-sm border-0">
+                <div class="card-body d-flex flex-column gap-2">
+                    <n-data-table :columns :bordered="false" :data="product_prices?.data" size="small" />
+                    <n-pagination class="ms-auto" v-if="product_prices?.total > product_prices?.per_page"
+                        :page="product_prices?.current_page" :page-count="product_prices?.last_page"
+                        @update:page="handleChangePage" />
+                </div>
+            </div>
 
             <!-- drawer detail -->
             <DetailProduct v-model:active="active" :dataProduct />
@@ -55,15 +62,33 @@ import { formatRupiah } from '../../../../../Utils/options-input.utils';
 
 export default defineComponent({
     props: {
-        product_prices: {
-            type: Array,
-            required: true
-        },
-        subShipping: {type: Object}
+        product_prices: { type: Object },
+        subShipping: { type: Object }
     },
     setup(props) {
         const active = ref(false);
         const dataProduct = ref({});
+        const filterProduct = ref({ search: '' });
+
+        function handleFilter() {
+            router.get(route("admin.pricing.direct-depo.index.products", props.subShipping?.id), {
+                search_product: filterProduct.value.search, // Tetap kirim query pencarian
+                page: 1 // Reset ke halaman pertama saat filter berubah
+            }, {
+                preserveState: true,
+                replace: true
+            });
+        }
+
+        function handleChangePage(page) {
+            router.get(route("admin.pricing.direct-depo.index.products", props.subShipping?.id), {
+                search_product: filterProduct.value.search, // Pastikan query tetap ada
+                page: page
+            }, {
+                preserveState: true,
+                replace: true
+            });
+        }
 
         function createColumns() {
             return [
@@ -176,7 +201,10 @@ export default defineComponent({
             dataProduct,
             router,
             Search24Filled,
-            Add16Filled
+            Add16Filled,
+            filterProduct,
+            handleFilter,
+            handleChangePage
         }
     },
     components: {
@@ -189,4 +217,4 @@ export default defineComponent({
 })
 </script>
 
-<style scoped></style>  
+<style scoped></style>

@@ -9,7 +9,8 @@
                 <div class="d-flex ms-auto">
                     <div class="row">
                         <div class="col-12 d-flex gap-2">
-                            <n-input size="medium" placeholder="Nama Barang">
+                            <n-input size="medium" placeholder="Nama Barang" v-model:value="filterProduct.search"
+                                @keyup.enter="handleFilter">
                                 <template #prefix>
                                     <n-icon :component="Search24Filled" />
                                 </template>
@@ -30,7 +31,15 @@
                     </div>
                 </div>
             </div>
-            <n-data-table :columns :bordered="false" :data="product_prices?.data" size="small" />
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body d-flex flex-column gap-2">
+                    <n-data-table :columns :bordered="false" :data="product_prices?.data" size="small" />
+                    <n-pagination class="ms-auto" v-if="product_prices?.total > product_prices?.per_page"
+                        :page="product_prices?.current_page" :page-count="product_prices?.last_page"
+                        @update:page="handleChangePage" />
+                </div>
+            </div>
 
             <!-- drawer detail -->
             <DetailProduct v-model:active="active" :dataProduct />
@@ -39,7 +48,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, h, ref } from 'vue';
+import { defineComponent, h, ref, watch } from 'vue';
 import TitlePage from '../../../../Components/TitlePage.vue';
 import CurrencyInput from '../../../../Components/CurrencyInput.vue';
 import { Head, router } from '@inertiajs/vue3';
@@ -48,15 +57,36 @@ import { NButton, NIcon } from 'naive-ui';
 import DetailProduct from '../../../../Components/DetailProduct.vue';
 import Swal from 'sweetalert2';
 import { formatRupiah } from '../../../../Utils/options-input.utils';
+import debounce from 'lodash/debounce';
 
 export default defineComponent({
     props: {
-        product_prices: { type: Object }
+        product_prices: { type: Object },
     },
     setup(props) {
         const active = ref(false);
         const dataProduct = ref({});
-        console.log(props.product_prices);
+        const filterProduct = ref({ search: '' });
+
+        function handleFilter() {
+            router.get(route("admin.pricing.do"), {
+                search_product: filterProduct.value.search, // Tetap kirim query pencarian
+                page: 1 // Reset ke halaman pertama saat filter berubah
+            }, {
+                preserveState: true,
+                replace: true
+            });
+        }
+
+        function handleChangePage(page) {
+            router.get(route("admin.pricing.do"), {
+                search_product: filterProduct.value.search, // Pastikan query tetap ada
+                page: page
+            }, {
+                preserveState: true,
+                replace: true
+            });
+        }
 
         function createColumns() {
             return [
@@ -104,7 +134,7 @@ export default defineComponent({
                     title: "HARGA TEBUS",
                     key: "redemp_price",
                     width: 200,
-                    render(row){
+                    render(row) {
                         return formatRupiah(row.redemp_price);
                     }
                 },
@@ -143,10 +173,10 @@ export default defineComponent({
                                             confirmButtonText: "Hapus",
                                             confirmButtonColor: 'red',
                                         }).then((result) => {
-                                            if(result.isConfirmed) {
+                                            if (result.isConfirmed) {
                                                 router.delete(route('admin.pricing.do.delete', row.id), {
                                                     onSuccess: (page) => {
-                                                        Swal.fire(page.props.flash.success,'','success');
+                                                        Swal.fire(page.props.flash.success, '', 'success');
                                                     }
                                                 });
                                             }
@@ -165,11 +195,14 @@ export default defineComponent({
 
         return {
             columns: createColumns(),
+            handleChangePage,
+            handleFilter,
             active,
             dataProduct,
             router,
             Search24Filled,
-            Add16Filled
+            Add16Filled,
+            filterProduct
         }
     },
     components: {
