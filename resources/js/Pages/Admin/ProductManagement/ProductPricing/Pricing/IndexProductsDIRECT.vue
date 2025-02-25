@@ -3,7 +3,7 @@
         <div class="d-flex flex-column gap-1">
             <TitlePage title="Daftar Produk"
                 :subTitle="`Daftar produk yang terdaftar di sub delivery ${$page.props.subShipping.name}`" />
-            <PreviousButton route="admin.pricing.depo" />
+            <PreviousButton route="admin.pricing.direct" />
         </div>
 
         <div class="d-flex flex-column gap-2">
@@ -19,7 +19,7 @@
                             <n-tooltip trigger="hover">
                                 <template #trigger>
                                     <n-button type="primary" color="#006B3F" strong
-                                        @click="router.visit(route('admin.pricing.depo.create', $page.props.subShipping.id))">
+                                    @click="router.visit(route('admin.pricing.direct.create', { subShipping: subShipping.id }))">
                                         <template #icon>
                                             <n-icon :component="Add16Filled" />
                                         </template>
@@ -55,7 +55,11 @@ import { formatRupiah } from '../../../../../Utils/options-input.utils';
 
 export default defineComponent({
     props: {
-        product_prices: { type: Object as () => any }
+        product_prices: {
+            type: Array,
+            required: true
+        },
+        subShipping: {type: Object}
     },
     setup(props) {
         const active = ref(false);
@@ -124,7 +128,7 @@ export default defineComponent({
                                     size: "medium",
                                     type: "primary",
                                     onClick() {
-                                        router.visit(route('admin.pricing.depo.edit', row.id));
+                                        router.visit(route('admin.pricing.direct.edit', row.id));
                                     }
                                 },
                                 {
@@ -185,4 +189,4 @@ export default defineComponent({
 })
 </script>
 
-<style scoped></style>
+<style scoped></style>  

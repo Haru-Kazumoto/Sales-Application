@@ -1,8 +1,8 @@
 <template>
     <div class="d-flex flex-column gap-3">
         <div class="d-flex flex-column gap-1">
-            <TitlePage title="Update Harga Produk DO" subTitle="Pembuatan harga produk untuk delivery DO" />
-            <PreviousButton route="admin.pricing.do" />
+            <TitlePage title="Penghargaan Produk DIRECT" subTitle="Pembuatan harga produk untuk delivery DIRECT" />
+            <PreviousButton route="admin.pricing.direct" />
         </div>
 
         <div class="card shadow-sm border border-success-subtle">
@@ -10,17 +10,15 @@
                 <div class="row g-2">
                     <div class="col-12 col-md-6 col-lg-4">
                         <label for="">Nama Barang</label>
-                        <n-input size="large" placeholder="" v-model:value="productDetail.product_name"></n-input>
+                        <n-select size="large" placeholder="" :options="productOptions" filterable v-model:value="form.product_id"></n-select>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <label for="">Unit Barang</label>
-                        <n-input size="large" placeholder="" disabled
-                            v-model:value="productDetail.product_unit"></n-input>
+                        <n-input size="large" placeholder="" disabled v-model:value="productDetail.product_unit"></n-input>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <label for="">Kode Barang</label>
-                        <n-input size="large" placeholder="" disabled
-                            v-model:value="productDetail.product_code"></n-input>
+                        <n-input size="large" placeholder="" disabled v-model:value="productDetail.product_code"></n-input>
                     </div>
                 </div>
             </div>
@@ -32,32 +30,29 @@
                     <div class="col-12 col-lg-4 d-flex flex-column">
                         <CurrencyInput v-model:modelValue="form.redemp_price" label="Harga Tebus" :required="true" />
                     </div>
-                    <div class="col-12 col-lg-4 d-flex flex-column">
+                    <!-- <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">Harga Trucking
                             <RequiredMark />
                         </label>
-                        <n-select :options="deliveryRegionOptions" placeholder=""
-                            v-model:value="form.transportation_cost" size="large"></n-select>
+                        <n-select :options="deliveryRegionOptions" placeholder="" v-model:value="form.transportation_cost"
+                            size="large"></n-select>
                     </div>
-
-                    <!-- THIRD ROW -->
+        
                     <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">OH Depo
                             <RequiredMark />
                         </label>
                         <n-select :options="dimensionOptions" v-model:value="form.oh_depo" placeholder=""
                             size="large"></n-select>
-                    </div>
+                    </div> -->
                     <div class="col-12 col-lg-4 d-flex flex-column">
                         <CurrencyInput v-model:modelValue="form.bad_debt" label="Bad Debt" :required="true" />
                     </div>
                     <div class="col-12 col-lg-4 d-flex flex-column">
-                        <CurrencyInput v-model:modelValue="form.budget_marketing" label="Budget Marketing"
-                            :required="true" />
+                        <CurrencyInput v-model:modelValue="form.budget_marketing" label="Budget Marketing" :required="true" />
                     </div>
                     <div class="col-12 col-lg-4 d-flex flex-column">
-                        <CurrencyInput v-model:modelValue="form.margin_all_segment" label="Margin Normal"
-                            :required="true" />
+                        <CurrencyInput v-model:modelValue="form.margin_all_segment" label="Margin Normal" :required="true" />
                     </div>
                     <div class="col-12 col-lg-4 d-flex flex-column">
                         <CurrencyInput v-model:modelValue="form.saving" label="Saving" :required="true" />
@@ -69,22 +64,19 @@
                             <n-button type="error" strong @click="clearPricing">Reset harga</n-button>
                         </div>
                     </div>
-
-
-
+        
+        
+        
                     <!-- FOURTH ROW -->
                     <div class="col-12 col-lg-3 d-flex flex-column">
-                        <CurrencyInput v-model:modelValue="form.all_segment_price" label="Harga All Segment"
-                            :required="true" />
+                        <CurrencyInput v-model:modelValue="form.all_segment_price" label="Harga All Segment" :required="true" />
                     </div>
                     <n-divider></n-divider>
                     <div class="col-12 col-lg-3 d-flex flex-column">
-                        <CurrencyInput v-model:modelValue="form.rounded_all_segment_price"
-                            label="Pembulatan Harga All Segment" :required="true" />
+                        <CurrencyInput v-model:modelValue="form.rounded_all_segment_price" label="Pembulatan Harga All Segment" :required="true" />
                     </div>
                     <div class="d-flex">
-                        <n-button type="info" class="ms-auto" @click="calculateRoundedPrice"
-                            :disabled="hasRounded">Kalkulasi
+                        <n-button type="info" class="ms-auto" @click="calculateRoundedPrice" :disabled="hasRounded">Kalkulasi
                             pembulatan</n-button>
                     </div>
                 </div>
@@ -92,7 +84,7 @@
         </div>
 
         <div class="d-flex ms-auto">
-            <n-button type="primary" size="medium" @click="handleSubmitPricing">Submit Harga Baru</n-button>
+            <n-button type="primary" size="medium" @click="handleSubmitPricing">Submit Harga</n-button>
         </div>
     </div>
 </template>
@@ -113,33 +105,38 @@ export default defineComponent({
             type: Object,
             required: true,
         },
-        data: {
-            type: Object,
+        products: {
+            type: Array,
             required: true,
-        }
+        },
+        subShipping: {type: Object}
     },
     setup(props) {
         const notification = useNotification();
         const productDetail = ref({
-            product_name: props.data.name,
-            product_unit: props.data.unit,
-            product_code: props.data.code,
+            product_name: null,
+            product_unit: null,
+            product_code: null,
         });
         const form = useForm({
-            redemp_price: props.data.redemp_price,
-            retail_price: props.data.retail_price,
-            grosir_price: props.data.grosir_price,
-            end_user_price: props.data.end_user_price,
-            all_segment_price: props.data.all_segment_price,
-            transportation_cost: props.data.transportation_cost,
-            oh_depo: props.data.oh_depo,
+            redemp_price: null as unknown as number,
+            retail_price: null as unknown as number,
+            grosir_price: null as unknown as number,
+            end_user_price: null as unknown as number,
+            all_segment_price: null as unknown as number,
+            percentage: null as unknown as number,
+            transportation_cost: null as unknown as number,
+            oh_depo: null as unknown as number,
             budget_marketing: findValueGlobalElement(props.utils.global_element, 'BUDGET MARKETING'),
             bad_debt: findValueGlobalElement(props.utils.global_element, 'BAD DEBT'),
-            saving: props.data.saving,
-            margin_all_segment: props.data.margin_all_segment,
-            rounded_all_segment_price: props.data.rounded_all_segment_price,
+            saving: null as unknown as number,
+            margin_retail: null as unknown as number,
+            margin_grosir: null as unknown as number,
+            margin_end_user: null as unknown as number,
+            margin_all_segment: null as unknown as number,
+            rounded_all_segment_price: null as unknown as number,
             delivery_type: 'DO',
-            product_id: props.data.product_id,
+            product_id: null as unknown as number,
         });
         const hasRounded = ref(false);
 
@@ -151,6 +148,12 @@ export default defineComponent({
             productDetail.value.product_code = selectedProduct?.code;
         });
 
+        function clearPricing() {
+            form.reset();
+            hasRounded.value = false;
+            notification.info({title: "Harga direset", closable: false, duration: 2000});
+        }
+
         function calculateRoundedPrice() {
             const {
                 all_segment_price,
@@ -161,8 +164,8 @@ export default defineComponent({
                 rounded_all_segment_price,
             } = form;
 
-            if (!form.rounded_all_segment_price) {
-                notification.warning({ title: "Angka pembulatan kosong", closable: false, duration: 2000 });
+            if(!form.rounded_all_segment_price) {
+                notification.warning({title: "Angka pembulatan kosong", closable: false, duration: 2000});
                 return;
             }
 
@@ -172,11 +175,7 @@ export default defineComponent({
 
             hasRounded.value = true;
 
-            notification.success({ title: "Dibulatkan!", duration: 2500, closable: false });
-        }
-
-        function clearPricing() {
-            form.reset();
+            notification.success({title: "Dibulatkan!", duration: 2500, closable: false});
         }
 
         function calculateRedempPrice() {
@@ -189,8 +188,8 @@ export default defineComponent({
                 margin_all_segment, // margin normal
             } = form;
 
-            if (!form.redemp_price) {
-                notification.error({ title: "Harga tebus kosong!", duration: 3000, closable: false });
+            if(!form.redemp_price){
+                notification.error({title: "Harga tebus kosong!", duration: 3000, closable: false});
                 return;
             }
 
@@ -226,11 +225,11 @@ export default defineComponent({
 
             form.all_segment_price = basePrice; // All Segment
 
-            notification.success({ title: "Berhasil terkalkulasi!", duration: 2500, closable: false });
+            notification.success({title: "Berhasil terkalkulasi!", duration: 2500, closable: false});
         }
 
         function handleSubmitPricing() {
-            form.put(route('admin.pricing.do.update', props.data.id), {
+            form.post(route('admin.pricing.direct.post', props.subShipping?.id), {
                 onSuccess: (page) => {
                     Swal.fire({
                         icon: "success",
@@ -243,7 +242,7 @@ export default defineComponent({
                 onError: () => {
                     Swal.fire({
                         icon: 'error',
-                        title: "Terjadi kesalahan :(",
+                        title: "Periksa form kembali!",
                     });
                 }
             });
@@ -259,11 +258,19 @@ export default defineComponent({
             value: data.price_dimention
         }));
 
+        const productOptions = (props.products as any[]).map((data: {id: number, name: string, unit: string, code: string}) => ({
+            label: data.name,
+            value: data.id,
+            unit: data.unit,
+            code: data.code
+        }));
+
         return {
             form,
             productDetail,
             deliveryRegionOptions,
             dimensionOptions,
+            productOptions,
             calculateRedempPrice,
             clearPricing,
             handleSubmitPricing,

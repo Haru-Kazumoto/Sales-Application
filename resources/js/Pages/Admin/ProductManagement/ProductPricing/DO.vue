@@ -30,7 +30,7 @@
                     </div>
                 </div>
             </div>
-            <n-data-table :columns :bordered="false" :data="product_prices" size="small" />
+            <n-data-table :columns :bordered="false" :data="product_prices?.data" size="small" />
 
             <!-- drawer detail -->
             <DetailProduct v-model:active="active" :dataProduct />
@@ -47,17 +47,16 @@ import { Search24Filled, Add16Filled, BoxSearch20Regular } from '@vicons/fluent'
 import { NButton, NIcon } from 'naive-ui';
 import DetailProduct from '../../../../Components/DetailProduct.vue';
 import Swal from 'sweetalert2';
+import { formatRupiah } from '../../../../Utils/options-input.utils';
 
 export default defineComponent({
     props: {
-        product_prices: {
-            type: Array,
-            required: true
-        }
+        product_prices: { type: Object }
     },
     setup(props) {
         const active = ref(false);
         const dataProduct = ref({});
+        console.log(props.product_prices);
 
         function createColumns() {
             return [
@@ -100,6 +99,14 @@ export default defineComponent({
                     title: "KODE PRODUK",
                     key: "code",
                     width: 200,
+                },
+                {
+                    title: "HARGA TEBUS",
+                    key: "redemp_price",
+                    width: 200,
+                    render(row){
+                        return formatRupiah(row.redemp_price);
+                    }
                 },
                 {
                     title: "AKSI",

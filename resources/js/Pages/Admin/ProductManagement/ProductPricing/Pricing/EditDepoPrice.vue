@@ -181,7 +181,7 @@
 
                     <h4>Pembulatan harga (opsional)</h4>
                     <div class="col-12 col-lg-3 d-flex flex-column">
-                        <CurrencyInput v-model:modelValue="form.rounded_all_segment_price" label="Pembulatan Harga All " />
+                        <CurrencyInput v-model:modelValue="form.rounded_all_segment_price" label="Pembulatan Harga All Segment" />
                     </div>
                     <div class="d-flex">
                         <n-button type="info" class="ms-auto" @click="calculateRoundedPrice"
@@ -226,6 +226,9 @@ export default defineComponent({
         subShipping: {
             type: Object,
             required: true,
+        },
+        data: {
+            type: Object
         }
     },
     setup(props) {
@@ -236,29 +239,29 @@ export default defineComponent({
         const hasRounded = ref(false);
         const notification = useNotification();
         const productDetail = ref({
-            product_name: null,
-            product_unit: null,
-            product_code: null,
+            product_name: props.data?.name,
+            product_unit: props.data?.unit,
+            product_code: props.data?.code,
         });
         const form = useForm({
-            redemp_price: null as unknown as number,
-            retail_price: null as unknown as number,
-            grosir_price: null as unknown as number,
-            end_user_price: null as unknown as number,
-            all_segment_price: null as unknown as number,
-            percentage: null as unknown as number,
-            transportation_cost: null as unknown as number,
-            oh_depo: null as unknown as number,
+            redemp_price: props.data?.redemp_price,
+            retail_price: props.data?.retail_price,
+            grosir_price: props.data?.grosir_price,
+            end_user_price: props.data?.end_user_price,
+            all_segment_price: props.data?.all_segment_price,
+            percentage: props.data?.percentage,
+            transportation_cost: props.data?.transportation_cost,
+            oh_depo: props.data?.oh_depo,
             budget_marketing: findValueGlobalElement(props.utils.global_element, 'BUDGET MARKETING'),
             bad_debt: findValueGlobalElement(props.utils.global_element, 'BAD DEBT'),
-            saving: null as unknown as number,
-            margin_retail: null as unknown as number,
-            margin_grosir: null as unknown as number,
-            margin_end_user: null as unknown as number,
-            margin_all_segment: null as unknown as number,
-            rounded_all_segment_price: null as unknown as number,
+            saving: props.data?.saving,
+            margin_retail: props.data?.margin_retail,
+            margin_grosir: props.data?.margin_grosir,
+            margin_end_user: props.data?.margin_end_user,
+            margin_all_segment: props.data?.margin_all_segment,
+            rounded_all_segment_price: props.data?.rounded_all_segment_price,
             delivery_type: 'DEPO',
-            product_id: null as unknown as number,
+            product_id: props.data?.product_id,
         });
 
         function clearPricing() {
@@ -453,7 +456,7 @@ export default defineComponent({
         }
 
         function handleSubmitPricing() {
-            form.post(route('admin.pricing.depo.post', props.subShipping.id), {
+            form.put(route('admin.pricing.depo.update', props.data.id), {
                 onSuccess: (page) => {
                     Swal.fire({
                         icon: "success",

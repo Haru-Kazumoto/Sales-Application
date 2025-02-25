@@ -149,6 +149,8 @@ export default defineComponent({
 
         function clearPricing() {
             form.reset();
+            hasRounded.value = false;
+            notification.info({title: "Harga direset", closable: false, duration: 2000});
         }
 
         function calculateRoundedPrice() {
@@ -161,11 +163,18 @@ export default defineComponent({
                 rounded_all_segment_price,
             } = form;
 
+            if(!form.rounded_all_segment_price) {
+                notification.warning({title: "Angka pembulatan kosong", closable: false, duration: 2000});
+                return;
+            }
+
             // Perbarui harga berdasarkan nilai pembulatan yang dimasukkan oleh pengguna
             form.all_segment_price = Number(all_segment_price) + (Number(rounded_all_segment_price) || 0);
             form.margin_all_segment = Number(margin_all_segment) + (Number(rounded_all_segment_price) || 0);
 
             hasRounded.value = true;
+
+            notification.success({title: "Dibulatkan!", duration: 2500, closable: false});
         }
 
         function calculateRedempPrice() {
@@ -232,7 +241,7 @@ export default defineComponent({
                 onError: () => {
                     Swal.fire({
                         icon: 'error',
-                        title: "Terjadi kesalahan :(",
+                        title: "Periksa form kembali!",
                     });
                 }
             });

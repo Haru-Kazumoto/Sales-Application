@@ -1,8 +1,9 @@
 <template>
     <div class="d-flex flex-column gap-3">
         <div class="d-flex flex-column gap-1">
-            <TitlePage title="Update Harga Produk DO" subTitle="Pembuatan harga produk untuk delivery DO" />
-            <PreviousButton route="admin.pricing.do" />
+            <TitlePage title="Penghargaan Produk DIRECT"
+                subTitle="Pembuatan harga produk untuk delivery DIRECT" />
+            <PreviousButton route="admin.pricing.direct" />
         </div>
 
         <div class="card shadow-sm border border-success-subtle">
@@ -10,7 +11,8 @@
                 <div class="row g-2">
                     <div class="col-12 col-md-6 col-lg-4">
                         <label for="">Nama Barang</label>
-                        <n-input size="large" placeholder="" v-model:value="productDetail.product_name"></n-input>
+                        <n-select size="large" placeholder="" :options="productOptions" filterable
+                            v-model:value="form.product_id"></n-select>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <label for="">Unit Barang</label>
@@ -32,22 +34,21 @@
                     <div class="col-12 col-lg-4 d-flex flex-column">
                         <CurrencyInput v-model:modelValue="form.redemp_price" label="Harga Tebus" :required="true" />
                     </div>
-                    <div class="col-12 col-lg-4 d-flex flex-column">
+                    <!-- <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">Harga Trucking
                             <RequiredMark />
                         </label>
-                        <n-select :options="deliveryRegionOptions" placeholder=""
-                            v-model:value="form.transportation_cost" size="large"></n-select>
+                        <n-select :options="deliveryRegionOptions" placeholder="" v-model:value="form.transportation_cost"
+                            size="large"></n-select>
                     </div>
-
-                    <!-- THIRD ROW -->
+        
                     <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">OH Depo
                             <RequiredMark />
                         </label>
                         <n-select :options="dimensionOptions" v-model:value="form.oh_depo" placeholder=""
                             size="large"></n-select>
-                    </div>
+                    </div> -->
                     <div class="col-12 col-lg-4 d-flex flex-column">
                         <CurrencyInput v-model:modelValue="form.bad_debt" label="Bad Debt" :required="true" />
                     </div>
@@ -92,7 +93,7 @@
         </div>
 
         <div class="d-flex ms-auto">
-            <n-button type="primary" size="medium" @click="handleSubmitPricing">Submit Harga Baru</n-button>
+            <n-button type="primary" size="medium" @click="handleSubmitPricing">Submit Harga</n-button>
         </div>
     </div>
 </template>
@@ -113,12 +114,17 @@ export default defineComponent({
             type: Object,
             required: true,
         },
+        products: {
+            type: Array,
+            required: true,
+        },
         data: {
             type: Object,
             required: true,
         }
     },
     setup(props) {
+        console.log(props.data);
         const notification = useNotification();
         const productDetail = ref({
             product_name: props.data.name,
@@ -127,9 +133,6 @@ export default defineComponent({
         });
         const form = useForm({
             redemp_price: props.data.redemp_price,
-            retail_price: props.data.retail_price,
-            grosir_price: props.data.grosir_price,
-            end_user_price: props.data.end_user_price,
             all_segment_price: props.data.all_segment_price,
             transportation_cost: props.data.transportation_cost,
             oh_depo: props.data.oh_depo,
@@ -151,12 +154,15 @@ export default defineComponent({
             productDetail.value.product_code = selectedProduct?.code;
         });
 
+        function clearPricing() {
+            form.reset();
+            hasRounded.value = false;
+            notification.info({ title: "Harga direset", closable: false, duration: 2000 });
+        }
+
         function calculateRoundedPrice() {
             const {
                 all_segment_price,
-                end_user_price,
-                retail_price,
-                grosir_price,
                 margin_all_segment,
                 rounded_all_segment_price,
             } = form;
@@ -173,10 +179,6 @@ export default defineComponent({
             hasRounded.value = true;
 
             notification.success({ title: "Dibulatkan!", duration: 2500, closable: false });
-        }
-
-        function clearPricing() {
-            form.reset();
         }
 
         function calculateRedempPrice() {
@@ -230,7 +232,7 @@ export default defineComponent({
         }
 
         function handleSubmitPricing() {
-            form.put(route('admin.pricing.do.update', props.data.id), {
+            form.put(route('admin.pricing.direct.update', props.data?.id), {
                 onSuccess: (page) => {
                     Swal.fire({
                         icon: "success",
@@ -243,7 +245,7 @@ export default defineComponent({
                 onError: () => {
                     Swal.fire({
                         icon: 'error',
-                        title: "Terjadi kesalahan :(",
+                        title: "Periksa form kembali!",
                     });
                 }
             });
@@ -259,11 +261,19 @@ export default defineComponent({
             value: data.price_dimention
         }));
 
+        const productOptions = (props.products as any[]).map((data: { id: number, name: string, unit: string, code: string }) => ({
+            label: data.name,
+            value: data.id,
+            unit: data.unit,
+            code: data.code
+        }));
+
         return {
             form,
             productDetail,
             deliveryRegionOptions,
             dimensionOptions,
+            productOptions,
             calculateRedempPrice,
             clearPricing,
             handleSubmitPricing,

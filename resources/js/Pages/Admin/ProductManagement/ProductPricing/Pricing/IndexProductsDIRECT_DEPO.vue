@@ -3,7 +3,7 @@
         <div class="d-flex flex-column gap-1">
             <TitlePage title="Daftar Produk"
                 :subTitle="`Daftar produk yang terdaftar di sub delivery ${$page.props.subShipping.name}`" />
-            <PreviousButton route="admin.pricing.depo" />
+            <PreviousButton route="admin.pricing.direct-depo" />
         </div>
 
         <div class="d-flex flex-column gap-2">
@@ -19,7 +19,7 @@
                             <n-tooltip trigger="hover">
                                 <template #trigger>
                                     <n-button type="primary" color="#006B3F" strong
-                                        @click="router.visit(route('admin.pricing.depo.create', $page.props.subShipping.id))">
+                                        @click="router.visit(route('admin.pricing.direct-depo.create', $page.props.subShipping.id))">
                                         <template #icon>
                                             <n-icon :component="Add16Filled" />
                                         </template>
@@ -51,11 +51,13 @@ import { NButton, NIcon } from 'naive-ui';
 import DetailProduct from '../../../../../Components/DetailProduct.vue';
 import Swal from 'sweetalert2';
 import PreviousButton from '../../../../../Components/PreviousButton.vue';
-import { formatRupiah } from '../../../../../Utils/options-input.utils';
 
 export default defineComponent({
     props: {
-        product_prices: { type: Object as () => any }
+        product_prices: {
+            type: Array,
+            required: true
+        }
     },
     setup(props) {
         const active = ref(false);
@@ -104,14 +106,6 @@ export default defineComponent({
                     width: 200,
                 },
                 {
-                    title: "HARGA TEBUS",
-                    key: "redemp_price",
-                    width: 200,
-                    render(row) {
-                        return formatRupiah(row.redemp_price);
-                    }
-                },
-                {
                     title: "AKSI",
                     key: "action",
                     width: 100,
@@ -124,7 +118,7 @@ export default defineComponent({
                                     size: "medium",
                                     type: "primary",
                                     onClick() {
-                                        router.visit(route('admin.pricing.depo.edit', row.id));
+                                        router.visit(route('admin.pricing.direct-depo.edit', row.id));
                                     }
                                 },
                                 {

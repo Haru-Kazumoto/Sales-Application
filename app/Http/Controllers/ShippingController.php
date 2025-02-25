@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\ProductPriceService;
 use App\Http\Services\ShippingServices;
 use App\Models\Dimention;
 use App\Models\GlobalElementPrice;
@@ -18,28 +19,21 @@ use Inertia\Inertia;
 class ShippingController extends Controller
 {
     private $shippingServices;
+    private $productPriceService;
 
-    public function __construct(ShippingServices $shippingServices)
+    public function __construct(
+        ShippingServices $shippingServices,
+        ProductPriceService $productPriceService
+    )
     {   
         $this->shippingServices = $shippingServices;
+        $this->productPriceService = $productPriceService;
     }
 
-    public function indexDoShipping()
+    public function indexDoShipping(Request $request)
     {
-        $product_prices = DB::table('product_prices as pr')
-            ->join('products as p','p.id','=','pr.product_id')
-            ->join('shipping as sp','sp.id','=','pr.shipping_id')
-            ->where('sp.name','=','DO')
-            ->select([
-                'p.id as product_id',
-                'p.name as product_name',
-                'p.unit',
-                'p.code',
-                'pr.*',
-                'sp.name'
-            ])
-            ->get();
-            // ->paginate(20);
+        $search_product = $request->query('search_product');
+        $product_prices = $this->productPriceService->getProductPricesFromSubShippingId(null,$search_product, 15);
 
         return Inertia::render("Admin/ProductManagement/ProductPricing/DO",[
             'product_prices' => $product_prices
@@ -53,13 +47,6 @@ class ShippingController extends Controller
         $region_delivery = DB::table('region_delivery')->get();
         $products = DB::table('products as p')
             ->select(['p.id', 'p.name', 'p.unit', 'p.code'])
-            // ->whereNotExists(function ($query) {
-            //     $query->select(DB::raw(1))
-            //         ->from('product_prices as price')
-            //         ->join('shipping', 'shipping.id', '=', 'price.shipping_id')
-            //         ->whereColumn('price.product_id', '=', 'p.id')
-            //         ->where('shipping.name', '=','DO');
-            // })
             ->get();
 
         return Inertia::render('Admin/ProductManagement/ProductPricing/Pricing/PricingDO',[
@@ -81,22 +68,52 @@ class ShippingController extends Controller
         return Inertia::render('Admin/ProductManagement/ProductPricing/DEPO', compact('subShippings','countSubShipping'));
     }
 
-    public function indexProductsDepo(SubShipping $subShipping)
+    public function indexDirectDepoShipping()
     {
-        $product_prices = DB::table('product_prices as pr')
-            ->join('products as p','p.id','=','pr.product_id')
-            ->join('sub_shipping as ss','ss.id','=','pr.sub_shipping_id')
-            ->where('ss.id','=',$subShipping->id)
-            ->select([
-                'p.id as product_id',
-                'p.name as product_name',
-                'p.unit',
-                'p.code',
-                'pr.*',
-            ])
-            ->get();
+        $shipping_name = "DIRECT_DEPO";
+        $subShippings = $this->shippingServices->indexSubShippingByName($shipping_name);
+        $countSubShipping = $this->shippingServices->countSubShippingByName($shipping_name);
+
+        return Inertia::render('Admin/ProductManagement/ProductPricing/DIRECT_DEPO', compact('subShippings','countSubShipping'));
+    }
+
+    public function indexDirectShipping()
+    {
+        $shipping_name = "DIRECT";
+        $subShippings = $this->shippingServices->indexSubShippingByName($shipping_name);
+        $countSubShipping = $this->shippingServices->countSubShippingByName($shipping_name);
+
+        return Inertia::render('Admin/ProductManagement/ProductPricing/DIRECT', compact('subShippings','countSubShipping'));
+    }
+
+    public function indexProductsDepo(Request $request, SubShipping $subShipping)
+    {
+        $search_product = $request->query('search_product');
+        $product_prices = $this->productPriceService->getProductPricesFromSubShippingId($subShipping->id,$search_product, 15);
 
         return Inertia::render('Admin/ProductManagement/ProductPricing/Pricing/IndexProductsDEPO', [
+            'product_prices' => $product_prices,
+            'subShipping' => $subShipping
+        ]);
+    }
+
+    public function indexProductsDirectDepo(Request $request, SubShipping $subShipping)
+    {
+        $search_product = $request->query('search_product');
+        $product_prices = $this->productPriceService->getProductPricesFromSubShippingId($subShipping->id,$search_product, 15);
+
+        return Inertia::render('Admin/ProductManagement/ProductPricing/Pricing/IndexProductsDIRECT_DEPO', [
+            'product_prices' => $product_prices,
+            'subShipping' => $subShipping
+        ]);
+    }
+
+    public function indexProductsDirect(Request $request, SubShipping $subShipping)
+    {
+        $search_product = $request->query('search_product');
+        $product_prices = $this->productPriceService->getProductPricesFromSubShippingId($subShipping->id,$search_product, 15);
+
+        return Inertia::render('Admin/ProductManagement/ProductPricing/Pricing/IndexProductsDIRECT', [
             'product_prices' => $product_prices,
             'subShipping' => $subShipping
         ]);
@@ -113,16 +130,54 @@ class ShippingController extends Controller
         $percentages = Lookup::where('category', 'PERCENTAGE')->get();
         $products = DB::table('products as p')
             ->select(['p.id', 'p.name', 'p.unit', 'p.code'])
-            ->whereNotExists(function ($query) use ($subShipping) {
-                $query->select(DB::raw(1))
-                    ->from('product_prices as price')
-                    ->join('sub_shipping as ss', 'ss.id', '=', 'price.shipping_id')
-                    ->whereColumn('price.product_id', '=', 'p.id')
-                    ->where('ss.name', '=',$subShipping->name);
-            })
             ->get();
 
         return Inertia::render('Admin/ProductManagement/ProductPricing/Pricing/PricingDEPO', [
+            'utils' => [
+                'dimensions' => $dimensions,
+                'global_element' => $global_element,
+                'region_delivery' => $region_delivery,
+                'percentages' => $percentages
+            ],
+            'subShipping' => $subShipping,
+            'products' => $products,
+        ]);
+    }
+
+    public function createDirectDepoPricing(SubShipping $subShipping)
+    {
+        $dimensions = Dimention::all();
+        $global_element = GlobalElementPrice::all();
+        $region_delivery = RegionDelivery::all();
+        $percentages = Lookup::where('category', 'PERCENTAGE')->get();
+        $products = DB::table('products as p')
+            ->select(['p.id', 'p.name', 'p.unit', 'p.code'])
+            ->get();
+        
+
+        return Inertia::render('Admin/ProductManagement/ProductPricing/Pricing/PricingDIRECT_DEPO', [
+            'utils' => [
+                'dimensions' => $dimensions,
+                'global_element' => $global_element,
+                'region_delivery' => $region_delivery,
+                'percentages' => $percentages
+            ],
+            'subShipping' => $subShipping,
+            'products' => $products,
+        ]);
+    }
+
+    public function createDirectPricing(SubShipping $subShipping)
+    {
+        $dimensions = Dimention::all();
+        $global_element = GlobalElementPrice::all();
+        $region_delivery = RegionDelivery::all();
+        $percentages = Lookup::where('category', 'PERCENTAGE')->get();
+        $products = DB::table('products as p')
+            ->select(['p.id', 'p.name', 'p.unit', 'p.code'])
+            ->get();
+
+        return Inertia::render('Admin/ProductManagement/ProductPricing/Pricing/PricingDIRECT', [
             'utils' => [
                 'dimensions' => $dimensions,
                 'global_element' => $global_element,

@@ -13,7 +13,7 @@
                 <span class="fs-4 fw-medium">Login to your account</span>
                 <div v-if="flash.info" class="alert alert-danger">
                     {{ flash.info }}
-            </div>
+                </div>
                 <div class="d-flex flex-column gap-4">
                     <!-- USERNAME INPUT -->
                     <div class="d-flex flex-column gap-1">

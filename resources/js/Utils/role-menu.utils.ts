@@ -120,13 +120,13 @@ export const roleMenus = {
                         {
                             label: "DIRECT",
                             key: 'direct',
-                            href: "#",
+                            href: "/product-pricing/direct",
                             icon: renderIcon(CircleSmall24Regular)
                         },
                         {
                             label: "DIRECT DEPO",
                             key: 'direct-depo',
-                            href: "#",
+                            href: "/product-pricing/direct-depo",
                             icon: renderIcon(CircleSmall24Regular)
                         },
                         {

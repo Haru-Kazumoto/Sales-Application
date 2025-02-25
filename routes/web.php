@@ -112,13 +112,33 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
             Route::post('/do/post',[App\Http\Controllers\ProductPricingController::class,'storeDOPrice'])->name('do.post');
             Route::get('/do/edit/{productPrice}',[App\Http\Controllers\ProductPricingController::class,'editDOPrice'])->name('do.edit');
             Route::put('/do/update/{productPrice}', [App\Http\Controllers\ProductPricingController::class,'updateDOPrice'])->name('do.update');
-            Route::delete('/do/delete/{productPrice}', [App\Http\Controllers\ProductPricingController::class, 'deleteDOPrice'])->name('do.delete');
+
+            //globally used for deleteing product price
+            Route::delete('/do/delete/{productPrice}', [App\Http\Controllers\ProductPricingController::class, 'deletePrice'])->name('do.delete');
 
             // DEPO Delivery
             Route::get('/depo', [App\Http\Controllers\ShippingController::class, 'indexDepoShipping'])->name('depo');
             Route::get('/depo/assign-products/sub-shipping/{subShipping}', [App\Http\Controllers\ShippingController::class, 'indexProductsDepo'])->name('depo.index.products');
             Route::get('/depo/create/{subShipping}', [App\Http\Controllers\ShippingController::class, 'createDepoPricing'])->name('depo.create');
             Route::post('/depo/post/{subShipping}', [App\Http\Controllers\ProductPricingController::class, 'storeDepoPrices'])->name('depo.post');
+            Route::get('/depo/edit/{productPrice}', [App\Http\Controllers\ProductPricingController::class, 'editDepoPrice'])->name('depo.edit');
+            Route::put('/depo/update/{productPrice}', [App\Http\Controllers\ProductPricingController::class, 'updateDepoPrice'])->name('depo.update');
+
+            // DIRECT DEPO Delivery
+            Route::get('/direct-depo', [App\Http\Controllers\ShippingController::class, 'indexDirectDepoShipping'])->name('direct-depo');
+            Route::get('/direct-depo/assign-products/sub-shipping/{subShipping}', [App\Http\Controllers\ShippingController::class, 'indexProductsDirectDepo'])->name('direct-depo.index.products');
+            Route::get('/direct-depo/create/{subShipping}', [App\Http\Controllers\ShippingController::class, 'createDirectDepoPricing'])->name('direct-depo.create');
+            Route::post('/direct-depo/post/{subShipping}', [App\Http\Controllers\ProductPricingController::class, 'storeDirectDepoPrices'])->name('direct-depo.post');
+            Route::get('/direct-depo/edit/{productPrice}',[App\Http\Controllers\ProductPricingController::class,'editDirectDepoPrice'])->name('direct-depo.edit');
+            Route::put('/direct-depo/update/{productPrice}', [App\Http\Controllers\ProductPricingController::class,'updateDirectDepoPrice'])->name('direct-depo.update');
+
+            // DIRECT Delivery
+            Route::get('/direct', [App\Http\Controllers\ShippingController::class, 'indexDirectShipping'])->name('direct');
+            Route::get('/direct/assign-products/sub-shipping/{subShipping}', [App\Http\Controllers\ShippingController::class, 'indexProductsDirect'])->name('direct.index.products');
+            Route::get('/direct/create/{subShipping}', [App\Http\Controllers\ShippingController::class, 'createDirectPricing'])->name('direct.create');
+            Route::post('/direct/post/{subShipping}', [App\Http\Controllers\ProductPricingController::class, 'storeDirectPrices'])->name('direct.post');
+            Route::get('/direct/edit/{productPrice}',[App\Http\Controllers\ProductPricingController::class,'editDirectPrice'])->name('direct.edit');
+            Route::put('/direct/update/{productPrice}', [App\Http\Controllers\ProductPricingController::class,'updateDirectPrice'])->name('direct.update');
             
             // SUB DELIVERY
             Route::post('/create/sub-delivery', [App\Http\Controllers\SubShippingController::class, 'store'])->name('sub-shipping.store');
