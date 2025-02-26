@@ -158,13 +158,7 @@ class ProductPricingController extends Controller
             ->join('products as p', 'p.id','=','pp.product_id')
             ->select([
                 'pp.id',
-                'pp.transportation_cost',
-                'pp.redemp_price',
-                'pp.all_segment_price',
-                'pp.oh_depo',
-                'pp.budget_marketing',
-                'pp.margin_all_segment',
-                'pp.rounded_all_segment_price',
+                'pp.*',
                 'p.id as product_id',
                 'p.name',
                 'p.unit',
@@ -252,14 +246,7 @@ class ProductPricingController extends Controller
             ->join('products as p', 'p.id','=','pp.product_id')
             ->select([
                 'pp.id',
-                'pp.transportation_cost',
-                'pp.redemp_price',
-                'pp.all_segment_price',
-                'pp.oh_depo',
-                'pp.budget_marketing',
-                'pp.margin_all_segment',
-                'pp.rounded_all_segment_price',
-                'pp.saving',
+                'pp.*',
                 'p.id as product_id',
                 'p.name',
                 'p.unit',
@@ -350,14 +337,7 @@ class ProductPricingController extends Controller
             ->join('products as p', 'p.id','=','pp.product_id')
             ->select([
                 'pp.id',
-                'pp.transportation_cost',
-                'pp.redemp_price',
-                'pp.all_segment_price',
-                'pp.oh_depo',
-                'pp.budget_marketing',
-                'pp.margin_all_segment',
-                'pp.rounded_all_segment_price',
-                'pp.saving',
+                'pp.*',
                 'p.id as product_id',
                 'p.name',
                 'p.unit',
