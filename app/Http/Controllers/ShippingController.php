@@ -36,7 +36,7 @@ class ShippingController extends Controller
         // $product_prices = $this->productPriceService->getProductPricesFromSubShippingId(null,$search_product, 15);
         $product_prices = DB::table('product_prices as pr')
             ->join('products as p','p.id','=','pr.product_id')
-            ->join('shipping as s','s.name','=','DO');
+            ->join('shipping as s','s.name','=',DB::raw("'DO'"));
         
         if(!empty($search_product)) {
             $product_prices->where('p.name','LIKE',"%{$search_product}%");
