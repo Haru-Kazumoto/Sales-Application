@@ -8,6 +8,14 @@
             <!-- INPUT CO -->
             <div class="card-body">
                 <div class="row g-3">
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-4">
+                        <div class="d-flex flex-column gap-1">
+                            <label for="">PENGIRIMAN
+                            </label>
+                            <n-select size="large" v-model:value="transaction_details.delivery" :options="sendType"
+                                placeholder="" />
+                        </div>
+                    </div>
                     <div class="col-12 col-lg-4">
                         <div class="d-flex flex-column gap-1">
                             <label for="">NOMOR CO</label>
