@@ -37,8 +37,8 @@
                         <label for="">Harga Trucking
                             <RequiredMark />
                         </label>
-                        <n-select :options="deliveryRegionOptions" placeholder="" v-model:value="form.transportation_cost"
-                            size="large"></n-select>
+                        <n-select :options="deliveryRegionOptions" placeholder=""
+                            v-model:value="selectedPrice" size="large"></n-select>
                     </div>
                     <!-- 
                     <div class="col-12 col-lg-4 d-flex flex-column">
@@ -129,6 +129,7 @@ export default defineComponent({
             product_unit: null,
             product_code: null,
         });
+        const selectedPrice = ref(null);
         const form = useForm({
             redemp_price: null as unknown as number,
             retail_price: null as unknown as number,
@@ -261,8 +262,21 @@ export default defineComponent({
 
         const deliveryRegionOptions = props.utils.region_delivery.map((data) => ({
             label: `${data.region_name} - ${formatRupiah(data.region_price)}`,
-            value: data.region_price
+            value: `${data.region_name}-${data.region_price}`
         }));
+
+        // Watch perubahan transportation_cost dan pisahkan harga
+        watch(
+            () => selectedPrice.value,
+            (newValue) => {
+                if (newValue) {
+                    let price = newValue.split("-")[1]; // Ambil harga dari string
+                    form.transportation_cost = Number(price);
+                } else {
+                    selectedPrice.value = null;
+                }
+            }
+        );
 
         const dimensionOptions = props.utils.dimensions.map((data) => ({
             label: `${data.dimention_name} - ${data.price_dimention}`,
@@ -286,7 +300,8 @@ export default defineComponent({
             clearPricing,
             handleSubmitPricing,
             calculateRoundedPrice,
-            hasRounded
+            hasRounded,
+            selectedPrice
         }
     },
     components: {

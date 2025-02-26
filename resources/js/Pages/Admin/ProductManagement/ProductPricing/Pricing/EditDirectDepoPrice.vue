@@ -34,14 +34,13 @@
                     <div class="col-12 col-lg-4 d-flex flex-column">
                         <CurrencyInput v-model:modelValue="form.redemp_price" label="Harga Tebus" :required="true" />
                     </div>
-                    <!-- <div class="col-12 col-lg-4 d-flex flex-column">
+                     <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">Harga Trucking
-                            <RequiredMark />
                         </label>
-                        <n-select :options="deliveryRegionOptions" placeholder="" v-model:value="form.transportation_cost"
+                        <n-select :options="deliveryRegionOptions" placeholder="" v-model:value="selectedPrice"
                             size="large"></n-select>
                     </div>
-        
+                    <!--
                     <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">OH Depo
                             <RequiredMark />
@@ -100,7 +99,7 @@
 
 <script lang="ts">
 import { Head, useForm } from '@inertiajs/vue3';
-import { defineComponent, ref, watch } from 'vue'
+import { defineComponent, ref, watch, watchEffect } from 'vue'
 import TitlePage from '../../../../../Components/TitlePage.vue';
 import CurrencyInput from '../../../../../Components/CurrencyInput.vue';
 import PreviousButton from '../../../../../Components/PreviousButton.vue';
@@ -131,6 +130,7 @@ export default defineComponent({
             product_unit: props.data.unit,
             product_code: props.data.code,
         });
+        const selectedPrice = ref(null);
         const form = useForm({
             redemp_price: props.data.redemp_price,
             all_segment_price: props.data.all_segment_price,
@@ -253,8 +253,28 @@ export default defineComponent({
 
         const deliveryRegionOptions = props.utils.region_delivery.map((data) => ({
             label: `${data.region_name} - ${formatRupiah(data.region_price)}`,
-            value: data.region_price
+            value: `${data.region_name}-${data.region_price}`
         }));
+
+        // Sinkronkan `selectedPrice` dengan `form.transportation_cost` saat halaman dibuka
+        watchEffect(() => {
+            if (form.transportation_cost) {
+                // Cari item yang sesuai di deliveryRegionOptions berdasarkan harga
+                const matchedOption = deliveryRegionOptions.find((option) =>
+                    option.value.endsWith(`-${form.transportation_cost}`)
+                );
+
+                selectedPrice.value = matchedOption ? matchedOption.value : null;
+            }
+        });
+
+        // Watch perubahan `selectedPrice` dan update `transportation_cost`
+        watchEffect(() => {
+            if (selectedPrice.value) {
+                const price = selectedPrice.value.split("-")[1]; // Ambil harga dari string
+                form.transportation_cost = Number(price);
+            }
+        });
 
         const dimensionOptions = props.utils.dimensions.map((data) => ({
             label: `${data.dimention_name} - ${data.price_dimention}`,
@@ -278,7 +298,8 @@ export default defineComponent({
             clearPricing,
             handleSubmitPricing,
             calculateRoundedPrice,
-            hasRounded
+            hasRounded,
+            selectedPrice
         }
     },
     components: {
