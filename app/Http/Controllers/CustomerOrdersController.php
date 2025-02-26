@@ -9,6 +9,7 @@ use App\Models\Lookup;
 use App\Models\Parties;
 use App\Models\ProductJournal;
 use App\Models\Products;
+use App\Models\Shipping;
 use App\Models\TransactionDetail;
 use App\Models\TransactionItem;
 use App\Models\Transactions;
@@ -162,6 +163,7 @@ class CustomerOrdersController extends Controller
         $payment_terms = Lookup::where('category', 'PAYMENT_TERM')->get();
         $products = $this->productServices->getStockProducts("DNP");
         $all_products = Products::query()->get();
+        $shippings = Shipping::with('subShippings')->get();
 
         return Inertia::render('Sales/Sale/CreateCoDnp', [
             'coNumber' => $coNumber,
@@ -170,6 +172,7 @@ class CustomerOrdersController extends Controller
             'payment_terms' => $payment_terms,
             'products' => $products,
             'all_products' => $all_products,
+            'shippings' => $shippings
         ]);
     }
 

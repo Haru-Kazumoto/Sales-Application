@@ -33,14 +33,14 @@
                     <div class="col-12 col-lg-4 d-flex flex-column">
                         <CurrencyInput v-model:modelValue="form.redemp_price" label="Harga Tebus" :required="true" />
                     </div>
-                    <!-- <div class="col-12 col-lg-4 d-flex flex-column">
+                    <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">Harga Trucking
                             <RequiredMark />
                         </label>
                         <n-select :options="deliveryRegionOptions" placeholder="" v-model:value="form.transportation_cost"
                             size="large"></n-select>
                     </div>
-        
+                    <!-- 
                     <div class="col-12 col-lg-4 d-flex flex-column">
                         <label for="">OH Depo
                             <RequiredMark />
