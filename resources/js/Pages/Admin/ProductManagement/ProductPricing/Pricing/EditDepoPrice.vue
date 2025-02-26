@@ -181,7 +181,8 @@
 
                     <h4>Pembulatan harga (opsional)</h4>
                     <div class="col-12 col-lg-3 d-flex flex-column">
-                        <CurrencyInput v-model:modelValue="form.rounded_all_segment_price" label="Pembulatan Harga All Segment" />
+                        <CurrencyInput v-model:modelValue="form.rounded_all_segment_price"
+                            label="Pembulatan Harga All Segment" />
                     </div>
                     <div class="d-flex">
                         <n-button type="info" class="ms-auto" @click="calculateRoundedPrice"
@@ -203,7 +204,7 @@
 
 <script lang="ts">
 import { Head, useForm } from '@inertiajs/vue3';
-import { defineComponent, ref, watch } from 'vue'
+import { defineComponent, ref, watch, watchEffect } from 'vue'
 import TitlePage from '../../../../../Components/TitlePage.vue';
 import CurrencyInput from '../../../../../Components/CurrencyInput.vue';
 import PreviousButton from '../../../../../Components/PreviousButton.vue';
@@ -338,7 +339,7 @@ export default defineComponent({
 
             hasRounded.value = true;
 
-            notification.success({title: "Dibulatkan", closable: false, duration: 2000});
+            notification.success({ title: "Dibulatkan", closable: false, duration: 2000 });
         }
 
         function calculateReversePrice() {
@@ -490,18 +491,25 @@ export default defineComponent({
             value: `${data.region_name}-${data.region_price}`
         }));
 
-        // Watch perubahan transportation_cost dan pisahkan harga
-        watch(
-            () => selectedPrice.value,
-            (newValue) => {
-                if (newValue) {
-                    let price = newValue.split("-")[1]; // Ambil harga dari string
-                    form.transportation_cost = Number(price);
-                } else {
-                    selectedPrice.value = null;
-                }
+        // Sinkronkan `selectedPrice` dengan `form.transportation_cost` saat halaman dibuka
+        watchEffect(() => {
+            if (form.transportation_cost) {
+                // Cari item yang sesuai di deliveryRegionOptions berdasarkan harga
+                const matchedOption = deliveryRegionOptions.find((option) =>
+                    option.value.endsWith(`-${form.transportation_cost}`)
+                );
+
+                selectedPrice.value = matchedOption ? matchedOption.value : null;
             }
-        );
+        });
+
+        // Watch perubahan `selectedPrice` dan update `transportation_cost`
+        watchEffect(() => {
+            if (selectedPrice.value) {
+                const price = selectedPrice.value.split("-")[1]; // Ambil harga dari string
+                form.transportation_cost = Number(price);
+            }
+        });
 
         const dimensionOptions = props.utils.dimensions.map((data) => ({
             label: `${data.dimention_name} - ${data.price_dimention}`,
