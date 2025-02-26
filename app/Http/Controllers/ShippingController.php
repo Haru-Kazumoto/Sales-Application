@@ -35,20 +35,24 @@ class ShippingController extends Controller
         $search_product = $request->query('search_product','');
         // $product_prices = $this->productPriceService->getProductPricesFromSubShippingId(null,$search_product, 15);
         $product_prices = DB::table('product_prices as pr')
-            ->join('products as p','p.id','=','pr.product_id')
-            ->join('shipping as s','s.name','=',DB::raw("'DO'"));
-        
-        if(!empty($search_product)) {
-            $product_prices->where('p.name','LIKE',"%{$search_product}%");
+            ->join('products as p', 'p.id', '=', 'pr.product_id')
+            ->join('shipping as s', 's.id', '=', 'pr.shipping_id') // Sesuai dengan SQL asli
+            ->where('s.name', 'DO'); // Filter shipping berdasarkan name
+
+        if (!empty($search_product)) {
+            $product_prices->where('p.name', 'LIKE', "%{$search_product}%");
         }
 
-        $product_prices->orderByDesc('pr.created_at')
+        $product_prices = $product_prices->orderByDesc('pr.created_at')
             ->select([
                 'p.id as product_id',
                 'p.name as product_name',
                 'p.unit',
                 'p.code',
+                'pr.id as pricing_id',
                 'pr.*',
+                's.id as shipping_id',
+                's.name as shipping_name'
             ])->paginate(15);
 
         return Inertia::render("Admin/ProductManagement/ProductPricing/DO",[

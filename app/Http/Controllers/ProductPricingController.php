@@ -22,9 +22,9 @@ class ProductPricingController extends Controller
     
     
 
-    public function storeDOPrice(ProductPriceRequest $request)
+    public function storeDOPrice(Request $request)
     {
-        $request->validated();
+        // dd($request->all());
 
         $product = DB::table('products')
             ->where('products.id','=',$request->product_id)

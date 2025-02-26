@@ -64,6 +64,7 @@ export default defineComponent({
         product_prices: { type: Object },
     },
     setup(props) {
+        console.log(props.product_prices);
         const active = ref(false);
         const dataProduct = ref({});
         const filterProduct = ref({ search: '' });
