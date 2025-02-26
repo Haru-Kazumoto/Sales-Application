@@ -198,7 +198,7 @@ export default defineComponent({
                     key: "grosir_price",
                     width: 200,
                     render(row) {
-                        return formatRupiah(row.retail_price);
+                        return formatRupiah(row.grosir_price);
                     }
                 },
                 {
