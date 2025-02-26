@@ -132,11 +132,11 @@ export default defineComponent({
                     width: 200,
                 },
                 {
-                    title: "HARGA TEBUS",
-                    key: "redemp_price",
+                    title: "HARGA ALL SEGMENT",
+                    key: "all_segment_price",
                     width: 200,
                     render(row) {
-                        return formatRupiah(row.redemp_price);
+                        return formatRupiah(row.all_segment_price);
                     }
                 },
                 {

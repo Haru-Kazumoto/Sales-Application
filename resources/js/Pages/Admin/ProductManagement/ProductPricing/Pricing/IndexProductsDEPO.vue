@@ -133,11 +133,35 @@ export default defineComponent({
                     width: 200,
                 },
                 {
-                    title: "HARGA TEBUS",
-                    key: "redemp_price",
+                    title: "HARGA ALL SEGMENT",
+                    key: "all_segment_price",
                     width: 200,
                     render(row) {
-                        return formatRupiah(row.redemp_price);
+                        return formatRupiah(row.all_segment_price);
+                    }
+                },
+                {
+                    title: "HARGA GROSIR",
+                    key: "grosir_price",
+                    width: 200,
+                    render(row) {
+                        return formatRupiah(row.retail_price);
+                    }
+                },
+                {
+                    title: "HARGA RETAIL",
+                    key: "retail_price",
+                    width: 200,
+                    render(row) {
+                        return formatRupiah(row.retail_price);
+                    }
+                },
+                {
+                    title: "HARGA END USER",
+                    key: "end_user_price",
+                    width: 200,
+                    render(row) {
+                        return formatRupiah(row.end_user_price);
                     }
                 },
                 {
