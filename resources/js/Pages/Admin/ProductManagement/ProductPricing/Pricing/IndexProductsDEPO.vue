@@ -11,7 +11,8 @@
                 <div class="d-flex ms-auto">
                     <div class="row">
                         <div class="col-12 d-flex gap-2">
-                            <n-input size="medium" placeholder="Nama Barang" v-model:value="filterProduct.search" @keyup.enter="handleFilter">
+                            <n-input size="medium" placeholder="Nama Barang" v-model:value="filterProduct.search"
+                                @keyup.enter="handleFilter">
                                 <template #prefix>
                                     <n-icon :component="Search24Filled" />
                                 </template>
@@ -93,6 +94,58 @@ export default defineComponent({
         function createColumns() {
             return [
                 {
+                    title: "AKSI",
+                    key: "action",
+                    width: 100,
+                    render(row) {
+                        return h('div', { class: 'd-flex gap-2' }, [
+                            h(
+                                NButton,
+                                {
+                                    strong: true,
+                                    size: "medium",
+                                    type: "primary",
+                                    onClick() {
+                                        router.visit(route('admin.pricing.depo.edit', row.id));
+                                    }
+                                },
+                                {
+                                    default: () => "Edit"
+                                }
+                            ),
+                            h(
+                                NButton,
+                                {
+                                    strong: true,
+                                    size: "medium",
+                                    type: "error",
+                                    onClick() {
+                                        Swal.fire({
+                                            title: "Hapus harga dari produk ini?",
+                                            text: "Anda tidak dapat mengembalikan data yang telah dihapus",
+                                            icon: "warning",
+                                            showCancelButton: true,
+                                            confirmButtonText: "Hapus",
+                                            confirmButtonColor: 'red',
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                router.delete(route('admin.pricing.do.delete', row.id), {
+                                                    onSuccess: (page) => {
+                                                        Swal.fire(page.props.flash.success, '', 'success');
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                },
+                                {
+                                    default: () => "Hapus"
+                                }
+                            )
+                        ]);
+                    }
+                },
+                {
                     title: "DETAIL",
                     key: "detail",
                     width: 100,
@@ -164,58 +217,7 @@ export default defineComponent({
                         return formatRupiah(row.end_user_price);
                     }
                 },
-                {
-                    title: "AKSI",
-                    key: "action",
-                    width: 100,
-                    render(row) {
-                        return h('div', { class: 'd-flex gap-2' }, [
-                            h(
-                                NButton,
-                                {
-                                    strong: true,
-                                    size: "medium",
-                                    type: "primary",
-                                    onClick() {
-                                        router.visit(route('admin.pricing.depo.edit', row.id));
-                                    }
-                                },
-                                {
-                                    default: () => "Edit"
-                                }
-                            ),
-                            h(
-                                NButton,
-                                {
-                                    strong: true,
-                                    size: "medium",
-                                    type: "error",
-                                    onClick() {
-                                        Swal.fire({
-                                            title: "Hapus harga dari produk ini?",
-                                            text: "Anda tidak dapat mengembalikan data yang telah dihapus",
-                                            icon: "warning",
-                                            showCancelButton: true,
-                                            confirmButtonText: "Hapus",
-                                            confirmButtonColor: 'red',
-                                        }).then((result) => {
-                                            if (result.isConfirmed) {
-                                                router.delete(route('admin.pricing.do.delete', row.id), {
-                                                    onSuccess: (page) => {
-                                                        Swal.fire(page.props.flash.success, '', 'success');
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
-                                },
-                                {
-                                    default: () => "Hapus"
-                                }
-                            )
-                        ]);
-                    }
-                }
+
             ]
         }
 

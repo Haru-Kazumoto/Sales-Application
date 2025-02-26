@@ -92,55 +92,7 @@ export default defineComponent({
 
         function createColumns() {
             return [
-                {
-                    title: "DETAIL",
-                    key: "detail",
-                    width: 100,
-                    render(row) {
-                        return h(
-                            NButton,
-                            {
-                                type: 'info',
-                                strong: true,
-                                onClick() {
-                                    active.value = true;
-                                    dataProduct.value = row;
-                                }
-                            },
-                            {
-                                icon: () =>
-                                    h(
-                                        NIcon,
-                                        {}, { default: () => h(BoxSearch20Regular) }
-                                    )
-                            }
-                        )
-                    }
-                },
-                {
-                    title: "NAMA PRODUK",
-                    key: "product_name",
-                    width: 200,
-                },
-                {
-                    title: "KEMASAN",
-                    key: "unit",
-                    width: 200,
-                },
-                {
-                    title: "KODE PRODUK",
-                    key: "code",
-                    width: 200,
-                },
-                {
-                    title: "HARGA TEBUS",
-                    key: "redemp_price",
-                    width: 200,
-                    render(row) {
-                        return formatRupiah(row.redemp_price);
-                    }
-                },
-                {
+            {
                     title: "AKSI",
                     key: "action",
                     width: 100,
@@ -191,7 +143,56 @@ export default defineComponent({
                             )
                         ]);
                     }
-                }
+                },
+                {
+                    title: "DETAIL",
+                    key: "detail",
+                    width: 100,
+                    render(row) {
+                        return h(
+                            NButton,
+                            {
+                                type: 'info',
+                                strong: true,
+                                onClick() {
+                                    active.value = true;
+                                    dataProduct.value = row;
+                                }
+                            },
+                            {
+                                icon: () =>
+                                    h(
+                                        NIcon,
+                                        {}, { default: () => h(BoxSearch20Regular) }
+                                    )
+                            }
+                        )
+                    }
+                },
+                {
+                    title: "NAMA PRODUK",
+                    key: "product_name",
+                    width: 200,
+                },
+                {
+                    title: "KEMASAN",
+                    key: "unit",
+                    width: 200,
+                },
+                {
+                    title: "KODE PRODUK",
+                    key: "code",
+                    width: 200,
+                },
+                {
+                    title: "HARGA TEBUS",
+                    key: "redemp_price",
+                    width: 200,
+                    render(row) {
+                        return formatRupiah(row.redemp_price);
+                    }
+                },
+                
             ]
         }
 
