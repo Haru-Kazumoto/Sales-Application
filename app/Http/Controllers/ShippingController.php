@@ -33,7 +33,23 @@ class ShippingController extends Controller
     public function indexDoShipping(Request $request)
     {
         $search_product = $request->query('search_product','');
-        $product_prices = $this->productPriceService->getProductPricesFromSubShippingId(null,$search_product, 15);
+        // $product_prices = $this->productPriceService->getProductPricesFromSubShippingId(null,$search_product, 15);
+        $product_prices = DB::table('product_prices as pr')
+            ->join('products as p','p.id','=','pr.product_id')
+            ->join('shipping as s','s.name','=','DO');
+        
+        if(!empty($search_product)) {
+            $product_prices->where('p.name','LIKE',"%{$search_product}%");
+        }
+
+        $product_prices->orderByDesc('pr.created_at')
+            ->select([
+                'p.id as product_id',
+                'p.name as product_name',
+                'p.unit',
+                'p.code',
+                'pr.*',
+            ])->paginate(15);
 
         return Inertia::render("Admin/ProductManagement/ProductPricing/DO",[
             'product_prices' => $product_prices,
@@ -93,23 +109,23 @@ class ShippingController extends Controller
     public function indexProductsDepo(Request $request, SubShipping $subShipping)
     {
         $search_product = $request->query('search_product','');
-        // $product_prices = $this->productPriceService->getProductPricesFromSubShippingId($subShipping->id,$search_product, 15);
-        $product_prices = DB::table('product_prices as pr')
-            ->join('products as p','p.id','=','pr.product_id')
-            ->join('shipping as s','s.name','=','DO');
+        $product_prices = $this->productPriceService->getProductPricesFromSubShippingId($subShipping->id,$search_product, 15);
+        // $product_prices = DB::table('product_prices as pr')
+        //     ->join('products as p','p.id','=','pr.product_id')
+        //     ->join('shipping as s','s.name','=','DO');
         
-        if(!empty($search_product)) {
-            $product_prices->where('p.name','LIKE',"%{$search_product}%");
-        }
+        // if(!empty($search_product)) {
+        //     $product_prices->where('p.name','LIKE',"%{$search_product}%");
+        // }
 
-        $product_prices->orderByDesc('pr.created_at')
-            ->select([
-                'p.id as product_id',
-                'p.name as product_name',
-                'p.unit',
-                'p.code',
-                'pr.*',
-            ])->paginate(15);
+        // $product_prices->orderByDesc('pr.created_at')
+        //     ->select([
+        //         'p.id as product_id',
+        //         'p.name as product_name',
+        //         'p.unit',
+        //         'p.code',
+        //         'pr.*',
+        //     ])->paginate(15);
 
         return Inertia::render('Admin/ProductManagement/ProductPricing/Pricing/IndexProductsDEPO', [
             'product_prices' => $product_prices,
