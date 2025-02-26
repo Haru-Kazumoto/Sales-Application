@@ -537,7 +537,7 @@ export default defineComponent({
             calculateReversePrice,
             calculateFromSellingPrice,
             calculateFromRedempPrice,
-            selectedPrice
+            selectedPrice,
         }
     },
     components: {

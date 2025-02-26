@@ -67,6 +67,7 @@ class ProductPricingController extends Controller
                 'pp.budget_marketing',
                 'pp.margin_all_segment',
                 'pp.rounded_all_segment_price',
+                'pp.saving',
                 'pp.percentage',
                 'p.id as product_id',
                 'p.name',
@@ -212,7 +213,7 @@ class ProductPricingController extends Controller
             ]);
         });
 
-        return redirect()->route('admin.pricing.depo.edit', $productPrice->shipping_id)->with('success','Berhasil memperbarui barang!');
+        return redirect()->route('admin.pricing.depo.index.products', $productPrice->sub_shipping_id)->with('success','Berhasil memperbarui barang!');
     }
 
     public function storeDirectDepoPrices(Request $request, SubShipping $subShipping)
