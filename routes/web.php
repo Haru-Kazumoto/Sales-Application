@@ -147,6 +147,8 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
         Route::prefix('percentage')->name('percentage.')->group(function() {
             Route::get('', [App\Http\Controllers\PercentageController::class, 'index'])->name('index');
             Route::post('', [App\Http\Controllers\PercentageController::class, 'store'])->name('store');
+            Route::patch('',[App\Http\Controllers\PercentageController::class, 'update'])->name('update');
+            Route::delete('{lookup}/delete',[App\Http\Controllers\PercentageController::class, 'destroy'])->name('destroy');
         });
 
         Route::prefix('transport-management')->group(function() {

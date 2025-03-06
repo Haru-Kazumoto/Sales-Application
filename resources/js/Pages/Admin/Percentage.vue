@@ -75,6 +75,24 @@ export default defineComponent({
             })
         }
 
+        function showUpdate(data: any) {
+            showCreateDrawer.value = true;
+            form.value.label = data.label.replace("%","");
+        }
+
+        function handleDelete(id: number) {
+            router.delete(route('admin.percentage.destroy', id), {
+                preserveScroll: true,
+                onSuccess: (page) => {
+                    notification.success({
+                        title: page.props.flash.success,
+                        duration: 2000,
+                        closable: false
+                    });
+                }
+            });
+        }
+
         function createColumns() {
             return [
                 {
@@ -86,13 +104,8 @@ export default defineComponent({
                     }
                 },
                 {
-                    title: "Label Persentase",
+                    title: "Persentase",
                     key: "label",
-                    width: 200
-                },
-                {
-                    title: "Isi Persentase",
-                    key: "value",
                     width: 200
                 },
                 {
@@ -106,6 +119,7 @@ export default defineComponent({
                                 {
                                     type: "info",
                                     strong: true,
+                                    onClick: () => showUpdate(row)
                                 }, { default: () => "Update" }
                             ),
                             h(
@@ -113,6 +127,7 @@ export default defineComponent({
                                 {
                                     type: "error",
                                     strong: true,
+                                    onClick: () => handleDelete(row.id)
                                 }, { default: () => "Hapus" }
                             )
                         ]);

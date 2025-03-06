@@ -15,6 +15,7 @@ class PercentageController extends Controller
     public function index()
     {
         $data = Lookup::where('category', 'PERCENTAGE')
+            ->orderByDesc('created_at')
             ->get()
             ->map(function ($item) {
                 $item->value = floatval($item->value);
@@ -63,24 +64,35 @@ class PercentageController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Lookup $lookup)
     {
-        //
+        
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Lookup $lookup)
     {
-        //
+        DB::transaction(function() use ($lookup, $request) {
+            $lookup->update([
+                'label' => $request->label."%",
+                'value' => $request->label / 100,
+            ]);
+        });
+
+        return back()->with('success','Berhasil memperbarui persentase');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Lookup $lookup)
     {
-        //
+        DB::transaction(function() use ($lookup) {
+            $lookup->delete();
+        });
+
+        return back()->with('success','Berhasil menghapus persentase');
     }
 }
