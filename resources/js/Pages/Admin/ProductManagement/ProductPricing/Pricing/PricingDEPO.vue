@@ -406,24 +406,24 @@ export default defineComponent({
                 marginAmount = all_segment_price - entry_price;
             }
 
-            console.log([
-                form.bad_debt,
-                form.budget_marketing,
-                form.saving,
-                form.oh_depo,
-                form.transportation_cost
-            ]);
+            // console.log([
+            //     form.bad_debt,
+            //     form.budget_marketing,
+            //     form.saving,
+            //     form.oh_depo,
+            //     form.transportation_cost
+            // ]);
 
             // Menghitung total biaya deductions
             deductions = Number(form.bad_debt) + Number(form.budget_marketing) + Number(form.saving)
                 + Number(form.oh_depo) + Number(form.transportation_cost);
 
-            console.log("deductions", deductions);
+            // console.log("deductions", deductions);
 
             // Menghitung normal margin setelah dikurangi biaya
             normal_margin = Math.round(marginAmount - deductions);
 
-            console.log("normal margin ", normal_margin);
+            // console.log("normal margin ", normal_margin);
 
             // Menyimpan hasil ke dalam form
             form.redemp_price = redemp_price;

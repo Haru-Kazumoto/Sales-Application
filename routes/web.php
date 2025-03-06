@@ -144,6 +144,11 @@ Route::middleware(['auth', 'secure.path', 'web'])->group(function() {
             Route::post('/create/sub-delivery', [App\Http\Controllers\SubShippingController::class, 'store'])->name('sub-shipping.store');
         });
 
+        Route::prefix('percentage')->name('percentage.')->group(function() {
+            Route::get('', [App\Http\Controllers\PercentageController::class, 'index'])->name('index');
+            Route::post('', [App\Http\Controllers\PercentageController::class, 'store'])->name('store');
+        });
+
         Route::prefix('transport-management')->group(function() {
             Route::get('', [App\Http\Controllers\TransportController::class, 'index'])->name('index-transports');
             Route::get('/create',[App\Http\Controllers\TransportController::class, 'create'])->name('create-transports');

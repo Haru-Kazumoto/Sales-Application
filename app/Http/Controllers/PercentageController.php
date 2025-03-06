@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Lookup;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class PercentageController extends Controller
 {
@@ -16,11 +18,11 @@ class PercentageController extends Controller
             ->get()
             ->map(function ($item) {
                 $item->value = floatval($item->value);
-                
+
                 return $item;
             });
 
-        return inertia('YourComponent', [
+        return Inertia::render('Admin/Percentage', [
             'data' => $data
         ]);
     }
@@ -39,7 +41,15 @@ class PercentageController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        DB::transaction(function() use ($request) {
+            Lookup::create([
+                'label' => $request->label."%",
+                'value' => $request->label / 100,
+                'category' => 'PERCENTAGE',
+            ]);
+        });
+
+        return back()->with('success', 'Berhasil membuat persentase');
     }
 
     /**

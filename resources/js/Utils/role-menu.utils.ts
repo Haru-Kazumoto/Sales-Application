@@ -23,7 +23,8 @@ import {
     VehicleTruckBag20Regular,
     MoneyCalculator20Regular,
     BoxToolbox20Regular,
-    CircleSmall24Regular
+    CircleSmall24Regular,
+    DocumentMultiplePercent24Regular
 } from '@vicons/fluent';
 import {
     CartOutline,
@@ -173,6 +174,12 @@ export const roleMenus = {
                     key: "overhead-price",
                     icon: renderIcon(DocumentTextOutline),
                     href: '/dimentions'
+                },
+                {
+                    label: "Persentase Harga",
+                    key: 'percentage-price',
+                    icon: renderIcon(DocumentMultiplePercent24Regular),
+                    href: "/percentage"
                 }
             ]
         },
