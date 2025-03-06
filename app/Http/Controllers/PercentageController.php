@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Lookup;
 use Illuminate\Http\Request;
 
 class PercentageController extends Controller
@@ -11,8 +12,19 @@ class PercentageController extends Controller
      */
     public function index()
     {
-        //
+        $data = Lookup::where('category', 'PERCENTAGE')
+            ->get()
+            ->map(function ($item) {
+                $item->value = floatval($item->value);
+                
+                return $item;
+            });
+
+        return inertia('YourComponent', [
+            'data' => $data
+        ]);
     }
+
 
     /**
      * Show the form for creating a new resource.

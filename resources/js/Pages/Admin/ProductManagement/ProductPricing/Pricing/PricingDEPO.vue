@@ -440,7 +440,7 @@ export default defineComponent({
 
         function calculateFromRedempPrice(redemp_price: number, selling_price: SellingPrice) {
             // Biaya yang dikurangkan untuk menghitung margin
-            const deductions = form.oh_depo + form.budget_marketing + form.saving + form.transportation_cost + form.bad_debt;
+            const deductions = Number(form.oh_depo) + Number(form.budget_marketing) + Number(form.saving) + Number(form.transportation_cost) + Number(form.bad_debt);
 
             // Menghitung selisih harga tebus dengan masing-masing harga jual
             const margin = {
