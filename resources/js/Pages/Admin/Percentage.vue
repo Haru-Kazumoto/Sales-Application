@@ -5,7 +5,7 @@
         <div class="card border-0 shadow-sm">
             <div class="card-body d-flex flex-column gap-3">
                 <div class="d-flex">
-                    <n-button class="ms-auto" type="primary" @click="showCreateDrawer = true">Tambah Persentase Baru</n-button>
+                    <n-button class="ms-auto" type="primary" @click="showDrawerCreate">Tambah Persentase Baru</n-button>
                 </div>
                 <n-data-table :columns :data></n-data-table>
             </div>
@@ -21,8 +21,11 @@
                         </n-input>
                     </div>
     
-                    <div class="d-flex">
+                    <div class="d-flex" v-if="form.type === 'CREATE'">
                         <n-button type="primary" class="ms-auto" @click="handleSubmitPercentage">Submit</n-button>
+                    </div>
+                    <div class="d-flex" v-else>
+                        <n-button type="info" class="ms-auto" @click="handleUpdatePercentage">Update</n-button>
                     </div>
                 </div>
             </n-drawer-content>
@@ -45,7 +48,8 @@ export default defineComponent({
         const notification = useNotification();
         const form = ref({
             label: null as unknown as string,
-            value: null as unknown as number
+            value: null as unknown as number,
+            type: null as unknown as string
         });
 
         function handleSubmitPercentage() {
@@ -75,8 +79,19 @@ export default defineComponent({
             })
         }
 
-        function showUpdate(data: any) {
+        function showDrawerCreate() {
             showCreateDrawer.value = true;
+            form.value.type = "CREATE";
+        }
+
+        function showDrawerUpdate() {
+            showCreateDrawer.value = true;
+            form.value.type = "UPDATE";
+        }
+
+        function showUpdate(data: any) {
+            showDrawerUpdate();
+            
             form.value.label = data.label.replace("%","");
         }
 
@@ -93,12 +108,24 @@ export default defineComponent({
             });
         }
 
+        function handleUpdatePercentage(id: number) {
+            router.put(route('admin.percentage.update', id), {
+                onSuccess: (page) => {
+                    notification.success({
+                        title: page.props.flash.success,
+                        duration: 2000,
+                        closable: false
+                    });
+                }
+            });
+        }
+
         function createColumns() {
             return [
                 {
                     title: "#",
                     key: "index",
-                    width: 50,
+                    width: 200,
                     render(row, index) {
                         return index + 1;
                     }
@@ -140,7 +167,9 @@ export default defineComponent({
             columns: createColumns(),
             handleSubmitPercentage,
             showCreateDrawer,
-            form
+            form,
+            handleUpdatePercentage,
+            showDrawerCreate
         }
     },
     components: {
