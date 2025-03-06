@@ -406,9 +406,17 @@ export default defineComponent({
                 marginAmount = all_segment_price - entry_price;
             }
 
+            console.log([
+                form.bad_debt,
+                form.budget_marketing,
+                form.saving,
+                form.oh_depo,
+                form.transportation_cost
+            ]);
+
             // Menghitung total biaya deductions
-            deductions = form.bad_debt + form.budget_marketing + form.saving
-                + form.oh_depo + form.transportation_cost;
+            deductions = Number(form.bad_debt) + Number(form.budget_marketing) + Number(form.saving)
+                + Number(form.oh_depo) + Number(form.transportation_cost);
 
             console.log("deductions", deductions);
 
