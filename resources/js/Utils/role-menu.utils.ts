@@ -206,12 +206,12 @@ export const roleMenus = {
             icon: PeopleList24Regular,
             href: "/customer-sales"
         },
-        {
-            label: "Wilayah Customer",
-            key: "customer-region",
-            icon: Map24Regular,
-            href: "/customer-region",
-        },
+        // {
+        //     label: "Wilayah Customer",
+        //     key: "customer-region",
+        //     icon: Map24Regular,
+        //     href: "/customer-region",
+        // },
         
     ],
     FINANCE: [

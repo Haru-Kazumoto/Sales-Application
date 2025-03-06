@@ -9,7 +9,7 @@
                     <tr>
                         <td><strong>Nama Produk</strong></td>
                         <td>:</td>
-                        <td>{{ dataProduct.name }}</td>
+                        <td>{{ dataProduct.product_name }}</td>
                     </tr>
                     <tr>
                         <td><strong>Kemasan Produk</strong></td>
@@ -24,59 +24,77 @@
                     <tr>
                         <td><strong>Harga Tebus</strong></td>
                         <td>:</td>
-                        <td>Rp.200000</td>
+                        <td>{{ formatRupiah(dataProduct.redemp_price) }}</td>
                     </tr>
                     <tr>
                         <td><strong>Harga Jual Grosir</strong></td>
                         <td>:</td>
+                        <td>{{ formatRupiah(dataProduct.grosir_price) }}</td>
                     </tr>
                     <tr>
                         <td><strong>Harga Jual Retail</strong></td>
                         <td>:</td>
+                        <td>{{ formatRupiah(dataProduct.retail_price) }}</td>
                     </tr>
                     <tr>
                         <td><strong>Harga End User</strong></td>
                         <td>:</td>
+                        <td>{{ formatRupiah(dataProduct.end_user_price) }}</td>
                     </tr>
                     <tr>
                         <td><strong>Harga All Segment</strong></td>
                         <td>:</td>
+                        <td>{{ formatRupiah(dataProduct.all_segment_price) }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Transportasi</strong></td>
+                        <td>:</td>
+                        <td>{{ formatRupiah(dataProduct.transportation_cost) }}</td>
                     </tr>
                     <tr>
                         <td><strong>OH Depo</strong></td>
                         <td>:</td>
+                        <td>{{ formatRupiah(dataProduct.oh_depo) }}</td>
                     </tr>
                     <tr>
                         <td><strong>Saving</strong></td>
                         <td>:</td>
+                        <td>{{ formatRupiah(dataProduct.saving) }}</td>
                     </tr>
                     <tr>
                         <td><strong>Bad Debt</strong></td>
                         <td>:</td>
+                        <td>{{ formatRupiah(dataProduct.bad_debt) }}</td>
                     </tr>
                     <tr>
                         <td><strong>Budget Marketing</strong></td>
                         <td>:</td>
+                        <td>{{ formatRupiah(dataProduct.budget_marketing) }}</td>
                     </tr>
                     <tr>
                         <td><strong>Margin All Segment</strong></td>
                         <td>:</td>
+                        <td>{{ formatRupiah(dataProduct.margin_all_segment) }}</td>
                     </tr>
                     <tr>
                         <td><strong>Margin Grosir</strong></td>
                         <td>:</td>
+                        <td>{{ formatRupiah(dataProduct.margin_grosir) }}</td>
                     </tr>
                     <tr>
                         <td><strong>Margin Retail</strong></td>
                         <td>:</td>
+                        <td>{{ formatRupiah(dataProduct.margin_retail) }}</td>
                     </tr>
                     <tr>
                         <td><strong>Margin End user</strong></td>
                         <td>:</td>
+                        <td>{{ formatRupiah(dataProduct.margin_end_user) }}</td>
                     </tr>
                     <tr>
                         <td><strong>Pembulatan All Segment</strong></td>
                         <td>:</td>
+                        <td>{{ formatRupiah(dataProduct.rounded_all_segment_price) }}</td>
                     </tr>
                 </tbody>
 
